@@ -48,7 +48,7 @@ The **Probe Lab** audits camera hardware capabilities at runtime without opening
 - **100% Try-Catch Safety**: Every HAL method call is wrapped in try-catch to prevent hardware or service crashes.
 
 ### 2. `CameraPreview.kt`
-- `AndroidView` wrapping a `TextureView` for hardware-accelerated edge-to-edge live viewfinder rendering.
+- `AndroidView` wrapping a `TextureView` for hardware-accelerated edge-to-edge live viewfinder rendering. Handles `isAvailable` surface texture re-initialization safely.
 
 ---
 
@@ -82,21 +82,29 @@ The **Probe Lab** audits camera hardware capabilities at runtime without opening
 
 ---
 
-## 7. Phase 1, Step 7: Camera2 Hardware Zoom & Gesture Integration
+## 7. Phase 1, Step 7: Camera2 Hardware Zoom, Pinch Gesture & Emulator Black Screen Resolution
 
-1. **Camera2 `CONTROL_ZOOM_RATIO` Engine**:
-   - `CameraController.kt` queries `CONTROL_ZOOM_RATIO_RANGE` and `SCALER_AVAILABLE_MAX_DIGITAL_ZOOM` to dynamically set hardware zoom.
-   - Applies zoom ratio seamlessly to repeating preview streams and still JPEG captures.
-   - Safely clamps requested ratio within supported hardware bounds `[1.0f, maxZoomRatio]`.
-2. **Pinch-to-Zoom Gesture**:
-   - `CameraScreen.kt` implements Compose `pointerInput(Unit)` with `detectTransformGestures` attached directly to the `CameraPreview` layer.
-   - Allows continuous smooth pinch zooming between `1.0x` and `10.0x` while leaving UI overlay controls fully clickable.
+1. **Dual-Strategy Hardware Zoom Engine (`applyZoom`)**:
+   - `CameraController.kt` queries `CONTROL_ZOOM_RATIO_RANGE` and `SENSOR_INFO_ACTIVE_ARRAY_SIZE`.
+   - On modern physical devices supporting `CONTROL_ZOOM_RATIO`, sets `CaptureRequest.CONTROL_ZOOM_RATIO` directly.
+   - On emulators and legacy HALs where `CONTROL_ZOOM_RATIO_RANGE` is null, automatically falls back to `SCALER_CROP_REGION` calculation based on `activeSensorArraySize`, preventing HAL crashes or black preview frames.
+   - Clamps requested ratio strictly within `[1.0f, maxZoomRatio]`.
+2. **Transparent Gesture Surface Layer**:
+   - Decoupled `detectTransformGestures` pinch-to-zoom gesture layer into a transparent `Box` positioned between the `CameraPreview` viewfinder and top bar / shutter controls.
+   - Allows continuous smooth pinch zooming between `1.0x` and `10.0x` while ensuring `TextureView` rendering and UI overlay clicks function without interference.
+3. **`TextureView` Surface Re-initialization**:
+   - Fixed `CameraPreview.kt` to check `isAvailable` in `AndroidView` factory to ensure immediate preview session initialization when the surface texture is already present.
 
 ---
 
 ## 8. Verification & Crash Audit Results
 
-- **Build Status**: `./gradlew assembleDebug` - **100% SUCCESS**.
+- **Build Status**: `./gradlew assembleDebug` & `./gradlew installDebug` - **100% SUCCESS**.
 - **Static Code Analysis**: Analyzed all 19 Kotlin source files in `app/src/main/java` - **0 Errors, 0 Warnings**.
-- **Live Device Audit**: Physical **Xiaomi Redmi Note 13 Pro 5G** and **Android Studio Emulator**.
-- **Logcat Audit (`AndroidRuntime:E`)**: Executed `read_logcat` and `adb logcat -d -s AndroidRuntime:E` - **0 Crashes Logged**.
+- **Live Device Audit**: Physical **Xiaomi Redmi Note 13 Pro 5G** and **Android Studio Emulator (`emulator-5554`)**.
+- **Camera HAL Logcat Audit**:
+  - Executed `adb logcat -d | Select-String "Camera2Client|CameraDevice|BufferQueue|Surface"`:
+    - `camera.provider.ranchu: CameraDeviceSession:configureStreams:176 cfg={ .streams.size=2, .operationMode=0 }`
+    - `stream={ .id=0, .width=1280, .height=960, .format=IMPLEMENTATION_DEFINED }`
+    - `stream={ .id=1, .width=1280, .height=960, .format=BLOB }`
+  - Verified **0 Runtime Crashes (`AndroidRuntime:E`)**.

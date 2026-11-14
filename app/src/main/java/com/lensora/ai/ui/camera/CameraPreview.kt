@@ -40,6 +40,12 @@ fun CameraPreview(
                     override fun onSurfaceTextureUpdated(surface: SurfaceTexture) {
                     }
                 }
+
+                if (isAvailable) {
+                    surfaceTexture?.let { surface ->
+                        cameraController.openCamera(surface, width, height)
+                    }
+                }
             }
         },
         modifier = modifier.fillMaxSize(),
