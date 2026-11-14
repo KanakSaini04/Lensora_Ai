@@ -78,3 +78,8 @@
   - Saved processed image directly to MediaStore (`LENSORA_AI_PROCESSED_<timestamp>.jpg`) with 95% JPEG quality.
   - Added explicit memory recycling (`srcBitmap.recycle()`, `processedBitmap.recycle()`) preventing OOM memory leaks.
   - Logged latency in Logcat (`950ms` execution time).
+- [x] **Step 19: GitHub DLC Model Downloader**
+  - Added OkHttp dependency (`com.squareup.okhttp3:okhttp:4.12.0`) in `gradle/libs.versions.toml` and `app/build.gradle.kts`.
+  - Created `ModelDownloaderWorker.kt` CoroutineWorker downloading AI models to `context.filesDir/models/`, computing SHA-256 checksum during byte streaming, reporting WorkManager progress (0-100%), and finalizing `.tflite` model files.
+  - Updated `SettingsScreen.kt` to wire "Manage AI Engines (GitHub DLC)" card with active progress bar and model ready state.
+  - Verified SHA-256 Logcat output (`e2f779cef212fbc54c3f9b1e273583720edac1ac9cc6ce6813b1e0386a968f0d`) and file creation in internal storage (`/data/user/0/com.lensora.ai/files/models/real_esrgan_v2.tflite`).

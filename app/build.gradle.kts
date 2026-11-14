@@ -51,6 +51,7 @@ dependencies {
     implementation(libs.hilt.android)
     implementation(libs.coil.compose)
     implementation(libs.tensorflow.lite)
+    implementation(libs.okhttp)
     ksp(libs.hilt.compiler)
 
     testImplementation(libs.junit)
