@@ -208,12 +208,15 @@ The **Probe Lab** audits camera hardware capabilities at runtime without opening
 
 ---
 
-## 16. Phase 2, Step 16: Vibes Tab UI & Color Presets
+## 16. Phase 2, Step 16: Vibes Tab UI & Technology Visual Distinction
 
 1. **`VibesScreen.kt` Architecture**:
    - Top segmented tab selector row (`LUTs`, `Presets`, `Templates`) with Royal Blue (`#2563EB`) active indicator line.
-   - "🔥 TRENDING THIS WEEK" horizontal scroll row (`LazyRow`) featuring top presets ("Leica Authentic", "Cinematic City", "Muted Film", "Moody Teal").
-   - 2-column grid (`LazyVerticalGrid`) displaying preset cards with preview cards, titles, and sub-descriptions.
+   - "🔥 TRENDING" horizontal scroll row (`LazyRow`) adaptively displaying top items per active tab.
+   - 2-column grid (`LazyVerticalGrid`) dynamically rendering distinct technology card layouts:
+     - **LUTs Tab**: 1:1 square cards with dual-color gradient swatches, palette icons, and `"3D CUBE"` badges (3D color lookup math).
+     - **Presets Tab**: 1:1 square cards with split `BEFORE / AFTER` layouts, vertical divider line, and `"TONE CURVE"` badges (exposure & tone curves).
+     - **Templates Tab**: 9:16 tall vertical cards with Royal Blue borders, `"VN 9:16"` badges, and text overlays (`"Day 26/365"`, `"REELS 9:16"`).
 2. **Obsidian Royal Styling & Navigation**:
    - Styled in Pitch Black background (`#0E0E0E`), Charcoal surface (`#131313`), Royal Blue accents (`#2563EB`), and Muted Gray text (`#9CA3AF`).
    - Wired `VibesScreen` into `Navigation.kt` shell as a top-level tab.

@@ -57,7 +57,10 @@
 - [x] **Step 15: Settings Tab UI & AI Center Skeleton**
   - Redesigned `SettingsScreen.kt` into a full scrollable control room using Material 3 `ListItem`, `Switch`, and `Scaffold`.
   - Added AI Control Center, Cloud Sync toggle, Manage AI Engines, Storage & Cache cleaner, Hardware Probe Lab launcher, and About sections in Obsidian Royal theme.
-- [x] **Step 16: Vibes Tab UI**
+- [x] **Step 16: Vibes Tab UI & Technology Distinction**
   - Created `VibesScreen.kt` with top segmented tab row (`LUTs`, `Presets`, `Templates`) styled in Royal Blue (`#2563EB`).
-  - Implemented "🔥 Trending This Week" horizontal scroll row (`LazyRow`) and 2-column grid of color presets (`LazyVerticalGrid`).
+  - Differentiated technology cards dynamically per tab:
+    - **LUTs**: 1:1 square dual-color gradient swatches with 3D CUBE badges (3D color lookup math).
+    - **Presets**: 1:1 square split BEFORE / AFTER cards with TONE CURVE badges (exposure & tone curves).
+    - **Templates**: 9:16 tall vertical cards with Royal Blue borders & VN story frame overlays ("Day 26/365", "REELS 9:16").
   - Wired `VibesScreen` into `Navigation.kt` shell.
