@@ -4,7 +4,7 @@
 
 **Lensora_Ai** (`com.lensora.ai`) is an AI-first computational camera application built on Android 16 (API 36) using Jetpack Compose, Material 3 (Obsidian Royal Theme), Hilt dependency injection, and a pure **Camera2 L0 Safe Core HAL Engine** (strictly zero CameraX dependencies).
 
-This report presents a complete end-to-end audit of all implemented components, hardware capability probe results, L0 atomic capture journals, UI overlays, camera hardware zoom control engines, tap-to-focus metering, flash controls, mode selection state wiring, thermal/storage guards, L1 Light AI Scene Classifier, L2 AI Planner Foundation, L3/L4 WorkManager Processing Queue & Quality Validator, Pinterest-Style Masonry Gallery Tab UI, and live device/emulator verification results.
+This report presents a complete end-to-end audit of all implemented components, hardware capability probe results, L0 atomic capture journals, UI overlays, camera hardware zoom control engines, tap-to-focus metering, flash controls, mode selection state wiring, thermal/storage guards, L1 Light AI Scene Classifier, L2 AI Planner Foundation, L3/L4 WorkManager Processing Queue & Quality Validator, Pinterest-Style Masonry Gallery Tab UI, Settings Tab & AI Center Control Room, and live device/emulator verification results.
 
 ---
 
@@ -194,7 +194,21 @@ The **Probe Lab** audits camera hardware capabilities at runtime without opening
 
 ---
 
-## 15. Verification & Crash Audit Results
+## 15. Phase 2, Step 15: Settings Tab UI & AI Center Control Room
+
+1. **`SettingsScreen.kt` Redesign**:
+   - Built as a full control room list using Material 3 `Scaffold`, `LazyColumn`, `ListItem`, `Switch`, and `Card`.
+   - Styled in Obsidian Royal theme palette (`PitchBlackBackground` `#0E0E0E`, `CharcoalSurface` `#131313`, `RoyalBlue` `#2563EB`, `ColorWhite` `#FFFFFF`, `ColorMutedGray` `#9CA3AF`).
+2. **Control Room Sections**:
+   - **AI Control Center**: Displays AI Center status, active TFLite / MobileNet inference engine metrics.
+   - **Services & Engines**: Interactive `Cloud Sync` toggle switch (Google Drive) and `Manage AI Engines` row.
+   - **Storage & Maintenance**: Interactive `Clear Cache & Temporary Files` cleaner deleting temporary `.tmp` capture journals.
+   - **Hardware Diagnostics**: Card launcher for `Hardware Probe Lab` navigation.
+   - **About**: Version information (`v1.0.0 Android 16 API 36`).
+
+---
+
+## 16. Verification & Crash Audit Results
 
 - **Build Status**: `./gradlew assembleDebug` & `./gradlew installDebug` - **100% SUCCESS**.
 - **Static Code Analysis**: Analyzed all 27 Kotlin source files in `app/src/main/java` - **0 Errors, 0 Warnings**.
