@@ -46,3 +46,7 @@
   - Created `AiPlanner.kt` (`SceneType`, `ProcessingPlan`, `createPlan`).
   - Implemented `applyProcessingPlan` in `CameraController.kt` (exposure compensation & AF mode tuning).
   - Routed scene detection labels $\rightarrow$ `AiPlanner` $\rightarrow$ `CameraController`.
+- [x] **Step 13: L3/L4 Image Processing Pipeline Skeleton**
+  - Added WorkManager dependency (`androidx.work:work-runtime-ktx:2.10.0`).
+  - Created `Validator.kt` (bitmap & luminance validation) and `AiProcessorWorker.kt` (CoroutineWorker).
+  - Enqueued background `AiProcessorWorker` task in `CameraController.kt` upon raw JPEG capture to produce final processed MediaStore images (`LENSORA_AI_PROCESSED_...jpg`).
