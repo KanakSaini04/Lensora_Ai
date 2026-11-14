@@ -39,7 +39,14 @@ class CameraController(
     private var backgroundHandler: Handler? = null
 
     private var previewSurface: Surface? = null
-    private var cameraId: String? = null
+    private var activeSurfaceTexture: SurfaceTexture? = null
+    private var previewWidth: Int = 1920
+    private var previewHeight: Int = 1080
+
+    private var mainCameraId: String? = null
+    private var ultraWideCameraId: String? = null
+    private var activeCameraId: String? = null
+
     private var previewRequestBuilder: CaptureRequest.Builder? = null
     private var sensorOrientation: Int = 90
 
@@ -69,21 +76,42 @@ class CameraController(
     @SuppressLint("MissingPermission")
     fun openCamera(surfaceTexture: SurfaceTexture, width: Int, height: Int) {
         startBackgroundThread()
+        activeSurfaceTexture = surfaceTexture
+        previewWidth = width
+        previewHeight = height
+
         try {
             val cameraManager = context.getSystemService(Context.CAMERA_SERVICE) as? CameraManager
                 ?: return
 
+            val backCameraIds = mutableListOf<String>()
             for (id in cameraManager.cameraIdList) {
                 val characteristics = cameraManager.getCameraCharacteristics(id)
                 val facing = characteristics.get(CameraCharacteristics.LENS_FACING)
                 if (facing == CameraCharacteristics.LENS_FACING_BACK) {
-                    cameraId = id
-                    break
+                    backCameraIds.add(id)
                 }
             }
 
-            val currentCameraId = cameraId ?: cameraManager.cameraIdList.firstOrNull() ?: return
-            val characteristics = cameraManager.getCameraCharacteristics(currentCameraId)
+            mainCameraId = backCameraIds.firstOrNull() ?: "0"
+            ultraWideCameraId = if (backCameraIds.size > 1) backCameraIds[1] else null
+
+            val targetId = activeCameraId ?: mainCameraId ?: "0"
+            openCameraWithId(targetId)
+
+        } catch (e: Exception) {
+            Log.e(tag, "Error opening camera", e)
+        }
+    }
+
+    @SuppressLint("MissingPermission")
+    private fun openCameraWithId(idToOpen: String) {
+        try {
+            val cameraManager = context.getSystemService(Context.CAMERA_SERVICE) as? CameraManager
+                ?: return
+
+            activeCameraId = idToOpen
+            val characteristics = cameraManager.getCameraCharacteristics(idToOpen)
 
             sensorOrientation = characteristics.get(CameraCharacteristics.SENSOR_ORIENTATION) ?: 90
 
@@ -105,13 +133,14 @@ class CameraController(
                 2,
             )
 
+            val texture = activeSurfaceTexture ?: return
             val previewSizes = map.getOutputSizes(SurfaceTexture::class.java) ?: emptyArray()
-            val previewSize = chooseOptimalPreviewSize(previewSizes, width, height)
+            val previewSize = chooseOptimalPreviewSize(previewSizes, previewWidth, previewHeight)
 
-            surfaceTexture.setDefaultBufferSize(previewSize.width, previewSize.height)
-            previewSurface = Surface(surfaceTexture)
+            texture.setDefaultBufferSize(previewSize.width, previewSize.height)
+            previewSurface = Surface(texture)
 
-            cameraManager.openCamera(currentCameraId, object : CameraDevice.StateCallback() {
+            cameraManager.openCamera(idToOpen, object : CameraDevice.StateCallback() {
                 override fun onOpened(camera: CameraDevice) {
                     cameraDevice = camera
                     createCameraPreviewSession()
@@ -129,7 +158,7 @@ class CameraController(
             }, backgroundHandler)
 
         } catch (e: Exception) {
-            Log.e(tag, "Error opening camera", e)
+            Log.e(tag, "Error opening camera id $idToOpen", e)
         }
     }
 
@@ -196,6 +225,18 @@ class CameraController(
 
     fun setZoomRatio(ratio: Float) {
         try {
+            val targetCameraId = if (ratio < 1.0f && ultraWideCameraId != null) {
+                ultraWideCameraId
+            } else {
+                mainCameraId
+            }
+
+            if (targetCameraId != null && targetCameraId != activeCameraId && activeSurfaceTexture != null) {
+                // Switch physical camera lens
+                closeSessionOnly()
+                openCameraWithId(targetCameraId)
+            }
+
             val builder = previewRequestBuilder ?: return
             val session = captureSession ?: return
 
@@ -206,6 +247,24 @@ class CameraController(
             session.setRepeatingRequest(builder.build(), null, backgroundHandler)
         } catch (e: Exception) {
             Log.e(tag, "Error setting zoom ratio", e)
+        }
+    }
+
+    private fun closeSessionOnly() {
+        try {
+            captureSession?.close()
+            captureSession = null
+
+            cameraDevice?.close()
+            cameraDevice = null
+
+            imageReader?.close()
+            imageReader = null
+
+            previewSurface?.release()
+            previewSurface = null
+        } catch (e: Exception) {
+            Log.e(tag, "Error closing camera session", e)
         }
     }
 
@@ -329,18 +388,8 @@ class CameraController(
 
     fun closeCamera() {
         try {
-            captureSession?.close()
-            captureSession = null
-
-            cameraDevice?.close()
-            cameraDevice = null
-
-            imageReader?.close()
-            imageReader = null
-
-            previewSurface?.release()
-            previewSurface = null
-
+            closeSessionOnly()
+            activeSurfaceTexture = null
             stopBackgroundThread()
         } catch (e: Exception) {
             Log.e(tag, "Error closing camera", e)

@@ -13,6 +13,7 @@ import androidx.activity.result.contract.ActivityResultContracts
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
+import androidx.compose.foundation.gestures.detectTransformGestures
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -37,6 +38,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.DisposableEffect
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableFloatStateOf
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
@@ -44,6 +46,7 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.input.pointer.pointerInput
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.text.font.FontWeight
@@ -58,6 +61,7 @@ import com.lensora.ai.ui.theme.ColorMutedGray
 import com.lensora.ai.ui.theme.ColorWhite
 import com.lensora.ai.ui.theme.PitchBlackBackground
 import com.lensora.ai.ui.theme.RoyalBlue
+import java.util.Locale
 
 @Composable
 fun CameraScreen(
@@ -91,6 +95,7 @@ fun CameraScreen(
         var recentPhotos by remember { mutableStateOf<List<Uri>>(emptyList()) }
         var selectedMode by remember { mutableStateOf(CameraMode.PHOTO.displayName) }
         var selectedZoom by remember { mutableStateOf("1x") }
+        var currentZoomRatio by remember { mutableFloatStateOf(1.0f) }
 
         DisposableEffect(Unit) {
             onDispose {
@@ -121,7 +126,18 @@ fun CameraScreen(
         Box(
             modifier = Modifier
                 .fillMaxSize()
-                .background(PitchBlackBackground),
+                .background(PitchBlackBackground)
+                .pointerInput(Unit) {
+                    detectTransformGestures { _, _, zoomChange, _ ->
+                        currentZoomRatio = (currentZoomRatio * zoomChange).coerceIn(0.6f, 10.0f)
+                        cameraController.setZoomRatio(currentZoomRatio)
+                        selectedZoom = if (currentZoomRatio % 1f == 0f) {
+                            "${currentZoomRatio.toInt()}x"
+                        } else {
+                            String.format(Locale.US, "%.1fx", currentZoomRatio)
+                        }
+                    }
+                },
         ) {
             // Edge-to-edge Live Camera Viewfinder
             CameraPreview(
@@ -172,6 +188,7 @@ fun CameraScreen(
                             "3x" -> 3.0f
                             else -> 1.0f
                         }
+                        currentZoomRatio = ratio
                         cameraController.setZoomRatio(ratio)
                         Toast.makeText(context, "Zoom: $level", Toast.LENGTH_SHORT).show()
                     },

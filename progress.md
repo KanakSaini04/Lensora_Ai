@@ -16,7 +16,10 @@
 - [x] **Step 5: Camera Top Bar and Mode Carousel UI**
   - Transparent `CameraTopBar` with Material icons (Flash, Timer, Grid, Settings) respecting status bar insets.
   - `CameraModeCarousel` using `LazyRow` (AI AUTO, PHOTO, PORTRAIT, VIDEO, PRO).
-- [/] **Step 6: Zoom Pills and AI Badge UI**
+- [x] **Step 6: Zoom Pills and AI Badge UI**
   - Frosted glass AI Badge (`✨ AI: Auto`) at top center below top bar.
   - Dark rounded Zoom Pills container (`0.6x`, `1x`, `2x`, `3x`) placed above Mode Carousel.
-  - Deployed and verified live on physical Xiaomi Redmi Note 13 Pro 5G with 0 crashes.
+- [x] **Step 7: Camera2 Hardware Zoom, Pinch Gesture & Lens Switching**
+  - Wired Zoom Pills and Compose `detectTransformGestures` pinch gesture to Camera2 `CONTROL_ZOOM_RATIO`.
+  - Added ultra-wide physical camera lens switching for zoom `< 1.0x`.
+  - Verified deployment and crash-free execution on device and emulator (`0` crashes).

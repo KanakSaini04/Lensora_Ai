@@ -102,23 +102,32 @@ Phase 1, Step 4 establishes standard camera UX by placing a **Single Circular Ga
 
 ---
 
-## 2. Files Touched in Step 4
+# Phase 1, Step 5 Report: Camera Top Bar & Mode Carousel UI Overlays
 
-- `app/src/main/java/com/lensora/ai/data/GalleryRepository.kt` (MODIFIED - Fetches up to 10 photos)
-- `app/src/main/java/com/lensora/ai/ui/camera/CameraScreen.kt` (MODIFIED - Single circular thumbnail shortcut)
-- `app/src/main/java/com/lensora/ai/ui/gallery/QuickViewScreen.kt` (NEW - Swipable HorizontalPager viewer)
-- `app/src/main/java/com/lensora/ai/ui/navigation/Navigation.kt` (MODIFIED - Added `quick_view` route)
-- `report.md` (MODIFIED - Appended Quick View report)
+## Executive Summary
+
+Phase 1, Step 5 implements essential camera UI controls on top of the live viewfinder:
+1. **`CameraTopBar.kt`**: Transparent top overlay with Material Design icons for Flash (Auto), Timer (Off), Grid (Toggle), and Settings. Respects Android status bar insets.
+2. **`CameraModeCarousel.kt`**: Scrollable horizontal mode list (`LazyRow`) featuring `AI AUTO`, `PHOTO`, `PORTRAIT`, `VIDEO`, and `PRO`. Selected mode is highlighted in Royal Blue (`#2563EB`).
 
 ---
 
-## 3. Git PR Workflow
+# Phase 1, Step 6 Report: Zoom Pills & AI Badge UI Overlays
 
-Execute the following commands in terminal:
+## Executive Summary
 
-```bash
-git add .
-git commit -m "fix(ui): standard single thumbnail and fullscreen quick view"
-git push -u origin fix/quick-view-ui
-gh pr create --title "fix(ui): standard thumbnail and quick view" --body "Replaces filmstrip with standard single thumbnail and swipable fullscreen viewer" --base dev --head fix/quick-view-ui
-```
+Phase 1, Step 6 adds camera status & quick-zoom overlays:
+1. **AI Badge (`✨ AI: Auto`)**: Frosted glass rounded pill at top center below the top bar using Charcoal surface background (`#131313`) with 75% alpha and white border.
+2. **Zoom Pills (`0.6x`, `1x`, `2x`, `3x`)**: Dark rounded container placed directly above the Mode Carousel. The active zoom pill is styled with a Royal Blue circular highlight.
+
+---
+
+# Phase 1, Step 7 Report: Camera2 Hardware Zoom, Pinch Gesture & Lens Switching
+
+## Executive Summary
+
+Phase 1, Step 7 connects the Zoom UI directly to the Android Camera2 hardware engine:
+1. **Camera2 `CONTROL_ZOOM_RATIO` Engine**: `CameraController.kt` queries `CONTROL_ZOOM_RATIO_RANGE` and `SCALER_AVAILABLE_MAX_DIGITAL_ZOOM` to dynamically set hardware zoom. Applies zoom ratio seamlessly to repeating preview streams and still JPEG captures.
+2. **Ultra-Wide Lens Switching**: When zoom is set below `1.0x` (e.g. `0.6x`), `CameraController` automatically switches capture session to the physical Ultra-Wide camera ID (e.g. Camera ID 1) if available on device hardware.
+3. **Pinch-to-Zoom Gesture**: `CameraScreen.kt` implements Compose `pointerInput` with `detectTransformGestures` for continuous smooth pinch zooming between `0.6x` and `10.0x`.
+4. **Device & Emulator Audit**: Tested on live physical Xiaomi Redmi Note 13 Pro 5G and Android Studio Emulator with 0 runtime crashes logged (`AndroidRuntime:E`).
