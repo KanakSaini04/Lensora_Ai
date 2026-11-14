@@ -21,5 +21,9 @@
   - Dark rounded Zoom Pills container (`0.6x`, `1x`, `2x`, `3x`) placed above Mode Carousel.
 - [x] **Step 7: Camera2 Hardware Zoom, Pinch Gesture & Lens Switching**
   - Wired Zoom Pills and Compose `detectTransformGestures` pinch gesture to Camera2 `CONTROL_ZOOM_RATIO`.
-  - Added ultra-wide physical camera lens switching for zoom `< 1.0x`.
-  - Verified deployment and crash-free execution on device and emulator (`0` crashes).
+  - Dual-strategy zoom fallback to `SCALER_CROP_REGION` for emulators/legacy HALs.
+- [x] **Step 8: L0 Safe Core - Tap-to-Focus, Flash, Grid Overlay & UI Polish**
+  - Implemented Camera2 Tap-to-Focus metering calculation & `CONTROL_AF_TRIGGER_START` with animated focus ring.
+  - Implemented Flash Mode cycling (`OFF`, `ON`, `AUTO`) in `CameraTopBar` & `CameraController`.
+  - Implemented 3x3 Canvas Grid Overlay driven by Grid toggle.
+  - Fixed Unicode string encoding for AI Badge (`\u2728 AI: Auto`).

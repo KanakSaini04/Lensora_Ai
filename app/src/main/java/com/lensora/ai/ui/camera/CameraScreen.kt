@@ -10,9 +10,14 @@ import android.view.WindowManager
 import android.widget.Toast
 import androidx.activity.compose.rememberLauncherForActivityResult
 import androidx.activity.result.contract.ActivityResultContracts
+import androidx.compose.animation.core.FastOutSlowInEasing
+import androidx.compose.animation.core.animateFloatAsState
+import androidx.compose.animation.core.tween
+import androidx.compose.foundation.Canvas
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
+import androidx.compose.foundation.gestures.detectTapGestures
 import androidx.compose.foundation.gestures.detectTransformGestures
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
@@ -45,7 +50,9 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
+import androidx.compose.ui.geometry.Offset
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.graphics.drawscope.Stroke
 import androidx.compose.ui.input.pointer.pointerInput
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalContext
@@ -61,6 +68,7 @@ import com.lensora.ai.ui.theme.ColorMutedGray
 import com.lensora.ai.ui.theme.ColorWhite
 import com.lensora.ai.ui.theme.PitchBlackBackground
 import com.lensora.ai.ui.theme.RoyalBlue
+import kotlinx.coroutines.delay
 import java.util.Locale
 
 @Composable
@@ -96,6 +104,10 @@ fun CameraScreen(
         var selectedMode by remember { mutableStateOf(CameraMode.PHOTO.displayName) }
         var selectedZoom by remember { mutableStateOf("1x") }
         var currentZoomRatio by remember { mutableFloatStateOf(1.0f) }
+
+        var focusTapOffset by remember { mutableStateOf<Offset?>(null) }
+        var isGridVisible by remember { mutableStateOf(false) }
+        var flashMode by remember { mutableStateOf(CameraController.FlashMode.AUTO) }
 
         DisposableEffect(Unit) {
             onDispose {
@@ -134,7 +146,15 @@ fun CameraScreen(
                 modifier = Modifier.fillMaxSize(),
             )
 
-            // Transparent Pinch-to-Zoom Gesture Layer
+            // 3x3 Canvas Grid Overlay
+            if (isGridVisible) {
+                GridOverlay(modifier = Modifier.fillMaxSize())
+            }
+
+            // Animated Focus Ring Overlay
+            FocusRingOverlay(tapOffset = focusTapOffset)
+
+            // Transparent Gesture Layer for Pinch-to-Zoom & Tap-to-Focus
             Box(
                 modifier = Modifier
                     .fillMaxSize()
@@ -148,31 +168,57 @@ fun CameraScreen(
                                 String.format(Locale.US, "%.1fx", currentZoomRatio)
                             }
                         }
+                    }
+                    .pointerInput(Unit) {
+                        detectTapGestures { offset ->
+                            focusTapOffset = offset
+                            cameraController.triggerTapToFocus(
+                                x = offset.x,
+                                y = offset.y,
+                                viewWidth = size.width,
+                                viewHeight = size.height,
+                            )
+                        }
                     },
             )
 
-            // Transparent Camera Top Bar
+            // Transparent Camera Top Bar Controls
             CameraTopBar(
                 modifier = Modifier.align(Alignment.TopCenter),
+                flashMode = flashMode,
+                isGridVisible = isGridVisible,
                 onFlashClick = {
-                    Toast.makeText(context, "Flash: Auto", Toast.LENGTH_SHORT).show()
+                    val nextFlash = when (flashMode) {
+                        CameraController.FlashMode.OFF -> CameraController.FlashMode.ON
+                        CameraController.FlashMode.ON -> CameraController.FlashMode.AUTO
+                        CameraController.FlashMode.AUTO -> CameraController.FlashMode.OFF
+                    }
+                    flashMode = nextFlash
+                    cameraController.setFlashMode(nextFlash)
+                    Toast.makeText(context, "Flash: ${nextFlash.name}", Toast.LENGTH_SHORT).show()
                 },
                 onTimerClick = {
                     Toast.makeText(context, "Timer: Off", Toast.LENGTH_SHORT).show()
                 },
                 onGridClick = {
-                    Toast.makeText(context, "Grid toggled", Toast.LENGTH_SHORT).show()
+                    isGridVisible = !isGridVisible
+                    Toast.makeText(
+                        context,
+                        if (isGridVisible) "Grid Enabled" else "Grid Disabled",
+                        Toast.LENGTH_SHORT,
+                    ).show()
                 },
                 onSettingsClick = {
                     Toast.makeText(context, "Camera Settings", Toast.LENGTH_SHORT).show()
                 },
             )
 
-            // Frosted Glass AI Badge at Top Center
+            // Frosted Glass AI Badge at Top Center (Unicode \u2728 string encoding)
             AiBadge(
                 modifier = Modifier
                     .align(Alignment.TopCenter)
-                    .padding(top = 56.dp)
+                    .padding(top = 56.dp),
+                statusText = "\u2728 AI: Auto",
             )
 
             // Bottom Overlays: Zoom Pills + Mode Carousel + Shutter & Thumbnail Controls
@@ -198,7 +244,7 @@ fun CameraScreen(
                         cameraController.setZoomRatio(ratio)
                         Toast.makeText(context, "Zoom: $level", Toast.LENGTH_SHORT).show()
                     },
-                    modifier = Modifier.padding(bottom = 12.dp)
+                    modifier = Modifier.padding(bottom = 12.dp),
                 )
 
                 // Horizontal Scrollable Camera Mode Carousel
@@ -330,9 +376,89 @@ fun CameraScreen(
 }
 
 @Composable
+private fun GridOverlay(
+    modifier: Modifier = Modifier,
+) {
+    Canvas(modifier = modifier.fillMaxSize()) {
+        val width = size.width
+        val height = size.height
+        val lineOffsetColor = ColorWhite.copy(alpha = 0.35f)
+        val strokeWidthPx = 1.dp.toPx()
+
+        // Vertical 3x3 grid lines
+        drawLine(
+            color = lineOffsetColor,
+            start = Offset(width / 3f, 0f),
+            end = Offset(width / 3f, height),
+            strokeWidth = strokeWidthPx,
+        )
+        drawLine(
+            color = lineOffsetColor,
+            start = Offset(width * 2f / 3f, 0f),
+            end = Offset(width * 2f / 3f, height),
+            strokeWidth = strokeWidthPx,
+        )
+
+        // Horizontal 3x3 grid lines
+        drawLine(
+            color = lineOffsetColor,
+            start = Offset(0f, height / 3f),
+            end = Offset(width, height / 3f),
+            strokeWidth = strokeWidthPx,
+        )
+        drawLine(
+            color = lineOffsetColor,
+            start = Offset(0f, height * 2f / 3f),
+            end = Offset(width, height * 2f / 3f),
+            strokeWidth = strokeWidthPx,
+        )
+    }
+}
+
+@Composable
+private fun FocusRingOverlay(
+    tapOffset: Offset?,
+    modifier: Modifier = Modifier,
+) {
+    if (tapOffset == null) return
+
+    var ringScale by remember(tapOffset) { mutableFloatStateOf(1.6f) }
+    var ringAlpha by remember(tapOffset) { mutableFloatStateOf(1.0f) }
+
+    val animatedScale by animateFloatAsState(
+        targetValue = ringScale,
+        animationSpec = tween(durationMillis = 200, easing = FastOutSlowInEasing),
+        label = "ringScaleAnimation",
+    )
+    val animatedAlpha by animateFloatAsState(
+        targetValue = ringAlpha,
+        animationSpec = tween(durationMillis = 800, delayMillis = 600),
+        label = "ringAlphaAnimation",
+    )
+
+    LaunchedEffect(tapOffset) {
+        ringScale = 1.0f
+        delay(1000)
+        ringAlpha = 0.0f
+    }
+
+    if (animatedAlpha > 0f) {
+        Canvas(modifier = modifier.fillMaxSize()) {
+            val radius = 36.dp.toPx() * animatedScale
+            drawCircle(
+                color = RoyalBlue.copy(alpha = animatedAlpha),
+                center = tapOffset,
+                radius = radius,
+                style = Stroke(width = 2.dp.toPx()),
+            )
+        }
+    }
+}
+
+@Composable
 private fun AiBadge(
     modifier: Modifier = Modifier,
-    statusText: String = "✨ AI: Auto"
+    statusText: String = "\u2728 AI: Auto",
 ) {
     Box(
         modifier = modifier
@@ -340,13 +466,13 @@ private fun AiBadge(
             .background(CharcoalSurface.copy(alpha = 0.75f))
             .border(width = 1.dp, color = ColorWhite.copy(alpha = 0.25f), shape = CircleShape)
             .padding(horizontal = 14.dp, vertical = 6.dp),
-        contentAlignment = Alignment.Center
+        contentAlignment = Alignment.Center,
     ) {
         Text(
             text = statusText,
             color = ColorWhite,
             fontSize = 12.sp,
-            fontWeight = FontWeight.Bold
+            fontWeight = FontWeight.Bold,
         )
     }
 }
@@ -356,7 +482,7 @@ private fun ZoomPills(
     selectedZoom: String,
     onZoomSelected: (String) -> Unit,
     modifier: Modifier = Modifier,
-    zoomLevels: List<String> = listOf("0.6x", "1x", "2x", "3x")
+    zoomLevels: List<String> = listOf("0.6x", "1x", "2x", "3x"),
 ) {
     Row(
         modifier = modifier
@@ -365,7 +491,7 @@ private fun ZoomPills(
             .border(width = 1.dp, color = ColorWhite.copy(alpha = 0.15f), shape = CircleShape)
             .padding(horizontal = 6.dp, vertical = 4.dp),
         horizontalArrangement = Arrangement.spacedBy(4.dp),
-        verticalAlignment = Alignment.CenterVertically
+        verticalAlignment = Alignment.CenterVertically,
     ) {
         zoomLevels.forEach { level ->
             val isSelected = level == selectedZoom
@@ -375,13 +501,13 @@ private fun ZoomPills(
                     .clip(CircleShape)
                     .background(if (isSelected) RoyalBlue else Color.Transparent)
                     .clickable { onZoomSelected(level) },
-                contentAlignment = Alignment.Center
+                contentAlignment = Alignment.Center,
             ) {
                 Text(
                     text = level,
                     color = ColorWhite,
                     fontSize = 11.sp,
-                    fontWeight = if (isSelected) FontWeight.Bold else FontWeight.Medium
+                    fontWeight = if (isSelected) FontWeight.Bold else FontWeight.Medium,
                 )
             }
         }
