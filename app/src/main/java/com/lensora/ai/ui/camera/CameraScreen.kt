@@ -128,9 +128,14 @@ fun CameraScreen(
                 .fillMaxSize()
                 .background(PitchBlackBackground),
         ) {
-            // Edge-to-edge Live Camera Viewfinder with Pinch Gesture handling
+            // Edge-to-edge Live Camera Viewfinder
             CameraPreview(
                 cameraController = cameraController,
+                modifier = Modifier.fillMaxSize(),
+            )
+
+            // Transparent Pinch-to-Zoom Gesture Layer
+            Box(
                 modifier = Modifier
                     .fillMaxSize()
                     .pointerInput(Unit) {
@@ -184,7 +189,7 @@ fun CameraScreen(
                     onZoomSelected = { level ->
                         selectedZoom = level
                         val ratio = when (level) {
-                            "0.6x" -> 1.0f // Clamped to 1.0x on main camera HAL
+                            "0.6x" -> 1.0f
                             "2x" -> 2.0f
                             "3x" -> 3.0f
                             else -> 1.0f

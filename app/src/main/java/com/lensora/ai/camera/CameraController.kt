@@ -4,6 +4,7 @@ import android.annotation.SuppressLint
 import android.content.ContentValues
 import android.content.Context
 import android.graphics.ImageFormat
+import android.graphics.Rect
 import android.graphics.SurfaceTexture
 import android.hardware.camera2.CameraCaptureSession
 import android.hardware.camera2.CameraCharacteristics
@@ -44,6 +45,8 @@ class CameraController(
     private var previewRequestBuilder: CaptureRequest.Builder? = null
     private var sensorOrientation: Int = 90
 
+    private var supportsZoomRatioControl: Boolean = false
+    private var activeSensorArraySize: Rect? = null
     private var minZoomRatio: Float = 1.0f
     private var maxZoomRatio: Float = 10.0f
     private var currentZoomRatio: Float = 1.0f
@@ -89,9 +92,11 @@ class CameraController(
             sensorOrientation = characteristics.get(CameraCharacteristics.SENSOR_ORIENTATION) ?: 90
 
             val zoomRange = characteristics.get(CameraCharacteristics.CONTROL_ZOOM_RATIO_RANGE)
+            supportsZoomRatioControl = zoomRange != null
             minZoomRatio = zoomRange?.lower ?: 1.0f
             maxZoomRatio = zoomRange?.upper
                 ?: (characteristics.get(CameraCharacteristics.SCALER_AVAILABLE_MAX_DIGITAL_ZOOM) ?: 10.0f)
+            activeSensorArraySize = characteristics.get(CameraCharacteristics.SENSOR_INFO_ACTIVE_ARRAY_SIZE)
 
             val map = characteristics.get(CameraCharacteristics.SCALER_STREAM_CONFIGURATION_MAP)
                 ?: return
@@ -147,10 +152,7 @@ class CameraController(
                 CaptureRequest.CONTROL_AF_MODE,
                 CaptureRequest.CONTROL_AF_MODE_CONTINUOUS_PICTURE,
             )
-            builder.set(
-                CaptureRequest.CONTROL_ZOOM_RATIO,
-                currentZoomRatio.coerceIn(minZoomRatio, maxZoomRatio),
-            )
+            applyZoom(builder, currentZoomRatio)
             previewRequestBuilder = builder
 
             val outputs = listOf(
@@ -200,13 +202,41 @@ class CameraController(
             val builder = previewRequestBuilder ?: return
             val session = captureSession ?: return
 
-            val clampedRatio = ratio.coerceIn(minZoomRatio, maxZoomRatio)
-            currentZoomRatio = clampedRatio
-
-            builder.set(CaptureRequest.CONTROL_ZOOM_RATIO, clampedRatio)
+            applyZoom(builder, ratio)
             session.setRepeatingRequest(builder.build(), null, backgroundHandler)
         } catch (e: Exception) {
             Log.e(tag, "Error setting zoom ratio", e)
+        }
+    }
+
+    private fun applyZoom(builder: CaptureRequest.Builder, ratio: Float) {
+        try {
+            val clampedRatio = ratio.coerceIn(minZoomRatio, maxZoomRatio)
+            currentZoomRatio = clampedRatio
+
+            if (supportsZoomRatioControl) {
+                builder.set(CaptureRequest.CONTROL_ZOOM_RATIO, clampedRatio)
+            } else {
+                val sensorRect = activeSensorArraySize ?: return
+                if (clampedRatio > 1.0f) {
+                    val xCenter = sensorRect.width() / 2
+                    val yCenter = sensorRect.height() / 2
+                    val xDelta = (sensorRect.width() / (2 * clampedRatio)).toInt()
+                    val yDelta = (sensorRect.height() / (2 * clampedRatio)).toInt()
+
+                    val cropRect = Rect(
+                        xCenter - xDelta,
+                        yCenter - yDelta,
+                        xCenter + xDelta,
+                        yCenter + yDelta,
+                    )
+                    builder.set(CaptureRequest.SCALER_CROP_REGION, cropRect)
+                } else {
+                    builder.set(CaptureRequest.SCALER_CROP_REGION, sensorRect)
+                }
+            }
+        } catch (e: Exception) {
+            Log.e(tag, "Error applying zoom ratio", e)
         }
     }
 
@@ -235,10 +265,7 @@ class CameraController(
                 CaptureRequest.CONTROL_AF_MODE,
                 CaptureRequest.CONTROL_AF_MODE_CONTINUOUS_PICTURE,
             )
-            captureBuilder.set(
-                CaptureRequest.CONTROL_ZOOM_RATIO,
-                currentZoomRatio.coerceIn(minZoomRatio, maxZoomRatio),
-            )
+            applyZoom(captureBuilder, currentZoomRatio)
 
             // Calculate correct JPEG orientation
             val jpegOrientation = (sensorOrientation - displayRotationDegrees + 360) % 360
