@@ -13,6 +13,7 @@
 - [x] **Step 4: Single Thumbnail & Swipable Quick View Viewer**
   - Standard single 52dp circular gallery thumbnail in bottom-left corner.
   - Swipable `QuickViewScreen` (`HorizontalPager`) displaying last 10 photos.
-- [/] **Step 5: Camera Top Bar and Mode Carousel UI**
+- [x] **Step 5: Camera Top Bar and Mode Carousel UI**
   - Transparent `CameraTopBar` with Material icons (Flash, Timer, Grid, Settings) respecting status bar insets.
   - `CameraModeCarousel` using `LazyRow` (AI AUTO, PHOTO, PORTRAIT, VIDEO, PRO).
+  - Live deployed and crash-free verified on physical Xiaomi Redmi Note 13 Pro 5G.
