@@ -28,6 +28,7 @@ import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.currentBackStackEntryAsState
 import androidx.navigation.compose.rememberNavController
+import com.lensora.ai.ui.camera.CameraScreen
 import com.lensora.ai.ui.probe.ProbeLabScreen
 import com.lensora.ai.ui.settings.SettingsScreen
 import com.lensora.ai.ui.theme.CharcoalSurface
@@ -110,7 +111,7 @@ fun AppNavigation(
             startDestination = NavScreen.Camera.route,
             modifier = Modifier.padding(innerPadding),
         ) {
-            composable(NavScreen.Camera.route) { TabContent(title = "Camera Screen") }
+            composable(NavScreen.Camera.route) { CameraScreen() }
             composable(NavScreen.Studio.route) { TabContent(title = "Studio Screen") }
             composable(NavScreen.Gallery.route) { TabContent(title = "Gallery Screen") }
             composable(NavScreen.Vibes.route) { TabContent(title = "Vibes Screen") }
