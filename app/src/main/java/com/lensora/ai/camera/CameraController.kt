@@ -17,12 +17,16 @@ import android.hardware.camera2.params.OutputConfiguration
 import android.hardware.camera2.params.SessionConfiguration
 import android.media.ImageReader
 import android.net.Uri
+import android.os.Build
 import android.os.Handler
 import android.os.HandlerThread
+import android.os.PowerManager
+import android.os.StatFs
 import android.provider.MediaStore
 import android.util.Log
 import android.util.Size
 import android.view.Surface
+import androidx.core.content.ContextCompat
 import java.io.File
 import java.io.FileOutputStream
 import java.util.concurrent.Executor
@@ -62,6 +66,10 @@ class CameraController(
     private var currentFlashMode: FlashMode = FlashMode.AUTO
     private var currentCameraMode: CameraMode = CameraMode.PHOTO
 
+    private var powerManager: PowerManager? = null
+    private var thermalStatusListener: PowerManager.OnThermalStatusChangedListener? = null
+    private var currentThermalStatus: Int = PowerManager.THERMAL_STATUS_NONE
+
     fun startBackgroundThread() {
         if (backgroundThread == null) {
             val thread = HandlerThread("CameraBackground").apply { start() }
@@ -81,9 +89,65 @@ class CameraController(
         }
     }
 
+    private fun initThermalGuard() {
+        try {
+            powerManager = context.getSystemService(Context.POWER_SERVICE) as? PowerManager
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q) {
+                val listener = PowerManager.OnThermalStatusChangedListener { status ->
+                    currentThermalStatus = status
+                    val statusStr = when (status) {
+                        PowerManager.THERMAL_STATUS_NONE -> "NONE"
+                        PowerManager.THERMAL_STATUS_LIGHT -> "LIGHT"
+                        PowerManager.THERMAL_STATUS_MODERATE -> "MODERATE"
+                        PowerManager.THERMAL_STATUS_SEVERE -> "SEVERE"
+                        PowerManager.THERMAL_STATUS_CRITICAL -> "CRITICAL"
+                        PowerManager.THERMAL_STATUS_EMERGENCY -> "EMERGENCY"
+                        PowerManager.THERMAL_STATUS_SHUTDOWN -> "SHUTDOWN"
+                        else -> "UNKNOWN ($status)"
+                    }
+                    if (status >= PowerManager.THERMAL_STATUS_SEVERE) {
+                        Log.w(tag, "Thermal Guard WARNING: Status changed to $statusStr")
+                    } else {
+                        Log.i(tag, "Thermal Guard Status: $statusStr")
+                    }
+                }
+                thermalStatusListener = listener
+                val executor = ContextCompat.getMainExecutor(context)
+                powerManager?.addThermalStatusListener(executor, listener)
+                currentThermalStatus = powerManager?.currentThermalStatus ?: PowerManager.THERMAL_STATUS_NONE
+                Log.i(tag, "Thermal Guard initialized. Current status code: $currentThermalStatus")
+            }
+        } catch (e: Exception) {
+            Log.e(tag, "Error initializing Thermal Guard", e)
+        }
+    }
+
+    private fun closeThermalGuard() {
+        try {
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q) {
+                thermalStatusListener?.let {
+                    powerManager?.removeThermalStatusListener(it)
+                }
+            }
+        } catch (e: Exception) {
+            Log.e(tag, "Error closing Thermal Guard", e)
+        }
+    }
+
+    fun checkAvailableStorageBytes(): Long {
+        return try {
+            val statFs = StatFs(context.cacheDir.absolutePath)
+            statFs.availableBytes
+        } catch (e: Exception) {
+            Log.e(tag, "Error checking storage capacity", e)
+            Long.MAX_VALUE
+        }
+    }
+
     @SuppressLint("MissingPermission")
     fun openCamera(surfaceTexture: SurfaceTexture, width: Int, height: Int) {
         startBackgroundThread()
+        initThermalGuard()
         try {
             val cameraManager = context.getSystemService(Context.CAMERA_SERVICE) as? CameraManager
                 ?: return
@@ -379,6 +443,16 @@ class CameraController(
         onError: (String) -> Unit,
     ) {
         try {
+            // Storage Guard: Check for minimum 2GB free storage space
+            val minRequiredStorageBytes = 2L * 1024L * 1024L * 1024L // 2GB
+            val freeBytes = checkAvailableStorageBytes()
+            if (freeBytes < minRequiredStorageBytes) {
+                val freeMb = freeBytes / (1024 * 1024)
+                Log.w(tag, "Storage Guard triggered: Available space $freeMb MB is less than 2GB limit")
+                onError("Storage Low: ${freeMb}MB free. Minimum 2GB space required to capture.")
+                return
+            }
+
             val device = cameraDevice ?: run {
                 onError("Camera device unavailable")
                 return
@@ -491,6 +565,8 @@ class CameraController(
 
     fun closeCamera() {
         try {
+            closeThermalGuard()
+
             captureSession?.close()
             captureSession = null
 
