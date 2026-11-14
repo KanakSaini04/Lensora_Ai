@@ -38,6 +38,7 @@ import com.lensora.ai.ui.theme.ColorMutedGray
 import com.lensora.ai.ui.theme.ColorWhite
 import com.lensora.ai.ui.theme.PitchBlackBackground
 import com.lensora.ai.ui.theme.RoyalBlue
+import com.lensora.ai.ui.vibes.VibesScreen
 
 sealed class NavScreen(
     val route: String,
@@ -127,7 +128,7 @@ fun AppNavigation(
                     }
                 )
             }
-            composable(NavScreen.Vibes.route) { TabContent(title = "Vibes Screen") }
+            composable(NavScreen.Vibes.route) { VibesScreen() }
             composable(NavScreen.Settings.route) {
                 SettingsScreen(
                     onOpenProbeLab = { navController.navigate(ROUTE_PROBE_LAB) }

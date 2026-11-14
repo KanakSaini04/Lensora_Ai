@@ -57,3 +57,7 @@
 - [x] **Step 15: Settings Tab UI & AI Center Skeleton**
   - Redesigned `SettingsScreen.kt` into a full scrollable control room using Material 3 `ListItem`, `Switch`, and `Scaffold`.
   - Added AI Control Center, Cloud Sync toggle, Manage AI Engines, Storage & Cache cleaner, Hardware Probe Lab launcher, and About sections in Obsidian Royal theme.
+- [x] **Step 16: Vibes Tab UI**
+  - Created `VibesScreen.kt` with top segmented tab row (`LUTs`, `Presets`, `Templates`) styled in Royal Blue (`#2563EB`).
+  - Implemented "🔥 Trending This Week" horizontal scroll row (`LazyRow`) and 2-column grid of color presets (`LazyVerticalGrid`).
+  - Wired `VibesScreen` into `Navigation.kt` shell.
