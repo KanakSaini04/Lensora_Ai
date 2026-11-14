@@ -4,6 +4,8 @@
 
 Phase 1, Step 2 has been successfully completed for **Lensora_Ai**. We built the **Probe Lab** to audit Camera2 hardware capability characteristics (200MP ultra-high resolution, RAW sensor support, 24fps target frame rates) without opening camera devices, ensuring 100% crash safety via try-catch blocks.
 
+The app was deployed and verified live on physical hardware (**Xiaomi Redmi Note 13 Pro 5G**).
+
 ---
 
 ## 1. Documentation Setup
@@ -12,24 +14,22 @@ Phase 1, Step 2 has been successfully completed for **Lensora_Ai**. We built the
 
 ---
 
-## 2. Hardware Capability Probes Implementation
+## 2. Hardware Capability Probes & Live Device Results (Xiaomi Redmi Note 13 Pro 5G)
 
-1. **`ProbeResult.kt`**:
-   - `ProbeStatus`: `PASS`, `FAIL`, `UNSUPPORTED`, `ERROR`
-   - `ProbeResult`: Data class holding `probeId`, `title`, `status`, `details`, and `executionTimeMs`.
+1. **`CameraProbeP1.kt` (200MP Probe)**:
+   - **Status**: `FAIL`
+   - **Details**: Max resolution exposed via standard Camera2 characteristics is **12.5 MP (4080x3060)**. The 200MP sensor mode is binned by default to 12.5MP and full-res raw streams are unexposed by standard Camera2 HAL characteristics.
+   - **Latency**: 113 ms
 
-2. **`CameraProbeP1.kt` (200MP Probe)**:
-   - Queries `CameraCharacteristics.SCALER_STREAM_CONFIGURATION_MAP` and `SCALER_STREAM_CONFIGURATION_MAP_MAXIMUM_RESOLUTION`.
-   - Audits output sizes across `JPEG`, `RAW_SENSOR`, `YUV_420_888`, and `PRIVATE` formats.
-   - Evaluates maximum stream resolution in Megapixels.
+2. **`CameraProbeP2.kt` (RAW Probe)**:
+   - **Status**: `PASS`
+   - **Details**: `Camera2 REQUEST_AVAILABLE_CAPABILITIES_RAW` (`RAW_SENSOR`) is fully supported on camera ID 0.
+   - **Latency**: 6 ms
 
-3. **`CameraProbeP2.kt` (RAW Probe)**:
-   - Audits `CameraCharacteristics.REQUEST_AVAILABLE_CAPABILITIES`.
-   - Checks for `REQUEST_AVAILABLE_CAPABILITIES_RAW` (RAW_SENSOR capability).
-
-4. **`CameraProbeP3.kt` (24fps Probe)**:
-   - Audits `CameraCharacteristics.CONTROL_AE_AVAILABLE_TARGET_FPS_RANGES`.
-   - Validates existence of target AE ranges supporting 24fps cinema capture (e.g. [15, 24], [24, 24], [24, 30]).
+3. **`CameraProbeP3.kt` (24fps Probe)**:
+   - **Status**: `PASS`
+   - **Details**: Target 24fps cinema capture is supported. Matching AE ranges: `[12, 24]`, `[24, 24]`, `[7, 30]`, `[14, 30]`. All exposed ranges: `[1, 5]`, `[5, 5]`, `[10, 10]`, `[14, 14]`, `[15, 15]`, `[12, 24]`, `[24, 24]`, `[7, 30]`, `[14, 30]`, `[30, 30]`.
+   - **Latency**: 5 ms
 
 ---
 
