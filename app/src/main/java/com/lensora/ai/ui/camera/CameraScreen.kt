@@ -59,7 +59,7 @@ import com.lensora.ai.ui.theme.RoyalBlue
 
 @Composable
 fun CameraScreen(
-    onOpenQuickView: () -> Unit = {}
+    onOpenQuickView: () -> Unit = {},
 ) {
     val context = LocalContext.current
     var hasCameraPermission by remember {
@@ -87,6 +87,7 @@ fun CameraScreen(
         val cameraController = remember { CameraController(context) }
         val galleryRepository = remember { GalleryRepository(context) }
         var recentPhotos by remember { mutableStateOf<List<Uri>>(emptyList()) }
+        var selectedMode by remember { mutableStateOf(CameraMode.PHOTO.displayName) }
 
         DisposableEffect(Unit) {
             onDispose {
@@ -119,80 +120,115 @@ fun CameraScreen(
                 .fillMaxSize()
                 .background(PitchBlackBackground),
         ) {
+            // Edge-to-edge Live Camera Viewfinder
             CameraPreview(
                 cameraController = cameraController,
                 modifier = Modifier.fillMaxSize(),
             )
 
-            // Bottom Controls Bar (Single Circular Thumbnail + Shutter Button)
-            Row(
+            // Transparent Camera Top Bar
+            CameraTopBar(
+                modifier = Modifier.align(Alignment.TopCenter),
+                onFlashClick = {
+                    Toast.makeText(context, "Flash: Auto", Toast.LENGTH_SHORT).show()
+                },
+                onTimerClick = {
+                    Toast.makeText(context, "Timer: Off", Toast.LENGTH_SHORT).show()
+                },
+                onGridClick = {
+                    Toast.makeText(context, "Grid toggled", Toast.LENGTH_SHORT).show()
+                },
+                onSettingsClick = {
+                    Toast.makeText(context, "Camera Settings", Toast.LENGTH_SHORT).show()
+                },
+            )
+
+            // Bottom Overlays: Camera Mode Carousel + Shutter & Thumbnail Controls
+            Column(
                 modifier = Modifier
                     .align(Alignment.BottomCenter)
                     .fillMaxWidth()
-                    .padding(horizontal = 32.dp, vertical = 28.dp),
-                horizontalArrangement = Arrangement.SpaceBetween,
-                verticalAlignment = Alignment.CenterVertically,
+                    .padding(bottom = 24.dp),
+                horizontalAlignment = Alignment.CenterHorizontally,
             ) {
-                // Single Circular Gallery Thumbnail Shortcut
-                Box(
+                // Horizontal Scrollable Camera Mode Carousel
+                CameraModeCarousel(
+                    selectedMode = selectedMode,
+                    onModeSelected = { selectedMode = it },
                     modifier = Modifier
-                        .size(52.dp)
-                        .clip(CircleShape)
-                        .background(CharcoalSurface)
-                        .border(
-                            width = 2.dp,
-                            color = ColorWhite,
-                            shape = CircleShape,
-                        )
-                        .clickable { onOpenQuickView() },
-                    contentAlignment = Alignment.Center,
-                ) {
-                    val latestPhotoUri = recentPhotos.firstOrNull()
-                    if (latestPhotoUri != null) {
-                        AsyncImage(
-                            model = latestPhotoUri,
-                            contentDescription = "Last Captured Photo",
-                            contentScale = ContentScale.Crop,
-                            modifier = Modifier.fillMaxSize(),
-                        )
-                    } else {
-                        Icon(
-                            imageVector = Icons.Outlined.PhotoLibrary,
-                            contentDescription = "Gallery Placeholder",
-                            tint = ColorMutedGray,
-                            modifier = Modifier.size(26.dp),
-                        )
-                    }
-                }
-
-                // Obsidian Royal Shutter Button
-                Box(
-                    modifier = Modifier
-                        .size(76.dp)
-                        .border(width = 4.dp, color = ColorWhite, shape = CircleShape)
-                        .padding(5.dp)
-                        .clip(CircleShape)
-                        .background(ColorWhite)
-                        .clickable {
-                            cameraController.takePicture(
-                                displayRotationDegrees = deviceRotationDegrees,
-                                onPhotoSaved = { uri, msg ->
-                                    recentPhotos = (listOf(uri) + recentPhotos).distinct().take(10)
-                                    Toast
-                                        .makeText(context, msg, Toast.LENGTH_SHORT)
-                                        .show()
-                                },
-                                onError = { err ->
-                                    Toast
-                                        .makeText(context, err, Toast.LENGTH_SHORT)
-                                        .show()
-                                },
-                            )
-                        },
+                        .fillMaxWidth()
+                        .padding(bottom = 12.dp),
                 )
 
-                // Placeholder Spacer to align shutter button in center
-                Spacer(modifier = Modifier.size(52.dp))
+                // Shutter Controls Row
+                Row(
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .padding(horizontal = 32.dp),
+                    horizontalArrangement = Arrangement.SpaceBetween,
+                    verticalAlignment = Alignment.CenterVertically,
+                ) {
+                    // Single Circular Gallery Thumbnail Shortcut
+                    Box(
+                        modifier = Modifier
+                            .size(52.dp)
+                            .clip(CircleShape)
+                            .background(CharcoalSurface)
+                            .border(
+                                width = 2.dp,
+                                color = ColorWhite,
+                                shape = CircleShape,
+                            )
+                            .clickable { onOpenQuickView() },
+                        contentAlignment = Alignment.Center,
+                    ) {
+                        val latestPhotoUri = recentPhotos.firstOrNull()
+                        if (latestPhotoUri != null) {
+                            AsyncImage(
+                                model = latestPhotoUri,
+                                contentDescription = "Last Captured Photo",
+                                contentScale = ContentScale.Crop,
+                                modifier = Modifier.fillMaxSize(),
+                            )
+                        } else {
+                            Icon(
+                                imageVector = Icons.Outlined.PhotoLibrary,
+                                contentDescription = "Gallery Placeholder",
+                                tint = ColorMutedGray,
+                                modifier = Modifier.size(26.dp),
+                            )
+                        }
+                    }
+
+                    // Obsidian Royal Shutter Button
+                    Box(
+                        modifier = Modifier
+                            .size(76.dp)
+                            .border(width = 4.dp, color = ColorWhite, shape = CircleShape)
+                            .padding(5.dp)
+                            .clip(CircleShape)
+                            .background(ColorWhite)
+                            .clickable {
+                                cameraController.takePicture(
+                                    displayRotationDegrees = deviceRotationDegrees,
+                                    onPhotoSaved = { uri, msg ->
+                                        recentPhotos = (listOf(uri) + recentPhotos).distinct().take(10)
+                                        Toast
+                                            .makeText(context, msg, Toast.LENGTH_SHORT)
+                                            .show()
+                                    },
+                                    onError = { err ->
+                                        Toast
+                                            .makeText(context, err, Toast.LENGTH_SHORT)
+                                            .show()
+                                    },
+                                )
+                            },
+                    )
+
+                    // Placeholder Spacer for balanced layout
+                    Spacer(modifier = Modifier.size(52.dp))
+                }
             }
         }
     } else {
