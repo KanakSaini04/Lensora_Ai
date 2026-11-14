@@ -29,6 +29,7 @@ import androidx.navigation.compose.composable
 import androidx.navigation.compose.currentBackStackEntryAsState
 import androidx.navigation.compose.rememberNavController
 import com.lensora.ai.ui.camera.CameraScreen
+import com.lensora.ai.ui.gallery.GalleryScreen
 import com.lensora.ai.ui.gallery.QuickViewScreen
 import com.lensora.ai.ui.probe.ProbeLabScreen
 import com.lensora.ai.ui.settings.SettingsScreen
@@ -119,7 +120,13 @@ fun AppNavigation(
                 )
             }
             composable(NavScreen.Studio.route) { TabContent(title = "Studio Screen") }
-            composable(NavScreen.Gallery.route) { TabContent(title = "Gallery Screen") }
+            composable(NavScreen.Gallery.route) {
+                GalleryScreen(
+                    onPhotoClick = { _, _ ->
+                        navController.navigate(ROUTE_QUICK_VIEW)
+                    }
+                )
+            }
             composable(NavScreen.Vibes.route) { TabContent(title = "Vibes Screen") }
             composable(NavScreen.Settings.route) {
                 SettingsScreen(

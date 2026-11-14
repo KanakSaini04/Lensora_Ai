@@ -50,3 +50,7 @@
   - Added WorkManager dependency (`androidx.work:work-runtime-ktx:2.10.0`).
   - Created `Validator.kt` (bitmap & luminance validation) and `AiProcessorWorker.kt` (CoroutineWorker).
   - Enqueued background `AiProcessorWorker` task in `CameraController.kt` upon raw JPEG capture to produce final processed MediaStore images (`LENSORA_AI_PROCESSED_...jpg`).
+- [x] **Step 14: Pinterest-Style Gallery Tab UI**
+  - Added `getAllPhotos()` in `GalleryRepository.kt` to query all MediaStore images in `Pictures/Lensora_Ai`.
+  - Created `GalleryScreen.kt` using Compose `LazyVerticalStaggeredGrid` (2 columns) with Coil `AsyncImage` and `CircularProgressIndicator` loading state.
+  - Wired `GalleryScreen` into `Navigation.kt` shell with photo click navigation to `QuickViewScreen`.
