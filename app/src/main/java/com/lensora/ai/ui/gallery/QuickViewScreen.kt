@@ -38,7 +38,7 @@ import com.lensora.ai.ui.theme.PitchBlackBackground
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun QuickViewScreen(
-    onNavigateBack: () -> Unit = {}
+    onNavigateBack: () -> Unit = {},
 ) {
     val context = LocalContext.current
     val galleryRepository = remember { GalleryRepository(context) }
@@ -56,7 +56,7 @@ fun QuickViewScreen(
                     Text(
                         text = "Quick View$subtitle",
                         color = ColorWhite,
-                        fontWeight = FontWeight.Bold
+                        fontWeight = FontWeight.Bold,
                     )
                 },
                 navigationIcon = {
@@ -64,40 +64,40 @@ fun QuickViewScreen(
                         Icon(
                             imageVector = Icons.AutoMirrored.Filled.ArrowBack,
                             contentDescription = "Back",
-                            tint = ColorWhite
+                            tint = ColorWhite,
                         )
                     }
                 },
                 colors = TopAppBarDefaults.topAppBarColors(
-                    containerColor = CharcoalSurface
-                )
+                    containerColor = CharcoalSurface,
+                ),
             )
         },
-        containerColor = PitchBlackBackground
+        containerColor = PitchBlackBackground,
     ) { innerPadding ->
         Box(
             modifier = Modifier
                 .fillMaxSize()
                 .padding(innerPadding)
                 .background(PitchBlackBackground),
-            contentAlignment = Alignment.Center
+            contentAlignment = Alignment.Center,
         ) {
             if (photos.isNotEmpty()) {
                 val pagerState = rememberPagerState(pageCount = { photos.size })
 
                 HorizontalPager(
                     state = pagerState,
-                    modifier = Modifier.fillMaxSize()
+                    modifier = Modifier.fillMaxSize(),
                 ) { page ->
                     Box(
                         modifier = Modifier.fillMaxSize(),
-                        contentAlignment = Alignment.Center
+                        contentAlignment = Alignment.Center,
                     ) {
                         AsyncImage(
                             model = photos[page],
                             contentDescription = "Photo ${page + 1}",
-                            contentScale = ContentScale.Fit,
-                            modifier = Modifier.fillMaxSize()
+                            contentScale = ContentScale.Crop,
+                            modifier = Modifier.fillMaxSize(),
                         )
                     }
                 }
@@ -105,7 +105,7 @@ fun QuickViewScreen(
                 Text(
                     text = "No photos captured yet",
                     style = MaterialTheme.typography.titleLarge,
-                    color = ColorMutedGray
+                    color = ColorMutedGray,
                 )
             }
         }

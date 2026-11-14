@@ -29,7 +29,7 @@ class CameraProbeP1 {
 
                 for (id in cameraIds) {
                     val characteristics = cameraManager.getCameraCharacteristics(id)
-                    val facing = characteristics.get(CameraCharacteristics.LENS_FACING)
+                    val facing = characteristics[CameraCharacteristics.LENS_FACING]
                     if (facing == CameraCharacteristics.LENS_FACING_BACK) {
                         backCameraId = id
                         break
@@ -47,16 +47,16 @@ class CameraProbeP1 {
                 var maxResolutionSize: Size? = null
 
                 // Check standard stream configuration map
-                val map: StreamConfigurationMap? = characteristics.get(
-                    CameraCharacteristics.SCALER_STREAM_CONFIGURATION_MAP
-                )
+                val map: StreamConfigurationMap? = characteristics[
+                    CameraCharacteristics.SCALER_STREAM_CONFIGURATION_MAP,
+                ]
 
                 map?.let { configMap ->
                     val formats = intArrayOf(
                         ImageFormat.JPEG,
                         ImageFormat.RAW_SENSOR,
                         ImageFormat.YUV_420_888,
-                        ImageFormat.PRIVATE
+                        ImageFormat.PRIVATE,
                     )
                     for (format in formats) {
                         val sizes = configMap.getOutputSizes(format) ?: emptyArray()
@@ -71,15 +71,15 @@ class CameraProbeP1 {
                 }
 
                 // Check maximum resolution stream configuration map
-                val maxResMap = characteristics.get(
-                    CameraCharacteristics.SCALER_STREAM_CONFIGURATION_MAP_MAXIMUM_RESOLUTION
-                )
+                val maxResMap = characteristics[
+                    CameraCharacteristics.SCALER_STREAM_CONFIGURATION_MAP_MAXIMUM_RESOLUTION,
+                ]
                 maxResMap?.let { configMap ->
                     val formats = intArrayOf(
                         ImageFormat.JPEG,
                         ImageFormat.RAW_SENSOR,
                         ImageFormat.YUV_420_888,
-                        ImageFormat.PRIVATE
+                        ImageFormat.PRIVATE,
                     )
                     for (format in formats) {
                         val sizes = configMap.getOutputSizes(format) ?: emptyArray()
@@ -114,7 +114,7 @@ class CameraProbeP1 {
             title = "P1: 200MP Sensor & High-Res Stream Probe",
             status = status,
             details = details,
-            executionTimeMs = executionTime
+            executionTimeMs = executionTime,
         )
     }
 }

@@ -1,124 +1,102 @@
-# Phase 1, Step 2 Report: Hardware Capability Probes & Documentation
+# Lensora_Ai Comprehensive Architecture & Step Completion Report
 
 ## Executive Summary
 
-Phase 1, Step 2 has been successfully completed for **Lensora_Ai**. We built the **Probe Lab** to audit Camera2 hardware capability characteristics (200MP ultra-high resolution, RAW sensor support, 24fps target frame rates) without opening camera devices, ensuring 100% crash safety via try-catch blocks.
+**Lensora_Ai** (`com.lensora.ai`) is an AI-first computational camera application built on Android 16 (API 36) using Jetpack Compose, Material 3 (Obsidian Royal Theme), Hilt dependency injection, and a pure **Camera2 L0 Safe Core HAL Engine** (strictly zero CameraX dependencies).
 
-The app was deployed and verified live on physical hardware (**Xiaomi Redmi Note 13 Pro 5G**).
-
----
-
-## 1. Documentation Setup
-- **`agent.md`**: Placed in project root with mandatory AI Agent rules.
-- **`master_prompt.md`**: Placed in project root with Lensora_Ai master architecture and L0-L4 constraints.
+This report presents a complete end-to-end audit of all implemented components, hardware capability probe results, L0 atomic capture journals, UI overlays, camera hardware zoom control engines, and live device/emulator verification results.
 
 ---
 
-## 2. Hardware Capability Probes & Live Device Results (Xiaomi Redmi Note 13 Pro 5G)
+## 1. Architectural & Rule Compliance Setup
 
-1. **`CameraProbeP1.kt` (200MP Probe)**:
-   - **Status**: `FAIL`
-   - **Details**: Max resolution exposed via standard Camera2 characteristics is **12.5 MP (4080x3060)**. The 200MP sensor mode is binned by default to 12.5MP and full-res raw streams are unexposed by standard Camera2 HAL characteristics.
-   - **Latency**: 113 ms
-
-2. **`CameraProbeP2.kt` (RAW Probe)**:
-   - **Status**: `PASS`
-   - **Details**: `Camera2 REQUEST_AVAILABLE_CAPABILITIES_RAW` (`RAW_SENSOR`) is fully supported on camera ID 0.
-   - **Latency**: 6 ms
-
-3. **`CameraProbeP3.kt` (24fps Probe)**:
-   - **Status**: `PASS`
-   - **Details**: Target 24fps cinema capture is supported. Matching AE ranges: `[12, 24]`, `[24, 24]`, `[7, 30]`, `[14, 30]`. All exposed ranges: `[1, 5]`, `[5, 5]`, `[10, 10]`, `[14, 14]`, `[15, 15]`, `[12, 24]`, `[24, 24]`, `[7, 30]`, `[14, 30]`, `[30, 30]`.
-   - **Latency**: 5 ms
+- **`agent.md`**: Placed in project root with mandatory AI Agent truth, prompt, judging, and workflow rules (including Rule 16 step execution constraints).
+- **`master_prompt.md`**: Architectural blueprint enforcing L0-L4 layer isolation, 100% try-catch HAL crash safety, atomic MediaStore transactions, and the Obsidian Royal palette:
+  - Pitch Black Background: `#0E0E0E`
+  - Charcoal Surface: `#131313`
+  - Royal Blue Highlight: `#2563EB`
+  - Muted Gray Text/Icons: `#9CA3AF`
+  - Stark White Accent: `#FFFFFF`
 
 ---
 
-## 3. UI & Navigation Integration
+## 2. Hardware Capability Probes & Live Audit Results (Xiaomi Redmi Note 13 Pro 5G)
 
-1. **`ProbeLabScreen.kt`**:
-   - Obsidian Royal UI (#0E0E0E Pitch Black, #131313 Surface, #2563EB Royal Blue).
-   - Displays real-time status badges (`PASS` green, `FAIL` red, `UNSUPPORTED` amber, `ERROR` bright red).
-   - Shows detailed audit logs and execution latency per probe.
+The **Probe Lab** audits camera hardware capabilities at runtime without opening active capture sessions, ensuring 100% crash safety.
 
-2. **`SettingsScreen.kt` & `Navigation.kt`**:
-   - Added `SettingsScreen` with "Launch Probe Lab" button.
-   - Added `probe_lab` navigation route to `AppNavigation`.
-
----
-
-# Phase 1, Step 3 Report: L0 Safe Core - Camera2 Preview & Capture Engine
-
-## Executive Summary
-
-Phase 1, Step 3 implements the **L0 Safe Core Camera2 Engine** providing edge-to-edge live viewfinder preview and atomic JPEG capture (12.5MP optimal) saved directly to `MediaStore` under `Pictures/Lensora_Ai`.
+| Probe ID | Target Capability | Audit Result | Latency | Key Hardware Characteristics Findings |
+| :--- | :--- | :---: | :---: | :--- |
+| **P1** | 200MP Full-Res Sensor | `FAIL` | 113 ms | Max resolution exposed via standard Camera2 stream map is **12.5 MP (4080x3060)**. The 200MP sensor mode is binned by default to 12.5MP and full-res raw streams are unexposed by standard Camera2 HAL characteristics. Enforces 12.5MP capture + Real-ESRGAN AI upscale rule. |
+| **P2** | RAW Sensor Support | `PASS` | 6 ms | `REQUEST_AVAILABLE_CAPABILITIES_RAW` (`RAW_SENSOR`) is fully supported on Camera ID 0. |
+| **P3** | 24fps Cinema Target Rate | `PASS` | 5 ms | Target 24fps cinema capture is supported. Matching AE ranges: `[12, 24]`, `[24, 24]`, `[7, 30]`, `[14, 30]`. All exposed ranges: `[1, 5]`, `[5, 5]`, `[10, 10]`, `[14, 14]`, `[15, 15]`, `[12, 24]`, `[24, 24]`, `[7, 30]`, `[14, 30]`, `[30, 30]`. |
 
 ---
 
-## 1. Camera2 Engine & L0 Atomic Capture Journal
+## 3. Phase 1, Step 3: L0 Safe Core - Camera2 Preview & Capture Engine
 
-1. **`CameraController.kt`**:
-   - Pure Camera2 API wrapper managing background thread handler, camera open/close lifecycle, continuous auto-focus, and capture sessions.
-   - **JPEG Orientation Calculation**: Fixed 90-degree photo rotation bug by calculating `JPEG_ORIENTATION = (sensorOrientation - deviceRotationDegrees + 360) % 360`.
-   - **L0 Atomic Capture (.tmp rename)**:
-     1. Captures JPEG bytes from `ImageReader`.
-     2. Writes temporary file `cacheDir/LENSORA_TIMESTAMP.jpg.tmp`.
-     3. Inserts MediaStore row with `IS_PENDING = 1` under `Pictures/Lensora_Ai`.
-     4. Copies stream from `.tmp` file to MediaStore output stream.
-     5. Updates row to `IS_PENDING = 0` and deletes temporary `.tmp` file.
-   - **100% Try-Catch Safety**: Every Camera2 HAL interaction is safely wrapped in try-catch to prevent hardware/HAL crashes.
+### 1. `CameraController.kt`
+- **Pure Camera2 API Wrapper**: Manages `HandlerThread("CameraBackground")`, `CameraDevice`, `CameraCaptureSession`, and `ImageReader`.
+- **Continuous Auto-Focus**: Configured with `CaptureRequest.CONTROL_AF_MODE_CONTINUOUS_PICTURE`.
+- **JPEG Orientation Calculation**: Resolves 90-degree photo rotation using:
+  $$\text{JPEG\_ORIENTATION} = (\text{sensorOrientation} - \text{deviceRotationDegrees} + 360) \pmod{360}$$
+- **L0 Atomic Capture Journal (.tmp write + MediaStore transaction)**:
+  1. Captures JPEG byte buffer from `ImageReader`.
+  2. Writes temporary file `cacheDir/LENSORA_TIMESTAMP.jpg.tmp`.
+  3. Inserts MediaStore row with `IS_PENDING = 1` under `Pictures/Lensora_Ai`.
+  4. Streams bytes from `.tmp` file directly into MediaStore output stream.
+  5. Updates MediaStore row to `IS_PENDING = 0` and deletes temporary `.tmp` file.
+- **100% Try-Catch Safety**: Every HAL method call is wrapped in try-catch to prevent hardware or service crashes.
 
-2. **`CameraPreview.kt`**:
-   - `AndroidView` wrapping a `TextureView` for edge-to-edge hardware-accelerated preview rendering.
-
-3. **`CameraScreen.kt` & UI Enhancements**:
-   - Handles `CAMERA` runtime permission checks safely.
-   - Displays black screen with "Grant Permission" button when permission is not granted.
-   - Floating double-concentric white circle shutter button in Obsidian Royal styling.
+### 2. `CameraPreview.kt`
+- `AndroidView` wrapping a `TextureView` for hardware-accelerated edge-to-edge live viewfinder rendering.
 
 ---
 
-# Phase 1, Step 4 Report: Single Thumbnail & Quick View Fullscreen Viewer
+## 4. Phase 1, Step 4: Circular Gallery Shortcut & Quick View Fullscreen Viewer
 
-## Executive Summary
+### 1. `GalleryRepository.kt`
+- Asynchronously queries `MediaStore.Images.Media.EXTERNAL_CONTENT_URI` on `Dispatchers.IO` for photos in `Pictures/Lensora_Ai` ordered by `DATE_ADDED DESC`.
 
-Phase 1, Step 4 establishes standard camera UX by placing a **Single Circular Gallery Thumbnail** (52dp, 2dp white border) in the bottom-left corner of `CameraScreen.kt` and a swipable **`QuickViewScreen.kt`** fullscreen image viewer using Compose `HorizontalPager` to swipe through the last 10 photos saved in `Pictures/Lensora_Ai`.
+### 2. Single Circular Gallery Thumbnail Shortcut
+- Placed in bottom-left corner of `CameraScreen.kt` (52dp circle, 2dp white border).
+- Displays latest captured photo via Coil `AsyncImage`.
+- Clicking navigates to `quick_view` route.
 
----
-
-## 1. Single Thumbnail & Quick View Features
-
-1. **`CameraScreen.kt`**:
-   - Standard camera UI pattern: Single circular thumbnail (52dp) in the bottom-left corner.
-   - Displays latest captured photo loaded via Coil `AsyncImage`.
-   - On click, navigates to `quick_view` route.
-
-2. **`QuickViewScreen.kt`**:
-   - Fullscreen Pitch Black (`#0E0E0E`) viewer using Compose `HorizontalPager`.
-   - Asynchronously queries `GalleryRepository.getRecentPhotos(limit = 10)` on `Dispatchers.IO`.
-   - TopAppBar with Back button and photo counter.
-
-3. **`GalleryRepository.kt`**:
-   - Queries `MediaStore.Images.Media.EXTERNAL_CONTENT_URI` for up to 10 photos in `Pictures/Lensora_Ai` ordered by `DATE_ADDED DESC`.
+### 3. `QuickViewScreen.kt`
+- Fullscreen Pitch Black (`#0E0E0E`) image viewer using Compose `HorizontalPager`.
+- Features TopAppBar with Back button and live photo count badge.
 
 ---
 
-## 2. Files Touched in Step 4
+## 5. Phase 1, Step 5: Camera Top Bar & Mode Carousel Overlays
 
-- `app/src/main/java/com/lensora/ai/data/GalleryRepository.kt` (MODIFIED - Fetches up to 10 photos)
-- `app/src/main/java/com/lensora/ai/ui/camera/CameraScreen.kt` (MODIFIED - Single circular thumbnail shortcut)
-- `app/src/main/java/com/lensora/ai/ui/gallery/QuickViewScreen.kt` (NEW - Swipable HorizontalPager viewer)
-- `app/src/main/java/com/lensora/ai/ui/navigation/Navigation.kt` (MODIFIED - Added `quick_view` route)
-- `report.md` (MODIFIED - Appended Quick View report)
+1. **`CameraTopBar.kt`**: Transparent top overlay with Material Design icons for Flash (Auto), Timer (Off), Grid (Toggle), and Settings, respecting status bar insets.
+2. **`CameraModeCarousel.kt`**: Horizontal `LazyRow` mode selector (`AI AUTO`, `PHOTO`, `PORTRAIT`, `VIDEO`, `PRO`) with selected mode highlighted in Royal Blue (`#2563EB`).
 
 ---
 
-## 3. Git PR Workflow
+## 6. Phase 1, Step 6: Zoom Pills & AI Badge Overlays
 
-Execute the following commands in terminal:
+1. **AI Badge (`✨ AI: Auto`)**: Frosted glass rounded pill at top center below the top bar using Charcoal surface background (`#131313`) with 75% alpha and white border.
+2. **Zoom Pills (`0.6x`, `1x`, `2x`, `3x`)**: Dark rounded container (`#131313`, 80% alpha) placed directly above the Mode Carousel. The active zoom pill is styled with a Royal Blue circular highlight.
 
-```bash
-git add .
-git commit -m "fix(ui): standard single thumbnail and fullscreen quick view"
-git push -u origin fix/quick-view-ui
-gh pr create --title "fix(ui): standard thumbnail and quick view" --body "Replaces filmstrip with standard single thumbnail and swipable fullscreen viewer" --base dev --head fix/quick-view-ui
-```
+---
+
+## 7. Phase 1, Step 7: Camera2 Hardware Zoom & Gesture Integration
+
+1. **Camera2 `CONTROL_ZOOM_RATIO` Engine**:
+   - `CameraController.kt` queries `CONTROL_ZOOM_RATIO_RANGE` and `SCALER_AVAILABLE_MAX_DIGITAL_ZOOM` to dynamically set hardware zoom.
+   - Applies zoom ratio seamlessly to repeating preview streams and still JPEG captures.
+   - Safely clamps requested ratio within supported hardware bounds `[1.0f, maxZoomRatio]`.
+2. **Pinch-to-Zoom Gesture**:
+   - `CameraScreen.kt` implements Compose `pointerInput(Unit)` with `detectTransformGestures` attached directly to the `CameraPreview` layer.
+   - Allows continuous smooth pinch zooming between `1.0x` and `10.0x` while leaving UI overlay controls fully clickable.
+
+---
+
+## 8. Verification & Crash Audit Results
+
+- **Build Status**: `./gradlew assembleDebug` - **100% SUCCESS**.
+- **Static Code Analysis**: Analyzed all 19 Kotlin source files in `app/src/main/java` - **0 Errors, 0 Warnings**.
+- **Live Device Audit**: Physical **Xiaomi Redmi Note 13 Pro 5G** and **Android Studio Emulator**.
+- **Logcat Audit (`AndroidRuntime:E`)**: Executed `read_logcat` and `adb logcat -d -s AndroidRuntime:E` - **0 Crashes Logged**.

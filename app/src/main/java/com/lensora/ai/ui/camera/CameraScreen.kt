@@ -13,6 +13,7 @@ import androidx.activity.result.contract.ActivityResultContracts
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
+import androidx.compose.foundation.gestures.detectTransformGestures
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -37,6 +38,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.DisposableEffect
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableFloatStateOf
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
@@ -44,6 +46,7 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.input.pointer.pointerInput
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.text.font.FontWeight
@@ -58,6 +61,7 @@ import com.lensora.ai.ui.theme.ColorMutedGray
 import com.lensora.ai.ui.theme.ColorWhite
 import com.lensora.ai.ui.theme.PitchBlackBackground
 import com.lensora.ai.ui.theme.RoyalBlue
+import java.util.Locale
 
 @Composable
 fun CameraScreen(
@@ -91,6 +95,7 @@ fun CameraScreen(
         var recentPhotos by remember { mutableStateOf<List<Uri>>(emptyList()) }
         var selectedMode by remember { mutableStateOf(CameraMode.PHOTO.displayName) }
         var selectedZoom by remember { mutableStateOf("1x") }
+        var currentZoomRatio by remember { mutableFloatStateOf(1.0f) }
 
         DisposableEffect(Unit) {
             onDispose {
@@ -123,10 +128,22 @@ fun CameraScreen(
                 .fillMaxSize()
                 .background(PitchBlackBackground),
         ) {
-            // Edge-to-edge Live Camera Viewfinder
+            // Edge-to-edge Live Camera Viewfinder with Pinch Gesture handling
             CameraPreview(
                 cameraController = cameraController,
-                modifier = Modifier.fillMaxSize(),
+                modifier = Modifier
+                    .fillMaxSize()
+                    .pointerInput(Unit) {
+                        detectTransformGestures { _, _, zoomChange, _ ->
+                            currentZoomRatio = (currentZoomRatio * zoomChange).coerceIn(1.0f, 10.0f)
+                            cameraController.setZoomRatio(currentZoomRatio)
+                            selectedZoom = if (currentZoomRatio % 1f == 0f) {
+                                "${currentZoomRatio.toInt()}x"
+                            } else {
+                                String.format(Locale.US, "%.1fx", currentZoomRatio)
+                            }
+                        }
+                    },
             )
 
             // Transparent Camera Top Bar
@@ -167,11 +184,12 @@ fun CameraScreen(
                     onZoomSelected = { level ->
                         selectedZoom = level
                         val ratio = when (level) {
-                            "0.6x" -> 0.6f
+                            "0.6x" -> 1.0f // Clamped to 1.0x on main camera HAL
                             "2x" -> 2.0f
                             "3x" -> 3.0f
                             else -> 1.0f
                         }
+                        currentZoomRatio = ratio
                         cameraController.setZoomRatio(ratio)
                         Toast.makeText(context, "Zoom: $level", Toast.LENGTH_SHORT).show()
                     },

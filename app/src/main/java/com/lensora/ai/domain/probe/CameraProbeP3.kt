@@ -26,7 +26,7 @@ class CameraProbeP3 {
 
                 for (id in cameraIds) {
                     val characteristics = cameraManager.getCameraCharacteristics(id)
-                    val facing = characteristics.get(CameraCharacteristics.LENS_FACING)
+                    val facing = characteristics[CameraCharacteristics.LENS_FACING]
                     if (facing == CameraCharacteristics.LENS_FACING_BACK) {
                         backCameraId = id
                         break
@@ -40,12 +40,12 @@ class CameraProbeP3 {
                 }
 
                 val characteristics = cameraManager.getCameraCharacteristics(backCameraId)
-                val fpsRanges: Array<Range<Int>> = characteristics.get(
-                    CameraCharacteristics.CONTROL_AE_AVAILABLE_TARGET_FPS_RANGES
-                ) ?: emptyArray()
+                val fpsRanges: Array<Range<Int>> = characteristics[
+                    CameraCharacteristics.CONTROL_AE_AVAILABLE_TARGET_FPS_RANGES,
+                ] ?: emptyArray()
 
                 val matching24FpsRanges = fpsRanges.filter { range ->
-                    range.lower <= 24 && range.upper >= 24
+                    (range.lower <= 24) && (range.upper >= 24)
                 }
 
                 val allRangesStr = fpsRanges.joinToString(", ") { "[${it.lower}, ${it.upper}]" }
@@ -69,7 +69,7 @@ class CameraProbeP3 {
             title = "P3: 24fps Cinema Target Rate Probe",
             status = status,
             details = details,
-            executionTimeMs = executionTime
+            executionTimeMs = executionTime,
         )
     }
 }

@@ -40,6 +40,7 @@ class CameraController(
 
     private var previewSurface: Surface? = null
     private var cameraId: String? = null
+
     private var previewRequestBuilder: CaptureRequest.Builder? = null
     private var sensorOrientation: Int = 90
 
