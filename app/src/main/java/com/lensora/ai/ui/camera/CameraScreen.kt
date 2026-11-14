@@ -58,7 +58,9 @@ import com.lensora.ai.ui.theme.PitchBlackBackground
 import com.lensora.ai.ui.theme.RoyalBlue
 
 @Composable
-fun CameraScreen() {
+fun CameraScreen(
+    onOpenQuickView: () -> Unit = {}
+) {
     val context = LocalContext.current
     var hasCameraPermission by remember {
         mutableStateOf(
@@ -84,7 +86,7 @@ fun CameraScreen() {
     if (hasCameraPermission) {
         val cameraController = remember { CameraController(context) }
         val galleryRepository = remember { GalleryRepository(context) }
-        var persistentPhotos by remember { mutableStateOf<List<Uri>>(emptyList()) }
+        var recentPhotos by remember { mutableStateOf<List<Uri>>(emptyList()) }
 
         DisposableEffect(Unit) {
             onDispose {
@@ -94,7 +96,7 @@ fun CameraScreen() {
 
         LaunchedEffect(hasCameraPermission) {
             if (hasCameraPermission) {
-                persistentPhotos = galleryRepository.getRecentPhotos(limit = 4)
+                recentPhotos = galleryRepository.getRecentPhotos(limit = 10)
             }
         }
 
@@ -122,56 +124,44 @@ fun CameraScreen() {
                 modifier = Modifier.fillMaxSize(),
             )
 
-            // Bottom Controls Bar (Persistent Filmstrip + Shutter Button)
+            // Bottom Controls Bar (Single Circular Thumbnail + Shutter Button)
             Row(
                 modifier = Modifier
                     .align(Alignment.BottomCenter)
                     .fillMaxWidth()
-                    .padding(horizontal = 16.dp, vertical = 28.dp),
+                    .padding(horizontal = 32.dp, vertical = 28.dp),
                 horizontalArrangement = Arrangement.SpaceBetween,
                 verticalAlignment = Alignment.CenterVertically,
             ) {
-                // Persistent Filmstrip (Last 4 Photos)
-                Row(
-                    horizontalArrangement = Arrangement.spacedBy(4.dp),
-                    verticalAlignment = Alignment.CenterVertically,
+                // Single Circular Gallery Thumbnail Shortcut
+                Box(
+                    modifier = Modifier
+                        .size(52.dp)
+                        .clip(CircleShape)
+                        .background(CharcoalSurface)
+                        .border(
+                            width = 2.dp,
+                            color = ColorWhite,
+                            shape = CircleShape,
+                        )
+                        .clickable { onOpenQuickView() },
+                    contentAlignment = Alignment.Center,
                 ) {
-                    if (persistentPhotos.isNotEmpty()) {
-                        persistentPhotos.forEach { photoUri ->
-                            AsyncImage(
-                                model = photoUri,
-                                contentDescription = "Persistent Photo Thumbnail",
-                                contentScale = ContentScale.Crop,
-                                modifier = Modifier
-                                    .size(46.dp)
-                                    .clip(RoundedCornerShape(10.dp))
-                                    .border(
-                                        width = 1.5.dp,
-                                        color = ColorWhite,
-                                        shape = RoundedCornerShape(10.dp),
-                                    ),
-                            )
-                        }
+                    val latestPhotoUri = recentPhotos.firstOrNull()
+                    if (latestPhotoUri != null) {
+                        AsyncImage(
+                            model = latestPhotoUri,
+                            contentDescription = "Last Captured Photo",
+                            contentScale = ContentScale.Crop,
+                            modifier = Modifier.fillMaxSize(),
+                        )
                     } else {
-                        Box(
-                            modifier = Modifier
-                                .size(50.dp)
-                                .clip(RoundedCornerShape(10.dp))
-                                .background(CharcoalSurface)
-                                .border(
-                                    width = 1.5.dp,
-                                    color = ColorWhite,
-                                    shape = RoundedCornerShape(10.dp),
-                                ),
-                            contentAlignment = Alignment.Center,
-                        ) {
-                            Icon(
-                                imageVector = Icons.Outlined.PhotoLibrary,
-                                contentDescription = "Gallery Placeholder",
-                                tint = ColorMutedGray,
-                                modifier = Modifier.size(24.dp),
-                            )
-                        }
+                        Icon(
+                            imageVector = Icons.Outlined.PhotoLibrary,
+                            contentDescription = "Gallery Placeholder",
+                            tint = ColorMutedGray,
+                            modifier = Modifier.size(26.dp),
+                        )
                     }
                 }
 
@@ -187,7 +177,7 @@ fun CameraScreen() {
                             cameraController.takePicture(
                                 displayRotationDegrees = deviceRotationDegrees,
                                 onPhotoSaved = { uri, msg ->
-                                    persistentPhotos = (listOf(uri) + persistentPhotos).distinct().take(4)
+                                    recentPhotos = (listOf(uri) + recentPhotos).distinct().take(10)
                                     Toast
                                         .makeText(context, msg, Toast.LENGTH_SHORT)
                                         .show()
@@ -200,6 +190,9 @@ fun CameraScreen() {
                             )
                         },
                 )
+
+                // Placeholder Spacer to align shutter button in center
+                Spacer(modifier = Modifier.size(52.dp))
             }
         }
     } else {

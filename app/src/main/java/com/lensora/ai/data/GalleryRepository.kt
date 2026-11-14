@@ -10,7 +10,7 @@ import kotlinx.coroutines.withContext
 class GalleryRepository(
     private val context: Context,
 ) {
-    suspend fun getRecentPhotos(limit: Int = 4): List<Uri> = withContext(Dispatchers.IO) {
+    suspend fun getRecentPhotos(limit: Int = 10): List<Uri> = withContext(Dispatchers.IO) {
         val photos = mutableListOf<Uri>()
         val projection = arrayOf(
             MediaStore.Images.Media._ID,

@@ -29,6 +29,7 @@ import androidx.navigation.compose.composable
 import androidx.navigation.compose.currentBackStackEntryAsState
 import androidx.navigation.compose.rememberNavController
 import com.lensora.ai.ui.camera.CameraScreen
+import com.lensora.ai.ui.gallery.QuickViewScreen
 import com.lensora.ai.ui.probe.ProbeLabScreen
 import com.lensora.ai.ui.settings.SettingsScreen
 import com.lensora.ai.ui.theme.CharcoalSurface
@@ -54,6 +55,7 @@ sealed class NavScreen(
 }
 
 const val ROUTE_PROBE_LAB = "probe_lab"
+const val ROUTE_QUICK_VIEW = "quick_view"
 
 @Composable
 fun AppNavigation(
@@ -111,7 +113,11 @@ fun AppNavigation(
             startDestination = NavScreen.Camera.route,
             modifier = Modifier.padding(innerPadding),
         ) {
-            composable(NavScreen.Camera.route) { CameraScreen() }
+            composable(NavScreen.Camera.route) {
+                CameraScreen(
+                    onOpenQuickView = { navController.navigate(ROUTE_QUICK_VIEW) }
+                )
+            }
             composable(NavScreen.Studio.route) { TabContent(title = "Studio Screen") }
             composable(NavScreen.Gallery.route) { TabContent(title = "Gallery Screen") }
             composable(NavScreen.Vibes.route) { TabContent(title = "Vibes Screen") }
@@ -122,6 +128,11 @@ fun AppNavigation(
             }
             composable(ROUTE_PROBE_LAB) {
                 ProbeLabScreen(
+                    onNavigateBack = { navController.popBackStack() }
+                )
+            }
+            composable(ROUTE_QUICK_VIEW) {
+                QuickViewScreen(
                     onNavigateBack = { navController.popBackStack() }
                 )
             }
