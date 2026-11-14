@@ -74,15 +74,38 @@ Phase 1, Step 3 implements the **L0 Safe Core Camera2 Engine** providing edge-to
    - Handles `CAMERA` runtime permission checks safely.
    - Displays black screen with "Grant Permission" button when permission is not granted.
    - Floating double-concentric white circle shutter button in Obsidian Royal styling.
-   - **Gallery Thumbnail Preview**: Displays a rounded thumbnail in bottom left corner showing the last captured photo loaded directly from MediaStore.
 
 ---
 
-## 2. Files Touched in Step 3 Follow-up
+# Phase 1, Step 4 Report: Persistent Filmstrip Thumbnail
 
-- `app/src/main/java/com/lensora/ai/camera/CameraController.kt` (MODIFIED - Calculated JPEG_ORIENTATION)
-- `app/src/main/java/com/lensora/ai/ui/camera/CameraScreen.kt` (MODIFIED - Added gallery thumbnail preview)
-- `report.md` (MODIFIED - Appended camera rotation & UI thumbnail report)
+## Executive Summary
+
+Phase 1, Step 4 implements a **Persistent Filmstrip** in the Camera UI. The last 4 captured photos saved in `Pictures/Lensora_Ai` are queried asynchronously from `MediaStore` upon app launch and displayed as a horizontal filmstrip in the bottom-left corner. New captures prepend instantly to the filmstrip.
+
+---
+
+## 1. Persistent MediaStore Query & Filmstrip UI
+
+1. **`GalleryRepository.kt`**:
+   - Queries `MediaStore.Images.Media.EXTERNAL_CONTENT_URI` on `Dispatchers.IO` to prevent UI thread lag.
+   - Filters photos saved under `Pictures/Lensora_Ai` ordered by `DATE_ADDED DESC`.
+   - Returns the latest 4 photo URIs.
+
+2. **`CameraScreen.kt` & Coil Integration**:
+   - Added Coil Compose (`coil-compose:2.7.0`) for image loading.
+   - Queries `GalleryRepository` on startup to load persistent photo URIs across app restarts.
+   - Updates filmstrip state instantly upon new photo capture (`(listOf(newUri) + currentPhotos).take(4)`).
+
+---
+
+## 2. Files Touched in Step 4
+
+- `gradle/libs.versions.toml` (MODIFIED - Added `coil = "2.7.0"` and `coil-compose`)
+- `app/build.gradle.kts` (MODIFIED - Added `implementation(libs.coil.compose)`)
+- `app/src/main/java/com/lensora/ai/data/GalleryRepository.kt` (NEW - MediaStore persistent query)
+- `app/src/main/java/com/lensora/ai/ui/camera/CameraScreen.kt` (MODIFIED - Persistent filmstrip UI using Coil)
+- `report.md` (MODIFIED - Appended Step 4 report)
 
 ---
 
@@ -92,7 +115,7 @@ Execute the following commands in terminal:
 
 ```bash
 git add .
-git commit -m "fix(camera): correct jpeg orientation and add gallery thumbnail"
-git push -u origin fix/camera-rotation-ui
-gh pr create --title "fix(camera): orientation and thumbnail" --body "Fixes rotated saves and adds UI thumbnail" --base dev --head fix/camera-rotation-ui
+git commit -m "feat(camera): add persistent filmstrip for last 4 photos"
+git push -u origin feature/persistent-filmstrip
+gh pr create --title "feat(camera): persistent filmstrip" --body "Adds MediaStore query to show last 4 photos persistently" --base dev --head feature/persistent-filmstrip
 ```
