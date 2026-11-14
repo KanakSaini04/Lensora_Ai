@@ -19,6 +19,9 @@
 12. Give exact fix prompts for Gemini.
 13. Say clearly what is working, untested, and pending.
 
+## MANDATORY STEP EXECUTION
+16. Every step MUST include: documentation update, testing, code check, git commit, git push, and PR creation.
+
 ## STYLE
 14. Short, clear answers. No long theory.
 15. End every answer with: "Next step: ..."
