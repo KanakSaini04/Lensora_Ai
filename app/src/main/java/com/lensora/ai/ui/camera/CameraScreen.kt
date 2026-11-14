@@ -166,6 +166,13 @@ fun CameraScreen(
                     selectedZoom = selectedZoom,
                     onZoomSelected = { level ->
                         selectedZoom = level
+                        val ratio = when (level) {
+                            "0.6x" -> 0.6f
+                            "2x" -> 2.0f
+                            "3x" -> 3.0f
+                            else -> 1.0f
+                        }
+                        cameraController.setZoomRatio(ratio)
                         Toast.makeText(context, "Zoom: $level", Toast.LENGTH_SHORT).show()
                     },
                     modifier = Modifier.padding(bottom = 12.dp)

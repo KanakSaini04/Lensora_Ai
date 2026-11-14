@@ -43,6 +43,10 @@ class CameraController(
     private var previewRequestBuilder: CaptureRequest.Builder? = null
     private var sensorOrientation: Int = 90
 
+    private var minZoomRatio: Float = 1.0f
+    private var maxZoomRatio: Float = 10.0f
+    private var currentZoomRatio: Float = 1.0f
+
     fun startBackgroundThread() {
         if (backgroundThread == null) {
             val thread = HandlerThread("CameraBackground").apply { start() }
@@ -82,6 +86,11 @@ class CameraController(
             val characteristics = cameraManager.getCameraCharacteristics(currentCameraId)
 
             sensorOrientation = characteristics.get(CameraCharacteristics.SENSOR_ORIENTATION) ?: 90
+
+            val zoomRange = characteristics.get(CameraCharacteristics.CONTROL_ZOOM_RATIO_RANGE)
+            minZoomRatio = zoomRange?.lower ?: 1.0f
+            maxZoomRatio = zoomRange?.upper
+                ?: (characteristics.get(CameraCharacteristics.SCALER_AVAILABLE_MAX_DIGITAL_ZOOM) ?: 10.0f)
 
             val map = characteristics.get(CameraCharacteristics.SCALER_STREAM_CONFIGURATION_MAP)
                 ?: return
@@ -137,6 +146,10 @@ class CameraController(
                 CaptureRequest.CONTROL_AF_MODE,
                 CaptureRequest.CONTROL_AF_MODE_CONTINUOUS_PICTURE,
             )
+            builder.set(
+                CaptureRequest.CONTROL_ZOOM_RATIO,
+                currentZoomRatio.coerceIn(minZoomRatio, maxZoomRatio),
+            )
             previewRequestBuilder = builder
 
             val outputs = listOf(
@@ -181,6 +194,21 @@ class CameraController(
         }
     }
 
+    fun setZoomRatio(ratio: Float) {
+        try {
+            val builder = previewRequestBuilder ?: return
+            val session = captureSession ?: return
+
+            val clampedRatio = ratio.coerceIn(minZoomRatio, maxZoomRatio)
+            currentZoomRatio = clampedRatio
+
+            builder.set(CaptureRequest.CONTROL_ZOOM_RATIO, clampedRatio)
+            session.setRepeatingRequest(builder.build(), null, backgroundHandler)
+        } catch (e: Exception) {
+            Log.e(tag, "Error setting zoom ratio", e)
+        }
+    }
+
     fun takePicture(
         displayRotationDegrees: Int,
         onPhotoSaved: (Uri, String) -> Unit,
@@ -205,6 +233,10 @@ class CameraController(
             captureBuilder.set(
                 CaptureRequest.CONTROL_AF_MODE,
                 CaptureRequest.CONTROL_AF_MODE_CONTINUOUS_PICTURE,
+            )
+            captureBuilder.set(
+                CaptureRequest.CONTROL_ZOOM_RATIO,
+                currentZoomRatio.coerceIn(minZoomRatio, maxZoomRatio),
             )
 
             // Calculate correct JPEG orientation
