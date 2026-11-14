@@ -49,6 +49,7 @@ dependencies {
     implementation(libs.androidx.hilt.navigation.compose)
     implementation(libs.hilt.android)
     implementation(libs.coil.compose)
+    implementation(libs.tensorflow.lite)
     ksp(libs.hilt.compiler)
 
     testImplementation(libs.junit)

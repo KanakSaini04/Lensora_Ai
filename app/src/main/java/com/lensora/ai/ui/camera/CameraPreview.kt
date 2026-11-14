@@ -12,6 +12,7 @@ import com.lensora.ai.camera.CameraController
 fun CameraPreview(
     cameraController: CameraController,
     modifier: Modifier = Modifier,
+    onTextureViewCreated: ((TextureView) -> Unit)? = null,
 ) {
     AndroidView(
         factory = { context ->
@@ -46,6 +47,7 @@ fun CameraPreview(
                         cameraController.openCamera(surface, width, height)
                     }
                 }
+                onTextureViewCreated?.invoke(this)
             }
         },
         modifier = modifier.fillMaxSize(),

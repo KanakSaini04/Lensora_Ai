@@ -5,7 +5,9 @@ import android.content.Context
 import android.content.pm.PackageManager
 import android.net.Uri
 import android.os.Build
+import android.util.Log
 import android.view.Surface
+import android.view.TextureView
 import android.view.WindowManager
 import android.widget.Toast
 import androidx.activity.compose.rememberLauncherForActivityResult
@@ -61,6 +63,7 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.core.content.ContextCompat
 import coil.compose.AsyncImage
+import com.lensora.ai.ai.SceneClassifier
 import com.lensora.ai.camera.CameraController
 import com.lensora.ai.camera.CameraMode
 import com.lensora.ai.data.GalleryRepository
@@ -69,7 +72,10 @@ import com.lensora.ai.ui.theme.ColorMutedGray
 import com.lensora.ai.ui.theme.ColorWhite
 import com.lensora.ai.ui.theme.PitchBlackBackground
 import com.lensora.ai.ui.theme.RoyalBlue
+import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.delay
+import kotlinx.coroutines.isActive
+import kotlinx.coroutines.withContext
 import java.util.Locale
 
 @Composable
@@ -101,6 +107,8 @@ fun CameraScreen(
     if (hasCameraPermission) {
         val cameraController = remember { CameraController(context) }
         val galleryRepository = remember { GalleryRepository(context) }
+        val sceneClassifier = remember { SceneClassifier(context) }
+
         var recentPhotos by remember { mutableStateOf<List<Uri>>(emptyList()) }
         var selectedMode by remember { mutableStateOf(CameraMode.PHOTO) }
         var selectedZoom by remember { mutableStateOf("1x") }
@@ -109,16 +117,45 @@ fun CameraScreen(
         var focusTapOffset by remember { mutableStateOf<Offset?>(null) }
         var isGridVisible by remember { mutableStateOf(false) }
         var flashMode by remember { mutableStateOf(CameraController.FlashMode.AUTO) }
+        var aiBadgeText by remember { mutableStateOf("\u2728 AI: Auto") }
+        var textureViewRef by remember { mutableStateOf<TextureView?>(null) }
 
         DisposableEffect(Unit) {
             onDispose {
                 cameraController.closeCamera()
+                sceneClassifier.close()
             }
         }
 
         LaunchedEffect(hasCameraPermission) {
             if (hasCameraPermission) {
                 recentPhotos = galleryRepository.getRecentPhotos(limit = 10)
+            }
+        }
+
+        // Periodic 500ms AI Scene Analysis Loop (2 FPS on Dispatchers.Default)
+        LaunchedEffect(textureViewRef) {
+            withContext(Dispatchers.Default) {
+                sceneClassifier.initialize()
+                while (isActive) {
+                    delay(500)
+                    try {
+                        val view = textureViewRef
+                        if (view != null && view.isAvailable) {
+                            val bitmap = withContext(Dispatchers.Main) {
+                                view.getBitmap(224, 224)
+                            }
+                            if (bitmap != null) {
+                                val label = sceneClassifier.analyze(bitmap)
+                                withContext(Dispatchers.Main) {
+                                    aiBadgeText = label
+                                }
+                            }
+                        }
+                    } catch (e: Exception) {
+                        Log.e("CameraScreen", "Error during AI preview analysis", e)
+                    }
+                }
             }
         }
 
@@ -145,6 +182,9 @@ fun CameraScreen(
             CameraPreview(
                 cameraController = cameraController,
                 modifier = Modifier.fillMaxSize(),
+                onTextureViewCreated = { view ->
+                    textureViewRef = view
+                },
             )
 
             // 3x3 Canvas Grid Overlay
@@ -214,12 +254,12 @@ fun CameraScreen(
                 },
             )
 
-            // Frosted Glass AI Badge at Top Center (Unicode \u2728 string encoding)
+            // Frosted Glass AI Badge at Top Center (Driven dynamically by SceneClassifier)
             AiBadge(
                 modifier = Modifier
                     .align(Alignment.TopCenter)
                     .padding(top = 56.dp),
-                statusText = "\u2728 AI: Auto",
+                statusText = aiBadgeText,
             )
 
             // Bottom Overlays: Zoom Pills + Mode Carousel + Shutter & Thumbnail Controls
