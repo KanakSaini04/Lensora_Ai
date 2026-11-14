@@ -28,6 +28,8 @@ import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.currentBackStackEntryAsState
 import androidx.navigation.compose.rememberNavController
+import com.lensora.ai.ui.probe.ProbeLabScreen
+import com.lensora.ai.ui.settings.SettingsScreen
 import com.lensora.ai.ui.theme.CharcoalSurface
 import com.lensora.ai.ui.theme.ColorMutedGray
 import com.lensora.ai.ui.theme.ColorWhite
@@ -50,49 +52,55 @@ sealed class NavScreen(
     }
 }
 
+const val ROUTE_PROBE_LAB = "probe_lab"
+
 @Composable
 fun AppNavigation(
     navController: NavHostController = rememberNavController(),
 ) {
+    val navBackStackEntry by navController.currentBackStackEntryAsState()
+    val currentRoute = navBackStackEntry?.destination?.route
+
+    val isTopLevelRoute = NavScreen.items.any { it.route == currentRoute }
+
     Scaffold(
         bottomBar = {
-            NavigationBar(
-                containerColor = CharcoalSurface,
-                contentColor = ColorWhite,
-            ) {
-                val navBackStackEntry by navController.currentBackStackEntryAsState()
-                val currentRoute = navBackStackEntry?.destination?.route
-
-                NavScreen.items.forEach { screen ->
-                    val selected = currentRoute == screen.route
-                    NavigationBarItem(
-                        icon = {
-                            Icon(
-                                imageVector = screen.icon,
-                                contentDescription = screen.title,
-                            )
-                        },
-                        label = { Text(screen.title) },
-                        selected = selected,
-                        colors = NavigationBarItemDefaults.colors(
-                            selectedIconColor = RoyalBlue,
-                            selectedTextColor = RoyalBlue,
-                            indicatorColor = CharcoalSurface,
-                            unselectedIconColor = ColorMutedGray,
-                            unselectedTextColor = ColorMutedGray,
-                        ),
-                        onClick = {
-                            if (currentRoute != screen.route) {
-                                navController.navigate(screen.route) {
-                                    popUpTo(navController.graph.findStartDestination().id) {
-                                        saveState = true
+            if (isTopLevelRoute) {
+                NavigationBar(
+                    containerColor = CharcoalSurface,
+                    contentColor = ColorWhite,
+                ) {
+                    NavScreen.items.forEach { screen ->
+                        val selected = currentRoute == screen.route
+                        NavigationBarItem(
+                            icon = {
+                                Icon(
+                                    imageVector = screen.icon,
+                                    contentDescription = screen.title,
+                                )
+                            },
+                            label = { Text(screen.title) },
+                            selected = selected,
+                            colors = NavigationBarItemDefaults.colors(
+                                selectedIconColor = RoyalBlue,
+                                selectedTextColor = RoyalBlue,
+                                indicatorColor = CharcoalSurface,
+                                unselectedIconColor = ColorMutedGray,
+                                unselectedTextColor = ColorMutedGray,
+                            ),
+                            onClick = {
+                                if (currentRoute != screen.route) {
+                                    navController.navigate(screen.route) {
+                                        popUpTo(navController.graph.findStartDestination().id) {
+                                            saveState = true
+                                        }
+                                        launchSingleTop = true
+                                        restoreState = true
                                     }
-                                    launchSingleTop = true
-                                    restoreState = true
                                 }
-                            }
-                        },
-                    )
+                            },
+                        )
+                    }
                 }
             }
         },
@@ -106,7 +114,16 @@ fun AppNavigation(
             composable(NavScreen.Studio.route) { TabContent(title = "Studio Screen") }
             composable(NavScreen.Gallery.route) { TabContent(title = "Gallery Screen") }
             composable(NavScreen.Vibes.route) { TabContent(title = "Vibes Screen") }
-            composable(NavScreen.Settings.route) { TabContent(title = "Settings Screen") }
+            composable(NavScreen.Settings.route) {
+                SettingsScreen(
+                    onOpenProbeLab = { navController.navigate(ROUTE_PROBE_LAB) }
+                )
+            }
+            composable(ROUTE_PROBE_LAB) {
+                ProbeLabScreen(
+                    onNavigateBack = { navController.popBackStack() }
+                )
+            }
         }
     }
 }
