@@ -54,3 +54,6 @@
   - Added `getAllPhotos()` in `GalleryRepository.kt` to query all MediaStore images in `Pictures/Lensora_Ai`.
   - Created `GalleryScreen.kt` using Compose `LazyVerticalStaggeredGrid` (2 columns) with Coil `AsyncImage` and `CircularProgressIndicator` loading state.
   - Wired `GalleryScreen` into `Navigation.kt` shell with photo click navigation to `QuickViewScreen`.
+- [x] **Step 15: Settings Tab UI & AI Center Skeleton**
+  - Redesigned `SettingsScreen.kt` into a full scrollable control room using Material 3 `ListItem`, `Switch`, and `Scaffold`.
+  - Added AI Control Center, Cloud Sync toggle, Manage AI Engines, Storage & Cache cleaner, Hardware Probe Lab launcher, and About sections in Obsidian Royal theme.
