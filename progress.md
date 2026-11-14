@@ -27,3 +27,7 @@
   - Implemented Flash Mode cycling (`OFF`, `ON`, `AUTO`) in `CameraTopBar` & `CameraController`.
   - Implemented 3x3 Canvas Grid Overlay driven by Grid toggle.
   - Fixed Unicode string encoding for AI Badge (`\u2728 AI: Auto`).
+- [x] **Step 9: Camera Mode Selection State Wiring**
+  - Created `CameraMode.kt` enum (`AI_AUTO`, `PHOTO`, `PORTRAIT`, `VIDEO`, `PRO`).
+  - Implemented `setCameraMode(mode: CameraMode)` in `CameraController.kt` with Camera2 request scene mode updates.
+  - Bound mode selection state in `CameraModeCarousel.kt` and `CameraScreen.kt` with Royal Blue highlight animation.

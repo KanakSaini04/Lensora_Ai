@@ -17,25 +17,14 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import com.lensora.ai.camera.CameraMode
 import com.lensora.ai.ui.theme.ColorWhite
 import com.lensora.ai.ui.theme.RoyalBlue
 
-enum class CameraMode(val displayName: String) {
-    AI_AUTO("AI AUTO"),
-    PHOTO("PHOTO"),
-    PORTRAIT("PORTRAIT"),
-    VIDEO("VIDEO"),
-    PRO("PRO");
-
-    companion object {
-        val modes = entries.map { it.displayName }
-    }
-}
-
 @Composable
 fun CameraModeCarousel(
-    selectedMode: String,
-    onModeSelected: (String) -> Unit,
+    selectedMode: CameraMode,
+    onModeSelected: (CameraMode) -> Unit,
     modifier: Modifier = Modifier,
 ) {
     val listState = rememberLazyListState()
@@ -61,7 +50,7 @@ fun CameraModeCarousel(
                 contentAlignment = Alignment.Center,
             ) {
                 Text(
-                    text = mode,
+                    text = mode.displayName,
                     color = if (isSelected) RoyalBlue else ColorWhite,
                     fontWeight = if (isSelected) FontWeight.Bold else FontWeight.Medium,
                     fontSize = 13.sp,

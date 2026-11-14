@@ -62,6 +62,7 @@ import androidx.compose.ui.unit.sp
 import androidx.core.content.ContextCompat
 import coil.compose.AsyncImage
 import com.lensora.ai.camera.CameraController
+import com.lensora.ai.camera.CameraMode
 import com.lensora.ai.data.GalleryRepository
 import com.lensora.ai.ui.theme.CharcoalSurface
 import com.lensora.ai.ui.theme.ColorMutedGray
@@ -101,7 +102,7 @@ fun CameraScreen(
         val cameraController = remember { CameraController(context) }
         val galleryRepository = remember { GalleryRepository(context) }
         var recentPhotos by remember { mutableStateOf<List<Uri>>(emptyList()) }
-        var selectedMode by remember { mutableStateOf(CameraMode.PHOTO.displayName) }
+        var selectedMode by remember { mutableStateOf(CameraMode.PHOTO) }
         var selectedZoom by remember { mutableStateOf("1x") }
         var currentZoomRatio by remember { mutableFloatStateOf(1.0f) }
 
@@ -250,7 +251,10 @@ fun CameraScreen(
                 // Horizontal Scrollable Camera Mode Carousel
                 CameraModeCarousel(
                     selectedMode = selectedMode,
-                    onModeSelected = { selectedMode = it },
+                    onModeSelected = { mode ->
+                        selectedMode = mode
+                        cameraController.setCameraMode(mode)
+                    },
                     modifier = Modifier
                         .fillMaxWidth()
                         .padding(bottom = 12.dp),
