@@ -43,10 +43,12 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
+import androidx.compose.ui.unit.sp
 import androidx.core.content.ContextCompat
 import coil.compose.AsyncImage
 import com.lensora.ai.camera.CameraController
@@ -88,6 +90,7 @@ fun CameraScreen(
         val galleryRepository = remember { GalleryRepository(context) }
         var recentPhotos by remember { mutableStateOf<List<Uri>>(emptyList()) }
         var selectedMode by remember { mutableStateOf(CameraMode.PHOTO.displayName) }
+        var selectedZoom by remember { mutableStateOf("1x") }
 
         DisposableEffect(Unit) {
             onDispose {
@@ -143,7 +146,14 @@ fun CameraScreen(
                 },
             )
 
-            // Bottom Overlays: Camera Mode Carousel + Shutter & Thumbnail Controls
+            // Frosted Glass AI Badge at Top Center
+            AiBadge(
+                modifier = Modifier
+                    .align(Alignment.TopCenter)
+                    .padding(top = 56.dp)
+            )
+
+            // Bottom Overlays: Zoom Pills + Mode Carousel + Shutter & Thumbnail Controls
             Column(
                 modifier = Modifier
                     .align(Alignment.BottomCenter)
@@ -151,6 +161,16 @@ fun CameraScreen(
                     .padding(bottom = 24.dp),
                 horizontalAlignment = Alignment.CenterHorizontally,
             ) {
+                // Zoom Pills Container (0.6x, 1x, 2x, 3x)
+                ZoomPills(
+                    selectedZoom = selectedZoom,
+                    onZoomSelected = { level ->
+                        selectedZoom = level
+                        Toast.makeText(context, "Zoom: $level", Toast.LENGTH_SHORT).show()
+                    },
+                    modifier = Modifier.padding(bottom = 12.dp)
+                )
+
                 // Horizontal Scrollable Camera Mode Carousel
                 CameraModeCarousel(
                     selectedMode = selectedMode,
@@ -274,6 +294,65 @@ fun CameraScreen(
                         fontWeight = FontWeight.Bold,
                     )
                 }
+            }
+        }
+    }
+}
+
+@Composable
+private fun AiBadge(
+    modifier: Modifier = Modifier,
+    statusText: String = "✨ AI: Auto"
+) {
+    Box(
+        modifier = modifier
+            .clip(CircleShape)
+            .background(CharcoalSurface.copy(alpha = 0.75f))
+            .border(width = 1.dp, color = ColorWhite.copy(alpha = 0.25f), shape = CircleShape)
+            .padding(horizontal = 14.dp, vertical = 6.dp),
+        contentAlignment = Alignment.Center
+    ) {
+        Text(
+            text = statusText,
+            color = ColorWhite,
+            fontSize = 12.sp,
+            fontWeight = FontWeight.Bold
+        )
+    }
+}
+
+@Composable
+private fun ZoomPills(
+    selectedZoom: String,
+    onZoomSelected: (String) -> Unit,
+    modifier: Modifier = Modifier,
+    zoomLevels: List<String> = listOf("0.6x", "1x", "2x", "3x")
+) {
+    Row(
+        modifier = modifier
+            .clip(CircleShape)
+            .background(CharcoalSurface.copy(alpha = 0.8f))
+            .border(width = 1.dp, color = ColorWhite.copy(alpha = 0.15f), shape = CircleShape)
+            .padding(horizontal = 6.dp, vertical = 4.dp),
+        horizontalArrangement = Arrangement.spacedBy(4.dp),
+        verticalAlignment = Alignment.CenterVertically
+    ) {
+        zoomLevels.forEach { level ->
+            val isSelected = level == selectedZoom
+            Box(
+                modifier = Modifier
+                    .size(34.dp)
+                    .clip(CircleShape)
+                    .background(if (isSelected) RoyalBlue else Color.Transparent)
+                    .clickable { onZoomSelected(level) },
+                contentAlignment = Alignment.Center
+            ) {
+                Text(
+                    text = level,
+                    color = ColorWhite,
+                    fontSize = 11.sp,
+                    fontWeight = if (isSelected) FontWeight.Bold else FontWeight.Medium
+                )
             }
         }
     }
