@@ -3,6 +3,7 @@
 ## 1. HARDWARE & CONSTRAINTS
 - Device: Redmi Note 13 Pro 5G (8GB RAM, Android 16, HyperOS 3.0, 200MP sensor).
 - Constraints: 100% offline AI, no cloud API costs, zero OOM/HAL crashes.
+- Probe Audit Finding: 200MP direct capture is FAILED on this hardware. Fallback to 12.5MP capture + Real-ESRGAN AI upscale for Ultra-Res.
 
 ## 2. ARCHITECTURE (L0-L4)
 - L0 Safe Core: Camera2, capture journal (.tmp rename), thermal guard, storage guard. NEVER depends on AI.
