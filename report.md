@@ -77,35 +77,38 @@ Phase 1, Step 3 implements the **L0 Safe Core Camera2 Engine** providing edge-to
 
 ---
 
-# Phase 1, Step 4 Report: Persistent Filmstrip Thumbnail
+# Phase 1, Step 4 Report: Single Thumbnail & Quick View Fullscreen Viewer
 
 ## Executive Summary
 
-Phase 1, Step 4 implements a **Persistent Filmstrip** in the Camera UI. The last 4 captured photos saved in `Pictures/Lensora_Ai` are queried asynchronously from `MediaStore` upon app launch and displayed as a horizontal filmstrip in the bottom-left corner. New captures prepend instantly to the filmstrip.
+Phase 1, Step 4 establishes standard camera UX by placing a **Single Circular Gallery Thumbnail** (52dp, 2dp white border) in the bottom-left corner of `CameraScreen.kt` and a swipable **`QuickViewScreen.kt`** fullscreen image viewer using Compose `HorizontalPager` to swipe through the last 10 photos saved in `Pictures/Lensora_Ai`.
 
 ---
 
-## 1. Persistent MediaStore Query & Filmstrip UI
+## 1. Single Thumbnail & Quick View Features
 
-1. **`GalleryRepository.kt`**:
-   - Queries `MediaStore.Images.Media.EXTERNAL_CONTENT_URI` on `Dispatchers.IO` to prevent UI thread lag.
-   - Filters photos saved under `Pictures/Lensora_Ai` ordered by `DATE_ADDED DESC`.
-   - Returns the latest 4 photo URIs.
+1. **`CameraScreen.kt`**:
+   - Standard camera UI pattern: Single circular thumbnail (52dp) in the bottom-left corner.
+   - Displays latest captured photo loaded via Coil `AsyncImage`.
+   - On click, navigates to `quick_view` route.
 
-2. **`CameraScreen.kt` & Coil Integration**:
-   - Added Coil Compose (`coil-compose:2.7.0`) for image loading.
-   - Queries `GalleryRepository` on startup to load persistent photo URIs across app restarts.
-   - Updates filmstrip state instantly upon new photo capture (`(listOf(newUri) + currentPhotos).take(4)`).
+2. **`QuickViewScreen.kt`**:
+   - Fullscreen Pitch Black (`#0E0E0E`) viewer using Compose `HorizontalPager`.
+   - Asynchronously queries `GalleryRepository.getRecentPhotos(limit = 10)` on `Dispatchers.IO`.
+   - TopAppBar with Back button and photo counter.
+
+3. **`GalleryRepository.kt`**:
+   - Queries `MediaStore.Images.Media.EXTERNAL_CONTENT_URI` for up to 10 photos in `Pictures/Lensora_Ai` ordered by `DATE_ADDED DESC`.
 
 ---
 
 ## 2. Files Touched in Step 4
 
-- `gradle/libs.versions.toml` (MODIFIED - Added `coil = "2.7.0"` and `coil-compose`)
-- `app/build.gradle.kts` (MODIFIED - Added `implementation(libs.coil.compose)`)
-- `app/src/main/java/com/lensora/ai/data/GalleryRepository.kt` (NEW - MediaStore persistent query)
-- `app/src/main/java/com/lensora/ai/ui/camera/CameraScreen.kt` (MODIFIED - Persistent filmstrip UI using Coil)
-- `report.md` (MODIFIED - Appended Step 4 report)
+- `app/src/main/java/com/lensora/ai/data/GalleryRepository.kt` (MODIFIED - Fetches up to 10 photos)
+- `app/src/main/java/com/lensora/ai/ui/camera/CameraScreen.kt` (MODIFIED - Single circular thumbnail shortcut)
+- `app/src/main/java/com/lensora/ai/ui/gallery/QuickViewScreen.kt` (NEW - Swipable HorizontalPager viewer)
+- `app/src/main/java/com/lensora/ai/ui/navigation/Navigation.kt` (MODIFIED - Added `quick_view` route)
+- `report.md` (MODIFIED - Appended Quick View report)
 
 ---
 
@@ -115,7 +118,7 @@ Execute the following commands in terminal:
 
 ```bash
 git add .
-git commit -m "feat(camera): add persistent filmstrip for last 4 photos"
-git push -u origin feature/persistent-filmstrip
-gh pr create --title "feat(camera): persistent filmstrip" --body "Adds MediaStore query to show last 4 photos persistently" --base dev --head feature/persistent-filmstrip
+git commit -m "fix(ui): standard single thumbnail and fullscreen quick view"
+git push -u origin fix/quick-view-ui
+gh pr create --title "fix(ui): standard thumbnail and quick view" --body "Replaces filmstrip with standard single thumbnail and swipable fullscreen viewer" --base dev --head fix/quick-view-ui
 ```
