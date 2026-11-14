@@ -58,6 +58,7 @@ Phase 1, Step 3 implements the **L0 Safe Core Camera2 Engine** providing edge-to
 
 1. **`CameraController.kt`**:
    - Pure Camera2 API wrapper managing background thread handler, camera open/close lifecycle, continuous auto-focus, and capture sessions.
+   - **JPEG Orientation Calculation**: Fixed 90-degree photo rotation bug by calculating `JPEG_ORIENTATION = (sensorOrientation - deviceRotationDegrees + 360) % 360`.
    - **L0 Atomic Capture (.tmp rename)**:
      1. Captures JPEG bytes from `ImageReader`.
      2. Writes temporary file `cacheDir/LENSORA_TIMESTAMP.jpg.tmp`.
@@ -69,22 +70,19 @@ Phase 1, Step 3 implements the **L0 Safe Core Camera2 Engine** providing edge-to
 2. **`CameraPreview.kt`**:
    - `AndroidView` wrapping a `TextureView` for edge-to-edge hardware-accelerated preview rendering.
 
-3. **`CameraScreen.kt` & Permission Handling**:
+3. **`CameraScreen.kt` & UI Enhancements**:
    - Handles `CAMERA` runtime permission checks safely.
    - Displays black screen with "Grant Permission" button when permission is not granted.
    - Floating double-concentric white circle shutter button in Obsidian Royal styling.
+   - **Gallery Thumbnail Preview**: Displays a rounded thumbnail in bottom left corner showing the last captured photo loaded directly from MediaStore.
 
 ---
 
-## 2. Files Touched in Step 3
+## 2. Files Touched in Step 3 Follow-up
 
-- `agent.md` (MODIFIED - Enforced mandatory step execution rule 16)
-- `report.md` (MODIFIED - Appended Step 3 report)
-- `app/src/main/AndroidManifest.xml` (MODIFIED - Added CAMERA permission and camera2 feature tags)
-- `app/src/main/java/com/lensora/ai/camera/CameraController.kt` (NEW - Camera2 API controller with atomic MediaStore save)
-- `app/src/main/java/com/lensora/ai/ui/camera/CameraPreview.kt` (NEW - TextureView Compose wrapper)
-- `app/src/main/java/com/lensora/ai/ui/camera/CameraScreen.kt` (NEW - Edge-to-edge preview & shutter button)
-- `app/src/main/java/com/lensora/ai/ui/navigation/Navigation.kt` (MODIFIED - Connected CameraScreen to Camera tab route)
+- `app/src/main/java/com/lensora/ai/camera/CameraController.kt` (MODIFIED - Calculated JPEG_ORIENTATION)
+- `app/src/main/java/com/lensora/ai/ui/camera/CameraScreen.kt` (MODIFIED - Added gallery thumbnail preview)
+- `report.md` (MODIFIED - Appended camera rotation & UI thumbnail report)
 
 ---
 
@@ -93,9 +91,8 @@ Phase 1, Step 3 implements the **L0 Safe Core Camera2 Engine** providing edge-to
 Execute the following commands in terminal:
 
 ```bash
-git checkout -b feature/camera-engine
 git add .
-git commit -m "feat(camera): implement camera2 live preview and atomic mediaStore capture"
-git push -u origin feature/camera-engine
-gh pr create --title "feat(camera): camera2 preview & capture engine" --body "Phase 1 Step 3: L0 Safe Core Camera2 Preview and MediaStore Atomic Capture" --base dev --head feature/camera-engine
+git commit -m "fix(camera): correct jpeg orientation and add gallery thumbnail"
+git push -u origin fix/camera-rotation-ui
+gh pr create --title "fix(camera): orientation and thumbnail" --body "Fixes rotated saves and adds UI thumbnail" --base dev --head fix/camera-rotation-ui
 ```

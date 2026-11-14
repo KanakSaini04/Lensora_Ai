@@ -14,6 +14,7 @@ import android.hardware.camera2.TotalCaptureResult
 import android.hardware.camera2.params.OutputConfiguration
 import android.hardware.camera2.params.SessionConfiguration
 import android.media.ImageReader
+import android.net.Uri
 import android.os.Handler
 import android.os.HandlerThread
 import android.provider.MediaStore
@@ -40,6 +41,7 @@ class CameraController(
     private var previewSurface: Surface? = null
     private var cameraId: String? = null
     private var previewRequestBuilder: CaptureRequest.Builder? = null
+    private var sensorOrientation: Int = 90
 
     fun startBackgroundThread() {
         if (backgroundThread == null) {
@@ -79,10 +81,11 @@ class CameraController(
             val currentCameraId = cameraId ?: cameraManager.cameraIdList.firstOrNull() ?: return
             val characteristics = cameraManager.getCameraCharacteristics(currentCameraId)
 
+            sensorOrientation = characteristics.get(CameraCharacteristics.SENSOR_ORIENTATION) ?: 90
+
             val map = characteristics.get(CameraCharacteristics.SCALER_STREAM_CONFIGURATION_MAP)
                 ?: return
 
-            // Standard optimal 12.5MP capture size
             val jpegSizes = map.getOutputSizes(ImageFormat.JPEG) ?: emptyArray()
             val captureSize = jpegSizes.maxByOrNull { it.width * it.height } ?: Size(1920, 1080)
 
@@ -178,7 +181,11 @@ class CameraController(
         }
     }
 
-    fun takePicture(onPhotoSaved: (String) -> Unit, onError: (String) -> Unit) {
+    fun takePicture(
+        displayRotationDegrees: Int,
+        onPhotoSaved: (Uri, String) -> Unit,
+        onError: (String) -> Unit,
+    ) {
         try {
             val device = cameraDevice ?: run {
                 onError("Camera device unavailable")
@@ -199,6 +206,10 @@ class CameraController(
                 CaptureRequest.CONTROL_AF_MODE,
                 CaptureRequest.CONTROL_AF_MODE_CONTINUOUS_PICTURE,
             )
+
+            // Calculate correct JPEG orientation
+            val jpegOrientation = (sensorOrientation - displayRotationDegrees + 360) % 360
+            captureBuilder.set(CaptureRequest.JPEG_ORIENTATION, jpegOrientation)
 
             reader.setOnImageAvailableListener({ imageReader ->
                 backgroundHandler?.post {
@@ -246,7 +257,7 @@ class CameraController(
                             resolver.update(uri, contentValues, null, null)
 
                             tmpFile.delete()
-                            onPhotoSaved("Saved: Pictures/Lensora_Ai/$fileName")
+                            onPhotoSaved(uri, "Saved: Pictures/Lensora_Ai/$fileName")
                         } else {
                             onError("Failed to insert MediaStore entry")
                         }
