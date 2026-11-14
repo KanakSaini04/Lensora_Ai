@@ -1,6 +1,6 @@
 # Lensora_Ai Development Progress Tracker
 
-## Phase 1: Skeleton, Hardware Probes & Safe Core Engine
+## Phase 1: Skeleton, Hardware Probes & Safe Core Engine (100% COMPLETE)
 
 - [x] **Step 1: Project Skeleton & Obsidian Royal UI**
   - Gradle, Hilt, Material 3 Theme (#2563EB, #131313, #0E0E0E), 5-tab Bottom Navigation Shell.
@@ -31,3 +31,6 @@
   - Created `CameraMode.kt` enum (`AI_AUTO`, `PHOTO`, `PORTRAIT`, `VIDEO`, `PRO`).
   - Implemented `setCameraMode(mode: CameraMode)` in `CameraController.kt` with Camera2 request scene mode updates.
   - Bound mode selection state in `CameraModeCarousel.kt` and `CameraScreen.kt` with Royal Blue highlight animation.
+- [x] **Step 10: L0 Safe Core Guards (Thermal & Storage)**
+  - Implemented `StatFs` Storage Guard blocking photo captures if available storage is < 2GB.
+  - Implemented `PowerManager.OnThermalStatusChangedListener` Thermal Guard logging status changes (NONE, LIGHT, MODERATE, SEVERE, CRITICAL).

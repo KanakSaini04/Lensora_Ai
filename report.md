@@ -4,7 +4,7 @@
 
 **Lensora_Ai** (`com.lensora.ai`) is an AI-first computational camera application built on Android 16 (API 36) using Jetpack Compose, Material 3 (Obsidian Royal Theme), Hilt dependency injection, and a pure **Camera2 L0 Safe Core HAL Engine** (strictly zero CameraX dependencies).
 
-This report presents a complete end-to-end audit of all implemented components, hardware capability probe results, L0 atomic capture journals, UI overlays, camera hardware zoom control engines, tap-to-focus metering, flash controls, mode selection state wiring, and live device/emulator verification results.
+This report presents a complete end-to-end audit of all implemented components, hardware capability probe results, L0 atomic capture journals, UI overlays, camera hardware zoom control engines, tap-to-focus metering, flash controls, mode selection state wiring, thermal/storage guards, and live device/emulator verification results.
 
 ---
 
@@ -122,12 +122,25 @@ The **Probe Lab** audits camera hardware capabilities at runtime without opening
 
 ---
 
-## 10. Verification & Crash Audit Results
+## 10. Phase 1, Step 10: L0 Safe Core Guards (Thermal & Storage)
+
+1. **Storage Guard (`checkAvailableStorageBytes`)**:
+   - `CameraController.kt` checks available disk space via `StatFs(cacheDir)`.
+   - If available space is less than **2 GB** (2 * 1024 * 1024 * 1024 bytes), still capture in `takePicture()` is automatically blocked and error callback triggers a Toast warning: `"Storage Low: ... Minimum 2GB space required."`
+2. **Thermal Guard (`PowerManager.OnThermalStatusChangedListener`)**:
+   - Attaches `PowerManager.OnThermalStatusChangedListener` in `openCamera()`.
+   - Monitors device thermal throttling state (`NONE`, `LIGHT`, `MODERATE`, `SEVERE`, `CRITICAL`, `EMERGENCY`, `SHUTDOWN`).
+   - Logs warnings when thermal state hits `SEVERE` or `CRITICAL`.
+   - Automatically unregisters listener on `closeCamera()`.
+
+---
+
+## 11. Verification & Crash Audit Results
 
 - **Build Status**: `./gradlew assembleDebug` & `./gradlew installDebug` - **100% SUCCESS**.
 - **Static Code Analysis**: Analyzed all 20 Kotlin source files in `app/src/main/java` - **0 Errors, 0 Warnings**.
 - **Live Device & Emulator Audit**: Physical **Xiaomi Redmi Note 13 Pro 5G** and **Android Studio Emulator (`emulator-5554`)**.
-- **Mode Transition Audit**: Confirmed via `adb logcat`:
-  - `CameraController: Camera mode changed to: PORTRAIT (PORTRAIT)`
-  - `CameraController: Camera mode changed to: PRO (PRO)`
+- **Thermal Audit**: Confirmed via `adb logcat`:
+  - `CameraController: Thermal Guard initialized. Current status code: 0`
+  - `CameraController: Thermal Guard Status: NONE`
 - **Logcat Crash Audit**: Verified **0 Runtime Crashes (`AndroidRuntime:E`)**.
