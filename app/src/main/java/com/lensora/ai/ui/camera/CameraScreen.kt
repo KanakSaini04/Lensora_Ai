@@ -126,23 +126,24 @@ fun CameraScreen(
         Box(
             modifier = Modifier
                 .fillMaxSize()
-                .background(PitchBlackBackground)
-                .pointerInput(Unit) {
-                    detectTransformGestures { _, _, zoomChange, _ ->
-                        currentZoomRatio = (currentZoomRatio * zoomChange).coerceIn(0.6f, 10.0f)
-                        cameraController.setZoomRatio(currentZoomRatio)
-                        selectedZoom = if (currentZoomRatio % 1f == 0f) {
-                            "${currentZoomRatio.toInt()}x"
-                        } else {
-                            String.format(Locale.US, "%.1fx", currentZoomRatio)
-                        }
-                    }
-                },
+                .background(PitchBlackBackground),
         ) {
-            // Edge-to-edge Live Camera Viewfinder
+            // Edge-to-edge Live Camera Viewfinder with Pinch Gesture handling
             CameraPreview(
                 cameraController = cameraController,
-                modifier = Modifier.fillMaxSize(),
+                modifier = Modifier
+                    .fillMaxSize()
+                    .pointerInput(Unit) {
+                        detectTransformGestures { _, _, zoomChange, _ ->
+                            currentZoomRatio = (currentZoomRatio * zoomChange).coerceIn(1.0f, 10.0f)
+                            cameraController.setZoomRatio(currentZoomRatio)
+                            selectedZoom = if (currentZoomRatio % 1f == 0f) {
+                                "${currentZoomRatio.toInt()}x"
+                            } else {
+                                String.format(Locale.US, "%.1fx", currentZoomRatio)
+                            }
+                        }
+                    },
             )
 
             // Transparent Camera Top Bar
@@ -183,7 +184,7 @@ fun CameraScreen(
                     onZoomSelected = { level ->
                         selectedZoom = level
                         val ratio = when (level) {
-                            "0.6x" -> 0.6f
+                            "0.6x" -> 1.0f // Clamped to 1.0x on main camera HAL
                             "2x" -> 2.0f
                             "3x" -> 3.0f
                             else -> 1.0f
