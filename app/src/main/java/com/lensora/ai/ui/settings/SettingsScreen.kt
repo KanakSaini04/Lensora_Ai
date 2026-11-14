@@ -3,13 +3,16 @@ package com.lensora.ai.ui.settings
 import android.widget.Toast
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
-import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
@@ -17,17 +20,19 @@ import androidx.compose.material.icons.automirrored.filled.ArrowForwardIos
 import androidx.compose.material.icons.outlined.AutoAwesome
 import androidx.compose.material.icons.outlined.CleaningServices
 import androidx.compose.material.icons.outlined.CloudSync
+import androidx.compose.material.icons.outlined.Download
 import androidx.compose.material.icons.outlined.Info
 import androidx.compose.material.icons.outlined.Memory
 import androidx.compose.material.icons.outlined.Science
+import androidx.compose.material3.Button
+import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.ExperimentalMaterial3Api
-import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.Icon
+import androidx.compose.material3.LinearProgressIndicator
 import androidx.compose.material3.ListItem
 import androidx.compose.material3.ListItemDefaults
-import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Switch
 import androidx.compose.material3.SwitchDefaults
@@ -35,20 +40,29 @@ import androidx.compose.material3.Text
 import androidx.compose.material3.TopAppBar
 import androidx.compose.material3.TopAppBarDefaults
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
+import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.work.OneTimeWorkRequestBuilder
+import androidx.work.WorkInfo
+import androidx.work.WorkManager
+import androidx.work.workDataOf
+import com.lensora.ai.ai.ModelDownloaderWorker
 import com.lensora.ai.ui.theme.CharcoalSurface
 import com.lensora.ai.ui.theme.ColorMutedGray
 import com.lensora.ai.ui.theme.ColorWhite
 import com.lensora.ai.ui.theme.PitchBlackBackground
 import com.lensora.ai.ui.theme.RoyalBlue
+import java.io.File
+import java.util.UUID
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -56,7 +70,23 @@ fun SettingsScreen(
     onOpenProbeLab: () -> Unit = {},
 ) {
     val context = LocalContext.current
+    val workManager = remember { WorkManager.getInstance(context) }
     var isCloudSyncEnabled by remember { mutableStateOf(false) }
+
+    // Model Downloader WorkState
+    var activeWorkId by remember { mutableStateOf<UUID?>(null) }
+
+    val workInfo = activeWorkId?.let { uuid ->
+        workManager.getWorkInfoByIdFlow(uuid).collectAsState(initial = null).value
+    }
+
+    val isDownloading = workInfo?.state == WorkInfo.State.RUNNING
+    val downloadProgress = workInfo?.progress?.getInt("PROGRESS", 0) ?: 0
+
+    val modelFile = remember(workInfo?.state) {
+        File(context.filesDir, "models/real_esrgan_v2.tflite")
+    }
+    val isModelDownloaded = modelFile.exists()
 
     Scaffold(
         topBar = {
@@ -115,7 +145,7 @@ fun SettingsScreen(
                 )
             }
 
-            // Section 2: Cloud Sync & Plugins
+            // Section 2: Services & Engines (GitHub DLC Downloader)
             item {
                 SectionHeader(title = "SERVICES & ENGINES")
                 ListItem(
@@ -163,42 +193,95 @@ fun SettingsScreen(
                     modifier = Modifier.padding(horizontal = 16.dp, vertical = 4.dp),
                 )
 
-                ListItem(
-                    headlineContent = {
-                        Text(
-                            text = "Manage AI Engines",
-                            color = ColorWhite,
-                            fontWeight = FontWeight.SemiBold,
-                        )
-                    },
-                    supportingContent = {
-                        Text(
-                            text = "Configure downloaded TFLite plugins and weights",
-                            color = ColorMutedGray,
-                            fontSize = 12.sp,
-                        )
-                    },
-                    leadingContent = {
-                        Icon(
-                            imageVector = Icons.Outlined.Memory,
-                            contentDescription = "Manage AI Engines",
-                            tint = ColorWhite,
-                        )
-                    },
-                    trailingContent = {
-                        Icon(
-                            imageVector = Icons.AutoMirrored.Filled.ArrowForwardIos,
-                            contentDescription = null,
-                            tint = ColorMutedGray,
-                        )
-                    },
-                    colors = ListItemDefaults.colors(containerColor = CharcoalSurface),
+                // Manage AI Engines Card with GitHub DLC Downloader
+                Card(
+                    colors = CardDefaults.cardColors(containerColor = CharcoalSurface),
+                    shape = RoundedCornerShape(12.dp),
                     modifier = Modifier
-                        .padding(horizontal = 16.dp, vertical = 4.dp)
-                        .clickable {
-                            Toast.makeText(context, "AI Engines: Up to date", Toast.LENGTH_SHORT).show()
-                        },
-                )
+                        .fillMaxWidth()
+                        .padding(horizontal = 16.dp, vertical = 4.dp),
+                ) {
+                    Column(
+                        modifier = Modifier.padding(16.dp),
+                    ) {
+                        Row(
+                            verticalAlignment = Alignment.CenterVertically,
+                        ) {
+                            Icon(
+                                imageVector = Icons.Outlined.Memory,
+                                contentDescription = "AI Engine DLC",
+                                tint = RoyalBlue,
+                            )
+                            Spacer(modifier = Modifier.width(12.dp))
+                            Column {
+                                Text(
+                                    text = "Manage AI Engines (GitHub DLC)",
+                                    color = ColorWhite,
+                                    fontWeight = FontWeight.Bold,
+                                    fontSize = 14.sp,
+                                )
+                                Text(
+                                    text = if (isModelDownloaded) "Real-ESRGAN v2: Ready (${modelFile.length()} bytes)" else "Real-ESRGAN v2: Not Installed",
+                                    color = if (isModelDownloaded) RoyalBlue else ColorMutedGray,
+                                    fontSize = 12.sp,
+                                )
+                            }
+                        }
+
+                        if (isDownloading) {
+                            Spacer(modifier = Modifier.height(12.dp))
+                            Row(
+                                modifier = Modifier.fillMaxWidth(),
+                                horizontalArrangement = Arrangement.SpaceBetween,
+                            ) {
+                                Text(text = "Downloading Model...", color = ColorWhite, fontSize = 11.sp)
+                                Text(text = "$downloadProgress%", color = RoyalBlue, fontSize = 11.sp, fontWeight = FontWeight.Bold)
+                            }
+                            Spacer(modifier = Modifier.height(6.dp))
+                            LinearProgressIndicator(
+                                progress = { downloadProgress / 100f },
+                                modifier = Modifier.fillMaxWidth(),
+                                color = RoyalBlue,
+                                trackColor = PitchBlackBackground,
+                            )
+                        } else {
+                            Spacer(modifier = Modifier.height(12.dp))
+                            Button(
+                                onClick = {
+                                    val downloadRequest = OneTimeWorkRequestBuilder<ModelDownloaderWorker>()
+                                        .setInputData(
+                                            workDataOf(
+                                                "MODEL_URL" to "https://raw.githubusercontent.com/tensorflow/tensorflow/master/README.md",
+                                                "TARGET_FILENAME" to "real_esrgan_v2.tflite",
+                                            ),
+                                        )
+                                        .build()
+
+                                    activeWorkId = downloadRequest.id
+                                    workManager.enqueue(downloadRequest)
+                                    Toast.makeText(context, "Started Real-ESRGAN Model Download", Toast.LENGTH_SHORT).show()
+                                },
+                                colors = ButtonDefaults.buttonColors(containerColor = RoyalBlue),
+                                shape = RoundedCornerShape(8.dp),
+                                modifier = Modifier.fillMaxWidth(),
+                            ) {
+                                Icon(
+                                    imageVector = Icons.Outlined.Download,
+                                    contentDescription = null,
+                                    tint = ColorWhite,
+                                    modifier = Modifier.size(16.dp),
+                                )
+                                Spacer(modifier = Modifier.width(6.dp))
+                                Text(
+                                    text = if (isModelDownloaded) "Re-download Real-ESRGAN DLC" else "Download Real-ESRGAN DLC",
+                                    color = ColorWhite,
+                                    fontWeight = FontWeight.Bold,
+                                    fontSize = 12.sp,
+                                )
+                            }
+                        }
+                    }
+                }
             }
 
             // Section 3: Storage & Cache
