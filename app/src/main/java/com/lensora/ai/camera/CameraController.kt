@@ -60,6 +60,7 @@ class CameraController(
     private var currentZoomRatio: Float = 1.0f
 
     private var currentFlashMode: FlashMode = FlashMode.AUTO
+    private var currentCameraMode: CameraMode = CameraMode.PHOTO
 
     fun startBackgroundThread() {
         if (backgroundThread == null) {
@@ -206,6 +207,39 @@ class CameraController(
             device.createCaptureSession(sessionConfig)
         } catch (e: Exception) {
             Log.e(tag, "Error creating capture session", e)
+        }
+    }
+
+    fun setCameraMode(mode: CameraMode) {
+        currentCameraMode = mode
+        Log.i(tag, "Camera mode changed to: ${mode.displayName} (${mode.name})")
+
+        val builder = previewRequestBuilder ?: return
+        val session = captureSession ?: return
+
+        try {
+            when (mode) {
+                CameraMode.AI_AUTO -> {
+                    builder.set(CaptureRequest.CONTROL_MODE, CaptureRequest.CONTROL_MODE_AUTO)
+                    builder.set(CaptureRequest.CONTROL_SCENE_MODE, CaptureRequest.CONTROL_SCENE_MODE_DISABLED)
+                }
+                CameraMode.PHOTO -> {
+                    builder.set(CaptureRequest.CONTROL_MODE, CaptureRequest.CONTROL_MODE_AUTO)
+                }
+                CameraMode.PORTRAIT -> {
+                    builder.set(CaptureRequest.CONTROL_MODE, CaptureRequest.CONTROL_MODE_AUTO)
+                    builder.set(CaptureRequest.CONTROL_SCENE_MODE, CaptureRequest.CONTROL_SCENE_MODE_PORTRAIT)
+                }
+                CameraMode.VIDEO -> {
+                    builder.set(CaptureRequest.CONTROL_MODE, CaptureRequest.CONTROL_MODE_AUTO)
+                }
+                CameraMode.PRO -> {
+                    builder.set(CaptureRequest.CONTROL_MODE, CaptureRequest.CONTROL_MODE_OFF)
+                }
+            }
+            session.setRepeatingRequest(builder.build(), null, backgroundHandler)
+        } catch (e: Exception) {
+            Log.e(tag, "Error setting camera mode ${mode.name}", e)
         }
     }
 

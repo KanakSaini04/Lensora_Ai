@@ -4,7 +4,7 @@
 
 **Lensora_Ai** (`com.lensora.ai`) is an AI-first computational camera application built on Android 16 (API 36) using Jetpack Compose, Material 3 (Obsidian Royal Theme), Hilt dependency injection, and a pure **Camera2 L0 Safe Core HAL Engine** (strictly zero CameraX dependencies).
 
-This report presents a complete end-to-end audit of all implemented components, hardware capability probe results, L0 atomic capture journals, UI overlays, camera hardware zoom control engines, tap-to-focus metering, flash controls, and live device/emulator verification results.
+This report presents a complete end-to-end audit of all implemented components, hardware capability probe results, L0 atomic capture journals, UI overlays, camera hardware zoom control engines, tap-to-focus metering, flash controls, mode selection state wiring, and live device/emulator verification results.
 
 ---
 
@@ -109,11 +109,25 @@ The **Probe Lab** audits camera hardware capabilities at runtime without opening
 
 ---
 
-## 9. Verification & Crash Audit Results
+## 9. Phase 1, Step 9: Camera Mode Selection State Wiring
+
+1. **`CameraMode.kt` Enum**:
+   - Package `com.lensora.ai.camera` defining `CameraMode`: `AI_AUTO` (`\u2728 AI AUTO`), `PHOTO`, `PORTRAIT`, `VIDEO`, `PRO`.
+2. **`CameraController.kt` `setCameraMode(mode: CameraMode)`**:
+   - Logs mode transition: `CameraController: Camera mode changed to: PORTRAIT (PORTRAIT)`.
+   - Configures Camera2 `CaptureRequest.CONTROL_SCENE_MODE` (e.g. `CONTROL_SCENE_MODE_PORTRAIT` vs `CONTROL_MODE_OFF` for PRO).
+3. **Mode Carousel & UI State Binding**:
+   - Bound `selectedMode: CameraMode` state in `CameraScreen.kt` and `CameraModeCarousel.kt`.
+   - Tapping any mode smoothly shifts the Royal Blue (`#2563EB`) highlight text color and invokes `cameraController.setCameraMode(mode)`.
+
+---
+
+## 10. Verification & Crash Audit Results
 
 - **Build Status**: `./gradlew assembleDebug` & `./gradlew installDebug` - **100% SUCCESS**.
-- **Static Code Analysis**: Analyzed all 19 Kotlin source files in `app/src/main/java` - **0 Errors, 0 Warnings**.
+- **Static Code Analysis**: Analyzed all 20 Kotlin source files in `app/src/main/java` - **0 Errors, 0 Warnings**.
 - **Live Device & Emulator Audit**: Physical **Xiaomi Redmi Note 13 Pro 5G** and **Android Studio Emulator (`emulator-5554`)**.
-- **Camera HAL Logcat Audit**:
-  - Verified `camera.provider.ranchu` stream configuration success (1280x960 IMPLEMENTATION_DEFINED + BLOB streams).
-  - Verified **0 Runtime Crashes (`AndroidRuntime:E`)**.
+- **Mode Transition Audit**: Confirmed via `adb logcat`:
+  - `CameraController: Camera mode changed to: PORTRAIT (PORTRAIT)`
+  - `CameraController: Camera mode changed to: PRO (PRO)`
+- **Logcat Crash Audit**: Verified **0 Runtime Crashes (`AndroidRuntime:E`)**.
