@@ -27,6 +27,7 @@ import android.util.Log
 import android.util.Size
 import android.view.Surface
 import androidx.core.content.ContextCompat
+import com.lensora.ai.ai.ProcessingPlan
 import java.io.File
 import java.io.FileOutputStream
 import java.util.concurrent.Executor
@@ -271,6 +272,32 @@ class CameraController(
             device.createCaptureSession(sessionConfig)
         } catch (e: Exception) {
             Log.e(tag, "Error creating capture session", e)
+        }
+    }
+
+    fun applyProcessingPlan(plan: ProcessingPlan) {
+        try {
+            val builder = previewRequestBuilder ?: return
+            val session = captureSession ?: return
+            val characteristics = cameraCharacteristics ?: return
+
+            // Configure AF Mode
+            builder.set(CaptureRequest.CONTROL_AF_MODE, plan.targetAfMode)
+
+            // Configure Exposure Compensation EV Offset safely
+            val step = characteristics.get(CameraCharacteristics.CONTROL_AE_COMPENSATION_STEP)
+            val range = characteristics.get(CameraCharacteristics.CONTROL_AE_COMPENSATION_RANGE)
+
+            if (step != null && range != null && step.toFloat() != 0f) {
+                val stepVal = step.toFloat()
+                val evSteps = (plan.targetEvOffset / stepVal).toInt()
+                val clampedEvSteps = evSteps.coerceIn(range.lower, range.upper)
+                builder.set(CaptureRequest.CONTROL_AE_EXPOSURE_COMPENSATION, clampedEvSteps)
+            }
+
+            session.setRepeatingRequest(builder.build(), null, backgroundHandler)
+        } catch (e: Exception) {
+            Log.w(tag, "Failed to apply AI ProcessingPlan ${plan.sceneType}: ${e.localizedMessage}")
         }
     }
 

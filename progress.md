@@ -42,3 +42,7 @@
   - Created `AiModule` interface, `ModelManager` asset loader, and `SceneClassifier` engine.
   - Implemented 500ms (2 FPS) background thread preview frame sampling loop on `Dispatchers.Default`.
   - Dynamically updates AI Badge text in UI (e.g. `✨ AI: Portrait`, `✨ AI: Landscape`, `✨ AI: Night`).
+- [x] **Step 12: L2 AI Planner Foundation**
+  - Created `AiPlanner.kt` (`SceneType`, `ProcessingPlan`, `createPlan`).
+  - Implemented `applyProcessingPlan` in `CameraController.kt` (exposure compensation & AF mode tuning).
+  - Routed scene detection labels $\rightarrow$ `AiPlanner` $\rightarrow$ `CameraController`.

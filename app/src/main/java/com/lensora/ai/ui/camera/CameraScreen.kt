@@ -63,6 +63,7 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.core.content.ContextCompat
 import coil.compose.AsyncImage
+import com.lensora.ai.ai.AiPlanner
 import com.lensora.ai.ai.SceneClassifier
 import com.lensora.ai.camera.CameraController
 import com.lensora.ai.camera.CameraMode
@@ -108,6 +109,7 @@ fun CameraScreen(
         val cameraController = remember { CameraController(context) }
         val galleryRepository = remember { GalleryRepository(context) }
         val sceneClassifier = remember { SceneClassifier(context) }
+        val aiPlanner = remember { AiPlanner() }
 
         var recentPhotos by remember { mutableStateOf<List<Uri>>(emptyList()) }
         var selectedMode by remember { mutableStateOf(CameraMode.PHOTO) }
@@ -133,7 +135,7 @@ fun CameraScreen(
             }
         }
 
-        // Periodic 500ms AI Scene Analysis Loop (2 FPS on Dispatchers.Default)
+        // Periodic 500ms AI Scene Analysis & Execution Planning Loop (2 FPS on Dispatchers.Default)
         LaunchedEffect(textureViewRef) {
             withContext(Dispatchers.Default) {
                 sceneClassifier.initialize()
@@ -147,8 +149,11 @@ fun CameraScreen(
                             }
                             if (bitmap != null) {
                                 val label = sceneClassifier.analyze(bitmap)
+                                val sceneType = AiPlanner.fromLabel(label)
+                                val processingPlan = aiPlanner.createPlan(sceneType)
                                 withContext(Dispatchers.Main) {
                                     aiBadgeText = label
+                                    cameraController.applyProcessingPlan(processingPlan)
                                 }
                             }
                         }
