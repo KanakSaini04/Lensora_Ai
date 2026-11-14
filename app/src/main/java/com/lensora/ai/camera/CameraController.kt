@@ -27,6 +27,10 @@ import android.util.Log
 import android.util.Size
 import android.view.Surface
 import androidx.core.content.ContextCompat
+import androidx.work.OneTimeWorkRequestBuilder
+import androidx.work.WorkManager
+import androidx.work.workDataOf
+import com.lensora.ai.ai.AiProcessorWorker
 import com.lensora.ai.ai.ProcessingPlan
 import java.io.File
 import java.io.FileOutputStream
@@ -66,6 +70,7 @@ class CameraController(
 
     private var currentFlashMode: FlashMode = FlashMode.AUTO
     private var currentCameraMode: CameraMode = CameraMode.PHOTO
+    private var activeProcessingPlan: ProcessingPlan? = null
 
     private var powerManager: PowerManager? = null
     private var thermalStatusListener: PowerManager.OnThermalStatusChangedListener? = null
@@ -276,6 +281,7 @@ class CameraController(
     }
 
     fun applyProcessingPlan(plan: ProcessingPlan) {
+        activeProcessingPlan = plan
         try {
             val builder = previewRequestBuilder ?: return
             val session = captureSession ?: return
@@ -552,6 +558,24 @@ class CameraController(
                             resolver.update(uri, contentValues, null, null)
 
                             tmpFile.delete()
+
+                            // Enqueue L3/L4 WorkManager AI Processing Pipeline
+                            try {
+                                val plan = activeProcessingPlan
+                                val workData = workDataOf(
+                                    "PHOTO_URI" to uri.toString(),
+                                    "SCENE_TYPE" to (plan?.sceneType?.name ?: "AUTO"),
+                                    "EV_OFFSET" to (plan?.targetEvOffset ?: 0.0f),
+                                )
+                                val workRequest = OneTimeWorkRequestBuilder<AiProcessorWorker>()
+                                    .setInputData(workData)
+                                    .build()
+                                WorkManager.getInstance(context).enqueue(workRequest)
+                                Log.i(tag, "Enqueued AiProcessorWorker for photo $uri")
+                            } catch (e: Exception) {
+                                Log.e(tag, "Failed to enqueue AiProcessorWorker", e)
+                            }
+
                             onPhotoSaved(uri, "Saved: Pictures/Lensora_Ai/$fileName")
                         } else {
                             onError("Failed to insert MediaStore entry")
