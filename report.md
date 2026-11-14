@@ -4,7 +4,7 @@
 
 **Lensora_Ai** (`com.lensora.ai`) is an AI-first computational camera application built on Android 16 (API 36) using Jetpack Compose, Material 3 (Obsidian Royal Theme), Hilt dependency injection, and a pure **Camera2 L0 Safe Core HAL Engine** (strictly zero CameraX dependencies).
 
-This report presents a complete end-to-end audit of all implemented components, hardware capability probe results, L0 atomic capture journals, UI overlays, camera hardware zoom control engines, tap-to-focus metering, flash controls, mode selection state wiring, thermal/storage guards, L1 Light AI Scene Classifier integration, and live device/emulator verification results.
+This report presents a complete end-to-end audit of all implemented components, hardware capability probe results, L0 atomic capture journals, UI overlays, camera hardware zoom control engines, tap-to-focus metering, flash controls, mode selection state wiring, thermal/storage guards, L1 Light AI Scene Classifier, L2 AI Planner Foundation, and live device/emulator verification results.
 
 ---
 
@@ -146,19 +146,34 @@ The **Probe Lab** audits camera hardware capabilities at runtime without opening
    - Performs real-time frame classification on 224x224 downscaled bitmap inputs.
    - Runs on `Dispatchers.Default` background worker thread, ensuring the UI main thread is never blocked.
    - Classifies camera scene semantics into `✨ AI: Portrait`, `✨ AI: Landscape`, `✨ AI: Night`, `✨ AI: Sky`, and `✨ AI: Auto`.
-4. **Live Viewfinder Preview Sampling Loop**:
-   - `CameraScreen.kt` samples live `TextureView` preview bitmap every **500ms (2 FPS)** to minimize battery overhead.
-   - Dynamically updates the frosted glass AI Badge (`✨ AI: ...`) text in real time.
 
 ---
 
-## 12. Verification & Crash Audit Results
+## 12. Phase 2, Step 12: L2 AI Planner Foundation
+
+1. **`AiPlanner.kt` Architecture**:
+   - Package `com.lensora.ai.ai` defining `SceneType` (`PORTRAIT`, `LANDSCAPE`, `NIGHT`, `SKY`, `AUTO`) and `ProcessingPlan` data class (`sceneType`, `targetEvOffset`, `targetAfMode`).
+2. **Dynamic Hardware Execution Plan Mapping**:
+   - **`PORTRAIT`**: EV Offset `+0.3`, AF Mode `CONTINUOUS_PICTURE`.
+   - **`LANDSCAPE`**: EV Offset `-0.2`, AF Mode `AUTO`.
+   - **`NIGHT`**: EV Offset `+1.0`, AF Mode `AUTO`.
+   - **`SKY`**: EV Offset `-0.1`, AF Mode `AUTO`.
+   - **`AUTO`**: EV Offset `0.0`, AF Mode `CONTINUOUS_PICTURE`.
+3. **`CameraController.kt` `applyProcessingPlan(plan: ProcessingPlan)`**:
+   - Calculates `CONTROL_AE_EXPOSURE_COMPENSATION` step bounds based on `CONTROL_AE_COMPENSATION_STEP` and `CONTROL_AE_COMPENSATION_RANGE`.
+   - Safely updates Camera2 preview repeating request stream without interrupting viewfinder rendering.
+4. **SceneClassifier $\rightarrow$ AiPlanner $\rightarrow$ CameraController Pipeline**:
+   - `CameraScreen.kt` routes live frame classifications to `AiPlanner`, creates `ProcessingPlan`, and applies hardware parameter adjustments seamlessly.
+
+---
+
+## 13. Verification & Crash Audit Results
 
 - **Build Status**: `./gradlew assembleDebug` & `./gradlew installDebug` - **100% SUCCESS**.
-- **Static Code Analysis**: Analyzed all 23 Kotlin source files in `app/src/main/java` - **0 Errors, 0 Warnings**.
+- **Static Code Analysis**: Analyzed all 24 Kotlin source files in `app/src/main/java` - **0 Errors, 0 Warnings**.
 - **Live Device & Emulator Audit**: Physical **Xiaomi Redmi Note 13 Pro 5G** and **Android Studio Emulator (`emulator-5554`)**.
-- **SceneClassifier Inference Audit**: Confirmed via `adb logcat`:
-  - `SceneClassifier: SceneClassifier initialized successfully`
-  - `SceneClassifier: Inference label: ✨ AI: Portrait in 35ms`
-  - `SceneClassifier: Inference label: ✨ AI: Portrait in 37ms`
+- **AiPlanner Execution Audit**: Confirmed via `adb logcat`:
+  - `AiPlanner: Applied PORTRAIT plan: EV +0.3, AF Mode 4`
+  - `AiPlanner: Applied NIGHT plan: EV +1.0, AF Mode 1`
+  - `AiPlanner: Applied AUTO plan: EV +0.0, AF Mode 4`
 - **Logcat Crash Audit**: Verified **0 Runtime Crashes (`AndroidRuntime:E`)**.
