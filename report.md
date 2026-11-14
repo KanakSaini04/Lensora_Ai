@@ -4,7 +4,7 @@
 
 **Lensora_Ai** (`com.lensora.ai`) is an AI-first computational camera application built on Android 16 (API 36) using Jetpack Compose, Material 3 (Obsidian Royal Theme), Hilt dependency injection, and a pure **Camera2 L0 Safe Core HAL Engine** (strictly zero CameraX dependencies).
 
-This report presents a complete end-to-end audit of all implemented components, hardware capability probe results, L0 atomic capture journals, UI overlays, camera hardware zoom control engines, tap-to-focus metering, flash controls, mode selection state wiring, thermal/storage guards, L1 Light AI Scene Classifier, L2 AI Planner Foundation, L3/L4 WorkManager Processing Queue & Quality Validator, Pinterest-Style Masonry Gallery Tab UI, Settings Tab & AI Center Control Room, Vibes Tab & Color Presets UI, and live device/emulator verification results.
+This report presents a complete end-to-end audit of all implemented components, hardware capability probe results, L0 atomic capture journals, UI overlays, camera hardware zoom control engines, tap-to-focus metering, flash controls, mode selection state wiring, thermal/storage guards, L1 Light AI Scene Classifier, L2 AI Planner Foundation, L3/L4 WorkManager Processing Queue & Quality Validator, Pinterest-Style Masonry Gallery Tab UI, Settings Tab & AI Center Control Room, Vibes Tab & Color Presets UI, Studio Tab UI Skeleton, and live device/emulator verification results.
 
 ---
 
@@ -223,9 +223,21 @@ The **Probe Lab** audits camera hardware capabilities at runtime without opening
 
 ---
 
-## 17. Verification & Crash Audit Results
+## 17. Phase 2, Step 17: Studio Tab UI Skeleton
+
+1. **`StudioScreen.kt` Layout Sections**:
+   - **Top 50% Photo Canvas**: Displays active photo via Coil `AsyncImage` with metadata badge (`"12.5 MP • ISO 100 • 1/250s • f/1.8"`) and TopAppBar (`Export`, `Undo`, `Redo`).
+   - **Middle 15% Filmstrip Queue**: Horizontal `LazyRow` rendering captured photos with Royal Blue border highlights on the active selection.
+   - **Bottom 35% Professional Editing Panel**: Tool category switcher (`Light`, `Color`, `Effects`, `Crop`), interactive Exposure EV (`-2.0` to `+2.0`) and Contrast (`-50` to `+50`) sliders, and 3-Way Color Wheels (`Shadows`, `Midtones`, `Highlights`).
+2. **Obsidian Royal Styling & Navigation**:
+   - Styled in Pitch Black background (`#0E0E0E`), Charcoal surface (`#131313`), and Royal Blue accents (`#2563EB`).
+   - Wired `StudioScreen` into `Navigation.kt` shell as a top-level tab.
+
+---
+
+## 18. Verification & Crash Audit Results
 
 - **Build Status**: `./gradlew assembleDebug` & `./gradlew installDebug` - **100% SUCCESS**.
-- **Static Code Analysis**: Analyzed all 28 Kotlin source files in `app/src/main/java` - **0 Errors, 0 Warnings**.
+- **Static Code Analysis**: Analyzed all 29 Kotlin source files in `app/src/main/java` - **0 Errors, 0 Warnings**.
 - **Live Device & Emulator Audit**: Physical **Xiaomi Redmi Note 13 Pro 5G** and **Android Studio Emulator (`emulator-5554`)**.
 - **Logcat Crash Audit**: Verified **0 Runtime Crashes (`AndroidRuntime:E`)**.

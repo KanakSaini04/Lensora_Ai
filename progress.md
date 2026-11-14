@@ -64,3 +64,6 @@
     - **Presets**: 1:1 square split BEFORE / AFTER cards with TONE CURVE badges (exposure & tone curves).
     - **Templates**: 9:16 tall vertical cards with Royal Blue borders & VN story frame overlays ("Day 26/365", "REELS 9:16").
   - Wired `VibesScreen` into `Navigation.kt` shell.
+- [x] **Step 17: Studio Tab UI Skeleton**
+  - Created `StudioScreen.kt` divided into Top 50% Photo Preview Canvas (with metadata badge & Export action), Middle 15% Filmstrip Queue (`LazyRow`), and Bottom 35% Professional Editing Panel (Tool Category icons, Exposure & Contrast sliders, 3-Way Color Wheels).
+  - Wired `StudioScreen` into `Navigation.kt` shell.
