@@ -4,7 +4,7 @@
 
 **Lensora_Ai** (`com.lensora.ai`) is an AI-first computational camera application built on Android 16 (API 36) using Jetpack Compose, Material 3 (Obsidian Royal Theme), Hilt dependency injection, and a pure **Camera2 L0 Safe Core HAL Engine** (strictly zero CameraX dependencies).
 
-This report presents a complete end-to-end audit of all implemented components, hardware capability probe results, L0 atomic capture journals, UI overlays, camera hardware zoom control engines, and live device/emulator verification results.
+This report presents a complete end-to-end audit of all implemented components, hardware capability probe results, L0 atomic capture journals, UI overlays, camera hardware zoom control engines, tap-to-focus metering, flash controls, and live device/emulator verification results.
 
 ---
 
@@ -77,7 +77,7 @@ The **Probe Lab** audits camera hardware capabilities at runtime without opening
 
 ## 6. Phase 1, Step 6: Zoom Pills & AI Badge Overlays
 
-1. **AI Badge (`✨ AI: Auto`)**: Frosted glass rounded pill at top center below the top bar using Charcoal surface background (`#131313`) with 75% alpha and white border.
+1. **AI Badge (`✨ AI: Auto`)**: Frosted glass rounded pill at top center below the top bar using Charcoal surface background (`#131313`) with 75% alpha and white border. Explicitly uses Unicode string encoding (`\u2728 AI: Auto`) to prevent UTF-8 artifacting.
 2. **Zoom Pills (`0.6x`, `1x`, `2x`, `3x`)**: Dark rounded container (`#131313`, 80% alpha) placed directly above the Mode Carousel. The active zoom pill is styled with a Royal Blue circular highlight.
 
 ---
@@ -92,19 +92,28 @@ The **Probe Lab** audits camera hardware capabilities at runtime without opening
 2. **Transparent Gesture Surface Layer**:
    - Decoupled `detectTransformGestures` pinch-to-zoom gesture layer into a transparent `Box` positioned between the `CameraPreview` viewfinder and top bar / shutter controls.
    - Allows continuous smooth pinch zooming between `1.0x` and `10.0x` while ensuring `TextureView` rendering and UI overlay clicks function without interference.
-3. **`TextureView` Surface Re-initialization**:
-   - Fixed `CameraPreview.kt` to check `isAvailable` in `AndroidView` factory to ensure immediate preview session initialization when the surface texture is already present.
 
 ---
 
-## 8. Verification & Crash Audit Results
+## 8. Phase 1, Step 8: L0 Safe Core - Tap-to-Focus, Flash Control & 3x3 Grid Overlay
+
+1. **Tap-to-Focus AF Metering & Ring Animation**:
+   - `CameraScreen.kt` captures touch coordinates `(x, y)` via Compose `detectTapGestures`.
+   - Displays a smooth animated focus ring (`FocusRingOverlay`) at touch coordinates that scales down and fades out cleanly.
+   - `CameraController.kt` maps touch coordinates to sensor active array size, computes `MeteringRectangle` with `METERING_WEIGHT_MAX`, and triggers `CaptureRequest.CONTROL_AF_TRIGGER_START` with `CONTROL_AF_MODE_AUTO`.
+2. **Flash Control Cycling (`OFF`, `ON`, `AUTO`)**:
+   - `CameraTopBar.kt` features interactive Flash toggle cycling through `OFF` (grey FlashOff icon), `ON` (Royal Blue FlashOn icon), and `AUTO` (White FlashAuto icon).
+   - `CameraController.kt` applies `CaptureRequest.FLASH_MODE` and `CaptureRequest.CONTROL_AE_MODE` to both repeating preview and still captures.
+3. **3x3 Composition Grid Overlay**:
+   - `CameraScreen.kt` renders a 3x3 rule-of-thirds Canvas grid overlay (`GridOverlay`) with semi-transparent white lines when Grid is toggled ON via `CameraTopBar.kt`.
+
+---
+
+## 9. Verification & Crash Audit Results
 
 - **Build Status**: `./gradlew assembleDebug` & `./gradlew installDebug` - **100% SUCCESS**.
 - **Static Code Analysis**: Analyzed all 19 Kotlin source files in `app/src/main/java` - **0 Errors, 0 Warnings**.
-- **Live Device Audit**: Physical **Xiaomi Redmi Note 13 Pro 5G** and **Android Studio Emulator (`emulator-5554`)**.
+- **Live Device & Emulator Audit**: Physical **Xiaomi Redmi Note 13 Pro 5G** and **Android Studio Emulator (`emulator-5554`)**.
 - **Camera HAL Logcat Audit**:
-  - Executed `adb logcat -d | Select-String "Camera2Client|CameraDevice|BufferQueue|Surface"`:
-    - `camera.provider.ranchu: CameraDeviceSession:configureStreams:176 cfg={ .streams.size=2, .operationMode=0 }`
-    - `stream={ .id=0, .width=1280, .height=960, .format=IMPLEMENTATION_DEFINED }`
-    - `stream={ .id=1, .width=1280, .height=960, .format=BLOB }`
+  - Verified `camera.provider.ranchu` stream configuration success (1280x960 IMPLEMENTATION_DEFINED + BLOB streams).
   - Verified **0 Runtime Crashes (`AndroidRuntime:E`)**.

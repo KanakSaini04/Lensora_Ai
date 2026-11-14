@@ -7,6 +7,9 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.statusBarsPadding
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.outlined.FlashAuto
+import androidx.compose.material.icons.outlined.FlashOff
+import androidx.compose.material.icons.outlined.FlashOn
+import androidx.compose.material.icons.outlined.GridOff
 import androidx.compose.material.icons.outlined.GridOn
 import androidx.compose.material.icons.outlined.Settings
 import androidx.compose.material.icons.outlined.Timer
@@ -16,11 +19,16 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
+import com.lensora.ai.camera.CameraController
+import com.lensora.ai.ui.theme.ColorMutedGray
 import com.lensora.ai.ui.theme.ColorWhite
+import com.lensora.ai.ui.theme.RoyalBlue
 
 @Composable
 fun CameraTopBar(
     modifier: Modifier = Modifier,
+    flashMode: CameraController.FlashMode = CameraController.FlashMode.AUTO,
+    isGridVisible: Boolean = false,
     onFlashClick: () -> Unit = {},
     onTimerClick: () -> Unit = {},
     onGridClick: () -> Unit = {},
@@ -34,14 +42,21 @@ fun CameraTopBar(
         horizontalArrangement = Arrangement.SpaceBetween,
         verticalAlignment = Alignment.CenterVertically,
     ) {
+        // Flash Toggle Button
         IconButton(onClick = onFlashClick) {
+            val (flashIcon, flashTint) = when (flashMode) {
+                CameraController.FlashMode.OFF -> Icons.Outlined.FlashOff to ColorMutedGray
+                CameraController.FlashMode.ON -> Icons.Outlined.FlashOn to RoyalBlue
+                CameraController.FlashMode.AUTO -> Icons.Outlined.FlashAuto to ColorWhite
+            }
             Icon(
-                imageVector = Icons.Outlined.FlashAuto,
-                contentDescription = "Flash Toggle",
-                tint = ColorWhite,
+                imageVector = flashIcon,
+                contentDescription = "Flash Mode: ${flashMode.name}",
+                tint = flashTint,
             )
         }
 
+        // Timer Button
         IconButton(onClick = onTimerClick) {
             Icon(
                 imageVector = Icons.Outlined.Timer,
@@ -50,14 +65,16 @@ fun CameraTopBar(
             )
         }
 
+        // Grid Toggle Button
         IconButton(onClick = onGridClick) {
             Icon(
-                imageVector = Icons.Outlined.GridOn,
+                imageVector = if (isGridVisible) Icons.Outlined.GridOn else Icons.Outlined.GridOff,
                 contentDescription = "Grid Toggle",
-                tint = ColorWhite,
+                tint = if (isGridVisible) RoyalBlue else ColorMutedGray,
             )
         }
 
+        // Settings Button
         IconButton(onClick = onSettingsClick) {
             Icon(
                 imageVector = Icons.Outlined.Settings,

@@ -12,6 +12,7 @@ import android.hardware.camera2.CameraDevice
 import android.hardware.camera2.CameraManager
 import android.hardware.camera2.CaptureRequest
 import android.hardware.camera2.TotalCaptureResult
+import android.hardware.camera2.params.MeteringRectangle
 import android.hardware.camera2.params.OutputConfiguration
 import android.hardware.camera2.params.SessionConfiguration
 import android.media.ImageReader
@@ -32,6 +33,12 @@ class CameraController(
 ) {
     private val tag = "CameraController"
 
+    enum class FlashMode {
+        OFF,
+        ON,
+        AUTO
+    }
+
     private var cameraDevice: CameraDevice? = null
     private var captureSession: CameraCaptureSession? = null
     private var imageReader: ImageReader? = null
@@ -44,12 +51,15 @@ class CameraController(
 
     private var previewRequestBuilder: CaptureRequest.Builder? = null
     private var sensorOrientation: Int = 90
+    private var cameraCharacteristics: CameraCharacteristics? = null
 
     private var supportsZoomRatioControl: Boolean = false
     private var activeSensorArraySize: Rect? = null
     private var minZoomRatio: Float = 1.0f
     private var maxZoomRatio: Float = 10.0f
     private var currentZoomRatio: Float = 1.0f
+
+    private var currentFlashMode: FlashMode = FlashMode.AUTO
 
     fun startBackgroundThread() {
         if (backgroundThread == null) {
@@ -88,6 +98,7 @@ class CameraController(
 
             val currentCameraId = cameraId ?: cameraManager.cameraIdList.firstOrNull() ?: return
             val characteristics = cameraManager.getCameraCharacteristics(currentCameraId)
+            cameraCharacteristics = characteristics
 
             sensorOrientation = characteristics.get(CameraCharacteristics.SENSOR_ORIENTATION) ?: 90
 
@@ -153,6 +164,7 @@ class CameraController(
                 CaptureRequest.CONTROL_AF_MODE_CONTINUOUS_PICTURE,
             )
             applyZoom(builder, currentZoomRatio)
+            applyFlashMode(builder, currentFlashMode)
             previewRequestBuilder = builder
 
             val outputs = listOf(
@@ -240,6 +252,93 @@ class CameraController(
         }
     }
 
+    fun setFlashMode(mode: FlashMode) {
+        currentFlashMode = mode
+        val builder = previewRequestBuilder ?: return
+        val session = captureSession ?: return
+
+        applyFlashMode(builder, mode)
+        try {
+            session.setRepeatingRequest(builder.build(), null, backgroundHandler)
+        } catch (e: Exception) {
+            Log.e(tag, "Error setting flash mode", e)
+        }
+    }
+
+    private fun applyFlashMode(builder: CaptureRequest.Builder, mode: FlashMode) {
+        try {
+            when (mode) {
+                FlashMode.OFF -> {
+                    builder.set(CaptureRequest.CONTROL_AE_MODE, CaptureRequest.CONTROL_AE_MODE_ON)
+                    builder.set(CaptureRequest.FLASH_MODE, CaptureRequest.FLASH_MODE_OFF)
+                }
+                FlashMode.ON -> {
+                    builder.set(CaptureRequest.CONTROL_AE_MODE, CaptureRequest.CONTROL_AE_MODE_ON_ALWAYS_FLASH)
+                    builder.set(CaptureRequest.FLASH_MODE, CaptureRequest.FLASH_MODE_SINGLE)
+                }
+                FlashMode.AUTO -> {
+                    builder.set(CaptureRequest.CONTROL_AE_MODE, CaptureRequest.CONTROL_AE_MODE_ON_AUTO_FLASH)
+                }
+            }
+        } catch (e: Exception) {
+            Log.e(tag, "Error applying flash mode", e)
+        }
+    }
+
+    fun triggerTapToFocus(x: Float, y: Float, viewWidth: Int, viewHeight: Int) {
+        try {
+            val builder = previewRequestBuilder ?: return
+            val session = captureSession ?: return
+
+            if (viewWidth <= 0 || viewHeight <= 0) return
+
+            val sensorRect = activeSensorArraySize
+            if (sensorRect != null) {
+                val halfTouchWidth = 150
+                val halfTouchHeight = 150
+
+                val sensorX = (x / viewWidth * sensorRect.width()).toInt()
+                val sensorY = (y / viewHeight * sensorRect.height()).toInt()
+
+                val left = (sensorX - halfTouchWidth).coerceIn(0, sensorRect.width() - 1)
+                val top = (sensorY - halfTouchHeight).coerceIn(0, sensorRect.height() - 1)
+                val right = (sensorX + halfTouchWidth).coerceIn(0, sensorRect.width() - 1)
+                val bottom = (sensorY + halfTouchHeight).coerceIn(0, sensorRect.height() - 1)
+
+                val afRect = MeteringRectangle(
+                    Rect(left, top, right, bottom),
+                    MeteringRectangle.METERING_WEIGHT_MAX,
+                )
+
+                val maxAfRegions = cameraCharacteristics?.get(CameraCharacteristics.CONTROL_MAX_REGIONS_AF) ?: 0
+                if (maxAfRegions > 0) {
+                    builder.set(CaptureRequest.CONTROL_AF_REGIONS, arrayOf(afRect))
+                }
+            }
+
+            builder.set(CaptureRequest.CONTROL_AF_MODE, CaptureRequest.CONTROL_AF_MODE_AUTO)
+            builder.set(CaptureRequest.CONTROL_AF_TRIGGER, CaptureRequest.CONTROL_AF_TRIGGER_START)
+
+            session.capture(builder.build(), object : CameraCaptureSession.CaptureCallback() {
+                override fun onCaptureCompleted(
+                    session: CameraCaptureSession,
+                    request: CaptureRequest,
+                    result: TotalCaptureResult,
+                ) {
+                    try {
+                        builder.set(CaptureRequest.CONTROL_AF_TRIGGER, CaptureRequest.CONTROL_AF_TRIGGER_IDLE)
+                        session.setRepeatingRequest(builder.build(), null, backgroundHandler)
+                    } catch (e: Exception) {
+                        Log.e(tag, "Error resetting AF trigger", e)
+                    }
+                }
+            }, backgroundHandler)
+
+        } catch (e: Exception) {
+            Log.e(tag, "Error triggering tap to focus", e)
+        }
+    }
+
     fun takePicture(
         displayRotationDegrees: Int,
         onPhotoSaved: (Uri, String) -> Unit,
@@ -266,6 +365,7 @@ class CameraController(
                 CaptureRequest.CONTROL_AF_MODE_CONTINUOUS_PICTURE,
             )
             applyZoom(captureBuilder, currentZoomRatio)
+            applyFlashMode(captureBuilder, currentFlashMode)
 
             // Calculate correct JPEG orientation
             val jpegOrientation = (sensorOrientation - displayRotationDegrees + 360) % 360
