@@ -34,3 +34,11 @@
 - [x] **Step 10: L0 Safe Core Guards (Thermal & Storage)**
   - Implemented `StatFs` Storage Guard blocking photo captures if available storage is < 2GB.
   - Implemented `PowerManager.OnThermalStatusChangedListener` Thermal Guard logging status changes (NONE, LIGHT, MODERATE, SEVERE, CRITICAL).
+
+## Phase 2: AI Foundation, Scene Classifier & Real-Time Processing
+
+- [x] **Step 11: L1 Light AI Foundation & Scene Classifier**
+  - Added TensorFlow Lite dependency (`org.tensorflow:tensorflow-lite:2.16.1`).
+  - Created `AiModule` interface, `ModelManager` asset loader, and `SceneClassifier` engine.
+  - Implemented 500ms (2 FPS) background thread preview frame sampling loop on `Dispatchers.Default`.
+  - Dynamically updates AI Badge text in UI (e.g. `✨ AI: Portrait`, `✨ AI: Landscape`, `✨ AI: Night`).
