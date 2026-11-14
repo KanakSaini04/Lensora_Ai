@@ -7,11 +7,7 @@ plugins {
 
 android {
     namespace = "com.lensora.ai"
-    compileSdk {
-        version = release(36) {
-            minorApiLevel = 1
-        }
-    }
+    compileSdk = 35
 
     defaultConfig {
         applicationId = "com.lensora.ai"

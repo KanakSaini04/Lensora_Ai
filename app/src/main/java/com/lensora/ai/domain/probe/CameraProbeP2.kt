@@ -26,7 +26,7 @@ class CameraProbeP2 {
 
                 for (id in cameraIds) {
                     val characteristics = cameraManager.getCameraCharacteristics(id)
-                    val facing = characteristics.get(CameraCharacteristics.LENS_FACING)
+                    val facing = characteristics[CameraCharacteristics.LENS_FACING]
                     if (facing == CameraCharacteristics.LENS_FACING_BACK) {
                         backCameraId = id
                         break
@@ -40,12 +40,12 @@ class CameraProbeP2 {
                 }
 
                 val characteristics = cameraManager.getCameraCharacteristics(backCameraId)
-                val capabilities = characteristics.get(
-                    CameraCharacteristics.REQUEST_AVAILABLE_CAPABILITIES
-                ) ?: intArrayOf()
+                val capabilities = characteristics[
+                    CameraCharacteristics.REQUEST_AVAILABLE_CAPABILITIES,
+                ] ?: intArrayOf()
 
                 val hasRawSupport = capabilities.contains(
-                    CameraMetadata.REQUEST_AVAILABLE_CAPABILITIES_RAW
+                    CameraMetadata.REQUEST_AVAILABLE_CAPABILITIES_RAW,
                 )
 
                 if (hasRawSupport) {
@@ -66,7 +66,7 @@ class CameraProbeP2 {
             title = "P2: RAW Sensor Capability Probe",
             status = status,
             details = details,
-            executionTimeMs = executionTime
+            executionTimeMs = executionTime,
         )
     }
 }
