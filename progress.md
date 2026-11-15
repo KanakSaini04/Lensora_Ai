@@ -176,10 +176,16 @@
   - Created `MoreModesSheet.kt` rendering Material 3 `ModalBottomSheet` in Obsidian Royal theme with **PRO TOOLS** (Astro, Panorama, Tele-Cine, Pro Macro, Time-Lapse, 3D Spatial, 360 Sphere, Stop Motion) and **SIGNATURE BRANDS** (Leica, ZEISS, Hasselblad, XMAGE, Harcourt, Sony G, Samsung, Apple, Pixel).
   - Updated `CameraScreen.kt` to wire MORE sheet opening, state updates, and sheet dismissal.
 
-## Phase 14: Pro HUD GPU Overlays & UI Screenshot Capture
+## Phase 14: Pro HUD GPU Overlays & UI Screenshot Capture (100% COMPLETE)
 
 - [x] **Step 34: Pro HUD GPU Overlays & UI Screenshot Capture**
   - Created `AgslShaders.kt` defining AGSL shaders for Zebras (>0.85 luminance red stripes) and Focus Peaking (edge detection neon green).
   - Updated `ProModeControls.kt` adding Zebras and Focus Peaking switch toggles.
   - Updated `CameraScreen.kt` applying AGSL `RenderEffect` on viewfinder when in PRO mode and toggles active.
   - Captured live UI screenshots in `ui_photos/`: `camera_main.png`, `camera_pro.png`, `studio.png`, `gallery.png`, `vibes.png`, `settings.png`, `more_modes.png`.
+
+## Phase 15: Studio AI Object Eraser (LaMa Inpainting)
+
+- [x] **Step 35: Studio AI Object Eraser (LaMa Inpainting)**
+  - Created `ObjectEraser.kt` in `com.lensora.ai.ui.studio` implementing LaMa AI inpainting pipeline with simulated background processing pass.
+  - Updated `StudioScreen.kt` adding "Eraser" tool category button, interactive touch brush mask Canvas overlay, Process Eraser action, and loading spinner state.
