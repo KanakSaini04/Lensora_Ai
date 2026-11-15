@@ -22,6 +22,7 @@ object ImageEditor {
     fun getLutStripBitmap(context: Context, vibe: VibePreset): Bitmap? {
         return when (vibe) {
             VibePreset.CINEMATIC -> LutParser.parseCubeAsset(context, "luts/teal_orange.cube")
+            VibePreset.LEICA -> LutParser.generateLeicaBwStripBitmap(17)
             else -> null
         }
     }

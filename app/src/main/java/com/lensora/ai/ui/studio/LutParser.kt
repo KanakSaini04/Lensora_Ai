@@ -81,4 +81,36 @@ object LutParser {
             return null
         }
     }
+
+    fun generateLeicaBwStripBitmap(lutSize: Int = 17): Bitmap {
+        val width = lutSize * lutSize
+        val height = lutSize
+        val bitmapPixels = IntArray(width * height)
+        val maxVal = (lutSize - 1).toFloat()
+
+        for (b in 0 until lutSize) {
+            val tileXOffset = b * lutSize
+            val bNorm = b / maxVal
+            for (g in 0 until lutSize) {
+                val gNorm = g / maxVal
+                for (r in 0 until lutSize) {
+                    val rNorm = r / maxVal
+
+                    // High contrast Leica B&W luminance conversion
+                    val lumFloat = (0.35f * rNorm + 0.55f * gNorm + 0.10f * bNorm) * 255f - 15f
+                    val lum = lumFloat.coerceIn(0f, 255f).toInt()
+
+                    val pixelColor = Color.rgb(lum, lum, lum)
+                    val targetX = tileXOffset + r
+                    val targetY = g
+                    bitmapPixels[targetY * width + targetX] = pixelColor
+                }
+            }
+        }
+
+        val stripBitmap = Bitmap.createBitmap(width, height, Bitmap.Config.ARGB_8888)
+        stripBitmap.setPixels(bitmapPixels, 0, width, 0, 0, width, height)
+        Log.i(TAG, "Generated Leica B&W 2D Strip Bitmap (${width}x${height}, N=$lutSize)")
+        return stripBitmap
+    }
 }

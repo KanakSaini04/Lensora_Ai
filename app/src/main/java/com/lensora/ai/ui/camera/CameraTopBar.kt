@@ -11,6 +11,7 @@ import androidx.compose.material.icons.outlined.FlashOff
 import androidx.compose.material.icons.outlined.FlashOn
 import androidx.compose.material.icons.outlined.GridOff
 import androidx.compose.material.icons.outlined.GridOn
+import androidx.compose.material.icons.outlined.Palette
 import androidx.compose.material.icons.outlined.Settings
 import androidx.compose.material.icons.outlined.Timer
 import androidx.compose.material.icons.outlined.Timer10
@@ -25,6 +26,8 @@ import com.lensora.ai.camera.CameraController
 import com.lensora.ai.ui.theme.ColorMutedGray
 import com.lensora.ai.ui.theme.ColorWhite
 import com.lensora.ai.ui.theme.RoyalBlue
+import com.lensora.ai.ui.vibes.VibePreset
+import com.lensora.ai.ui.vibes.VibeState
 
 enum class TimerMode(val seconds: Int, val displayName: String) {
     OFF(0, "Off"),
@@ -46,6 +49,7 @@ fun CameraTopBar(
     timerMode: TimerMode = TimerMode.OFF,
     onFlashClick: () -> Unit = {},
     onTimerClick: () -> Unit = {},
+    onVibeClick: () -> Unit = {},
     onGridClick: () -> Unit = {},
     onSettingsClick: () -> Unit = {},
 ) {
@@ -82,6 +86,15 @@ fun CameraTopBar(
                 imageVector = timerIcon,
                 contentDescription = "Timer Mode: ${timerMode.displayName}",
                 tint = timerTint,
+            )
+        }
+
+        // Vibe Preset / LUT Selector Button
+        IconButton(onClick = onVibeClick) {
+            Icon(
+                imageVector = Icons.Outlined.Palette,
+                contentDescription = "Vibe LUT Selector",
+                tint = if (VibeState.selectedVibe != VibePreset.NONE) RoyalBlue else ColorWhite,
             )
         }
 

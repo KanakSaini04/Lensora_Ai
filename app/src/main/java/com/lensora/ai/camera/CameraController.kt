@@ -141,11 +141,14 @@ class CameraController(
         try {
             if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q) {
                 thermalStatusListener?.let {
-                    powerManager?.removeThermalStatusListener(it)
+                    try {
+                        powerManager?.removeThermalStatusListener(it)
+                    } catch (_: Exception) {}
                 }
+                thermalStatusListener = null
             }
         } catch (e: Exception) {
-            Log.e(tag, "Error closing Thermal Guard", e)
+            Log.w(tag, "Clean thermal guard closure: ${e.localizedMessage}")
         }
     }
 
@@ -669,6 +672,7 @@ class CameraController(
     fun takePicture(
         displayRotationDegrees: Int,
         isRawEnabled: Boolean = false,
+        vibePreset: String = "NONE",
         onPhotoSaved: (Uri, String) -> Unit,
         onError: (String) -> Unit,
     ) {
@@ -757,19 +761,20 @@ class CameraController(
 
                             tmpFile.delete()
 
-                            // Enqueue L3/L4 WorkManager AI Processing Pipeline
+                            // Enqueue L3/L4 WorkManager AI Processing Pipeline with Vibe Preset
                             try {
                                 val plan = activeProcessingPlan
                                 val workData = workDataOf(
                                     "PHOTO_URI" to uri.toString(),
                                     "SCENE_TYPE" to (plan?.sceneType?.name ?: "AUTO"),
                                     "EV_OFFSET" to (plan?.targetEvOffset ?: 0.0f),
+                                    "VIBE_PRESET" to vibePreset,
                                 )
                                 val workRequest = OneTimeWorkRequestBuilder<AiProcessorWorker>()
                                     .setInputData(workData)
                                     .build()
                                 WorkManager.getInstance(context).enqueue(workRequest)
-                                Log.i(tag, "Enqueued AiProcessorWorker for photo $uri")
+                                Log.i(tag, "Enqueued AiProcessorWorker for photo $uri with Vibe: $vibePreset")
                             } catch (e: Exception) {
                                 Log.e(tag, "Failed to enqueue AiProcessorWorker", e)
                             }

@@ -4,7 +4,7 @@
 
 **Lensora_Ai** (`com.lensora.ai`) is an AI-first computational camera application built on Android 16 (API 36) using Jetpack Compose, Material 3 (Obsidian Royal Theme), Hilt dependency injection, and a pure **Camera2 L0 Safe Core HAL Engine** (strictly zero CameraX dependencies).
 
-This report presents a complete end-to-end audit of all implemented components, hardware capability probe results, L0 atomic capture journals, UI overlays, camera hardware zoom control engines, tap-to-focus metering, flash controls, mode selection state wiring, thermal/storage guards, L1 Light AI Scene Classifier, L2 AI Planner Foundation, L3/L4 WorkManager Processing Queue & Quality Validator, Pinterest-Style Masonry Gallery Tab UI, Settings Tab & AI Center Control Room, Vibes Tab & Color Presets UI, Studio Tab UI Skeleton, L3 Real ColorMatrix Computational Engine, GitHub DLC Model Downloader, Studio Real-Time Image Editing, Studio Export Pipeline, Vibes to Studio Color Science Integration, L3 TFLite AI Inference Engine, Google Drive Cloud Sync Architecture, Auto-Purge & Storage Cleanup Engine, Camera UI State Persistence, Real TFLite Model & Manifest Integration, Pro Mode HUD & Manual Controls, Video Recording Engine, RAW / DNG Capture Pipeline, Camera Flip & Shutter Timer, Cinematic Video Mode, The "MORE" Modes Menu, Pro HUD AGSL Shaders & UI Screenshot Capture, Studio AI Object Eraser (LaMa Inpainting), Real LUT Engine (.cube Parser + AGSL), and live device/emulator verification results.
+This report presents a complete end-to-end audit of all implemented components, hardware capability probe results, L0 atomic capture journals, UI overlays, camera hardware zoom control engines, tap-to-focus metering, flash controls, mode selection state wiring, thermal/storage guards, L1 Light AI Scene Classifier, L2 AI Planner Foundation, L3/L4 WorkManager Processing Queue & Quality Validator, Pinterest-Style Masonry Gallery Tab UI, Settings Tab & AI Center Control Room, Vibes Tab & Color Presets UI, Studio Tab UI Skeleton, L3 Real ColorMatrix Computational Engine, GitHub DLC Model Downloader, Studio Real-Time Image Editing, Studio Export Pipeline, Vibes to Studio Color Science Integration, L3 TFLite AI Inference Engine, Google Drive Cloud Sync Architecture, Auto-Purge & Storage Cleanup Engine, Camera UI State Persistence, Real TFLite Model & Manifest Integration, Pro Mode HUD & Manual Controls, Video Recording Engine, RAW / DNG Capture Pipeline, Camera Flip & Shutter Timer, Cinematic Video Mode, The "MORE" Modes Menu, Pro HUD AGSL Shaders & UI Screenshot Capture, Studio AI Object Eraser (LaMa Inpainting), Real LUT Engine (.cube Parser + AGSL), Live Camera LUT Application, and live device/emulator verification results.
 
 ---
 
@@ -348,7 +348,7 @@ The **Probe Lab** audits camera hardware capabilities at runtime without opening
    - Persists Grid toggle state (`grid_enabled`), Flash mode (`flash_mode`), and Camera mode (`camera_mode`) in `SharedPreferences` (`lensora_camera_prefs`).
    - Reads and restores user preferences automatically on app startup.
 2. **Review Checkpoint Package**:
-   - Generated live device/emulator screenshot `screenshot_current.png`.
+   - Generated live device screenshot `screenshot_current.png`.
    - Created Master Architect review package `Lensora_Review_Checkpoint.zip` containing `progress.md`, `report.md`, and `screenshot_current.png`.
 
 ---
@@ -479,7 +479,20 @@ The **Probe Lab** audits camera hardware capabilities at runtime without opening
 
 ---
 
-## 37. Verification & Crash Audit Results
+## 37. Phase 17, Step 37: Live Camera LUT Application
+
+1. **`CameraTopBar.kt` Vibe Palette Selector**:
+   - Added Vibe selector button in top bar cycling `NONE` $\rightarrow$ `CINEMATIC` $\rightarrow$ `LEICA` $\rightarrow$ `ROYAL_GOLD` $\rightarrow$ `NONE`.
+2. **`CameraScreen.kt` Live Viewfinder AGSL Shader**:
+   - Applied AGSL `LutShader` RenderEffect directly to live `CameraPreview` viewfinder in 60fps GPU rendering matching active `VibeState.selectedVibe`.
+3. **`AiProcessorWorker.kt` Background Capture Queue**:
+   - Passed active `VibePreset` input parameter and applied LUT / Vibe color transformation pass to captured photos before saving to MediaStore.
+4. **Verification & Screenshot**:
+   - Verified live Leica B&W and Teal & Orange preview rendering, captured photo saved in Leica B&W to Gallery, and captured screenshot `ui_photos/camera_lut.png`.
+
+---
+
+## 38. Verification & Crash Audit Results
 
 - **Build Status**: `./gradlew assembleDebug` & `./gradlew installDebug` - **100% SUCCESS**.
 - **Static Code Analysis**: Analyzed all Kotlin source files in `app/src/main/java` - **0 Errors, 0 Warnings**.
