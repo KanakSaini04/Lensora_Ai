@@ -142,8 +142,9 @@ class AiProcessorWorker(
                 Log.i(tag, "L3 AI Processing finished in ${executionTime}ms (Used TFLite: $usedTfLite). Saved $fileName to MediaStore at $newUri")
 
                 // 6. Enqueue CloudSyncWorker if Cloud Sync toggle is ON in Settings
-                val isCloudSyncEnabled = context.getSharedPreferences("lensora_prefs", Context.MODE_PRIVATE)
-                    .getBoolean("cloud_sync_enabled", false)
+                val prefs = context.getSharedPreferences("lensora_prefs", Context.MODE_PRIVATE)
+                val isCloudSyncEnabled = prefs.getBoolean("cloud_sync_enabled", false)
+                val isAutoPurgeEnabled = prefs.getBoolean("auto_purge_enabled", true)
 
                 if (isCloudSyncEnabled) {
                     val syncRequest = OneTimeWorkRequestBuilder<CloudSyncWorker>()
@@ -151,12 +152,13 @@ class AiProcessorWorker(
                             workDataOf(
                                 "PHOTO_URI" to newUri.toString(),
                                 "FILE_NAME" to fileName,
+                                "AUTO_PURGE_ENABLED" to isAutoPurgeEnabled,
                             ),
                         )
                         .build()
 
                     WorkManager.getInstance(context).enqueue(syncRequest)
-                    Log.i(tag, "Cloud Sync toggle is ON. Enqueued CloudSyncWorker for $fileName ($newUri)")
+                    Log.i(tag, "Cloud Sync toggle is ON. Enqueued CloudSyncWorker for $fileName (Auto-Purge: $isAutoPurgeEnabled)")
                 }
 
                 Result.success()
