@@ -162,9 +162,16 @@
   - Updated `CameraTopBar.kt` with `TimerMode` cycling (`OFF` -> `3s` -> `10s` -> `OFF`) with icon/text updates.
   - Updated `CameraScreen.kt` with camera flip button (`Icons.Outlined.Cameraswitch`), horizontal preview mirroring (`graphicsLayer { scaleX = -1f }`), and large center countdown timer overlay (`3... 2... 1...`).
 
-## Phase 12: Cinematic Video Mode
+## Phase 12: Cinematic Video Mode (100% COMPLETE)
 
 - [x] **Step 32: Cinematic Video Mode**
   - Updated `CameraMode.kt` and `CameraModeCarousel.kt` to include `CINEMATIC` mode.
   - Updated `CameraController.kt` to lock 24 FPS target range (`Range(24, 24)`) and frame duration (`41,666,666` ns) with safe fallback to default FPS if unsupported by HAL.
   - Updated `CameraScreen.kt` to render pure black (`#000000`) 2.39:1 aspect ratio letterboxing bars overlay on the viewfinder when `selectedMode == CameraMode.CINEMATIC` and wire video recording controls.
+
+## Phase 13: The "MORE" Modes Menu
+
+- [x] **Step 33: The "MORE" Modes Menu**
+  - Updated `CameraModeCarousel.kt` with "MORE" button at the end of the `LazyRow`.
+  - Created `MoreModesSheet.kt` rendering Material 3 `ModalBottomSheet` in Obsidian Royal theme with **PRO TOOLS** (Astro, Panorama, Tele-Cine, Pro Macro, Time-Lapse, 3D Spatial, 360 Sphere, Stop Motion) and **SIGNATURE BRANDS** (Leica, ZEISS, Hasselblad, XMAGE, Harcourt, Sony G, Samsung, Apple, Pixel).
+  - Updated `CameraScreen.kt` to wire MORE sheet opening, state updates, and sheet dismissal.
