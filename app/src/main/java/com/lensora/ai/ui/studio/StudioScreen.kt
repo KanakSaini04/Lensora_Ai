@@ -45,6 +45,8 @@ import androidx.compose.material3.IconButton
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Slider
 import androidx.compose.material3.SliderDefaults
+import androidx.compose.material3.Switch
+import androidx.compose.material3.SwitchDefaults
 import androidx.compose.material3.Text
 import androidx.compose.material3.TopAppBar
 import androidx.compose.material3.TopAppBarDefaults
@@ -60,6 +62,7 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
+import androidx.compose.ui.draw.scale
 import androidx.compose.ui.geometry.Offset
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.ColorFilter
@@ -107,6 +110,7 @@ fun StudioScreen() {
     var selectedToolCategory by remember { mutableIntStateOf(0) } // 0: Light, 1: Color, 2: Eraser, 3: Crop
     var exposureValue by remember { mutableFloatStateOf(0.0f) }
     var contrastValue by remember { mutableFloatStateOf(0.0f) }
+    var isIncludeTimestampEnabled by remember { mutableStateOf(false) }
     var isExporting by remember { mutableStateOf(false) }
 
     // Magic Eraser AI Inpainting states
@@ -155,17 +159,17 @@ fun StudioScreen() {
                 title = {
                     Row(verticalAlignment = Alignment.CenterVertically) {
                         Text(
-                            text = "Studio Editor",
+                            text = "Studio",
                             color = ColorWhite,
                             fontWeight = FontWeight.Bold,
                         )
                         if (VibeState.selectedVibe != VibePreset.NONE) {
-                            Spacer(modifier = Modifier.width(8.dp))
+                            Spacer(modifier = Modifier.width(6.dp))
                             Box(
                                 modifier = Modifier
                                     .clip(RoundedCornerShape(6.dp))
                                     .background(RoyalBlue)
-                                    .padding(horizontal = 8.dp, vertical = 2.dp),
+                                    .padding(horizontal = 6.dp, vertical = 2.dp),
                             ) {
                                 Text(
                                     text = VibeState.selectedVibe.displayName,
@@ -178,6 +182,29 @@ fun StudioScreen() {
                     }
                 },
                 actions = {
+                    // Include Timestamp Toggle Switch
+                    Row(
+                        verticalAlignment = Alignment.CenterVertically,
+                        modifier = Modifier.padding(end = 4.dp),
+                    ) {
+                        Text(
+                            text = "Time",
+                            color = ColorMutedGray,
+                            fontSize = 11.sp,
+                            fontWeight = FontWeight.SemiBold,
+                        )
+                        Spacer(modifier = Modifier.width(2.dp))
+                        Switch(
+                            checked = isIncludeTimestampEnabled,
+                            onCheckedChange = { isIncludeTimestampEnabled = it },
+                            modifier = Modifier.scale(0.7f),
+                            colors = SwitchDefaults.colors(
+                                checkedThumbColor = ColorWhite,
+                                checkedTrackColor = RoyalBlue,
+                            ),
+                        )
+                    }
+
                     IconButton(onClick = {
                         exposureValue = 0.0f
                         contrastValue = 0.0f
@@ -189,9 +216,6 @@ fun StudioScreen() {
                         Toast.makeText(context, "Reset Edit & Vibe Pass", Toast.LENGTH_SHORT).show()
                     }) {
                         Icon(imageVector = Icons.AutoMirrored.Outlined.Undo, contentDescription = "Undo", tint = ColorWhite)
-                    }
-                    IconButton(onClick = { Toast.makeText(context, "Redo Pass", Toast.LENGTH_SHORT).show() }) {
-                        Icon(imageVector = Icons.AutoMirrored.Outlined.Redo, contentDescription = "Redo", tint = ColorWhite)
                     }
                     Button(
                         onClick = {
@@ -205,6 +229,7 @@ fun StudioScreen() {
                                         exposure = exposureValue,
                                         contrast = contrastValue,
                                         vibe = VibeState.selectedVibe,
+                                        includeTimestamp = isIncludeTimestampEnabled,
                                     )
                                     result.onSuccess {
                                         Toast.makeText(context, "Photo exported to Gallery!", Toast.LENGTH_SHORT).show()
