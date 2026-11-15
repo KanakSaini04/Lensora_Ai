@@ -4,7 +4,7 @@
 
 **Lensora_Ai** (`com.lensora.ai`) is an AI-first computational camera application built on Android 16 (API 36) using Jetpack Compose, Material 3 (Obsidian Royal Theme), Hilt dependency injection, and a pure **Camera2 L0 Safe Core HAL Engine** (strictly zero CameraX dependencies).
 
-This report presents a complete end-to-end audit of all implemented components, hardware capability probe results, L0 atomic capture journals, UI overlays, camera hardware zoom control engines, tap-to-focus metering, flash controls, mode selection state wiring, thermal/storage guards, L1 Light AI Scene Classifier, L2 AI Planner Foundation, L3/L4 WorkManager Processing Queue & Quality Validator, Pinterest-Style Masonry Gallery Tab UI, Settings Tab & AI Center Control Room, Vibes Tab & Color Presets UI, Studio Tab UI Skeleton, L3 Real ColorMatrix Computational Engine, GitHub DLC Model Downloader, Studio Real-Time Image Editing, Studio Export Pipeline, Vibes to Studio Color Science Integration, L3 TFLite AI Inference Engine, Google Drive Cloud Sync Architecture, Auto-Purge & Storage Cleanup Engine, Camera UI State Persistence, Real TFLite Model & Manifest Integration, Pro Mode HUD & Manual Controls, Video Recording Engine, RAW / DNG Capture Pipeline, Camera Flip & Shutter Timer, Cinematic Video Mode, The "MORE" Modes Menu, Pro HUD AGSL Shaders & UI Screenshot Capture, Studio AI Object Eraser (LaMa Inpainting), Real LUT Engine (.cube Parser + AGSL), Live Camera LUT Application, and live device/emulator verification results.
+This report presents a complete end-to-end audit of all implemented components, hardware capability probe results, L0 atomic capture journals, UI overlays, camera hardware zoom control engines, tap-to-focus metering, flash controls, mode selection state wiring, thermal/storage guards, L1 Light AI Scene Classifier, L2 AI Planner Foundation, L3/L4 WorkManager Processing Queue & Quality Validator, Pinterest-Style Masonry Gallery Tab UI, Settings Tab & AI Center Control Room, Vibes Tab & Color Presets UI, Studio Tab UI Skeleton, L3 Real ColorMatrix Computational Engine, GitHub DLC Model Downloader, Studio Real-Time Image Editing, Studio Export Pipeline, Vibes to Studio Color Science Integration, L3 TFLite AI Inference Engine, Google Drive Cloud Sync Architecture, Auto-Purge & Storage Cleanup Engine, Camera UI State Persistence, Real TFLite Model & Manifest Integration, Pro Mode HUD & Manual Controls, Video Recording Engine, RAW / DNG Capture Pipeline, Camera Flip & Shutter Timer, Cinematic Video Mode, The "MORE" Modes Menu, Pro HUD AGSL Shaders & UI Screenshot Capture, Studio AI Object Eraser (LaMa Inpainting), Real LUT Engine (.cube Parser + AGSL), Live Camera LUT Application, Advanced Modes Hardware Wiring, and live device/emulator verification results.
 
 ---
 
@@ -492,7 +492,35 @@ The **Probe Lab** audits camera hardware capabilities at runtime without opening
 
 ---
 
-## 38. Verification & Crash Audit Results
+## 38. Phase 18, Step 38: Golden Path Verification & Bug Fixing
+
+1. **Golden Path End-to-End Verification**:
+   - Executed clean package uninstall (`adb uninstall com.lensora.ai`) and clean debug build (`./gradlew installDebug`).
+   - Verified complete end-to-end flow: Camera (Leica B&W) $\rightarrow$ Capture $\rightarrow$ Gallery $\rightarrow$ Studio (Cinematic Vibe & Export) $\rightarrow$ Gallery (Exported Photo Verification) $\rightarrow$ Settings Probe Lab.
+2. **Bug Fixes**:
+   - Fixed Direct Boot credential-encrypted storage exception in `CameraScreen.kt` by wrapping `getSharedPreferences` in `createDeviceProtectedStorageContext()` fallback.
+3. **Verification & Screenshot**:
+   - Confirmed **0 Runtime Crashes (`AndroidRuntime:E`)** across all tabs and workflows.
+   - Captured screenshot `ui_photos/golden_path_export.png`.
+
+---
+
+## 39. Phase 19, Step 39: Advanced Modes Hardware Wiring
+
+1. **`CameraController.kt` `setAdvancedMode(modeName: String)`**:
+   - Implemented `setAdvancedMode` handling 17 advanced modes with 100% try-catch safety:
+     - `"ASTRO"`: Locks focus to infinity (`CONTROL_AF_MODE_OFF`, `LENS_FOCUS_DISTANCE = 0f`) and sets 30s long exposure (`SENSOR_EXPOSURE_TIME`).
+     - `"PRO MACRO"`: Sets focus to minimum macro distance (`LENS_INFO_MINIMUM_FOCUS_DISTANCE`).
+     - `"LEICA"`, `"ZEISS"`, `"HASSELBLAD"`, `"XMAGE"`, `"HARCOURT"`: Activates matching `VibePreset` LUT in `VibeState.selectedVibe`.
+     - `"PANORAMA"`: Displays Toast notice `"Panorama mode is coming in v2.0"`.
+2. **`CameraScreen.kt` Wiring**:
+   - Wired `MoreModesSheet` mode selection callback to `cameraController.setAdvancedMode(modeName)`.
+3. **Verification & Crash Audit**:
+   - Tested selecting ASTRO and LEICA from MORE modes menu, verified live viewfinder color/focus updates, and confirmed **0 Runtime Crashes (`AndroidRuntime:E`)**.
+
+---
+
+## 40. Verification & Crash Audit Results
 
 - **Build Status**: `./gradlew assembleDebug` & `./gradlew installDebug` - **100% SUCCESS**.
 - **Static Code Analysis**: Analyzed all Kotlin source files in `app/src/main/java` - **0 Errors, 0 Warnings**.
