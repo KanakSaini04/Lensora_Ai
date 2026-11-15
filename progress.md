@@ -155,9 +155,16 @@
   - Updated `CameraController.kt` using `android.hardware.camera2.DngCreator` on `Dispatchers.IO` to construct and write uncompressed RAW `.dng` files to MediaStore under `Pictures/Lensora_Ai/RAW/`.
   - Implemented 100% crash-safe fallback to standard JPEG capture if `DngCreator` execution fails or if HAL lacks unexposed raw stream access.
 
-## Phase 11: Camera Flip & Shutter Timer
+## Phase 11: Camera Flip & Shutter Timer (100% COMPLETE)
 
 - [x] **Step 31: Camera Flip & Shutter Timer**
   - Updated `CameraController.kt` with `switchCamera` (Front/Back lens facing toggle) and `isFrontCamera` mirror state.
   - Updated `CameraTopBar.kt` with `TimerMode` cycling (`OFF` -> `3s` -> `10s` -> `OFF`) with icon/text updates.
   - Updated `CameraScreen.kt` with camera flip button (`Icons.Outlined.Cameraswitch`), horizontal preview mirroring (`graphicsLayer { scaleX = -1f }`), and large center countdown timer overlay (`3... 2... 1...`).
+
+## Phase 12: Cinematic Video Mode
+
+- [x] **Step 32: Cinematic Video Mode**
+  - Updated `CameraMode.kt` and `CameraModeCarousel.kt` to include `CINEMATIC` mode.
+  - Updated `CameraController.kt` to lock 24 FPS target range (`Range(24, 24)`) and frame duration (`41,666,666` ns) with safe fallback to default FPS if unsupported by HAL.
+  - Updated `CameraScreen.kt` to render pure black (`#000000`) 2.39:1 aspect ratio letterboxing bars overlay on the viewfinder when `selectedMode == CameraMode.CINEMATIC` and wire video recording controls.

@@ -25,6 +25,7 @@ import android.os.PowerManager
 import android.os.StatFs
 import android.provider.MediaStore
 import android.util.Log
+import android.util.Range
 import android.util.Size
 import android.view.Surface
 import androidx.core.content.ContextCompat
@@ -386,6 +387,21 @@ class CameraController(
                     builder.set(CaptureRequest.CONTROL_AE_MODE, CaptureRequest.CONTROL_AE_MODE_ON)
                     builder.set(CaptureRequest.CONTROL_MODE, CaptureRequest.CONTROL_MODE_AUTO)
                 }
+                CameraMode.CINEMATIC -> {
+                    builder.set(CaptureRequest.CONTROL_AE_MODE, CaptureRequest.CONTROL_AE_MODE_ON)
+                    builder.set(CaptureRequest.CONTROL_MODE, CaptureRequest.CONTROL_MODE_AUTO)
+                    try {
+                        val fpsRanges = cameraCharacteristics?.get(CameraCharacteristics.CONTROL_AE_AVAILABLE_TARGET_FPS_RANGES)
+                        val targetRange = fpsRanges?.firstOrNull { it.lower == 24 && it.upper == 24 }
+                            ?: fpsRanges?.firstOrNull { it.upper == 24 }
+                            ?: Range(24, 24)
+                        builder.set(CaptureRequest.CONTROL_AE_TARGET_FPS_RANGE, targetRange)
+                        builder.set(CaptureRequest.SENSOR_FRAME_DURATION, 41_666_666L)
+                        Log.i(tag, "Cinematic 24 FPS target range set: $targetRange")
+                    } catch (e: Exception) {
+                        Log.w(tag, "Failed to lock 24fps target range. Fallback to default FPS.", e)
+                    }
+                }
                 CameraMode.PRO -> {
                     builder.set(CaptureRequest.CONTROL_AE_MODE, CaptureRequest.CONTROL_AE_MODE_OFF)
                     builder.set(CaptureRequest.CONTROL_MODE, CaptureRequest.CONTROL_MODE_OFF)
@@ -443,6 +459,15 @@ class CameraController(
             recordBuilder.addTarget(previewSurf)
             recordBuilder.addTarget(recordSurface)
             recordBuilder.set(CaptureRequest.CONTROL_AF_MODE, CaptureRequest.CONTROL_AF_MODE_CONTINUOUS_VIDEO)
+
+            if (currentCameraMode == CameraMode.CINEMATIC) {
+                try {
+                    recordBuilder.set(CaptureRequest.CONTROL_AE_TARGET_FPS_RANGE, Range(24, 24))
+                } catch (e: Exception) {
+                    Log.w(tag, "Failed to set 24fps record range.", e)
+                }
+            }
+
             applyZoom(recordBuilder, currentZoomRatio)
             previewRequestBuilder = recordBuilder
 
