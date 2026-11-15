@@ -4,7 +4,7 @@
 
 **Lensora_Ai** (`com.lensora.ai`) is an AI-first computational camera application built on Android 16 (API 36) using Jetpack Compose, Material 3 (Obsidian Royal Theme), Hilt dependency injection, and a pure **Camera2 L0 Safe Core HAL Engine** (strictly zero CameraX dependencies).
 
-This report presents a complete end-to-end audit of all implemented components, hardware capability probe results, L0 atomic capture journals, UI overlays, camera hardware zoom control engines, tap-to-focus metering, flash controls, mode selection state wiring, thermal/storage guards, L1 Light AI Scene Classifier, L2 AI Planner Foundation, L3/L4 WorkManager Processing Queue & Quality Validator, Pinterest-Style Masonry Gallery Tab UI, Settings Tab & AI Center Control Room, Vibes Tab & Color Presets UI, Studio Tab UI Skeleton, L3 Real ColorMatrix Computational Engine, GitHub DLC Model Downloader, Studio Real-Time Image Editing, Studio Export Pipeline, Vibes to Studio Color Science Integration, L3 TFLite AI Inference Engine, Google Drive Cloud Sync Architecture, Auto-Purge & Storage Cleanup Engine, Camera UI State Persistence, Real TFLite Model & Manifest Integration, Pro Mode HUD & Manual Controls, Video Recording Engine, RAW / DNG Capture Pipeline, Camera Flip & Shutter Timer, Cinematic Video Mode, The "MORE" Modes Menu, and live device/emulator verification results.
+This report presents a complete end-to-end audit of all implemented components, hardware capability probe results, L0 atomic capture journals, UI overlays, camera hardware zoom control engines, tap-to-focus metering, flash controls, mode selection state wiring, thermal/storage guards, L1 Light AI Scene Classifier, L2 AI Planner Foundation, L3/L4 WorkManager Processing Queue & Quality Validator, Pinterest-Style Masonry Gallery Tab UI, Settings Tab & AI Center Control Room, Vibes Tab & Color Presets UI, Studio Tab UI Skeleton, L3 Real ColorMatrix Computational Engine, GitHub DLC Model Downloader, Studio Real-Time Image Editing, Studio Export Pipeline, Vibes to Studio Color Science Integration, L3 TFLite AI Inference Engine, Google Drive Cloud Sync Architecture, Auto-Purge & Storage Cleanup Engine, Camera UI State Persistence, Real TFLite Model & Manifest Integration, Pro Mode HUD & Manual Controls, Video Recording Engine, RAW / DNG Capture Pipeline, Camera Flip & Shutter Timer, Cinematic Video Mode, The "MORE" Modes Menu, Pro HUD AGSL Shaders & UI Screenshot Capture, and live device/emulator verification results.
 
 ---
 
@@ -360,7 +360,7 @@ The **Probe Lab** audits camera hardware capabilities at runtime without opening
 2. **`ModelDownloaderWorker.kt` ZIP Extraction Pass**:
    - Parses `manifest.json`, downloads model ZIP via OkHttp, extracts `.tflite` entry in memory using `java.util.zip.ZipInputStream`, computes SHA-256 checksum, and saves finalized model binary to `context.filesDir/models/mobilenet_v1_1.0_224.tflite`.
 3. **Settings Screen DLC Management**:
-   - Updated UI card with `Download MobileNet Model` button and ready state displaying model file size.
+   - Updated UI card with `Download MobileNet Model` button and ready status displaying model file size.
 4. **`AiProcessorWorker.kt` MobileNet TFLite Inference**:
    - Loads `mobilenet_v1_1.0_224.tflite`, constructs `1x224x224x3` float input buffer, executes real TFLite inference (`1x1001` output classes), and logs inference time and class count in Logcat.
 
@@ -441,7 +441,21 @@ The **Probe Lab** audits camera hardware capabilities at runtime without opening
 
 ---
 
-## 34. Verification & Crash Audit Results
+## 34. Phase 14, Step 34: Pro HUD GPU Overlays & UI Screenshot Capture
+
+1. **`AgslShaders.kt` Shaders Engine**:
+   - Defined AGSL shader strings and API 33+ `RenderEffect.createRuntimeShaderEffect` builders for:
+     - **Zebras Overlay**: Highlights pixels with luminance > 0.85 in diagonal red stripes (`half4(1.0, 0.0, 0.0, 1.0)`).
+     - **Focus Peaking**: Highlights sharp high-frequency edges using a 4-neighbor spatial derivative in Neon Green (`half4(0.0, 1.0, 0.0, 1.0)`).
+2. **`ProModeControls.kt` & `CameraScreen.kt` Wiring**:
+   - Added Zebras and Focus Peaking switch toggles in Pro Mode HUD.
+   - Applied AGSL `RenderEffect` directly to the `CameraPreview` viewfinder in PRO mode.
+3. **UI Photos Capture Package (`ui_photos/`)**:
+   - Captured all 7 live UI screenshots: `camera_main.png`, `camera_pro.png`, `studio.png`, `gallery.png`, `vibes.png`, `settings.png`, `more_modes.png`.
+
+---
+
+## 35. Verification & Crash Audit Results
 
 - **Build Status**: `./gradlew assembleDebug` & `./gradlew installDebug` - **100% SUCCESS**.
 - **Static Code Analysis**: Analyzed all Kotlin source files in `app/src/main/java` - **0 Errors, 0 Warnings**.
