@@ -28,14 +28,12 @@ import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.outlined.AspectRatio
-import androidx.compose.material.icons.outlined.Compare
 import androidx.compose.material.icons.outlined.Palette
 import androidx.compose.material.icons.outlined.Tune
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
-import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Tab
 import androidx.compose.material3.TabRow
@@ -122,15 +120,39 @@ fun VibesScreen() {
         else -> templateItems
     }
 
+    val handleVibeSelection: (VibeItem) -> Unit = { vibe ->
+        val preset = mapVibeToPreset(vibe)
+        VibeState.selectedVibe = preset
+        Toast.makeText(context, "Applied ${preset.displayName} to Studio!", Toast.LENGTH_SHORT).show()
+    }
+
     Scaffold(
         topBar = {
             TopAppBar(
                 title = {
-                    Text(
-                        text = "Vibes & Color Presets",
-                        color = ColorWhite,
-                        fontWeight = FontWeight.Bold,
-                    )
+                    Row(verticalAlignment = Alignment.CenterVertically) {
+                        Text(
+                            text = "Vibes & Presets",
+                            color = ColorWhite,
+                            fontWeight = FontWeight.Bold,
+                        )
+                        if (VibeState.selectedVibe != VibePreset.NONE) {
+                            Spacer(modifier = Modifier.width(8.dp))
+                            Box(
+                                modifier = Modifier
+                                    .clip(RoundedCornerShape(6.dp))
+                                    .background(RoyalBlue)
+                                    .padding(horizontal = 8.dp, vertical = 2.dp),
+                            ) {
+                                Text(
+                                    text = VibeState.selectedVibe.displayName,
+                                    color = ColorWhite,
+                                    fontSize = 10.sp,
+                                    fontWeight = FontWeight.Bold,
+                                )
+                            }
+                        }
+                    }
                 },
                 colors = TopAppBarDefaults.topAppBarColors(
                     containerColor = CharcoalSurface,
@@ -205,9 +227,7 @@ fun VibesScreen() {
                                 TrendingCardByTab(
                                     tabIndex = selectedTabIndex,
                                     vibe = vibe,
-                                    onClick = {
-                                        Toast.makeText(context, "Applied ${vibe.title}", Toast.LENGTH_SHORT).show()
-                                    },
+                                    onClick = { handleVibeSelection(vibe) },
                                 )
                             }
                         }
@@ -229,13 +249,21 @@ fun VibesScreen() {
                     GridCardByTab(
                         tabIndex = selectedTabIndex,
                         vibe = vibe,
-                        onClick = {
-                            Toast.makeText(context, "Selected ${vibe.title}", Toast.LENGTH_SHORT).show()
-                        },
+                        onClick = { handleVibeSelection(vibe) },
                     )
                 }
             }
         }
+    }
+}
+
+private fun mapVibeToPreset(vibe: VibeItem): VibePreset {
+    return when {
+        vibe.title.contains("Leica", ignoreCase = true) || vibe.title.contains("B&W", ignoreCase = true) -> VibePreset.LEICA
+        vibe.title.contains("Cinematic", ignoreCase = true) || vibe.title.contains("Portra", ignoreCase = true) -> VibePreset.CINEMATIC
+        vibe.title.contains("Golden", ignoreCase = true) || vibe.title.contains("Sunset", ignoreCase = true) -> VibePreset.ROYAL_GOLD
+        vibe.title.contains("Vintage", ignoreCase = true) || vibe.title.contains("Fuji", ignoreCase = true) || vibe.title.contains("Matte", ignoreCase = true) -> VibePreset.VINTAGE
+        else -> VibePreset.CINEMATIC
     }
 }
 
