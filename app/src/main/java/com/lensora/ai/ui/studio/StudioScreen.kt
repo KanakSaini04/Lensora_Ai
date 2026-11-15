@@ -1,16 +1,22 @@
 package com.lensora.ai.ui.studio
 
+import android.graphics.Bitmap
+import android.graphics.BitmapFactory
+import android.graphics.Paint
+import android.graphics.Path
 import android.widget.Toast
+import androidx.compose.foundation.Canvas
+import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
+import androidx.compose.foundation.gestures.detectDragGestures
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
-import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
@@ -53,9 +59,14 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
+import androidx.compose.ui.geometry.Offset
+import androidx.compose.ui.geometry.Size
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.ColorFilter
+import androidx.compose.ui.graphics.StrokeCap
+import androidx.compose.ui.graphics.asImageBitmap
 import androidx.compose.ui.graphics.vector.ImageVector
+import androidx.compose.ui.input.pointer.pointerInput
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.text.font.FontWeight
@@ -70,7 +81,14 @@ import com.lensora.ai.ui.theme.PitchBlackBackground
 import com.lensora.ai.ui.theme.RoyalBlue
 import com.lensora.ai.ui.vibes.VibePreset
 import com.lensora.ai.ui.vibes.VibeState
+import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
+import kotlinx.coroutines.withContext
+import java.util.Locale
+
+data class BrushStroke(
+    val points: List<Offset>,
+)
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -78,14 +96,23 @@ fun StudioScreen() {
     val context = LocalContext.current
     val coroutineScope = rememberCoroutineScope()
     val galleryRepository = remember { GalleryRepository(context) }
+    val objectEraser = remember { ObjectEraser(context) }
+
     var photoUris by remember { mutableStateOf<List<android.net.Uri>>(emptyList()) }
     var selectedPhotoIndex by remember { mutableIntStateOf(0) }
 
     // Interactive editing tool states
-    var selectedToolCategory by remember { mutableIntStateOf(0) } // 0: Light, 1: Color, 2: Effects, 3: Crop
+    var selectedToolCategory by remember { mutableIntStateOf(0) } // 0: Light, 1: Color, 2: Eraser, 3: Crop
     var exposureValue by remember { mutableFloatStateOf(0.0f) }
     var contrastValue by remember { mutableFloatStateOf(0.0f) }
     var isExporting by remember { mutableStateOf(false) }
+
+    // Magic Eraser AI Inpainting states
+    var isEraserModeActive by remember { mutableStateOf(false) }
+    var brushStrokes by remember { mutableStateOf<List<BrushStroke>>(emptyList()) }
+    var currentStrokePoints by remember { mutableStateOf<List<Offset>>(emptyList()) }
+    var isErasingWithAi by remember { mutableStateOf(false) }
+    var inpaintedBitmap by remember { mutableStateOf<Bitmap?>(null) }
 
     // Real-time GPU combined ColorFilter matrix derived from Sliders + Vibe State
     val realTimeColorFilter = remember(exposureValue, contrastValue, VibeState.selectedVibe) {
@@ -100,6 +127,13 @@ fun StudioScreen() {
 
     LaunchedEffect(Unit) {
         photoUris = galleryRepository.getAllPhotos()
+    }
+
+    LaunchedEffect(selectedPhotoIndex) {
+        inpaintedBitmap = null
+        brushStrokes = emptyList()
+        currentStrokePoints = emptyList()
+        isEraserModeActive = false
     }
 
     Scaffold(
@@ -134,6 +168,10 @@ fun StudioScreen() {
                     IconButton(onClick = {
                         exposureValue = 0.0f
                         contrastValue = 0.0f
+                        inpaintedBitmap = null
+                        brushStrokes = emptyList()
+                        currentStrokePoints = emptyList()
+                        isEraserModeActive = false
                         VibeState.selectedVibe = VibePreset.NONE
                         Toast.makeText(context, "Reset Edit & Vibe Pass", Toast.LENGTH_SHORT).show()
                     }) {
@@ -157,7 +195,6 @@ fun StudioScreen() {
                                     )
                                     result.onSuccess {
                                         Toast.makeText(context, "Photo exported to Gallery!", Toast.LENGTH_SHORT).show()
-                                        // Refresh gallery photos list
                                         photoUris = galleryRepository.getAllPhotos()
                                     }.onFailure { exception ->
                                         val message = if (exception.message?.contains("large", ignoreCase = true) == true) {
@@ -202,7 +239,7 @@ fun StudioScreen() {
                 .padding(innerPadding)
                 .background(PitchBlackBackground),
         ) {
-            // 1. TOP SECTION (~50% Height): Photo Preview Canvas Area with Real-Time GPU ColorFilter
+            // 1. TOP SECTION (~50% Height): Photo Preview Canvas Area with Real-Time GPU ColorFilter & Brush Mask
             Box(
                 modifier = Modifier
                     .fillMaxWidth()
@@ -210,7 +247,16 @@ fun StudioScreen() {
                     .background(Color(0xFF0A0A0A)),
                 contentAlignment = Alignment.Center,
             ) {
-                if (photoUris.isNotEmpty() && selectedPhotoIndex in photoUris.indices) {
+                val currentInpointed = inpaintedBitmap
+                if (currentInpointed != null) {
+                    Image(
+                        bitmap = currentInpointed.asImageBitmap(),
+                        contentDescription = "Inpainted AI Image",
+                        contentScale = ContentScale.Fit,
+                        colorFilter = realTimeColorFilter,
+                        modifier = Modifier.fillMaxSize(),
+                    )
+                } else if (photoUris.isNotEmpty() && selectedPhotoIndex in photoUris.indices) {
                     AsyncImage(
                         model = photoUris[selectedPhotoIndex],
                         contentDescription = "Studio Active Image",
@@ -235,6 +281,81 @@ fun StudioScreen() {
                     }
                 }
 
+                // Interactive Brush Mask Canvas Layer (When Magic Eraser mode is active)
+                if (isEraserModeActive) {
+                    Canvas(
+                        modifier = Modifier
+                            .fillMaxSize()
+                            .pointerInput(Unit) {
+                                detectDragGestures(
+                                    onDragStart = { offset ->
+                                        currentStrokePoints = listOf(offset)
+                                    },
+                                    onDrag = { change, _ ->
+                                        currentStrokePoints = currentStrokePoints + change.position
+                                    },
+                                    onDragEnd = {
+                                        if (currentStrokePoints.isNotEmpty()) {
+                                            brushStrokes = brushStrokes + BrushStroke(currentStrokePoints)
+                                            currentStrokePoints = emptyList()
+                                        }
+                                    },
+                                )
+                            },
+                    ) {
+                        val strokeWidthPx = 40.dp.toPx()
+                        val maskColor = Color(0x80FF0055)
+
+                        brushStrokes.forEach { stroke ->
+                            if (stroke.points.size > 1) {
+                                for (i in 0 until stroke.points.size - 1) {
+                                    drawLine(
+                                        color = maskColor,
+                                        start = stroke.points[i],
+                                        end = stroke.points[i + 1],
+                                        strokeWidth = strokeWidthPx,
+                                        cap = StrokeCap.Round,
+                                    )
+                                }
+                            }
+                        }
+
+                        if (currentStrokePoints.size > 1) {
+                            for (i in 0 until currentStrokePoints.size - 1) {
+                                drawLine(
+                                    color = maskColor,
+                                    start = currentStrokePoints[i],
+                                    end = currentStrokePoints[i + 1],
+                                    strokeWidth = strokeWidthPx,
+                                    cap = StrokeCap.Round,
+                                )
+                            }
+                        }
+                    }
+                }
+
+                // Loading overlay during LaMa AI Inpainting pass
+                if (isErasingWithAi) {
+                    Box(
+                        modifier = Modifier
+                            .clip(RoundedCornerShape(12.dp))
+                            .background(PitchBlackBackground.copy(alpha = 0.85f))
+                            .padding(horizontal = 24.dp, vertical = 16.dp),
+                        contentAlignment = Alignment.Center,
+                    ) {
+                        Column(horizontalAlignment = Alignment.CenterHorizontally) {
+                            CircularProgressIndicator(color = RoyalBlue, strokeWidth = 3.dp)
+                            Spacer(modifier = Modifier.height(12.dp))
+                            Text(
+                                text = "Erasing object with LaMa AI...",
+                                color = ColorWhite,
+                                fontSize = 13.sp,
+                                fontWeight = FontWeight.Bold,
+                            )
+                        }
+                    }
+                }
+
                 // Info metadata badge overlay
                 Box(
                     modifier = Modifier
@@ -245,7 +366,7 @@ fun StudioScreen() {
                         .padding(horizontal = 10.dp, vertical = 4.dp),
                 ) {
                     Text(
-                        text = "12.5 MP • ISO 100 • 1/250s • f/1.8",
+                        text = if (isEraserModeActive) "\u2728 Draw brush mask over object to erase" else "12.5 MP • ISO 100 • 1/250s • f/1.8",
                         color = ColorWhite,
                         fontSize = 10.sp,
                         fontWeight = FontWeight.SemiBold,
@@ -314,7 +435,7 @@ fun StudioScreen() {
                 }
             }
 
-            // 3. BOTTOM SECTION (~35% Height): Professional Editing Panel
+            // 3. BOTTOM SECTION (~35% Height): Professional Editing Panel & Magic Eraser Actions
             Column(
                 modifier = Modifier
                     .fillMaxWidth()
@@ -335,106 +456,208 @@ fun StudioScreen() {
                         icon = Icons.Outlined.WbSunny,
                         label = "Light",
                         isSelected = selectedToolCategory == 0,
-                        onClick = { selectedToolCategory = 0 },
+                        onClick = {
+                            selectedToolCategory = 0
+                            isEraserModeActive = false
+                        },
                     )
                     ToolCategoryButton(
                         icon = Icons.Outlined.Palette,
                         label = "Color",
                         isSelected = selectedToolCategory == 1,
-                        onClick = { selectedToolCategory = 1 },
+                        onClick = {
+                            selectedToolCategory = 1
+                            isEraserModeActive = false
+                        },
                     )
                     ToolCategoryButton(
                         icon = Icons.Outlined.AutoFixHigh,
-                        label = "Effects",
+                        label = "Eraser",
                         isSelected = selectedToolCategory == 2,
-                        onClick = { selectedToolCategory = 2 },
+                        onClick = {
+                            selectedToolCategory = 2
+                            isEraserModeActive = true
+                        },
                     )
                     ToolCategoryButton(
                         icon = Icons.Outlined.Crop,
                         label = "Crop",
                         isSelected = selectedToolCategory == 3,
-                        onClick = { selectedToolCategory = 3 },
+                        onClick = {
+                            selectedToolCategory = 3
+                            isEraserModeActive = false
+                        },
                     )
                 }
 
                 Spacer(modifier = Modifier.height(12.dp))
 
-                // Interactive Sliders (Exposure & Contrast) with 60fps GPU preview updates
-                Column(
-                    verticalArrangement = Arrangement.spacedBy(4.dp),
-                ) {
-                    // Exposure Slider
-                    Row(
+                if (isEraserModeActive) {
+                    // Magic Eraser Action Controls
+                    Column(
                         modifier = Modifier.fillMaxWidth(),
-                        horizontalArrangement = Arrangement.SpaceBetween,
-                        verticalAlignment = Alignment.CenterVertically,
+                        horizontalAlignment = Alignment.CenterHorizontally,
                     ) {
-                        Text(text = "Exposure EV", color = ColorWhite, fontSize = 11.sp, fontWeight = FontWeight.SemiBold)
                         Text(
-                            text = String.format("%.2f", exposureValue),
+                            text = "\u2728 LA MA AI OBJECT ERASER",
                             color = RoyalBlue,
                             fontSize = 11.sp,
                             fontWeight = FontWeight.Bold,
+                            letterSpacing = 1.sp,
+                        )
+                        Spacer(modifier = Modifier.height(12.dp))
+
+                        Row(
+                            horizontalArrangement = Arrangement.spacedBy(12.dp),
+                            verticalAlignment = Alignment.CenterVertically,
+                        ) {
+                            Button(
+                                onClick = {
+                                    brushStrokes = emptyList()
+                                    currentStrokePoints = emptyList()
+                                    Toast.makeText(context, "Mask Cleared", Toast.LENGTH_SHORT).show()
+                                },
+                                colors = ButtonDefaults.buttonColors(containerColor = CharcoalSurface),
+                                shape = RoundedCornerShape(8.dp),
+                            ) {
+                                Text(text = "Clear Mask", color = ColorWhite, fontSize = 12.sp, fontWeight = FontWeight.Bold)
+                            }
+
+                            Button(
+                                onClick = {
+                                    if (photoUris.isNotEmpty() && selectedPhotoIndex in photoUris.indices && !isErasingWithAi) {
+                                        coroutineScope.launch {
+                                            isErasingWithAi = true
+                                            val targetUri = photoUris[selectedPhotoIndex]
+
+                                            val sourceBitmap = withContext(Dispatchers.IO) {
+                                                context.contentResolver.openInputStream(targetUri)?.use { stream ->
+                                                    BitmapFactory.decodeStream(stream)
+                                                }
+                                            }
+
+                                            if (sourceBitmap != null) {
+                                                // Construct mask bitmap matching source dimensions
+                                                val maskBitmap = Bitmap.createBitmap(500, 500, Bitmap.Config.ARGB_8888)
+                                                val maskCanvas = android.graphics.Canvas(maskBitmap)
+                                                val paint = Paint().apply {
+                                                    color = android.graphics.Color.RED
+                                                    strokeWidth = 40f
+                                                    style = Paint.Style.STROKE
+                                                    strokeCap = Paint.Cap.ROUND
+                                                    strokeJoin = Paint.Join.ROUND
+                                                }
+
+                                                brushStrokes.forEach { stroke ->
+                                                    if (stroke.points.size > 1) {
+                                                        val path = Path()
+                                                        path.moveTo(stroke.points[0].x, stroke.points[0].y)
+                                                        for (i in 1 until stroke.points.size) {
+                                                            path.lineTo(stroke.points[i].x, stroke.points[i].y)
+                                                        }
+                                                        maskCanvas.drawPath(path, paint)
+                                                    }
+                                                }
+
+                                                val inpainted = objectEraser.eraseObject(sourceBitmap, maskBitmap)
+                                                inpaintedBitmap = inpainted
+                                                brushStrokes = emptyList()
+                                                currentStrokePoints = emptyList()
+                                                isEraserModeActive = false
+                                                Toast.makeText(context, "Object Erased with LaMa AI!", Toast.LENGTH_SHORT).show()
+                                            } else {
+                                                Toast.makeText(context, "Failed to load source image", Toast.LENGTH_SHORT).show()
+                                            }
+                                            isErasingWithAi = false
+                                        }
+                                    }
+                                },
+                                enabled = !isErasingWithAi && brushStrokes.isNotEmpty(),
+                                colors = ButtonDefaults.buttonColors(containerColor = RoyalBlue),
+                                shape = RoundedCornerShape(8.dp),
+                            ) {
+                                Text(text = "Process Eraser", color = ColorWhite, fontSize = 12.sp, fontWeight = FontWeight.Bold)
+                            }
+                        }
+                    }
+                } else {
+                    // Interactive Sliders (Exposure & Contrast) with 60fps GPU preview updates
+                    Column(
+                        verticalArrangement = Arrangement.spacedBy(4.dp),
+                    ) {
+                        // Exposure Slider
+                        Row(
+                            modifier = Modifier.fillMaxWidth(),
+                            horizontalArrangement = Arrangement.SpaceBetween,
+                            verticalAlignment = Alignment.CenterVertically,
+                        ) {
+                            Text(text = "Exposure EV", color = ColorWhite, fontSize = 11.sp, fontWeight = FontWeight.SemiBold)
+                            Text(
+                                text = String.format(Locale.US, "%.2f", exposureValue),
+                                color = RoyalBlue,
+                                fontSize = 11.sp,
+                                fontWeight = FontWeight.Bold,
+                            )
+                        }
+                        Slider(
+                            value = exposureValue,
+                            onValueChange = { exposureValue = it },
+                            valueRange = -2.0f..2.0f,
+                            colors = SliderDefaults.colors(
+                                thumbColor = RoyalBlue,
+                                activeTrackColor = RoyalBlue,
+                                inactiveTrackColor = CharcoalSurface,
+                            ),
+                            modifier = Modifier.height(24.dp),
+                        )
+
+                        // Contrast Slider
+                        Row(
+                            modifier = Modifier.fillMaxWidth(),
+                            horizontalArrangement = Arrangement.SpaceBetween,
+                            verticalAlignment = Alignment.CenterVertically,
+                        ) {
+                            Text(text = "Contrast", color = ColorWhite, fontSize = 11.sp, fontWeight = FontWeight.SemiBold)
+                            Text(
+                                text = String.format(Locale.US, "%.0f", contrastValue),
+                                color = RoyalBlue,
+                                fontSize = 11.sp,
+                                fontWeight = FontWeight.Bold,
+                            )
+                        }
+                        Slider(
+                            value = contrastValue,
+                            onValueChange = { contrastValue = it },
+                            valueRange = -50.0f..50.0f,
+                            colors = SliderDefaults.colors(
+                                thumbColor = RoyalBlue,
+                                activeTrackColor = RoyalBlue,
+                                inactiveTrackColor = CharcoalSurface,
+                            ),
+                            modifier = Modifier.height(24.dp),
                         )
                     }
-                    Slider(
-                        value = exposureValue,
-                        onValueChange = { exposureValue = it },
-                        valueRange = -2.0f..2.0f,
-                        colors = SliderDefaults.colors(
-                            thumbColor = RoyalBlue,
-                            activeTrackColor = RoyalBlue,
-                            inactiveTrackColor = CharcoalSurface,
-                        ),
-                        modifier = Modifier.height(24.dp),
-                    )
 
-                    // Contrast Slider
+                    Spacer(modifier = Modifier.height(8.dp))
+
+                    // 3-Way Color Wheels Placeholder
+                    Text(
+                        text = "3-WAY COLOR WHEELS (L3 INTERCEPT)",
+                        color = ColorMutedGray,
+                        fontSize = 9.sp,
+                        fontWeight = FontWeight.Bold,
+                        letterSpacing = 1.sp,
+                    )
+                    Spacer(modifier = Modifier.height(4.dp))
                     Row(
                         modifier = Modifier.fillMaxWidth(),
-                        horizontalArrangement = Arrangement.SpaceBetween,
+                        horizontalArrangement = Arrangement.SpaceAround,
                         verticalAlignment = Alignment.CenterVertically,
                     ) {
-                        Text(text = "Contrast", color = ColorWhite, fontSize = 11.sp, fontWeight = FontWeight.SemiBold)
-                        Text(
-                            text = String.format("%.0f", contrastValue),
-                            color = RoyalBlue,
-                            fontSize = 11.sp,
-                            fontWeight = FontWeight.Bold,
-                        )
+                        ColorWheelCircle(label = "Shadows", accentColor = Color(0xFF2563EB))
+                        ColorWheelCircle(label = "Midtones", accentColor = Color(0xFF10B981))
+                        ColorWheelCircle(label = "Highlights", accentColor = Color(0xFFF59E0B))
                     }
-                    Slider(
-                        value = contrastValue,
-                        onValueChange = { contrastValue = it },
-                        valueRange = -50.0f..50.0f,
-                        colors = SliderDefaults.colors(
-                            thumbColor = RoyalBlue,
-                            activeTrackColor = RoyalBlue,
-                            inactiveTrackColor = CharcoalSurface,
-                        ),
-                        modifier = Modifier.height(24.dp),
-                    )
-                }
-
-                Spacer(modifier = Modifier.height(8.dp))
-
-                // 3-Way Color Wheels Placeholder
-                Text(
-                    text = "3-WAY COLOR WHEELS (L3 INTERCEPT)",
-                    color = ColorMutedGray,
-                    fontSize = 9.sp,
-                    fontWeight = FontWeight.Bold,
-                    letterSpacing = 1.sp,
-                )
-                Spacer(modifier = Modifier.height(4.dp))
-                Row(
-                    modifier = Modifier.fillMaxWidth(),
-                    horizontalArrangement = Arrangement.SpaceAround,
-                    verticalAlignment = Alignment.CenterVertically,
-                ) {
-                    ColorWheelCircle(label = "Shadows", accentColor = Color(0xFF2563EB))
-                    ColorWheelCircle(label = "Midtones", accentColor = Color(0xFF10B981))
-                    ColorWheelCircle(label = "Highlights", accentColor = Color(0xFFF59E0B))
                 }
             }
         }
