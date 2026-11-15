@@ -702,7 +702,9 @@ fun CameraScreen(
                     onDismissRequest = { isMoreSheetVisible = false },
                     onModeSelected = { modeName ->
                         customModeName = modeName
-                        Toast.makeText(context, "Selected mode: $modeName", Toast.LENGTH_SHORT).show()
+                        cameraController.setAdvancedMode(modeName) { feedback ->
+                            Toast.makeText(context, feedback, Toast.LENGTH_SHORT).show()
+                        }
                     },
                 )
             }

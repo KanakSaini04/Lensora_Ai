@@ -214,3 +214,9 @@
   - Fixed Direct Boot credential-encrypted storage `SharedPreferences` exception in `CameraScreen.kt` by wrapping in `createDeviceProtectedStorageContext()` fallback.
   - Verified 0 runtime crashes (`AndroidRuntime:E`) across all tabs and workflows.
   - Captured screenshot `ui_photos/golden_path_export.png`.
+
+## Phase 19: Advanced Modes Hardware Wiring (100% COMPLETE)
+
+- [x] **Step 39: Advanced Modes Hardware Wiring**
+  - Implemented `setAdvancedMode(modeName: String)` in `CameraController.kt` with 100% try-catch safety wrapping Camera2 session updates (`ASTRO` focus infinity & long exposure, `PRO MACRO` minimum focus distance, `LEICA`/`ZEISS`/`HASSELBLAD` Vibe presets, `PANORAMA` v2.0 notice).
+  - Updated `CameraScreen.kt` wiring `MoreModesSheet` mode selection callback to `cameraController.setAdvancedMode`.
