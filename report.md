@@ -4,7 +4,7 @@
 
 **Lensora_Ai** (`com.lensora.ai`) is an AI-first computational camera application built on Android 16 (API 36) using Jetpack Compose, Material 3 (Obsidian Royal Theme), Hilt dependency injection, and a pure **Camera2 L0 Safe Core HAL Engine** (strictly zero CameraX dependencies).
 
-This report presents a complete end-to-end audit of all implemented components, hardware capability probe results, L0 atomic capture journals, UI overlays, camera hardware zoom control engines, tap-to-focus metering, flash controls, mode selection state wiring, thermal/storage guards, L1 Light AI Scene Classifier, L2 AI Planner Foundation, L3/L4 WorkManager Processing Queue & Quality Validator, Pinterest-Style Masonry Gallery Tab UI, Settings Tab & AI Center Control Room, Vibes Tab & Color Presets UI, Studio Tab UI Skeleton, L3 Real ColorMatrix Computational Engine, GitHub DLC Model Downloader, Studio Real-Time Image Editing, Studio Export Pipeline, Vibes to Studio Color Science Integration, L3 TFLite AI Inference Engine, Google Drive Cloud Sync Architecture, Auto-Purge & Storage Cleanup Engine, and live device/emulator verification results.
+This report presents a complete end-to-end audit of all implemented components, hardware capability probe results, L0 atomic capture journals, UI overlays, camera hardware zoom control engines, tap-to-focus metering, flash controls, mode selection state wiring, thermal/storage guards, L1 Light AI Scene Classifier, L2 AI Planner Foundation, L3/L4 WorkManager Processing Queue & Quality Validator, Pinterest-Style Masonry Gallery Tab UI, Settings Tab & AI Center Control Room, Vibes Tab & Color Presets UI, Studio Tab UI Skeleton, L3 Real ColorMatrix Computational Engine, GitHub DLC Model Downloader, Studio Real-Time Image Editing, Studio Export Pipeline, Vibes to Studio Color Science Integration, L3 TFLite AI Inference Engine, Google Drive Cloud Sync Architecture, Auto-Purge & Storage Cleanup Engine, Camera UI State Persistence, Real TFLite Model & Manifest Integration, and live device/emulator verification results.
 
 ---
 
@@ -342,7 +342,31 @@ The **Probe Lab** audits camera hardware capabilities at runtime without opening
 
 ---
 
-## 26. Verification & Crash Audit Results
+## 26. Phase 6, Step 26: Camera UI State Persistence & Master Review Checkpoint
+
+1. **`CameraScreen.kt` & `CameraController.kt` UI State Persistence**:
+   - Persists Grid toggle state (`grid_enabled`), Flash mode (`flash_mode`), and Camera mode (`camera_mode`) in `SharedPreferences` (`lensora_camera_prefs`).
+   - Reads and restores user preferences automatically on app startup.
+2. **Review Checkpoint Package**:
+   - Generated live device/emulator screenshot `screenshot_current.png`.
+   - Created Master Architect review package `Lensora_Review_Checkpoint.zip` containing `progress.md`, `report.md`, and `screenshot_current.png`.
+
+---
+
+## 27. Phase 7, Step 27: Real TFLite Model & Manifest Integration
+
+1. **`manifest.json` DLC Manifest Integration**:
+   - Placed `app/src/main/assets/manifest.json` defining MobileNet v1 1.0 224 model name and official Google download URL (`https://storage.googleapis.com/download.tensorflow.org/models/tflite/mobilenet_v1_1.0_224.zip`).
+2. **`ModelDownloaderWorker.kt` ZIP Extraction Pass**:
+   - Parses `manifest.json`, downloads model ZIP via OkHttp, extracts `.tflite` entry in memory using `java.util.zip.ZipInputStream`, computes SHA-256 checksum, and saves finalized model binary to `context.filesDir/models/mobilenet_v1_1.0_224.tflite`.
+3. **Settings Screen DLC Management**:
+   - Updated UI card with `Download MobileNet Model` button and ready state displaying model file size.
+4. **`AiProcessorWorker.kt` MobileNet TFLite Inference**:
+   - Loads `mobilenet_v1_1.0_224.tflite`, constructs `1x224x224x3` float input buffer, executes real TFLite inference (`1x1001` output classes), and logs inference time and class count in Logcat.
+
+---
+
+## 28. Verification & Crash Audit Results
 
 - **Build Status**: `./gradlew assembleDebug` & `./gradlew installDebug` - **100% SUCCESS**.
 - **Static Code Analysis**: Analyzed all Kotlin source files in `app/src/main/java` - **0 Errors, 0 Warnings**.

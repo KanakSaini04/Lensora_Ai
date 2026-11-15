@@ -88,7 +88,7 @@ fun SettingsScreen(
     val downloadProgress = workInfo?.progress?.getInt("PROGRESS", 0) ?: 0
 
     val modelFile = remember(workInfo?.state) {
-        File(context.filesDir, "models/real_esrgan_v2.tflite")
+        File(context.filesDir, "models/mobilenet_v1_1.0_224.tflite")
     }
     val isModelDownloaded = modelFile.exists()
 
@@ -220,13 +220,13 @@ fun SettingsScreen(
                             Spacer(modifier = Modifier.width(12.dp))
                             Column {
                                 Text(
-                                    text = "Manage AI Engines (GitHub DLC)",
+                                    text = "Manage AI Engines (Manifest DLC)",
                                     color = ColorWhite,
                                     fontWeight = FontWeight.Bold,
                                     fontSize = 14.sp,
                                 )
                                 Text(
-                                    text = if (isModelDownloaded) "Real-ESRGAN v2: Ready (${modelFile.length()} bytes)" else "Real-ESRGAN v2: Not Installed",
+                                    text = if (isModelDownloaded) "MobileNet v1 1.0: Ready (${modelFile.length()} bytes)" else "MobileNet v1 1.0: Not Installed",
                                     color = if (isModelDownloaded) RoyalBlue else ColorMutedGray,
                                     fontSize = 12.sp,
                                 )
@@ -256,15 +256,15 @@ fun SettingsScreen(
                                     val downloadRequest = OneTimeWorkRequestBuilder<ModelDownloaderWorker>()
                                         .setInputData(
                                             workDataOf(
-                                                "MODEL_URL" to "https://raw.githubusercontent.com/tensorflow/tensorflow/master/README.md",
-                                                "TARGET_FILENAME" to "real_esrgan_v2.tflite",
+                                                "MODEL_URL" to "https://storage.googleapis.com/download.tensorflow.org/models/tflite/mobilenet_v1_1.0_224.zip",
+                                                "TARGET_FILENAME" to "mobilenet_v1_1.0_224.tflite",
                                             ),
                                         )
                                         .build()
 
                                     activeWorkId = downloadRequest.id
                                     workManager.enqueue(downloadRequest)
-                                    Toast.makeText(context, "Started Real-ESRGAN Model Download", Toast.LENGTH_SHORT).show()
+                                    Toast.makeText(context, "Started MobileNet Model Download", Toast.LENGTH_SHORT).show()
                                 },
                                 colors = ButtonDefaults.buttonColors(containerColor = RoyalBlue),
                                 shape = RoundedCornerShape(8.dp),
@@ -278,7 +278,7 @@ fun SettingsScreen(
                                 )
                                 Spacer(modifier = Modifier.width(6.dp))
                                 Text(
-                                    text = if (isModelDownloaded) "Re-download Real-ESRGAN DLC" else "Download Real-ESRGAN DLC",
+                                    text = if (isModelDownloaded) "Re-download MobileNet Model" else "Download MobileNet Model",
                                     color = ColorWhite,
                                     fontWeight = FontWeight.Bold,
                                     fontSize = 12.sp,

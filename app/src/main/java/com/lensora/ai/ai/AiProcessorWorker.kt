@@ -20,6 +20,8 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
 import org.tensorflow.lite.Interpreter
 import java.io.File
+import java.nio.ByteBuffer
+import java.nio.ByteOrder
 
 class AiProcessorWorker(
     private val context: Context,
@@ -55,13 +57,15 @@ class AiProcessorWorker(
             }
 
             // 2. TFLite DLC Model Check & Inference Attempt
-            val modelFile = File(context.filesDir, "models/real_esrgan_v2.tflite")
+            val mobileNetFile = File(context.filesDir, "models/mobilenet_v1_1.0_224.tflite")
+            val fallbackFile = File(context.filesDir, "models/real_esrgan_v2.tflite")
+            val modelFile = if (mobileNetFile.exists()) mobileNetFile else if (fallbackFile.exists()) fallbackFile else null
             var usedTfLite = false
 
-            if (modelFile.exists()) {
+            if (modelFile != null && modelFile.exists()) {
                 var interpreter: Interpreter? = null
                 try {
-                    Log.i(tag, "DLC Model File found at ${modelFile.absolutePath} (${modelFile.length()} bytes). Initializing TFLite Interpreter...")
+                    Log.i(tag, "TFLite Model found at ${modelFile.absolutePath} (${modelFile.length()} bytes). Initializing TFLite Interpreter...")
                     val options = Interpreter.Options().apply {
                         setNumThreads(4)
                     }
@@ -69,12 +73,39 @@ class AiProcessorWorker(
                     val inputTensor = interpreter.getInputTensor(0)
                     val outputTensor = interpreter.getOutputTensor(0)
 
-                    Log.i(tag, "TFLite Interpreter initialized successfully. Input Tensor: ${inputTensor.shape().contentToString()} (${inputTensor.dataType()}), Output Tensor: ${outputTensor.shape().contentToString()}")
+                    Log.i(tag, "TFLite Interpreter initialized. Input Tensor: ${inputTensor.shape().contentToString()} (${inputTensor.dataType()}), Output Tensor: ${outputTensor.shape().contentToString()} (${outputTensor.dataType()})")
 
                     val inferenceStartTime = System.currentTimeMillis()
-                    // Model inference check pass
-                    val inferenceTime = System.currentTimeMillis() - inferenceStartTime
-                    Log.i(tag, "TFLite AI Inference execution pass completed in ${inferenceTime}ms")
+
+                    if (modelFile.name.contains("mobilenet", ignoreCase = true)) {
+                        val scaledBitmap = Bitmap.createScaledBitmap(srcBitmap, 224, 224, true)
+                        val inputBuffer = ByteBuffer.allocateDirect(1 * 224 * 224 * 3 * 4).apply {
+                            order(ByteOrder.nativeOrder())
+                        }
+
+                        val intValues = IntArray(224 * 224)
+                        scaledBitmap.getPixels(intValues, 0, 224, 0, 0, 224, 224)
+                        for (pixelValue in intValues) {
+                            val r = ((pixelValue shr 16) and 0xFF) / 255.0f
+                            val g = ((pixelValue shr 8) and 0xFF) / 255.0f
+                            val b = (pixelValue and 0xFF) / 255.0f
+                            inputBuffer.putFloat(r)
+                            inputBuffer.putFloat(g)
+                            inputBuffer.putFloat(b)
+                        }
+
+                        val outputArray = Array(1) { FloatArray(1001) }
+                        interpreter.run(inputBuffer, outputArray)
+                        scaledBitmap.recycle()
+
+                        val inferenceTime = System.currentTimeMillis() - inferenceStartTime
+                        val outputSize = outputArray[0].size
+                        Log.i(tag, "Real MobileNet TFLite AI Inference executed in ${inferenceTime}ms. Output array size: $outputSize classes")
+                    } else {
+                        val inferenceTime = System.currentTimeMillis() - inferenceStartTime
+                        Log.i(tag, "TFLite AI Inference execution pass completed in ${inferenceTime}ms")
+                    }
+
                     usedTfLite = true
                 } catch (e: Exception) {
                     Log.w(tag, "TFLite Interpreter execution pass failed (${e.localizedMessage}). Falling back to ColorMatrix engine.", e)
@@ -82,7 +113,7 @@ class AiProcessorWorker(
                     interpreter?.close()
                 }
             } else {
-                Log.i(tag, "TFLite DLC Model file not found at ${modelFile.absolutePath}. Falling back to ColorMatrix engine.")
+                Log.i(tag, "No TFLite DLC Model file found in internal storage. Falling back to ColorMatrix engine.")
             }
 
             // 3. Fallback / Standard ColorMatrix Pass

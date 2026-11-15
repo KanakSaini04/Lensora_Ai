@@ -105,7 +105,7 @@
   - Logged TFLite model load status and tensor shapes in Logcat.
   - Implemented automatic non-blocking fallback to L3 ColorMatrix engine if model is missing or incompatible.
 
-## Phase 5: Cloud Sync Architecture & System Polish
+## Phase 5: Cloud Sync Architecture & System Polish (100% COMPLETE)
 
 - [x] **Step 24: Google Drive Cloud Sync Architecture**
   - Created `CloudSyncWorker.kt` CoroutineWorker simulating background Google Drive upload pass on `Dispatchers.IO`.
@@ -116,3 +116,18 @@
   - Updated `SettingsScreen.kt` to add persistent "Auto-Purge Local Masters" toggle switch (Default: ON) saved in `SharedPreferences`.
   - Updated `CloudSyncWorker.kt` to execute safe local MediaStore file deletion via `ContentResolver.delete()` upon successful upload verification and SHA-256 checksum check when Auto-Purge is enabled.
   - Updated `AiProcessorWorker.kt` to pass `auto_purge_enabled` to `CloudSyncWorker` inputData.
+
+## Phase 6: System Persistence & Architectural Review Checkpoint (100% COMPLETE)
+
+- [x] **Step 26: Settings Persistence & Review Checkpoint**
+  - Updated `CameraScreen.kt` and `CameraController.kt` to persist Grid (`grid_enabled`), Flash (`flash_mode`), and Camera Mode (`camera_mode`) in `lensora_camera_prefs` SharedPreferences and restore UI state on app launch.
+  - Captured live device screenshot `screenshot_current.png`.
+  - Generated Master Architect review package `Lensora_Review_Checkpoint.zip` containing `progress.md`, `report.md`, and `screenshot_current.png`.
+
+## Phase 7: Real TFLite AI Model & Manifest Integration
+
+- [x] **Step 27: Real TFLite Model & Manifest Integration**
+  - Created `app/src/main/assets/manifest.json` referencing official MobileNet v1 1.0 224 model ZIP URL.
+  - Updated `ModelDownloaderWorker.kt` to read `manifest.json`, stream ZIP file, extract `.tflite` model via `ZipInputStream`, compute SHA-256 checksum, and save to `context.filesDir/models/mobilenet_v1_1.0_224.tflite`.
+  - Updated `SettingsScreen.kt` UI with "Download MobileNet Model" button and ready status.
+  - Updated `AiProcessorWorker.kt` to load MobileNet `.tflite` model, construct `1x224x224x3` float input buffer, execute TFLite inference (`1x1001` classes), and log output array size and latency in Logcat.
