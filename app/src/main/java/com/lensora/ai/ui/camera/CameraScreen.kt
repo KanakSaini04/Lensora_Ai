@@ -60,7 +60,6 @@ import androidx.compose.ui.draw.clip
 import androidx.compose.ui.geometry.Offset
 import androidx.compose.ui.geometry.Size
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.graphics.asComposeRenderEffect
 import androidx.compose.ui.graphics.drawscope.Stroke
 import androidx.compose.ui.graphics.graphicsLayer
 import androidx.compose.ui.input.pointer.pointerInput
@@ -76,8 +75,6 @@ import com.lensora.ai.ai.SceneClassifier
 import com.lensora.ai.camera.CameraController
 import com.lensora.ai.camera.CameraMode
 import com.lensora.ai.data.GalleryRepository
-import com.lensora.ai.ui.studio.ImageEditor
-import com.lensora.ai.ui.studio.LutShader
 import com.lensora.ai.ui.theme.CharcoalSurface
 import com.lensora.ai.ui.theme.ColorMutedGray
 import com.lensora.ai.ui.theme.ColorWhite
@@ -175,13 +172,12 @@ fun CameraScreen(
         var selectedZoom by remember { mutableStateOf("1x") }
         var currentZoomRatio by remember { mutableFloatStateOf(1.0f) }
 
-        // Pro Mode Manual Exposure & AGSL Shaders State
+        // Pro Mode Manual Exposure State
         var proIsoValue by remember { mutableIntStateOf(400) }
         var proShutterNs by remember { mutableStateOf(4_000_000L) } // 1/250s
         var isRawEnabled by remember { mutableStateOf(cameraPrefs.getBoolean("raw_dng_enabled", false)) }
         var isZebrasEnabled by remember { mutableStateOf(false) }
         var isPeakingEnabled by remember { mutableStateOf(false) }
-        var isGrainEnabled by remember { mutableStateOf(cameraPrefs.getBoolean("grain_enabled", false)) }
 
         // Timer State & Countdown
         var timerMode by remember { mutableStateOf(TimerMode.OFF) }
@@ -302,69 +298,18 @@ fun CameraScreen(
             }
         }
 
-        // Real-Time Viewfinder AGSL LUT Shader Pass
-        val cameraLutBitmap = remember(VibeState.selectedVibe) {
-            if (VibeState.selectedVibe == VibePreset.CINEMATIC) {
-                ImageEditor.getLutStripBitmap(context, VibePreset.CINEMATIC)
-            } else null
-        }
-
-        val cameraLutRenderEffect = remember(cameraLutBitmap) {
-            if (cameraLutBitmap != null && Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
-                try {
-                    LutShader.createLutRenderEffect(cameraLutBitmap, 17f)
-                } catch (t: Throwable) {
-                    Log.w("CameraScreen", "Failed to create LutRenderEffect: ${t.localizedMessage}")
-                    null
-                }
-            } else null
-        }
-
-        val filmGrainRenderEffect = remember(isGrainEnabled) {
-            if (isGrainEnabled && Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
-                try {
-                    FilmGrainShader.createFilmGrainEffect(1080f, 2400f)
-                } catch (t: Throwable) {
-                    Log.w("CameraScreen", "Failed to create FilmGrainEffect: ${t.localizedMessage}")
-                    null
-                }
-            } else null
-        }
-
-        val activeRenderEffect = remember(selectedMode, isZebrasEnabled, isPeakingEnabled, cameraLutRenderEffect, filmGrainRenderEffect) {
-            try {
-                when {
-                    selectedMode == CameraMode.PRO && isZebrasEnabled && Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU -> AgslShaders.createZebrasEffect()
-                    selectedMode == CameraMode.PRO && isPeakingEnabled && Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU -> AgslShaders.createFocusPeakingEffect()
-                    filmGrainRenderEffect != null -> filmGrainRenderEffect
-                    cameraLutRenderEffect != null -> cameraLutRenderEffect
-                    else -> null
-                }
-            } catch (t: Throwable) {
-                Log.w("CameraScreen", "AGSL RenderEffect creation failed (${t.localizedMessage}). Safe fallback to raw preview.", t)
-                null
-            }
-        }
-
         Box(
             modifier = Modifier
                 .fillMaxSize()
                 .background(PitchBlackBackground),
         ) {
-            // Edge-to-edge Live Camera Viewfinder (Mirrored horizontally for front camera + AGSL Shaders)
+            // Pure 100% Unmodified Raw Camera2 Viewfinder (Mirrored horizontally for front camera)
             CameraPreview(
                 cameraController = cameraController,
                 modifier = Modifier
                     .fillMaxSize()
                     .graphicsLayer {
                         scaleX = if (cameraController.isFrontCamera) -1f else 1f
-                        if (activeRenderEffect != null && Build.VERSION.SDK_INT >= Build.VERSION_CODES.S) {
-                            try {
-                                renderEffect = activeRenderEffect.asComposeRenderEffect()
-                            } catch (t: Throwable) {
-                                Log.w("CameraScreen", "Failed to apply graphicsLayer renderEffect: ${t.localizedMessage}")
-                            }
-                        }
                     },
                 onTextureViewCreated = { view ->
                     textureViewRef = view
@@ -478,12 +423,11 @@ fun CameraScreen(
                     },
             )
 
-            // Transparent Camera Top Bar Controls with Vibe Selector & Film Grain Toggle
+            // Transparent Camera Top Bar Controls
             CameraTopBar(
                 modifier = Modifier.align(Alignment.TopCenter),
                 flashMode = flashMode,
                 isGridVisible = isGridVisible,
-                isGrainEnabled = isGrainEnabled,
                 timerMode = timerMode,
                 onFlashClick = {
                     val nextFlash = when (flashMode) {
@@ -509,11 +453,6 @@ fun CameraScreen(
                     }
                     VibeState.selectedVibe = nextVibe
                     Toast.makeText(context, "Vibe LUT: ${nextVibe.displayName}", Toast.LENGTH_SHORT).show()
-                },
-                onGrainClick = {
-                    isGrainEnabled = !isGrainEnabled
-                    cameraPrefs.edit().putBoolean("grain_enabled", isGrainEnabled).apply()
-                    Toast.makeText(context, if (isGrainEnabled) "Film Grain Enabled" else "Film Grain Disabled", Toast.LENGTH_SHORT).show()
                 },
                 onGridClick = {
                     isGridVisible = !isGridVisible
