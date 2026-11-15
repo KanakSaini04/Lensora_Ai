@@ -4,6 +4,7 @@ import android.graphics.Bitmap
 import android.graphics.BitmapFactory
 import android.graphics.Paint
 import android.graphics.Path
+import android.os.Build
 import android.widget.Toast
 import androidx.compose.foundation.Canvas
 import androidx.compose.foundation.Image
@@ -60,11 +61,12 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.geometry.Offset
-import androidx.compose.ui.geometry.Size
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.ColorFilter
 import androidx.compose.ui.graphics.StrokeCap
+import androidx.compose.ui.graphics.asComposeRenderEffect
 import androidx.compose.ui.graphics.asImageBitmap
+import androidx.compose.ui.graphics.graphicsLayer
 import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.input.pointer.pointerInput
 import androidx.compose.ui.layout.ContentScale
@@ -123,6 +125,17 @@ fun StudioScreen() {
                 vibe = VibeState.selectedVibe,
             ),
         )
+    }
+
+    // AGSL Real .cube LUT texture shader pass
+    val lutStripBitmap = remember(VibeState.selectedVibe) {
+        ImageEditor.getLutStripBitmap(context, VibeState.selectedVibe)
+    }
+
+    val activeLutRenderEffect = remember(lutStripBitmap) {
+        if (lutStripBitmap != null && Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
+            LutShader.createLutRenderEffect(lutStripBitmap, 17f)
+        } else null
     }
 
     LaunchedEffect(Unit) {
@@ -239,7 +252,7 @@ fun StudioScreen() {
                 .padding(innerPadding)
                 .background(PitchBlackBackground),
         ) {
-            // 1. TOP SECTION (~50% Height): Photo Preview Canvas Area with Real-Time GPU ColorFilter & Brush Mask
+            // 1. TOP SECTION (~50% Height): Photo Preview Canvas Area with Real-Time GPU ColorFilter & AGSL LUT Shader
             Box(
                 modifier = Modifier
                     .fillMaxWidth()
@@ -254,7 +267,13 @@ fun StudioScreen() {
                         contentDescription = "Inpainted AI Image",
                         contentScale = ContentScale.Fit,
                         colorFilter = realTimeColorFilter,
-                        modifier = Modifier.fillMaxSize(),
+                        modifier = Modifier
+                            .fillMaxSize()
+                            .graphicsLayer {
+                                if (activeLutRenderEffect != null && Build.VERSION.SDK_INT >= Build.VERSION_CODES.S) {
+                                    renderEffect = activeLutRenderEffect.asComposeRenderEffect()
+                                }
+                            },
                     )
                 } else if (photoUris.isNotEmpty() && selectedPhotoIndex in photoUris.indices) {
                     AsyncImage(
@@ -262,7 +281,13 @@ fun StudioScreen() {
                         contentDescription = "Studio Active Image",
                         contentScale = ContentScale.Fit,
                         colorFilter = realTimeColorFilter,
-                        modifier = Modifier.fillMaxSize(),
+                        modifier = Modifier
+                            .fillMaxSize()
+                            .graphicsLayer {
+                                if (activeLutRenderEffect != null && Build.VERSION.SDK_INT >= Build.VERSION_CODES.S) {
+                                    renderEffect = activeLutRenderEffect.asComposeRenderEffect()
+                                }
+                            },
                     )
                 } else {
                     Box(

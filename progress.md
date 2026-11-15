@@ -184,8 +184,17 @@
   - Updated `CameraScreen.kt` applying AGSL `RenderEffect` on viewfinder when in PRO mode and toggles active.
   - Captured live UI screenshots in `ui_photos/`: `camera_main.png`, `camera_pro.png`, `studio.png`, `gallery.png`, `vibes.png`, `settings.png`, `more_modes.png`.
 
-## Phase 15: Studio AI Object Eraser (LaMa Inpainting)
+## Phase 15: Studio AI Object Eraser (LaMa Inpainting) (100% COMPLETE)
 
 - [x] **Step 35: Studio AI Object Eraser (LaMa Inpainting)**
   - Created `ObjectEraser.kt` in `com.lensora.ai.ui.studio` implementing LaMa AI inpainting pipeline with simulated background processing pass.
   - Updated `StudioScreen.kt` adding "Eraser" tool category button, interactive touch brush mask Canvas overlay, Process Eraser action, and loading spinner state.
+
+## Phase 16: Real LUT Engine (.cube Parser + AGSL)
+
+- [x] **Step 36: Real LUT Engine (.cube Parser + AGSL)**
+  - Created Adobe 17x17x17 3D LUT asset `app/src/main/assets/luts/teal_orange.cube`.
+  - Created `LutParser.kt` parsing `.cube` files into a 2D strip Bitmap texture ($289 \times 17$).
+  - Created `LutShader.kt` implementing AGSL 2D strip texture lookup shader (`REAL_3D_LUT_AGSL`) with trilinear blue-slice interpolation.
+  - Updated `ImageEditor.kt` and `StudioScreen.kt` to apply the AGSL Teal & Orange LUT shader pass in real-time GPU rendering and exports.
+  - Captured screenshot `ui_photos/studio_lut.png`.

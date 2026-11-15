@@ -19,6 +19,13 @@ import kotlinx.coroutines.withContext
 
 object ImageEditor {
 
+    fun getLutStripBitmap(context: Context, vibe: VibePreset): Bitmap? {
+        return when (vibe) {
+            VibePreset.CINEMATIC -> LutParser.parseCubeAsset(context, "luts/teal_orange.cube")
+            else -> null
+        }
+    }
+
     fun createAndroidColorMatrix(
         exposure: Float,
         contrast: Float,
