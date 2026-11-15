@@ -5,6 +5,7 @@ enum class CameraMode(val displayName: String) {
     PHOTO("PHOTO"),
     PORTRAIT("PORTRAIT"),
     VIDEO("VIDEO"),
+    CINEMATIC("CINEMATIC"),
     PRO("PRO");
 
     companion object {

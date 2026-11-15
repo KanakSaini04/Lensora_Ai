@@ -55,6 +55,7 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.geometry.Offset
+import androidx.compose.ui.geometry.Size
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.drawscope.Stroke
 import androidx.compose.ui.graphics.graphicsLayer
@@ -281,6 +282,31 @@ fun CameraScreen(
                 },
             )
 
+            // 2.39:1 Cinematic Aspect Ratio Pure Black Letterboxing Overlay (Only visible in CINEMATIC mode)
+            if (selectedMode == CameraMode.CINEMATIC) {
+                Canvas(modifier = Modifier.fillMaxSize()) {
+                    val screenWidth = size.width
+                    val screenHeight = size.height
+                    val targetHeight = screenWidth / 2.39f
+                    val barHeight = (screenHeight - targetHeight) / 2f
+
+                    if (barHeight > 0) {
+                        // Top Pure Black Letterbox Bar
+                        drawRect(
+                            color = Color.Black,
+                            topLeft = Offset(0f, 0f),
+                            size = Size(screenWidth, barHeight),
+                        )
+                        // Bottom Pure Black Letterbox Bar
+                        drawRect(
+                            color = Color.Black,
+                            topLeft = Offset(0f, screenHeight - barHeight),
+                            size = Size(screenWidth, barHeight),
+                        )
+                    }
+                }
+            }
+
             // 3x3 Canvas Grid Overlay
             if (isGridVisible) {
                 GridOverlay(modifier = Modifier.fillMaxSize())
@@ -383,7 +409,7 @@ fun CameraScreen(
                     modifier = Modifier
                         .align(Alignment.TopCenter)
                         .padding(top = 56.dp),
-                    statusText = aiBadgeText,
+                    statusText = if (selectedMode == CameraMode.CINEMATIC) "\uD83C\uDFAC 24fps 2.39:1 Cinematic" else aiBadgeText,
                 )
             }
 
@@ -495,8 +521,9 @@ fun CameraScreen(
                         }
                     }
 
-                    // Obsidian Royal Shutter Button (Red in VIDEO mode, White in Photo modes)
-                    val shutterColor = if (selectedMode == CameraMode.VIDEO) Color(0xFFDC2626) else ColorWhite
+                    // Obsidian Royal Shutter Button (Red in VIDEO & CINEMATIC modes, White in Photo modes)
+                    val isVideoRecordingMode = selectedMode == CameraMode.VIDEO || selectedMode == CameraMode.CINEMATIC
+                    val shutterColor = if (isVideoRecordingMode) Color(0xFFDC2626) else ColorWhite
 
                     Box(
                         modifier = Modifier
@@ -506,7 +533,7 @@ fun CameraScreen(
                             .clip(CircleShape)
                             .background(shutterColor)
                             .clickable {
-                                if (selectedMode == CameraMode.VIDEO) {
+                                if (isVideoRecordingMode) {
                                     if (isRecordingVideo) {
                                         cameraController.stopVideoRecording(
                                             onVideoSaved = { uri, msg ->
