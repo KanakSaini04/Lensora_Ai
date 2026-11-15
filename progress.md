@@ -92,7 +92,7 @@
   - Added OOM exception handling (`OutOfMemoryError`) showing Toast warning `"Image too large to export"`.
   - Wired `StudioScreen.kt` Export button with `isExporting` loading state, `CircularProgressIndicator`, and Toast feedback.
 
-## Phase 4: L3 Advanced TFLite AI Pipeline & Studio Color Science
+## Phase 4: L3 Advanced TFLite AI Pipeline & Studio Color Science (100% COMPLETE)
 
 - [x] **Step 22: Connect Vibes to Studio (Simulated LUT Engine)**
   - Created `VibeState.kt` singleton holding `VibePreset` (`NONE`, `CINEMATIC`, `LEICA`, `VINTAGE`, `ROYAL_GOLD`).
@@ -104,3 +104,11 @@
   - Wrapped `org.tensorflow.lite.Interpreter` loading and inference pass in `try-catch` with 4-thread execution config.
   - Logged TFLite model load status and tensor shapes in Logcat.
   - Implemented automatic non-blocking fallback to L3 ColorMatrix engine if model is missing or incompatible.
+
+## Phase 5: Cloud Sync Architecture & System Polish
+
+- [x] **Step 24: Google Drive Cloud Sync Architecture**
+  - Created `CloudSyncWorker.kt` CoroutineWorker simulating background Google Drive upload pass on `Dispatchers.IO`.
+  - Computes SHA-256 checksum during stream read, simulates 3s upload delay, and logs `"Upload verified"`.
+  - Updated `SettingsScreen.kt` to persist "Cloud Sync (Google Drive)" toggle switch state in `SharedPreferences`.
+  - Updated `AiProcessorWorker.kt` to check Cloud Sync state upon photo capture completion and enqueue `CloudSyncWorker`.

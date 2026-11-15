@@ -1,5 +1,6 @@
 package com.lensora.ai.ui.settings
 
+import android.content.Context
 import android.widget.Toast
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
@@ -70,8 +71,9 @@ fun SettingsScreen(
     onOpenProbeLab: () -> Unit = {},
 ) {
     val context = LocalContext.current
+    val prefs = remember { context.getSharedPreferences("lensora_prefs", Context.MODE_PRIVATE) }
     val workManager = remember { WorkManager.getInstance(context) }
-    var isCloudSyncEnabled by remember { mutableStateOf(false) }
+    var isCloudSyncEnabled by remember { mutableStateOf(prefs.getBoolean("cloud_sync_enabled", false)) }
 
     // Model Downloader WorkState
     var activeWorkId by remember { mutableStateOf<UUID?>(null) }
@@ -175,6 +177,7 @@ fun SettingsScreen(
                             checked = isCloudSyncEnabled,
                             onCheckedChange = { isChecked ->
                                 isCloudSyncEnabled = isChecked
+                                prefs.edit().putBoolean("cloud_sync_enabled", isChecked).apply()
                                 Toast.makeText(
                                     context,
                                     if (isChecked) "Cloud Sync Enabled" else "Cloud Sync Disabled",
