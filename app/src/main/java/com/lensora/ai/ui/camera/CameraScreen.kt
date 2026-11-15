@@ -301,7 +301,7 @@ fun CameraScreen(
             }
         }
 
-        // Real-Time Viewfinder AGSL LUT Shader Pass (With strict safe try-catch fallback)
+        // Real-Time Viewfinder AGSL LUT Shader Pass (Disabled for ASTRO mode for raw clear preview)
         val cameraLutBitmap = remember(VibeState.selectedVibe) {
             if (VibeState.selectedVibe == VibePreset.CINEMATIC) {
                 ImageEditor.getLutStripBitmap(context, VibePreset.CINEMATIC)
@@ -319,13 +319,17 @@ fun CameraScreen(
             } else null
         }
 
-        val activeRenderEffect = remember(selectedMode, isZebrasEnabled, isPeakingEnabled, cameraLutRenderEffect) {
+        val activeRenderEffect = remember(selectedMode, customModeName, isZebrasEnabled, isPeakingEnabled, cameraLutRenderEffect) {
             try {
-                when {
-                    selectedMode == CameraMode.PRO && isZebrasEnabled && Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU -> AgslShaders.createZebrasEffect()
-                    selectedMode == CameraMode.PRO && isPeakingEnabled && Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU -> AgslShaders.createFocusPeakingEffect()
-                    cameraLutRenderEffect != null -> cameraLutRenderEffect
-                    else -> null
+                if (customModeName?.equals("ASTRO", ignoreCase = true) == true) {
+                    null // Explicit raw clear TextureView preview for Astro long exposure mode
+                } else {
+                    when {
+                        selectedMode == CameraMode.PRO && isZebrasEnabled && Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU -> AgslShaders.createZebrasEffect()
+                        selectedMode == CameraMode.PRO && isPeakingEnabled && Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU -> AgslShaders.createFocusPeakingEffect()
+                        cameraLutRenderEffect != null -> cameraLutRenderEffect
+                        else -> null
+                    }
                 }
             } catch (t: Throwable) {
                 Log.w("CameraScreen", "AGSL RenderEffect creation failed (${t.localizedMessage}). Safe fallback to raw preview.", t)
@@ -511,7 +515,7 @@ fun CameraScreen(
                 },
             )
 
-            // Frosted Glass AI Badge / Recording Timer Overlay at Top Center (Padding 104.dp to prevent Top Bar Icon Overlap)
+            // Frosted Glass AI Badge / Recording Timer Overlay at Top Center (Padding 128.dp cleanly below Top Bar Icons)
             if (isRecordingVideo) {
                 val mins = recordingSeconds / 60
                 val secs = recordingSeconds % 60
@@ -519,7 +523,7 @@ fun CameraScreen(
                 AiBadge(
                     modifier = Modifier
                         .align(Alignment.TopCenter)
-                        .padding(top = 104.dp),
+                        .padding(top = 128.dp),
                     statusText = timerText,
                 )
             } else {
@@ -532,7 +536,7 @@ fun CameraScreen(
                 AiBadge(
                     modifier = Modifier
                         .align(Alignment.TopCenter)
-                        .padding(top = 104.dp),
+                        .padding(top = 128.dp),
                     statusText = badgeText,
                 )
             }

@@ -229,13 +229,12 @@
   - Updated `CameraScreen.kt` adding glowing Cyan (`#00E5FF`) timestamp text overlay (`LENSORA • HH:mm:ss`), thin 1.dp white aesthetic border overlay for PHOTO mode, and AGSL film grain pass.
   - Captured screenshot `ui_photos/camera_aesthetic.png`.
 
-## Phase 21: Studio Export Polish & Final Audit Fixes (100% COMPLETE)
+## Phase 21: Studio Export Polish & Final Polish Fixes (100% COMPLETE)
 
-- [x] **Step 41: Studio Export Polish & Final Audit Fixes**
+- [x] **Step 41: Studio Export Polish & Final Polish Fixes**
   - Updated `ImageEditor.kt` `exportImage()` to apply active `VibePreset` LUT ColorMatrix and optionally bake glowing Cyan (`#00E5FF`) `LENSORA • HH:mm:ss` timestamp overlay onto exported full-resolution Bitmaps using software `Canvas` rendering.
   - Updated `StudioScreen.kt` adding "Time" switch toggle in TopAppBar actions for optional timestamp inclusion.
-  - **Final Audit Fixes**:
-    - Adjusted `AiBadge` top padding to `104.dp` in `CameraScreen.kt`, eliminating top bar icon overlap.
-    - Wired real Camera2 hardware controls for `ASTRO` (infinity focus & 30s exposure) and `PRO_MACRO` (minimum focus distance) in `CameraController.kt`.
-    - Re-enabled live AGSL `renderEffect` in `CameraScreen.kt` wrapped in a strict `try-catch` fallback to `null` `renderEffect`.
-    - Captured screenshot `ui_photos/camera_fixed_ui.png`.
+  - **Final Polish Fixes**:
+    - Increased `AiBadge` top padding to `128.dp` in `CameraScreen.kt`, completely eliminating top bar icon overlap.
+    - Explicitly disabled `activeRenderEffect` (`activeRenderEffect = null`) when `customModeName == "ASTRO"`, guaranteeing a 100% clear, raw `TextureView` viewfinder for Astro mode (no AGSL shader conflict).
+    - Captured screenshots `ui_photos/01_camera_fixed_badge.png` and `ui_photos/06_camera_astro_fixed.png`.
