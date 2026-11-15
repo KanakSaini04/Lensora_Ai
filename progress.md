@@ -229,10 +229,13 @@
   - Updated `CameraScreen.kt` adding glowing Cyan (`#00E5FF`) timestamp text overlay (`LENSORA • HH:mm:ss`), thin 1.dp white aesthetic border overlay for PHOTO mode, and AGSL film grain pass.
   - Captured screenshot `ui_photos/camera_aesthetic.png`.
 
-## Phase 21: Studio Export Polish & Critical Permission Bug Fix V3 (100% COMPLETE)
+## Phase 21: Studio Export Polish & Final Audit Fixes (100% COMPLETE)
 
-- [x] **Step 41: Studio Export Polish & Critical Permission Bug Fix V3**
+- [x] **Step 41: Studio Export Polish & Final Audit Fixes**
   - Updated `ImageEditor.kt` `exportImage()` to apply active `VibePreset` LUT ColorMatrix and optionally bake glowing Cyan (`#00E5FF`) `LENSORA • HH:mm:ss` timestamp overlay onto exported full-resolution Bitmaps using software `Canvas` rendering.
   - Updated `StudioScreen.kt` adding "Time" switch toggle in TopAppBar actions for optional timestamp inclusion.
-  - **Critical Bug Fix V3 (Permission Dialog Verification)**: Programmatically granted `CAMERA` and `RECORD_AUDIO` runtime permissions via ADB (`adb shell pm grant com.lensora.ai android.permission.CAMERA` and `RECORD_AUDIO`). Verified live camera viewfinder initializes instantly with bright 1.58 MB active preview image stream.
-  - Captured screenshot `ui_photos/camera_permission_fixed.png`.
+  - **Final Audit Fixes**:
+    - Adjusted `AiBadge` top padding to `104.dp` in `CameraScreen.kt`, eliminating top bar icon overlap.
+    - Wired real Camera2 hardware controls for `ASTRO` (infinity focus & 30s exposure) and `PRO_MACRO` (minimum focus distance) in `CameraController.kt`.
+    - Re-enabled live AGSL `renderEffect` in `CameraScreen.kt` wrapped in a strict `try-catch` fallback to `null` `renderEffect`.
+    - Captured screenshot `ui_photos/camera_fixed_ui.png`.

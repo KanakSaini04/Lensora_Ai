@@ -60,6 +60,7 @@ import androidx.compose.ui.draw.clip
 import androidx.compose.ui.geometry.Offset
 import androidx.compose.ui.geometry.Size
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.graphics.asComposeRenderEffect
 import androidx.compose.ui.graphics.drawscope.Stroke
 import androidx.compose.ui.graphics.graphicsLayer
 import androidx.compose.ui.input.pointer.pointerInput
@@ -75,6 +76,8 @@ import com.lensora.ai.ai.SceneClassifier
 import com.lensora.ai.camera.CameraController
 import com.lensora.ai.camera.CameraMode
 import com.lensora.ai.data.GalleryRepository
+import com.lensora.ai.ui.studio.ImageEditor
+import com.lensora.ai.ui.studio.LutShader
 import com.lensora.ai.ui.theme.CharcoalSurface
 import com.lensora.ai.ui.theme.ColorMutedGray
 import com.lensora.ai.ui.theme.ColorWhite
@@ -298,18 +301,58 @@ fun CameraScreen(
             }
         }
 
+        // Real-Time Viewfinder AGSL LUT Shader Pass (With strict safe try-catch fallback)
+        val cameraLutBitmap = remember(VibeState.selectedVibe) {
+            if (VibeState.selectedVibe == VibePreset.CINEMATIC) {
+                ImageEditor.getLutStripBitmap(context, VibePreset.CINEMATIC)
+            } else null
+        }
+
+        val cameraLutRenderEffect = remember(cameraLutBitmap) {
+            if (cameraLutBitmap != null && Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
+                try {
+                    LutShader.createLutRenderEffect(cameraLutBitmap, 17f)
+                } catch (t: Throwable) {
+                    Log.w("CameraScreen", "Failed to create LutRenderEffect: ${t.localizedMessage}")
+                    null
+                }
+            } else null
+        }
+
+        val activeRenderEffect = remember(selectedMode, isZebrasEnabled, isPeakingEnabled, cameraLutRenderEffect) {
+            try {
+                when {
+                    selectedMode == CameraMode.PRO && isZebrasEnabled && Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU -> AgslShaders.createZebrasEffect()
+                    selectedMode == CameraMode.PRO && isPeakingEnabled && Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU -> AgslShaders.createFocusPeakingEffect()
+                    cameraLutRenderEffect != null -> cameraLutRenderEffect
+                    else -> null
+                }
+            } catch (t: Throwable) {
+                Log.w("CameraScreen", "AGSL RenderEffect creation failed (${t.localizedMessage}). Safe fallback to raw preview.", t)
+                null
+            }
+        }
+
         Box(
             modifier = Modifier
                 .fillMaxSize()
                 .background(PitchBlackBackground),
         ) {
-            // Pure 100% Unmodified Raw Camera2 Viewfinder (Mirrored horizontally for front camera)
+            // Live Camera Viewfinder (Mirrored horizontally for front camera + Safe AGSL RenderEffect)
             CameraPreview(
                 cameraController = cameraController,
                 modifier = Modifier
                     .fillMaxSize()
                     .graphicsLayer {
                         scaleX = if (cameraController.isFrontCamera) -1f else 1f
+                        if (activeRenderEffect != null && Build.VERSION.SDK_INT >= Build.VERSION_CODES.S) {
+                            try {
+                                renderEffect = activeRenderEffect.asComposeRenderEffect()
+                            } catch (t: Throwable) {
+                                Log.w("CameraScreen", "Failed to apply graphicsLayer renderEffect: ${t.localizedMessage}")
+                                renderEffect = null
+                            }
+                        }
                     },
                 onTextureViewCreated = { view ->
                     textureViewRef = view
@@ -468,7 +511,7 @@ fun CameraScreen(
                 },
             )
 
-            // Frosted Glass AI Badge / Recording Timer Overlay at Top Center
+            // Frosted Glass AI Badge / Recording Timer Overlay at Top Center (Padding 104.dp to prevent Top Bar Icon Overlap)
             if (isRecordingVideo) {
                 val mins = recordingSeconds / 60
                 val secs = recordingSeconds % 60
@@ -476,7 +519,7 @@ fun CameraScreen(
                 AiBadge(
                     modifier = Modifier
                         .align(Alignment.TopCenter)
-                        .padding(top = 56.dp),
+                        .padding(top = 104.dp),
                     statusText = timerText,
                 )
             } else {
@@ -489,7 +532,7 @@ fun CameraScreen(
                 AiBadge(
                     modifier = Modifier
                         .align(Alignment.TopCenter)
-                        .padding(top = 56.dp),
+                        .padding(top = 104.dp),
                     statusText = badgeText,
                 )
             }
