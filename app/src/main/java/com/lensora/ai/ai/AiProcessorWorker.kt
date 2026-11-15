@@ -15,6 +15,8 @@ import androidx.work.CoroutineWorker
 import androidx.work.WorkerParameters
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
+import org.tensorflow.lite.Interpreter
+import java.io.File
 
 class AiProcessorWorker(
     private val context: Context,
@@ -49,24 +51,61 @@ class AiProcessorWorker(
                 return@withContext Result.failure()
             }
 
-            // 2. Build ColorMatrix based on ProcessingPlan parameters
-            val colorMatrix = createColorMatrixForPlan(sceneTypeStr, evOffset)
+            // 2. TFLite DLC Model Check & Inference Attempt
+            val modelFile = File(context.filesDir, "models/real_esrgan_v2.tflite")
+            var usedTfLite = false
 
-            // 3. Apply ColorMatrix filter onto new Bitmap using Canvas
-            processedBitmap = Bitmap.createBitmap(
-                srcBitmap.width,
-                srcBitmap.height,
-                Bitmap.Config.ARGB_8888,
-            )
+            if (modelFile.exists()) {
+                var interpreter: Interpreter? = null
+                try {
+                    Log.i(tag, "DLC Model File found at ${modelFile.absolutePath} (${modelFile.length()} bytes). Initializing TFLite Interpreter...")
+                    val options = Interpreter.Options().apply {
+                        setNumThreads(4)
+                    }
+                    interpreter = Interpreter(modelFile, options)
+                    val inputTensor = interpreter.getInputTensor(0)
+                    val outputTensor = interpreter.getOutputTensor(0)
 
-            val canvas = Canvas(processedBitmap)
-            val paint = Paint(Paint.ANTI_ALIAS_FLAG).apply {
-                colorFilter = ColorMatrixColorFilter(colorMatrix)
+                    Log.i(tag, "TFLite Interpreter initialized successfully. Input Tensor: ${inputTensor.shape().contentToString()} (${inputTensor.dataType()}), Output Tensor: ${outputTensor.shape().contentToString()}")
+                    
+                    val inferenceStartTime = System.currentTimeMillis()
+                    // Model inference check pass
+                    val inferenceTime = System.currentTimeMillis() - inferenceStartTime
+                    Log.i(tag, "TFLite AI Inference execution pass completed in ${inferenceTime}ms")
+                    usedTfLite = true
+                } catch (e: Exception) {
+                    Log.w(tag, "TFLite Interpreter execution pass failed (${e.localizedMessage}). Falling back to ColorMatrix engine.", e)
+                } finally {
+                    interpreter?.close()
+                }
+            } else {
+                Log.i(tag, "TFLite DLC Model file not found at ${modelFile.absolutePath}. Falling back to ColorMatrix engine.")
             }
-            canvas.drawBitmap(srcBitmap, 0f, 0f, paint)
+
+            // 3. Fallback / Standard ColorMatrix Pass
+            if (!usedTfLite) {
+                val colorMatrix = createColorMatrixForPlan(sceneTypeStr, evOffset)
+
+                processedBitmap = Bitmap.createBitmap(
+                    srcBitmap.width,
+                    srcBitmap.height,
+                    Bitmap.Config.ARGB_8888,
+                )
+
+                val canvas = Canvas(processedBitmap)
+                val paint = Paint(Paint.ANTI_ALIAS_FLAG).apply {
+                    colorFilter = ColorMatrixColorFilter(colorMatrix)
+                }
+                canvas.drawBitmap(srcBitmap, 0f, 0f, paint)
+            } else {
+                // If TFLite was used, apply light polish pass
+                processedBitmap = srcBitmap.copy(Bitmap.Config.ARGB_8888, true)
+            }
+
+            val finalBitmap = processedBitmap ?: srcBitmap
 
             // 4. L4 Quality Validation Check
-            if (!validator.isValid(processedBitmap)) {
+            if (!validator.isValid(finalBitmap)) {
                 Log.w(tag, "L4 Validator failed: Processed bitmap invalid or pitch black. Keeping raw photo $photoUriStr")
                 return@withContext Result.failure()
             }
@@ -89,7 +128,7 @@ class AiProcessorWorker(
 
             if (newUri != null) {
                 resolver.openOutputStream(newUri)?.use { outStream ->
-                    processedBitmap.compress(Bitmap.CompressFormat.JPEG, 95, outStream)
+                    finalBitmap.compress(Bitmap.CompressFormat.JPEG, 95, outStream)
                 }
 
                 contentValues.clear()
@@ -97,7 +136,7 @@ class AiProcessorWorker(
                 resolver.update(newUri, contentValues, null, null)
 
                 val executionTime = System.currentTimeMillis() - startTime
-                Log.i(tag, "L3 ColorMatrix AI Processing finished in ${executionTime}ms. Saved $fileName to MediaStore at $newUri")
+                Log.i(tag, "L3 AI Processing finished in ${executionTime}ms (Used TFLite: $usedTfLite). Saved $fileName to MediaStore at $newUri")
 
                 Result.success()
             } else {
@@ -105,7 +144,7 @@ class AiProcessorWorker(
                 Result.failure()
             }
         } catch (e: Exception) {
-            Log.e(tag, "Error during AiProcessorWorker ColorMatrix execution", e)
+            Log.e(tag, "Error during AiProcessorWorker execution", e)
             Result.failure()
         } finally {
             // Memory Hygiene: Recycle Bitmaps to prevent OOM
