@@ -148,9 +148,16 @@
   - Updated `CameraController.kt` with `startVideoRecording` and `stopVideoRecording` creating Camera2 `TEMPLATE_RECORD` capture session.
   - Updated `CameraScreen.kt` with red shutter button in VIDEO mode, live recording timer badge (`🔴 00:05`), and safe recording release on tab disposal.
 
-## Phase 10: RAW / DNG Capture Pipeline
+## Phase 10: RAW / DNG Capture Pipeline (100% COMPLETE)
 
 - [x] **Step 30: RAW / DNG Capture Pipeline**
   - Updated `ProModeControls.kt` with "Save RAW (DNG)" toggle switch saved in `lensora_camera_prefs`.
   - Updated `CameraController.kt` using `android.hardware.camera2.DngCreator` on `Dispatchers.IO` to construct and write uncompressed RAW `.dng` files to MediaStore under `Pictures/Lensora_Ai/RAW/`.
   - Implemented 100% crash-safe fallback to standard JPEG capture if `DngCreator` execution fails or if HAL lacks unexposed raw stream access.
+
+## Phase 11: Camera Flip & Shutter Timer
+
+- [x] **Step 31: Camera Flip & Shutter Timer**
+  - Updated `CameraController.kt` with `switchCamera` (Front/Back lens facing toggle) and `isFrontCamera` mirror state.
+  - Updated `CameraTopBar.kt` with `TimerMode` cycling (`OFF` -> `3s` -> `10s` -> `OFF`) with icon/text updates.
+  - Updated `CameraScreen.kt` with camera flip button (`Icons.Outlined.Cameraswitch`), horizontal preview mirroring (`graphicsLayer { scaleX = -1f }`), and large center countdown timer overlay (`3... 2... 1...`).

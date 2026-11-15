@@ -77,6 +77,9 @@ class CameraController(
     private var isRecordingVideo = false
     private var isRawCaptureEnabled = false
 
+    var isFrontCamera: Boolean = false
+        private set
+
     private var powerManager: PowerManager? = null
     private var thermalStatusListener: PowerManager.OnThermalStatusChangedListener? = null
     private var currentThermalStatus: Int = PowerManager.THERMAL_STATUS_NONE
@@ -168,12 +171,15 @@ class CameraController(
             val cameraManager = context.getSystemService(Context.CAMERA_SERVICE) as? CameraManager
                 ?: return
 
-            for (id in cameraManager.cameraIdList) {
-                val characteristics = cameraManager.getCameraCharacteristics(id)
-                val facing = characteristics.get(CameraCharacteristics.LENS_FACING)
-                if (facing == CameraCharacteristics.LENS_FACING_BACK) {
-                    cameraId = id
-                    break
+            if (cameraId == null) {
+                val targetFacing = if (isFrontCamera) CameraCharacteristics.LENS_FACING_FRONT else CameraCharacteristics.LENS_FACING_BACK
+                for (id in cameraManager.cameraIdList) {
+                    val characteristics = cameraManager.getCameraCharacteristics(id)
+                    val facing = characteristics.get(CameraCharacteristics.LENS_FACING)
+                    if (facing == targetFacing) {
+                        cameraId = id
+                        break
+                    }
                 }
             }
 
@@ -228,6 +234,42 @@ class CameraController(
 
         } catch (e: Exception) {
             Log.e(tag, "Error opening camera", e)
+        }
+    }
+
+    fun switchCamera(surfaceTexture: SurfaceTexture, width: Int, height: Int) {
+        try {
+            val targetFacing = if (isFrontCamera) {
+                CameraCharacteristics.LENS_FACING_BACK
+            } else {
+                CameraCharacteristics.LENS_FACING_FRONT
+            }
+
+            val cameraManager = context.getSystemService(Context.CAMERA_SERVICE) as? CameraManager
+                ?: return
+
+            var targetId: String? = null
+            for (id in cameraManager.cameraIdList) {
+                val characteristics = cameraManager.getCameraCharacteristics(id)
+                val facing = characteristics.get(CameraCharacteristics.LENS_FACING)
+                if (facing == targetFacing) {
+                    targetId = id
+                    break
+                }
+            }
+
+            if (targetId == null) {
+                Log.w(tag, "Requested lens facing $targetFacing not found on device. Keeping current camera.")
+                return
+            }
+
+            closeCamera()
+            isFrontCamera = (targetFacing == CameraCharacteristics.LENS_FACING_FRONT)
+            cameraId = targetId
+            openCamera(surfaceTexture, width, height)
+            Log.i(tag, "Switched camera lens facing to: ${if (isFrontCamera) "FRONT" else "BACK"} (Camera ID $targetId)")
+        } catch (e: Exception) {
+            Log.e(tag, "Error switching camera lens facing", e)
         }
     }
 
