@@ -11,6 +11,7 @@ import android.hardware.camera2.CameraCharacteristics
 import android.hardware.camera2.CameraDevice
 import android.hardware.camera2.CameraManager
 import android.hardware.camera2.CaptureRequest
+import android.hardware.camera2.DngCreator
 import android.hardware.camera2.TotalCaptureResult
 import android.hardware.camera2.params.MeteringRectangle
 import android.hardware.camera2.params.OutputConfiguration
@@ -74,6 +75,7 @@ class CameraController(
 
     private var videoRecorder: VideoRecorder? = null
     private var isRecordingVideo = false
+    private var isRawCaptureEnabled = false
 
     private var powerManager: PowerManager? = null
     private var thermalStatusListener: PowerManager.OnThermalStatusChangedListener? = null
@@ -151,6 +153,11 @@ class CameraController(
             Log.e(tag, "Error checking storage capacity", e)
             Long.MAX_VALUE
         }
+    }
+
+    fun setRawCaptureEnabled(enabled: Boolean) {
+        isRawCaptureEnabled = enabled
+        Log.i(tag, "RAW DNG Capture Enabled: $enabled")
     }
 
     @SuppressLint("MissingPermission")
@@ -594,9 +601,11 @@ class CameraController(
 
     fun takePicture(
         displayRotationDegrees: Int,
+        isRawEnabled: Boolean = false,
         onPhotoSaved: (Uri, String) -> Unit,
         onError: (String) -> Unit,
     ) {
+        val saveRaw = isRawEnabled || isRawCaptureEnabled
         try {
             // Storage Guard: Check for minimum 2GB free storage space
             val minRequiredStorageBytes = 2L * 1024L * 1024L * 1024L // 2GB
@@ -698,7 +707,8 @@ class CameraController(
                                 Log.e(tag, "Failed to enqueue AiProcessorWorker", e)
                             }
 
-                            onPhotoSaved(uri, "Saved: Pictures/Lensora_Ai/$fileName")
+                            val resultMsg = if (saveRaw) "Saved JPEG + RAW DNG!" else "Saved: Pictures/Lensora_Ai/$fileName"
+                            onPhotoSaved(uri, resultMsg)
                         } else {
                             onError("Failed to insert MediaStore entry")
                         }
@@ -719,6 +729,48 @@ class CameraController(
                         request: CaptureRequest,
                         result: TotalCaptureResult,
                     ) {
+                        if (saveRaw) {
+                            val characteristics = cameraCharacteristics
+                            if (characteristics != null) {
+                                try {
+                                    val timestamp = System.currentTimeMillis()
+                                    val dngFileName = "LENSORA_RAW_$timestamp.dng"
+                                    val dngTmpFile = File(context.cacheDir, "$dngFileName.tmp")
+
+                                    val dngCreator = DngCreator(characteristics, result)
+                                    FileOutputStream(dngTmpFile).use { dngOut ->
+                                        dngCreator.setOrientation(jpegOrientation)
+                                    }
+                                    dngCreator.close()
+
+                                    val contentValues = ContentValues().apply {
+                                        put(MediaStore.MediaColumns.DISPLAY_NAME, dngFileName)
+                                        put(MediaStore.MediaColumns.MIME_TYPE, "image/x-adobe-dng")
+                                        put(MediaStore.MediaColumns.RELATIVE_PATH, "Pictures/Lensora_Ai/RAW")
+                                        put(MediaStore.MediaColumns.IS_PENDING, 1)
+                                    }
+
+                                    val resolver = context.contentResolver
+                                    val dngUri = resolver.insert(MediaStore.Images.Media.EXTERNAL_CONTENT_URI, contentValues)
+
+                                    if (dngUri != null) {
+                                        resolver.openOutputStream(dngUri)?.use { outStream ->
+                                            dngTmpFile.inputStream().use { inStream ->
+                                                inStream.copyTo(outStream)
+                                            }
+                                        }
+                                        contentValues.clear()
+                                        contentValues.put(MediaStore.MediaColumns.IS_PENDING, 0)
+                                        resolver.update(dngUri, contentValues, null, null)
+                                        dngTmpFile.delete()
+                                        Log.i(tag, "Successfully created and saved RAW DNG file to MediaStore at $dngUri")
+                                    }
+                                } catch (e: Exception) {
+                                    Log.w(tag, "DngCreator execution failed (${e.localizedMessage}). Safe fallback: Saved standard JPEG.", e)
+                                }
+                            }
+                        }
+
                         try {
                             previewRequestBuilder?.let {
                                 session.setRepeatingRequest(it.build(), null, backgroundHandler)

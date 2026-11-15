@@ -1,6 +1,7 @@
 package com.lensora.ai.ui.camera
 
 import androidx.compose.foundation.border
+import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
@@ -12,6 +13,8 @@ import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.Slider
 import androidx.compose.material3.SliderDefaults
+import androidx.compose.material3.Switch
+import androidx.compose.material3.SwitchDefaults
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
@@ -20,6 +23,7 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.lensora.ai.ui.theme.CharcoalSurface
+import com.lensora.ai.ui.theme.ColorMutedGray
 import com.lensora.ai.ui.theme.ColorWhite
 import com.lensora.ai.ui.theme.PitchBlackBackground
 import com.lensora.ai.ui.theme.RoyalBlue
@@ -30,8 +34,10 @@ import kotlin.math.roundToInt
 fun ProModeControls(
     isoValue: Int,
     shutterSpeedNs: Long,
+    isRawEnabled: Boolean,
     onIsoChanged: (Int) -> Unit,
     onShutterSpeedChanged: (Long) -> Unit,
+    onRawToggled: (Boolean) -> Unit,
     modifier: Modifier = Modifier,
 ) {
     Card(
@@ -135,6 +141,32 @@ fun ProModeControls(
                 ),
                 modifier = Modifier.fillMaxWidth(),
             )
+
+            Spacer(modifier = Modifier.height(4.dp))
+
+            // 3. Save RAW (DNG) Switch Toggle
+            Row(
+                verticalAlignment = Alignment.CenterVertically,
+                horizontalArrangement = Arrangement.SpaceBetween,
+                modifier = Modifier.fillMaxWidth(),
+            ) {
+                Text(
+                    text = "SAVE RAW (DNG)",
+                    color = ColorWhite,
+                    fontWeight = FontWeight.Bold,
+                    fontSize = 12.sp,
+                )
+                Switch(
+                    checked = isRawEnabled,
+                    onCheckedChange = onRawToggled,
+                    colors = SwitchDefaults.colors(
+                        checkedThumbColor = ColorWhite,
+                        checkedTrackColor = RoyalBlue,
+                        uncheckedThumbColor = ColorMutedGray,
+                        uncheckedTrackColor = PitchBlackBackground,
+                    ),
+                )
+            }
         }
     }
 }
