@@ -24,8 +24,10 @@ import com.lensora.ai.ui.theme.RoyalBlue
 @Composable
 fun CameraModeCarousel(
     selectedMode: CameraMode,
-    onModeSelected: (CameraMode) -> Unit,
     modifier: Modifier = Modifier,
+    customModeName: String? = null,
+    onModeSelected: (CameraMode) -> Unit = {},
+    onMoreClick: () -> Unit = {},
 ) {
     val listState = rememberLazyListState()
 
@@ -37,7 +39,7 @@ fun CameraModeCarousel(
         verticalAlignment = Alignment.CenterVertically,
     ) {
         items(CameraMode.modes) { mode ->
-            val isSelected = mode == selectedMode
+            val isSelected = mode == selectedMode && customModeName == null
             Box(
                 modifier = Modifier
                     .clickable(
@@ -53,6 +55,48 @@ fun CameraModeCarousel(
                     text = mode.displayName,
                     color = if (isSelected) RoyalBlue else ColorWhite,
                     fontWeight = if (isSelected) FontWeight.Bold else FontWeight.Medium,
+                    fontSize = 13.sp,
+                    letterSpacing = 1.sp,
+                )
+            }
+        }
+
+        // Render active custom mode if selected from MORE sheet (e.g. LEICA, HASSELBLAD)
+        if (customModeName != null) {
+            item {
+                Box(
+                    modifier = Modifier
+                        .padding(vertical = 8.dp),
+                    contentAlignment = Alignment.Center,
+                ) {
+                    Text(
+                        text = customModeName.uppercase(),
+                        color = RoyalBlue,
+                        fontWeight = FontWeight.Bold,
+                        fontSize = 13.sp,
+                        letterSpacing = 1.sp,
+                    )
+                }
+            }
+        }
+
+        // MORE Modes Button
+        item {
+            Box(
+                modifier = Modifier
+                    .clickable(
+                        interactionSource = remember { MutableInteractionSource() },
+                        indication = null,
+                    ) {
+                        onMoreClick()
+                    }
+                    .padding(vertical = 8.dp),
+                contentAlignment = Alignment.Center,
+            ) {
+                Text(
+                    text = "MORE \u2630",
+                    color = ColorWhite,
+                    fontWeight = FontWeight.Bold,
                     fontSize = 13.sp,
                     letterSpacing = 1.sp,
                 )

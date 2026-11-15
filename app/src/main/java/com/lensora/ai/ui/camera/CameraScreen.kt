@@ -39,6 +39,7 @@ import androidx.compose.material.icons.outlined.PhotoCamera
 import androidx.compose.material.icons.outlined.PhotoLibrary
 import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonDefaults
+import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
@@ -83,6 +84,7 @@ import kotlinx.coroutines.isActive
 import kotlinx.coroutines.withContext
 import java.util.Locale
 
+@OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun CameraScreen(
     onOpenQuickView: () -> Unit = {},
@@ -138,6 +140,9 @@ fun CameraScreen(
             val modeName = cameraPrefs.getString("camera_mode", CameraMode.PHOTO.name)
             mutableStateOf(try { CameraMode.valueOf(modeName ?: "PHOTO") } catch (e: Exception) { CameraMode.PHOTO })
         }
+        var customModeName by remember { mutableStateOf<String?>(null) }
+        var isMoreSheetVisible by remember { mutableStateOf(false) }
+
         var selectedZoom by remember { mutableStateOf("1x") }
         var currentZoomRatio by remember { mutableFloatStateOf(1.0f) }
 
@@ -283,7 +288,7 @@ fun CameraScreen(
             )
 
             // 2.39:1 Cinematic Aspect Ratio Pure Black Letterboxing Overlay (Only visible in CINEMATIC mode)
-            if (selectedMode == CameraMode.CINEMATIC) {
+            if (selectedMode == CameraMode.CINEMATIC && customModeName == null) {
                 Canvas(modifier = Modifier.fillMaxSize()) {
                     val screenWidth = size.width
                     val screenHeight = size.height
@@ -405,11 +410,16 @@ fun CameraScreen(
                     statusText = timerText,
                 )
             } else {
+                val badgeText = when {
+                    customModeName != null -> "\u2728 Mode: $customModeName"
+                    selectedMode == CameraMode.CINEMATIC -> "\uD83C\uDFAC 24fps 2.39:1 Cinematic"
+                    else -> aiBadgeText
+                }
                 AiBadge(
                     modifier = Modifier
                         .align(Alignment.TopCenter)
                         .padding(top = 56.dp),
-                    statusText = if (selectedMode == CameraMode.CINEMATIC) "\uD83C\uDFAC 24fps 2.39:1 Cinematic" else aiBadgeText,
+                    statusText = badgeText,
                 )
             }
 
@@ -422,7 +432,7 @@ fun CameraScreen(
                 horizontalAlignment = Alignment.CenterHorizontally,
             ) {
                 // Pro Mode HUD Controls (Only visible when PRO mode is selected)
-                if (selectedMode == CameraMode.PRO && !isRecordingVideo) {
+                if (selectedMode == CameraMode.PRO && customModeName == null && !isRecordingVideo) {
                     ProModeControls(
                         isoValue = proIsoValue,
                         shutterSpeedNs = proShutterNs,
@@ -466,14 +476,21 @@ fun CameraScreen(
                 // Horizontal Scrollable Camera Mode Carousel
                 CameraModeCarousel(
                     selectedMode = selectedMode,
+                    customModeName = customModeName,
                     onModeSelected = { mode ->
                         if (!isRecordingVideo) {
+                            customModeName = null
                             selectedMode = mode
                             cameraController.setCameraMode(mode)
                             cameraPrefs.edit().putString("camera_mode", mode.name).apply()
                             if (mode == CameraMode.PRO) {
                                 cameraController.setManualExposure(proIsoValue, proShutterNs)
                             }
+                        }
+                    },
+                    onMoreClick = {
+                        if (!isRecordingVideo) {
+                            isMoreSheetVisible = true
                         }
                     },
                     modifier = Modifier
@@ -522,7 +539,7 @@ fun CameraScreen(
                     }
 
                     // Obsidian Royal Shutter Button (Red in VIDEO & CINEMATIC modes, White in Photo modes)
-                    val isVideoRecordingMode = selectedMode == CameraMode.VIDEO || selectedMode == CameraMode.CINEMATIC
+                    val isVideoRecordingMode = (selectedMode == CameraMode.VIDEO || selectedMode == CameraMode.CINEMATIC) && customModeName == null
                     val shutterColor = if (isVideoRecordingMode) Color(0xFFDC2626) else ColorWhite
 
                     Box(
@@ -610,6 +627,17 @@ fun CameraScreen(
                         )
                     }
                 }
+            }
+
+            // More Modes Bottom Sheet
+            if (isMoreSheetVisible) {
+                MoreModesSheet(
+                    onDismissRequest = { isMoreSheetVisible = false },
+                    onModeSelected = { modeName ->
+                        customModeName = modeName
+                        Toast.makeText(context, "Selected mode: $modeName", Toast.LENGTH_SHORT).show()
+                    },
+                )
             }
         }
     } else {
