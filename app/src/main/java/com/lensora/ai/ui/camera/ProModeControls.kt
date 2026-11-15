@@ -39,6 +39,10 @@ fun ProModeControls(
     onShutterSpeedChanged: (Long) -> Unit,
     onRawToggled: (Boolean) -> Unit,
     modifier: Modifier = Modifier,
+    isZebrasEnabled: Boolean = false,
+    isPeakingEnabled: Boolean = false,
+    onZebrasToggled: (Boolean) -> Unit = {},
+    onPeakingToggled: (Boolean) -> Unit = {},
 ) {
     Card(
         colors = CardDefaults.cardColors(containerColor = CharcoalSurface.copy(alpha = 0.90f)),
@@ -56,7 +60,7 @@ fun ProModeControls(
                 modifier = Modifier.fillMaxWidth(),
             ) {
                 Text(
-                    text = "\u2699 PRO MODE EXPOSURE",
+                    text = "\u2699 PRO MODE EXPOSURE & HUD",
                     color = RoyalBlue,
                     fontSize = 11.sp,
                     fontWeight = FontWeight.Bold,
@@ -159,6 +163,54 @@ fun ProModeControls(
                 Switch(
                     checked = isRawEnabled,
                     onCheckedChange = onRawToggled,
+                    colors = SwitchDefaults.colors(
+                        checkedThumbColor = ColorWhite,
+                        checkedTrackColor = RoyalBlue,
+                        uncheckedThumbColor = ColorMutedGray,
+                        uncheckedTrackColor = PitchBlackBackground,
+                    ),
+                )
+            }
+
+            // 4. Zebras Shader Overlay Toggle
+            Row(
+                verticalAlignment = Alignment.CenterVertically,
+                horizontalArrangement = Arrangement.SpaceBetween,
+                modifier = Modifier.fillMaxWidth(),
+            ) {
+                Text(
+                    text = "ZEBRAS (>85% Lum)",
+                    color = ColorWhite,
+                    fontWeight = FontWeight.Bold,
+                    fontSize = 12.sp,
+                )
+                Switch(
+                    checked = isZebrasEnabled,
+                    onCheckedChange = onZebrasToggled,
+                    colors = SwitchDefaults.colors(
+                        checkedThumbColor = ColorWhite,
+                        checkedTrackColor = RoyalBlue,
+                        uncheckedThumbColor = ColorMutedGray,
+                        uncheckedTrackColor = PitchBlackBackground,
+                    ),
+                )
+            }
+
+            // 5. Focus Peaking Shader Overlay Toggle
+            Row(
+                verticalAlignment = Alignment.CenterVertically,
+                horizontalArrangement = Arrangement.SpaceBetween,
+                modifier = Modifier.fillMaxWidth(),
+            ) {
+                Text(
+                    text = "FOCUS PEAKING (Neon Green)",
+                    color = ColorWhite,
+                    fontWeight = FontWeight.Bold,
+                    fontSize = 12.sp,
+                )
+                Switch(
+                    checked = isPeakingEnabled,
+                    onCheckedChange = onPeakingToggled,
                     colors = SwitchDefaults.colors(
                         checkedThumbColor = ColorWhite,
                         checkedTrackColor = RoyalBlue,

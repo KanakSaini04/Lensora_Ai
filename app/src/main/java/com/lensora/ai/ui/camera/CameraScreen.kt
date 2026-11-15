@@ -58,6 +58,7 @@ import androidx.compose.ui.draw.clip
 import androidx.compose.ui.geometry.Offset
 import androidx.compose.ui.geometry.Size
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.graphics.asComposeRenderEffect
 import androidx.compose.ui.graphics.drawscope.Stroke
 import androidx.compose.ui.graphics.graphicsLayer
 import androidx.compose.ui.input.pointer.pointerInput
@@ -146,10 +147,12 @@ fun CameraScreen(
         var selectedZoom by remember { mutableStateOf("1x") }
         var currentZoomRatio by remember { mutableFloatStateOf(1.0f) }
 
-        // Pro Mode Manual Exposure & RAW State
+        // Pro Mode Manual Exposure & AGSL Shaders State
         var proIsoValue by remember { mutableIntStateOf(400) }
         var proShutterNs by remember { mutableStateOf(4_000_000L) } // 1/250s
         var isRawEnabled by remember { mutableStateOf(cameraPrefs.getBoolean("raw_dng_enabled", false)) }
+        var isZebrasEnabled by remember { mutableStateOf(false) }
+        var isPeakingEnabled by remember { mutableStateOf(false) }
 
         // Timer State & Countdown
         var timerMode by remember { mutableStateOf(TimerMode.OFF) }
@@ -269,18 +272,31 @@ fun CameraScreen(
             }
         }
 
+        val activeRenderEffect = remember(selectedMode, isZebrasEnabled, isPeakingEnabled) {
+            if (selectedMode == CameraMode.PRO && Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
+                when {
+                    isZebrasEnabled -> AgslShaders.createZebrasEffect()
+                    isPeakingEnabled -> AgslShaders.createFocusPeakingEffect()
+                    else -> null
+                }
+            } else null
+        }
+
         Box(
             modifier = Modifier
                 .fillMaxSize()
                 .background(PitchBlackBackground),
         ) {
-            // Edge-to-edge Live Camera Viewfinder (Mirrored horizontally for front camera)
+            // Edge-to-edge Live Camera Viewfinder (Mirrored horizontally for front camera + AGSL RenderEffect)
             CameraPreview(
                 cameraController = cameraController,
                 modifier = Modifier
                     .fillMaxSize()
                     .graphicsLayer {
                         scaleX = if (cameraController.isFrontCamera) -1f else 1f
+                        if (activeRenderEffect != null && Build.VERSION.SDK_INT >= Build.VERSION_CODES.S) {
+                            renderEffect = activeRenderEffect.asComposeRenderEffect()
+                        }
                     },
                 onTextureViewCreated = { view ->
                     textureViewRef = view
@@ -437,6 +453,8 @@ fun CameraScreen(
                         isoValue = proIsoValue,
                         shutterSpeedNs = proShutterNs,
                         isRawEnabled = isRawEnabled,
+                        isZebrasEnabled = isZebrasEnabled,
+                        isPeakingEnabled = isPeakingEnabled,
                         onIsoChanged = { iso ->
                             proIsoValue = iso
                             cameraController.setManualExposure(iso, proShutterNs)
@@ -450,6 +468,16 @@ fun CameraScreen(
                             cameraPrefs.edit().putBoolean("raw_dng_enabled", raw).apply()
                             cameraController.setRawCaptureEnabled(raw)
                             Toast.makeText(context, if (raw) "RAW DNG Enabled" else "RAW DNG Disabled", Toast.LENGTH_SHORT).show()
+                        },
+                        onZebrasToggled = { zebras ->
+                            isZebrasEnabled = zebras
+                            if (zebras) isPeakingEnabled = false
+                            Toast.makeText(context, if (zebras) "Zebras Overlay Enabled" else "Zebras Overlay Disabled", Toast.LENGTH_SHORT).show()
+                        },
+                        onPeakingToggled = { peaking ->
+                            isPeakingEnabled = peaking
+                            if (peaking) isZebrasEnabled = false
+                            Toast.makeText(context, if (peaking) "Focus Peaking Enabled" else "Focus Peaking Disabled", Toast.LENGTH_SHORT).show()
                         },
                         modifier = Modifier.padding(bottom = 6.dp),
                     )
