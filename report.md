@@ -4,7 +4,7 @@
 
 **Lensora_Ai** (`com.lensora.ai`) is an AI-first computational camera application built on Android 16 (API 36) using Jetpack Compose, Material 3 (Obsidian Royal Theme), Hilt dependency injection, and a pure **Camera2 L0 Safe Core HAL Engine** (strictly zero CameraX dependencies).
 
-This report presents a complete end-to-end audit of all implemented components, hardware capability probe results, L0 atomic capture journals, UI overlays, camera hardware zoom control engines, tap-to-focus metering, flash controls, mode selection state wiring, thermal/storage guards, L1 Light AI Scene Classifier, L2 AI Planner Foundation, L3/L4 WorkManager Processing Queue & Quality Validator, Pinterest-Style Masonry Gallery Tab UI, Settings Tab & AI Center Control Room, Vibes Tab & Color Presets UI, Studio Tab UI Skeleton, L3 Real ColorMatrix Computational Engine, GitHub DLC Model Downloader, Studio Real-Time Image Editing, Studio Export Pipeline, Vibes to Studio Color Science Integration, L3 TFLite AI Inference Engine, Google Drive Cloud Sync Architecture, Auto-Purge & Storage Cleanup Engine, Camera UI State Persistence, Real TFLite Model & Manifest Integration, Pro Mode HUD & Manual Controls, Video Recording Engine, RAW / DNG Capture Pipeline, Camera Flip & Shutter Timer, Cinematic Video Mode, The "MORE" Modes Menu, Pro HUD AGSL Shaders & UI Screenshot Capture, Studio AI Object Eraser (LaMa Inpainting), Real LUT Engine (.cube Parser + AGSL), Live Camera LUT Application, Advanced Modes Hardware Wiring, and live device/emulator verification results.
+This report presents a complete end-to-end audit of all implemented components, hardware capability probe results, L0 atomic capture journals, UI overlays, camera hardware zoom control engines, tap-to-focus metering, flash controls, mode selection state wiring, thermal/storage guards, L1 Light AI Scene Classifier, L2 AI Planner Foundation, L3/L4 WorkManager Processing Queue & Quality Validator, Pinterest-Style Masonry Gallery Tab UI, Settings Tab & AI Center Control Room, Vibes Tab & Color Presets UI, Studio Tab UI Skeleton, L3 Real ColorMatrix Computational Engine, GitHub DLC Model Downloader, Studio Real-Time Image Editing, Studio Export Pipeline, Vibes to Studio Color Science Integration, L3 TFLite AI Inference Engine, Google Drive Cloud Sync Architecture, Auto-Purge & Storage Cleanup Engine, Camera UI State Persistence, Real TFLite Model & Manifest Integration, Pro Mode HUD & Manual Controls, Video Recording Engine, RAW / DNG Capture Pipeline, Camera Flip & Shutter Timer, Cinematic Video Mode, The "MORE" Modes Menu, Pro HUD AGSL Shaders & UI Screenshot Capture, Studio AI Object Eraser (LaMa Inpainting), Real LUT Engine (.cube Parser + AGSL), Live Camera LUT Application, Advanced Modes Hardware Wiring, Studio Export Polish (Vibe + Timestamp), and live device/emulator verification results.
 
 ---
 
@@ -498,7 +498,7 @@ The **Probe Lab** audits camera hardware capabilities at runtime without opening
    - Executed clean package uninstall (`adb uninstall com.lensora.ai`) and clean debug build (`./gradlew installDebug`).
    - Verified complete end-to-end flow: Camera (Leica B&W) $\rightarrow$ Capture $\rightarrow$ Gallery $\rightarrow$ Studio (Cinematic Vibe & Export) $\rightarrow$ Gallery (Exported Photo Verification) $\rightarrow$ Settings Probe Lab.
 2. **Bug Fixes**:
-   - Fixed Direct Boot credential-encrypted storage exception in `CameraScreen.kt` by wrapping `getSharedPreferences` in `createDeviceProtectedStorageContext()` fallback.
+   - Fixed Direct Boot credential-encrypted storage exception in `CameraScreen.kt` by wrapping in `createDeviceProtectedStorageContext()` fallback.
 3. **Verification & Screenshot**:
    - Confirmed **0 Runtime Crashes (`AndroidRuntime:E`)** across all tabs and workflows.
    - Captured screenshot `ui_photos/golden_path_export.png`.
@@ -520,7 +520,30 @@ The **Probe Lab** audits camera hardware capabilities at runtime without opening
 
 ---
 
-## 40. Verification & Crash Audit Results
+## 40. Phase 20, Step 40: Camera Aesthetic Overlays (VN-Style)
+
+1. **`FilmGrainShader.kt` AGSL Shader**:
+   - Created AGSL film grain shader (`FILM_GRAIN_AGSL`) and `createFilmGrainEffect`.
+2. **`CameraTopBar.kt` & `CameraScreen.kt` Overlays**:
+   - Added Grain toggle button (`Icons.Outlined.Grain`), glowing Cyan (`#00E5FF`) timestamp text overlay (`LENSORA • HH:mm:ss`), thin 1.dp white aesthetic border overlay for PHOTO mode, and AGSL film grain pass.
+3. **Verification & Screenshot**:
+   - Verified live preview overlays and captured screenshot `ui_photos/camera_aesthetic.png`.
+
+---
+
+## 41. Phase 21, Step 41: Studio Export Polish (Vibe + Timestamp)
+
+1. **`ImageEditor.kt` Full-Resolution Bitmap Export Polish**:
+   - Updated `exportImage()` to stack active `VibePreset` LUT ColorMatrix (`vibeMatrix.postConcat`) onto full-resolution software `Canvas` rendering.
+   - Added optional `includeTimestamp` parameter drawing glowing Cyan (`#00E5FF`) `LENSORA • HH:mm:ss` timestamp overlay with semi-transparent background pill via `Canvas.drawRoundRect` and `Canvas.drawText`.
+2. **`StudioScreen.kt` UI Controls**:
+   - Added "Time" switch toggle in TopAppBar actions for optional timestamp inclusion on exported photos.
+3. **Verification & Screenshot**:
+   - Exported photo with Cinematic Vibe LUT and timestamp, verified saved image in Gallery, confirmed **0 Runtime Crashes (`AndroidRuntime:E`)**, and captured screenshot `ui_photos/studio_export_polish.png`.
+
+---
+
+## 42. Verification & Crash Audit Results
 
 - **Build Status**: `./gradlew assembleDebug` & `./gradlew installDebug` - **100% SUCCESS**.
 - **Static Code Analysis**: Analyzed all Kotlin source files in `app/src/main/java` - **0 Errors, 0 Warnings**.

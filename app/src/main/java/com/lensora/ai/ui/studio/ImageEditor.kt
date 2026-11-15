@@ -8,6 +8,8 @@ import android.graphics.Canvas
 import android.graphics.ColorMatrix
 import android.graphics.ColorMatrixColorFilter
 import android.graphics.Paint
+import android.graphics.Rect
+import android.graphics.RectF
 import android.net.Uri
 import android.os.Build
 import android.os.Environment
@@ -16,6 +18,9 @@ import androidx.compose.ui.graphics.ColorMatrix as ComposeColorMatrix
 import com.lensora.ai.ui.vibes.VibePreset
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
+import java.text.SimpleDateFormat
+import java.util.Date
+import java.util.Locale
 
 object ImageEditor {
 
@@ -102,6 +107,7 @@ object ImageEditor {
         exposure: Float,
         contrast: Float,
         vibe: VibePreset = VibePreset.NONE,
+        includeTimestamp: Boolean = false,
     ): Result<Uri> = withContext(Dispatchers.IO) {
         var srcBitmap: Bitmap? = null
         var editedBitmap: Bitmap? = null
@@ -135,6 +141,61 @@ object ImageEditor {
                 isFilterBitmap = true
             }
             canvas.drawBitmap(srcBitmap, 0f, 0f, paint)
+
+            // 4b. Draw VN-Style Timestamp Overlay on exported Bitmap if enabled
+            if (includeTimestamp) {
+                val timeStr = SimpleDateFormat("HH:mm:ss", Locale.US).format(Date())
+                val textToDraw = "LENSORA • $timeStr"
+
+                val fontSize = (height * 0.035f).coerceAtLeast(36f)
+                val textMarginLeft = width * 0.04f
+                val textMarginBottom = height * 0.05f
+
+                val textPaint = Paint().apply {
+                    color = android.graphics.Color.parseColor("#00E5FF")
+                    textSize = fontSize
+                    isAntiAlias = true
+                    isFakeBoldText = true
+                    setShadowLayer(8f, 0f, 0f, android.graphics.Color.BLACK)
+                }
+
+                val textBounds = Rect()
+                textPaint.getTextBounds(textToDraw, 0, textToDraw.length, textBounds)
+
+                val pillPaddingX = fontSize * 0.4f
+                val pillPaddingY = fontSize * 0.25f
+
+                val bgRect = RectF(
+                    textMarginLeft - pillPaddingX,
+                    (height - textMarginBottom) - textBounds.height() - pillPaddingY,
+                    textMarginLeft + textBounds.width() + pillPaddingX,
+                    (height - textMarginBottom) + pillPaddingY,
+                )
+
+                val bgPaint = Paint().apply {
+                    color = android.graphics.Color.parseColor("#99131313")
+                    style = Paint.Style.FILL
+                    isAntiAlias = true
+                }
+
+                val borderPaint = Paint().apply {
+                    color = android.graphics.Color.parseColor("#6600E5FF")
+                    style = Paint.Style.STROKE
+                    strokeWidth = fontSize * 0.06f
+                    isAntiAlias = true
+                }
+
+                val cornerRadius = fontSize * 0.3f
+                canvas.drawRoundRect(bgRect, cornerRadius, cornerRadius, bgPaint)
+                canvas.drawRoundRect(bgRect, cornerRadius, cornerRadius, borderPaint)
+
+                canvas.drawText(
+                    textToDraw,
+                    textMarginLeft,
+                    height - textMarginBottom,
+                    textPaint,
+                )
+            }
 
             // 5. Save edited bitmap to MediaStore as LENSORA_EDITED_<timestamp>.jpg
             val timeStamp = System.currentTimeMillis()

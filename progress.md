@@ -228,3 +228,11 @@
   - Updated `CameraTopBar.kt` adding Film Grain toggle button (`Icons.Outlined.Grain`).
   - Updated `CameraScreen.kt` adding glowing Cyan (`#00E5FF`) timestamp text overlay (`LENSORA • HH:mm:ss`), thin 1.dp white aesthetic border overlay for PHOTO mode, and AGSL film grain pass.
   - Captured screenshot `ui_photos/camera_aesthetic.png`.
+
+## Phase 21: Studio Export Polish (Vibe + Timestamp) (100% COMPLETE)
+
+- [x] **Step 41: Studio Export Polish (Vibe + Timestamp)**
+  - Updated `ImageEditor.kt` `exportImage()` to apply active `VibePreset` LUT ColorMatrix and optionally bake glowing Cyan (`#00E5FF`) `LENSORA • HH:mm:ss` timestamp overlay onto exported full-resolution Bitmaps using software `Canvas` rendering.
+  - Updated `StudioScreen.kt` adding "Time" switch toggle in TopAppBar actions for optional timestamp inclusion.
+  - Verified exported photos retain both color science LUT grading and timestamp overlays in MediaStore gallery.
+  - Captured screenshot `ui_photos/studio_export_polish.png`.
