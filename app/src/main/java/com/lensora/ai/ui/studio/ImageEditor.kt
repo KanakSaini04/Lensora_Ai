@@ -13,25 +13,23 @@ import android.os.Build
 import android.os.Environment
 import android.provider.MediaStore
 import androidx.compose.ui.graphics.ColorMatrix as ComposeColorMatrix
+import com.lensora.ai.ui.vibes.VibePreset
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
 
 object ImageEditor {
 
-    fun createColorMatrix(
+    fun createAndroidColorMatrix(
         exposure: Float,
         contrast: Float,
-    ): ComposeColorMatrix {
-        // Exposure gain scaling (-2.0 EV to +2.0 EV)
+    ): ColorMatrix {
         val evScale = 1.0f + (exposure * 0.25f)
-
-        // Contrast scaling (-50 to +50 -> 0.5x to 1.5x)
         val contrastScale = 1.0f + (contrast / 50.0f) * 0.5f
 
         val combinedScale = contrastScale * evScale
         val translate = 128f * (1f - contrastScale) + (exposure * 20f)
 
-        return ComposeColorMatrix(
+        return ColorMatrix(
             floatArrayOf(
                 combinedScale, 0f, 0f, 0f, translate,
                 0f, combinedScale, 0f, 0f, translate,
@@ -41,11 +39,61 @@ object ImageEditor {
         )
     }
 
+    fun createVibeAndroidColorMatrix(vibe: VibePreset): ColorMatrix {
+        return when (vibe) {
+            VibePreset.NONE -> ColorMatrix()
+            VibePreset.CINEMATIC -> ColorMatrix(
+                floatArrayOf(
+                    1.20f, 0f, 0f, 0f, 10f,
+                    0f, 1.05f, 0f, 0f, 5f,
+                    0f, 0f, 0.90f, 0f, -10f,
+                    0f, 0f, 0f, 1f, 0f,
+                ),
+            )
+            VibePreset.LEICA -> ColorMatrix(
+                floatArrayOf(
+                    0.35f, 0.55f, 0.10f, 0f, -15f,
+                    0.35f, 0.55f, 0.10f, 0f, -15f,
+                    0.35f, 0.55f, 0.10f, 0f, -15f,
+                    0f, 0f, 0f, 1f, 0f,
+                ),
+            )
+            VibePreset.VINTAGE -> ColorMatrix(
+                floatArrayOf(
+                    1.10f, 0f, 0f, 0f, 25f,
+                    0f, 1.05f, 0f, 0f, 15f,
+                    0f, 0f, 0.85f, 0f, 30f,
+                    0f, 0f, 0f, 1f, 0f,
+                ),
+            )
+            VibePreset.ROYAL_GOLD -> ColorMatrix(
+                floatArrayOf(
+                    1.25f, 0f, 0f, 0f, 15f,
+                    0f, 1.15f, 0f, 0f, 10f,
+                    0f, 0f, 0.80f, 0f, 0f,
+                    0f, 0f, 0f, 1f, 0f,
+                ),
+            )
+        }
+    }
+
+    fun createCombinedColorMatrix(
+        exposure: Float,
+        contrast: Float,
+        vibe: VibePreset = VibePreset.NONE,
+    ): ComposeColorMatrix {
+        val baseMatrix = createAndroidColorMatrix(exposure, contrast)
+        val vibeMatrix = createVibeAndroidColorMatrix(vibe)
+        baseMatrix.postConcat(vibeMatrix)
+        return ComposeColorMatrix(baseMatrix.array)
+    }
+
     suspend fun exportImage(
         context: Context,
         inputUri: Uri,
         exposure: Float,
         contrast: Float,
+        vibe: VibePreset = VibePreset.NONE,
     ): Result<Uri> = withContext(Dispatchers.IO) {
         var srcBitmap: Bitmap? = null
         var editedBitmap: Bitmap? = null
@@ -66,25 +114,15 @@ object ImageEditor {
             val height = srcBitmap.height
             editedBitmap = Bitmap.createBitmap(width, height, Bitmap.Config.ARGB_8888)
 
-            // 3. Construct android.graphics.ColorMatrix matching Compose ColorMatrix
-            val evScale = 1.0f + (exposure * 0.25f)
-            val contrastScale = 1.0f + (contrast / 50.0f) * 0.5f
-            val combinedScale = contrastScale * evScale
-            val translate = 128f * (1f - contrastScale) + (exposure * 20f)
-
-            val colorMatrix = ColorMatrix(
-                floatArrayOf(
-                    combinedScale, 0f, 0f, 0f, translate,
-                    0f, combinedScale, 0f, 0f, translate,
-                    0f, 0f, combinedScale, 0f, translate,
-                    0f, 0f, 0f, 1f, 0f,
-                ),
-            )
+            // 3. Construct combined stacked ColorMatrix (Base Exposure/Contrast + Vibe Preset)
+            val baseMatrix = createAndroidColorMatrix(exposure, contrast)
+            val vibeMatrix = createVibeAndroidColorMatrix(vibe)
+            baseMatrix.postConcat(vibeMatrix)
 
             // 4. Render ColorMatrix onto software Canvas
             val canvas = Canvas(editedBitmap)
             val paint = Paint().apply {
-                colorFilter = ColorMatrixColorFilter(colorMatrix)
+                colorFilter = ColorMatrixColorFilter(baseMatrix)
                 isAntiAlias = true
                 isFilterBitmap = true
             }

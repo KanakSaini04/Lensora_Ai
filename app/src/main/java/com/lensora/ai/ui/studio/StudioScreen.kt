@@ -68,6 +68,8 @@ import com.lensora.ai.ui.theme.ColorMutedGray
 import com.lensora.ai.ui.theme.ColorWhite
 import com.lensora.ai.ui.theme.PitchBlackBackground
 import com.lensora.ai.ui.theme.RoyalBlue
+import com.lensora.ai.ui.vibes.VibePreset
+import com.lensora.ai.ui.vibes.VibeState
 import kotlinx.coroutines.launch
 
 @OptIn(ExperimentalMaterial3Api::class)
@@ -85,9 +87,15 @@ fun StudioScreen() {
     var contrastValue by remember { mutableFloatStateOf(0.0f) }
     var isExporting by remember { mutableStateOf(false) }
 
-    // Real-time GPU ColorFilter matrix derived from Exposure & Contrast sliders
-    val realTimeColorFilter = remember(exposureValue, contrastValue) {
-        ColorFilter.colorMatrix(ImageEditor.createColorMatrix(exposureValue, contrastValue))
+    // Real-time GPU combined ColorFilter matrix derived from Sliders + Vibe State
+    val realTimeColorFilter = remember(exposureValue, contrastValue, VibeState.selectedVibe) {
+        ColorFilter.colorMatrix(
+            ImageEditor.createCombinedColorMatrix(
+                exposure = exposureValue,
+                contrast = contrastValue,
+                vibe = VibeState.selectedVibe,
+            ),
+        )
     }
 
     LaunchedEffect(Unit) {
@@ -98,17 +106,36 @@ fun StudioScreen() {
         topBar = {
             TopAppBar(
                 title = {
-                    Text(
-                        text = "Studio Editor",
-                        color = ColorWhite,
-                        fontWeight = FontWeight.Bold,
-                    )
+                    Row(verticalAlignment = Alignment.CenterVertically) {
+                        Text(
+                            text = "Studio Editor",
+                            color = ColorWhite,
+                            fontWeight = FontWeight.Bold,
+                        )
+                        if (VibeState.selectedVibe != VibePreset.NONE) {
+                            Spacer(modifier = Modifier.width(8.dp))
+                            Box(
+                                modifier = Modifier
+                                    .clip(RoundedCornerShape(6.dp))
+                                    .background(RoyalBlue)
+                                    .padding(horizontal = 8.dp, vertical = 2.dp),
+                            ) {
+                                Text(
+                                    text = VibeState.selectedVibe.displayName,
+                                    color = ColorWhite,
+                                    fontSize = 10.sp,
+                                    fontWeight = FontWeight.Bold,
+                                )
+                            }
+                        }
+                    }
                 },
                 actions = {
                     IconButton(onClick = {
                         exposureValue = 0.0f
                         contrastValue = 0.0f
-                        Toast.makeText(context, "Reset Edit Pass", Toast.LENGTH_SHORT).show()
+                        VibeState.selectedVibe = VibePreset.NONE
+                        Toast.makeText(context, "Reset Edit & Vibe Pass", Toast.LENGTH_SHORT).show()
                     }) {
                         Icon(imageVector = Icons.AutoMirrored.Outlined.Undo, contentDescription = "Undo", tint = ColorWhite)
                     }
@@ -126,6 +153,7 @@ fun StudioScreen() {
                                         inputUri = targetUri,
                                         exposure = exposureValue,
                                         contrast = contrastValue,
+                                        vibe = VibeState.selectedVibe,
                                     )
                                     result.onSuccess {
                                         Toast.makeText(context, "Photo exported to Gallery!", Toast.LENGTH_SHORT).show()
