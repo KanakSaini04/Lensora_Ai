@@ -12,7 +12,10 @@ import android.net.Uri
 import android.provider.MediaStore
 import android.util.Log
 import androidx.work.CoroutineWorker
+import androidx.work.OneTimeWorkRequestBuilder
+import androidx.work.WorkManager
 import androidx.work.WorkerParameters
+import androidx.work.workDataOf
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
 import org.tensorflow.lite.Interpreter
@@ -67,7 +70,7 @@ class AiProcessorWorker(
                     val outputTensor = interpreter.getOutputTensor(0)
 
                     Log.i(tag, "TFLite Interpreter initialized successfully. Input Tensor: ${inputTensor.shape().contentToString()} (${inputTensor.dataType()}), Output Tensor: ${outputTensor.shape().contentToString()}")
-                    
+
                     val inferenceStartTime = System.currentTimeMillis()
                     // Model inference check pass
                     val inferenceTime = System.currentTimeMillis() - inferenceStartTime
@@ -137,6 +140,24 @@ class AiProcessorWorker(
 
                 val executionTime = System.currentTimeMillis() - startTime
                 Log.i(tag, "L3 AI Processing finished in ${executionTime}ms (Used TFLite: $usedTfLite). Saved $fileName to MediaStore at $newUri")
+
+                // 6. Enqueue CloudSyncWorker if Cloud Sync toggle is ON in Settings
+                val isCloudSyncEnabled = context.getSharedPreferences("lensora_prefs", Context.MODE_PRIVATE)
+                    .getBoolean("cloud_sync_enabled", false)
+
+                if (isCloudSyncEnabled) {
+                    val syncRequest = OneTimeWorkRequestBuilder<CloudSyncWorker>()
+                        .setInputData(
+                            workDataOf(
+                                "PHOTO_URI" to newUri.toString(),
+                                "FILE_NAME" to fileName,
+                            ),
+                        )
+                        .build()
+
+                    WorkManager.getInstance(context).enqueue(syncRequest)
+                    Log.i(tag, "Cloud Sync toggle is ON. Enqueued CloudSyncWorker for $fileName ($newUri)")
+                }
 
                 Result.success()
             } else {
