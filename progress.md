@@ -87,3 +87,7 @@
   - Created `ImageEditor.kt` helper generating a Compose `ColorMatrix` from Exposure (-2.0 to +2.0 EV) and Contrast (-50 to +50) values.
   - Updated `StudioScreen.kt` to bind Exposure and Contrast slider states to `ColorFilter.colorMatrix(colorMatrix)` applied directly on the preview `AsyncImage`.
   - Delivers 60fps GPU-accelerated real-time image updates without reallocating or decoding Bitmaps.
+- [x] **Step 21: Studio Export Pipeline**
+  - Added `exportImage` in `ImageEditor.kt` decoding full-res Bitmap on `Dispatchers.IO`, applying ColorMatrix via software `Canvas` and `Paint`, saving to MediaStore (`LENSORA_EDITED_<timestamp>.jpg`), and recycling memory.
+  - Added OOM exception handling (`OutOfMemoryError`) showing Toast warning `"Image too large to export"`.
+  - Wired `StudioScreen.kt` Export button with `isExporting` loading state, `CircularProgressIndicator`, and Toast feedback.

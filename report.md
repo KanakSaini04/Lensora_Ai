@@ -4,7 +4,7 @@
 
 **Lensora_Ai** (`com.lensora.ai`) is an AI-first computational camera application built on Android 16 (API 36) using Jetpack Compose, Material 3 (Obsidian Royal Theme), Hilt dependency injection, and a pure **Camera2 L0 Safe Core HAL Engine** (strictly zero CameraX dependencies).
 
-This report presents a complete end-to-end audit of all implemented components, hardware capability probe results, L0 atomic capture journals, UI overlays, camera hardware zoom control engines, tap-to-focus metering, flash controls, mode selection state wiring, thermal/storage guards, L1 Light AI Scene Classifier, L2 AI Planner Foundation, L3/L4 WorkManager Processing Queue & Quality Validator, Pinterest-Style Masonry Gallery Tab UI, Settings Tab & AI Center Control Room, Vibes Tab & Color Presets UI, Studio Tab UI Skeleton, L3 Real ColorMatrix Computational Engine, GitHub DLC Model Downloader, Studio Real-Time Image Editing, and live device/emulator verification results.
+This report presents a complete end-to-end audit of all implemented components, hardware capability probe results, L0 atomic capture journals, UI overlays, camera hardware zoom control engines, tap-to-focus metering, flash controls, mode selection state wiring, thermal/storage guards, L1 Light AI Scene Classifier, L2 AI Planner Foundation, L3/L4 WorkManager Processing Queue & Quality Validator, Pinterest-Style Masonry Gallery Tab UI, Settings Tab & AI Center Control Room, Vibes Tab & Color Presets UI, Studio Tab UI Skeleton, L3 Real ColorMatrix Computational Engine, GitHub DLC Model Downloader, Studio Real-Time Image Editing, Studio Export Pipeline, and live device/emulator verification results.
 
 ---
 
@@ -281,7 +281,22 @@ The **Probe Lab** audits camera hardware capabilities at runtime without opening
 
 ---
 
-## 21. Verification & Crash Audit Results
+## 21. Phase 3, Step 21: Studio Export Pipeline
+
+1. **`ImageEditor.exportImage` Architecture**:
+   - Decodes full-resolution source `Bitmap` from URI on `Dispatchers.IO`.
+   - Creates a mutable target `Bitmap` and software `Canvas`.
+   - Constructs `android.graphics.ColorMatrix` matching Exposure/Contrast parameters and renders pass via `Paint(colorFilter = ColorMatrixColorFilter(colorMatrix))`.
+   - Encodes and saves output bitmap into MediaStore as `LENSORA_EDITED_<timestamp>.jpg` under `Pictures/Lensora_Ai` with 95% JPEG quality.
+   - Enforces memory hygiene with explicit `recycle()` on both source and target bitmaps.
+   - Gracefully catches `OutOfMemoryError` and returns `Result.failure(Exception("Image too large to export"))`.
+2. **Studio UI Export Interaction**:
+   - TopAppBar Export button displays an active `CircularProgressIndicator` while `isExporting` is true.
+   - Shows Toast feedback (`"Photo exported to Gallery!"` or `"Image too large to export"`).
+
+---
+
+## 22. Verification & Crash Audit Results
 
 - **Build Status**: `./gradlew assembleDebug` & `./gradlew installDebug` - **100% SUCCESS**.
 - **Static Code Analysis**: Analyzed all Kotlin source files in `app/src/main/java` - **0 Errors, 0 Warnings**.
