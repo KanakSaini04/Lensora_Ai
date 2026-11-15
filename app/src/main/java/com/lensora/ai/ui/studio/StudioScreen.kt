@@ -31,6 +31,7 @@ import androidx.compose.material.icons.outlined.Palette
 import androidx.compose.material.icons.outlined.WbSunny
 import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonDefaults
+import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
@@ -47,6 +48,7 @@ import androidx.compose.runtime.mutableFloatStateOf
 import androidx.compose.runtime.mutableIntStateOf
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
+import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -66,11 +68,13 @@ import com.lensora.ai.ui.theme.ColorMutedGray
 import com.lensora.ai.ui.theme.ColorWhite
 import com.lensora.ai.ui.theme.PitchBlackBackground
 import com.lensora.ai.ui.theme.RoyalBlue
+import kotlinx.coroutines.launch
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun StudioScreen() {
     val context = LocalContext.current
+    val coroutineScope = rememberCoroutineScope()
     val galleryRepository = remember { GalleryRepository(context) }
     var photoUris by remember { mutableStateOf<List<android.net.Uri>>(emptyList()) }
     var selectedPhotoIndex by remember { mutableIntStateOf(0) }
@@ -79,6 +83,7 @@ fun StudioScreen() {
     var selectedToolCategory by remember { mutableIntStateOf(0) } // 0: Light, 1: Color, 2: Effects, 3: Crop
     var exposureValue by remember { mutableFloatStateOf(0.0f) }
     var contrastValue by remember { mutableFloatStateOf(0.0f) }
+    var isExporting by remember { mutableStateOf(false) }
 
     // Real-time GPU ColorFilter matrix derived from Exposure & Contrast sliders
     val realTimeColorFilter = remember(exposureValue, contrastValue) {
@@ -111,14 +116,49 @@ fun StudioScreen() {
                         Icon(imageVector = Icons.AutoMirrored.Outlined.Redo, contentDescription = "Redo", tint = ColorWhite)
                     }
                     Button(
-                        onClick = { Toast.makeText(context, "Exporting Photo...", Toast.LENGTH_SHORT).show() },
+                        onClick = {
+                            if (photoUris.isNotEmpty() && selectedPhotoIndex in photoUris.indices && !isExporting) {
+                                coroutineScope.launch {
+                                    isExporting = true
+                                    val targetUri = photoUris[selectedPhotoIndex]
+                                    val result = ImageEditor.exportImage(
+                                        context = context,
+                                        inputUri = targetUri,
+                                        exposure = exposureValue,
+                                        contrast = contrastValue,
+                                    )
+                                    result.onSuccess {
+                                        Toast.makeText(context, "Photo exported to Gallery!", Toast.LENGTH_SHORT).show()
+                                        // Refresh gallery photos list
+                                        photoUris = galleryRepository.getAllPhotos()
+                                    }.onFailure { exception ->
+                                        val message = if (exception.message?.contains("large", ignoreCase = true) == true) {
+                                            "Image too large to export"
+                                        } else {
+                                            "Export failed: ${exception.localizedMessage}"
+                                        }
+                                        Toast.makeText(context, message, Toast.LENGTH_LONG).show()
+                                    }
+                                    isExporting = false
+                                }
+                            }
+                        },
+                        enabled = !isExporting && photoUris.isNotEmpty(),
                         colors = ButtonDefaults.buttonColors(containerColor = RoyalBlue),
                         shape = RoundedCornerShape(8.dp),
                         modifier = Modifier.padding(end = 8.dp),
                     ) {
-                        Icon(imageVector = Icons.Outlined.Download, contentDescription = null, tint = ColorWhite, modifier = Modifier.size(16.dp))
+                        if (isExporting) {
+                            CircularProgressIndicator(
+                                color = ColorWhite,
+                                strokeWidth = 2.dp,
+                                modifier = Modifier.size(16.dp),
+                            )
+                        } else {
+                            Icon(imageVector = Icons.Outlined.Download, contentDescription = null, tint = ColorWhite, modifier = Modifier.size(16.dp))
+                        }
                         Spacer(modifier = Modifier.width(4.dp))
-                        Text(text = "Export", color = ColorWhite, fontWeight = FontWeight.Bold, fontSize = 12.sp)
+                        Text(text = if (isExporting) "Exporting..." else "Export", color = ColorWhite, fontWeight = FontWeight.Bold, fontSize = 12.sp)
                     }
                 },
                 colors = TopAppBarDefaults.topAppBarColors(
