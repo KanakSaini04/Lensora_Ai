@@ -16,6 +16,8 @@ import androidx.work.OneTimeWorkRequestBuilder
 import androidx.work.WorkManager
 import androidx.work.WorkerParameters
 import androidx.work.workDataOf
+import com.lensora.ai.ui.studio.ImageEditor
+import com.lensora.ai.ui.vibes.VibePreset
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
 import org.tensorflow.lite.Interpreter
@@ -35,8 +37,10 @@ class AiProcessorWorker(
         val photoUriStr = inputData.getString("PHOTO_URI") ?: return@withContext Result.failure()
         val sceneTypeStr = inputData.getString("SCENE_TYPE") ?: "AUTO"
         val evOffset = inputData.getFloat("EV_OFFSET", 0.0f)
+        val vibeStr = inputData.getString("VIBE_PRESET") ?: "NONE"
+        val vibePreset = try { VibePreset.valueOf(vibeStr) } catch (e: Exception) { VibePreset.NONE }
 
-        Log.i(tag, "Starting L3 AI Processing pass for $photoUriStr [Scene: $sceneTypeStr, EV: $evOffset]")
+        Log.i(tag, "Starting L3 AI Processing pass for $photoUriStr [Scene: $sceneTypeStr, EV: $evOffset, Vibe: ${vibePreset.displayName}]")
 
         val startTime = System.currentTimeMillis()
         var srcBitmap: Bitmap? = null
@@ -116,25 +120,25 @@ class AiProcessorWorker(
                 Log.i(tag, "No TFLite DLC Model file found in internal storage. Falling back to ColorMatrix engine.")
             }
 
-            // 3. Fallback / Standard ColorMatrix Pass
-            if (!usedTfLite) {
-                val colorMatrix = createColorMatrixForPlan(sceneTypeStr, evOffset)
-
-                processedBitmap = Bitmap.createBitmap(
-                    srcBitmap.width,
-                    srcBitmap.height,
-                    Bitmap.Config.ARGB_8888,
-                )
-
-                val canvas = Canvas(processedBitmap)
-                val paint = Paint(Paint.ANTI_ALIAS_FLAG).apply {
-                    colorFilter = ColorMatrixColorFilter(colorMatrix)
-                }
-                canvas.drawBitmap(srcBitmap, 0f, 0f, paint)
-            } else {
-                // If TFLite was used, apply light polish pass
-                processedBitmap = srcBitmap.copy(Bitmap.Config.ARGB_8888, true)
+            // 3. Fallback / Standard ColorMatrix Pass (with Vibe / LUT matrix integration)
+            val colorMatrix = createColorMatrixForPlan(sceneTypeStr, evOffset)
+            if (vibePreset != VibePreset.NONE) {
+                val vibeMatrix = ImageEditor.createVibeAndroidColorMatrix(vibePreset)
+                colorMatrix.postConcat(vibeMatrix)
+                Log.i(tag, "Applied Vibe Preset ColorMatrix pass: ${vibePreset.displayName}")
             }
+
+            processedBitmap = Bitmap.createBitmap(
+                srcBitmap.width,
+                srcBitmap.height,
+                Bitmap.Config.ARGB_8888,
+            )
+
+            val canvas = Canvas(processedBitmap)
+            val paint = Paint(Paint.ANTI_ALIAS_FLAG).apply {
+                colorFilter = ColorMatrixColorFilter(colorMatrix)
+            }
+            canvas.drawBitmap(srcBitmap, 0f, 0f, paint)
 
             val finalBitmap = processedBitmap ?: srcBitmap
 
@@ -170,7 +174,7 @@ class AiProcessorWorker(
                 resolver.update(newUri, contentValues, null, null)
 
                 val executionTime = System.currentTimeMillis() - startTime
-                Log.i(tag, "L3 AI Processing finished in ${executionTime}ms (Used TFLite: $usedTfLite). Saved $fileName to MediaStore at $newUri")
+                Log.i(tag, "L3 AI Processing finished in ${executionTime}ms (Used TFLite: $usedTfLite, Vibe: ${vibePreset.displayName}). Saved $fileName to MediaStore at $newUri")
 
                 // 6. Enqueue CloudSyncWorker if Cloud Sync toggle is ON in Settings
                 val prefs = context.getSharedPreferences("lensora_prefs", Context.MODE_PRIVATE)

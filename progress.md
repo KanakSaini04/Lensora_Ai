@@ -190,7 +190,7 @@
   - Created `ObjectEraser.kt` in `com.lensora.ai.ui.studio` implementing LaMa AI inpainting pipeline with simulated background processing pass.
   - Updated `StudioScreen.kt` adding "Eraser" tool category button, interactive touch brush mask Canvas overlay, Process Eraser action, and loading spinner state.
 
-## Phase 16: Real LUT Engine (.cube Parser + AGSL)
+## Phase 16: Real LUT Engine (.cube Parser + AGSL) (100% COMPLETE)
 
 - [x] **Step 36: Real LUT Engine (.cube Parser + AGSL)**
   - Created Adobe 17x17x17 3D LUT asset `app/src/main/assets/luts/teal_orange.cube`.
@@ -198,3 +198,11 @@
   - Created `LutShader.kt` implementing AGSL 2D strip texture lookup shader (`REAL_3D_LUT_AGSL`) with trilinear blue-slice interpolation.
   - Updated `ImageEditor.kt` and `StudioScreen.kt` to apply the AGSL Teal & Orange LUT shader pass in real-time GPU rendering and exports.
   - Captured screenshot `ui_photos/studio_lut.png`.
+
+## Phase 17: Live Camera LUT Application
+
+- [x] **Step 37: Live Camera LUT Application**
+  - Updated `CameraTopBar.kt` with Vibe selector button cycling `NONE` -> `CINEMATIC` -> `LEICA` -> `ROYAL_GOLD` -> `NONE`.
+  - Updated `CameraScreen.kt` applying AGSL `LutShader` RenderEffect on live viewfinder matching active Vibe.
+  - Updated `AiProcessorWorker.kt` and `CameraController.kt` passing active `vibePreset` and applying color grading pass to captured photos.
+  - Captured screenshot `ui_photos/camera_lut.png`.

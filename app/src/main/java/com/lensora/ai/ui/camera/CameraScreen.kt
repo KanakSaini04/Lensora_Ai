@@ -74,11 +74,15 @@ import com.lensora.ai.ai.SceneClassifier
 import com.lensora.ai.camera.CameraController
 import com.lensora.ai.camera.CameraMode
 import com.lensora.ai.data.GalleryRepository
+import com.lensora.ai.ui.studio.ImageEditor
+import com.lensora.ai.ui.studio.LutShader
 import com.lensora.ai.ui.theme.CharcoalSurface
 import com.lensora.ai.ui.theme.ColorMutedGray
 import com.lensora.ai.ui.theme.ColorWhite
 import com.lensora.ai.ui.theme.PitchBlackBackground
 import com.lensora.ai.ui.theme.RoyalBlue
+import com.lensora.ai.ui.vibes.VibePreset
+import com.lensora.ai.ui.vibes.VibeState
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.isActive
@@ -215,6 +219,7 @@ fun CameraScreen(
                     cameraController.takePicture(
                         displayRotationDegrees = deviceRotationDegrees,
                         isRawEnabled = isRawEnabled && selectedMode == CameraMode.PRO,
+                        vibePreset = VibeState.selectedVibe.name,
                         onPhotoSaved = { uri, msg ->
                             recentPhotos = (listOf(uri) + recentPhotos).distinct().take(10)
                             Toast.makeText(context, msg, Toast.LENGTH_SHORT).show()
@@ -272,14 +277,24 @@ fun CameraScreen(
             }
         }
 
-        val activeRenderEffect = remember(selectedMode, isZebrasEnabled, isPeakingEnabled) {
-            if (selectedMode == CameraMode.PRO && Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
-                when {
-                    isZebrasEnabled -> AgslShaders.createZebrasEffect()
-                    isPeakingEnabled -> AgslShaders.createFocusPeakingEffect()
-                    else -> null
-                }
+        // Real-Time Viewfinder AGSL LUT Shader Pass
+        val cameraLutBitmap = remember(VibeState.selectedVibe) {
+            ImageEditor.getLutStripBitmap(context, VibeState.selectedVibe)
+        }
+
+        val cameraLutRenderEffect = remember(cameraLutBitmap) {
+            if (cameraLutBitmap != null && Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
+                LutShader.createLutRenderEffect(cameraLutBitmap, 17f)
             } else null
+        }
+
+        val activeRenderEffect = remember(selectedMode, isZebrasEnabled, isPeakingEnabled, cameraLutRenderEffect) {
+            when {
+                selectedMode == CameraMode.PRO && isZebrasEnabled && Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU -> AgslShaders.createZebrasEffect()
+                selectedMode == CameraMode.PRO && isPeakingEnabled && Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU -> AgslShaders.createFocusPeakingEffect()
+                cameraLutRenderEffect != null -> cameraLutRenderEffect
+                else -> null
+            }
         }
 
         Box(
@@ -287,7 +302,7 @@ fun CameraScreen(
                 .fillMaxSize()
                 .background(PitchBlackBackground),
         ) {
-            // Edge-to-edge Live Camera Viewfinder (Mirrored horizontally for front camera + AGSL RenderEffect)
+            // Edge-to-edge Live Camera Viewfinder (Mirrored horizontally for front camera + AGSL LUT Shader)
             CameraPreview(
                 cameraController = cameraController,
                 modifier = Modifier
@@ -379,7 +394,7 @@ fun CameraScreen(
                     },
             )
 
-            // Transparent Camera Top Bar Controls
+            // Transparent Camera Top Bar Controls with Vibe Preset Selector
             CameraTopBar(
                 modifier = Modifier.align(Alignment.TopCenter),
                 flashMode = flashMode,
@@ -400,6 +415,15 @@ fun CameraScreen(
                     timerMode = timerMode.next()
                     Toast.makeText(context, "Timer: ${timerMode.displayName}", Toast.LENGTH_SHORT).show()
                 },
+                onVibeClick = {
+                    val nextVibe = when (VibeState.selectedVibe) {
+                        VibePreset.NONE -> VibePreset.CINEMATIC
+                        VibePreset.CINEMATIC -> VibePreset.LEICA
+                        else -> VibePreset.NONE
+                    }
+                    VibeState.selectedVibe = nextVibe
+                    Toast.makeText(context, "Vibe LUT: ${nextVibe.displayName}", Toast.LENGTH_SHORT).show()
+                },
                 onGridClick = {
                     isGridVisible = !isGridVisible
                     cameraPrefs.edit().putBoolean("grid_enabled", isGridVisible).apply()
@@ -414,29 +438,41 @@ fun CameraScreen(
                 },
             )
 
-            // Frosted Glass AI Badge / Recording Timer Overlay at Top Center
-            if (isRecordingVideo) {
-                val mins = recordingSeconds / 60
-                val secs = recordingSeconds % 60
-                val timerText = String.format(Locale.US, "\uD83D\uDD34 REC %02d:%02d", mins, secs)
-                AiBadge(
-                    modifier = Modifier
-                        .align(Alignment.TopCenter)
-                        .padding(top = 56.dp),
-                    statusText = timerText,
-                )
-            } else {
-                val badgeText = when {
-                    customModeName != null -> "\u2728 Mode: $customModeName"
-                    selectedMode == CameraMode.CINEMATIC -> "\uD83C\uDFAC 24fps 2.39:1 Cinematic"
-                    else -> aiBadgeText
+            // Frosted Glass AI Badge & Quick Vibe Selector Pill Overlay at Top Center
+            Row(
+                modifier = Modifier
+                    .align(Alignment.TopCenter)
+                    .padding(top = 56.dp),
+                horizontalArrangement = Arrangement.spacedBy(8.dp),
+                verticalAlignment = Alignment.CenterVertically,
+            ) {
+                if (isRecordingVideo) {
+                    val mins = recordingSeconds / 60
+                    val secs = recordingSeconds % 60
+                    val timerText = String.format(Locale.US, "\uD83D\uDD34 REC %02d:%02d", mins, secs)
+                    AiBadge(statusText = timerText)
+                } else {
+                    val badgeText = when {
+                        customModeName != null -> "\u2728 Mode: $customModeName"
+                        selectedMode == CameraMode.CINEMATIC -> "\uD83C\uDFAC 24fps 2.39:1 Cinematic"
+                        else -> aiBadgeText
+                    }
+                    AiBadge(statusText = badgeText)
+
+                    // Quick Vibe Selector Pill
+                    VibePill(
+                        selectedVibe = VibeState.selectedVibe,
+                        onClick = {
+                            val nextVibe = when (VibeState.selectedVibe) {
+                                VibePreset.NONE -> VibePreset.CINEMATIC
+                                VibePreset.CINEMATIC -> VibePreset.LEICA
+                                else -> VibePreset.NONE
+                            }
+                            VibeState.selectedVibe = nextVibe
+                            Toast.makeText(context, "Vibe LUT: ${nextVibe.displayName}", Toast.LENGTH_SHORT).show()
+                        },
+                    )
                 }
-                AiBadge(
-                    modifier = Modifier
-                        .align(Alignment.TopCenter)
-                        .padding(top = 56.dp),
-                    statusText = badgeText,
-                )
             }
 
             // Bottom Overlays: Pro Controls (if PRO) + Zoom Pills + Mode Carousel + Shutter & Thumbnail Controls
@@ -612,6 +648,7 @@ fun CameraScreen(
                                         cameraController.takePicture(
                                             displayRotationDegrees = deviceRotationDegrees,
                                             isRawEnabled = isRawEnabled && selectedMode == CameraMode.PRO,
+                                            vibePreset = VibeState.selectedVibe.name,
                                             onPhotoSaved = { uri, msg ->
                                                 recentPhotos = (listOf(uri) + recentPhotos).distinct().take(10)
                                                 Toast.makeText(context, msg, Toast.LENGTH_SHORT).show()
@@ -818,6 +855,37 @@ private fun AiBadge(
     ) {
         Text(
             text = statusText,
+            color = ColorWhite,
+            fontSize = 12.sp,
+            fontWeight = FontWeight.Bold,
+        )
+    }
+}
+
+@Composable
+private fun VibePill(
+    selectedVibe: VibePreset,
+    onClick: () -> Unit,
+    modifier: Modifier = Modifier,
+) {
+    val (label, containerColor) = when (selectedVibe) {
+        VibePreset.NONE -> "\uD83C\uDFA8 Vibe: None" to CharcoalSurface.copy(alpha = 0.75f)
+        VibePreset.CINEMATIC -> "\uD83C\uDFAC Teal & Orange" to RoyalBlue.copy(alpha = 0.85f)
+        VibePreset.LEICA -> "\uD83D\uDCF7 Leica B&W" to Color(0xFF333333).copy(alpha = 0.85f)
+        else -> "\uD83C\uDFA8 ${selectedVibe.displayName}" to RoyalBlue.copy(alpha = 0.85f)
+    }
+
+    Box(
+        modifier = modifier
+            .clip(CircleShape)
+            .background(containerColor)
+            .border(width = 1.dp, color = ColorWhite.copy(alpha = 0.35f), shape = CircleShape)
+            .clickable { onClick() }
+            .padding(horizontal = 12.dp, vertical = 6.dp),
+        contentAlignment = Alignment.Center,
+    ) {
+        Text(
+            text = label,
             color = ColorWhite,
             fontSize = 12.sp,
             fontWeight = FontWeight.Bold,
