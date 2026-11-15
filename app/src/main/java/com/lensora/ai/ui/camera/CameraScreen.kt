@@ -39,8 +39,10 @@ import androidx.compose.material.icons.outlined.PhotoCamera
 import androidx.compose.material.icons.outlined.PhotoLibrary
 import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonDefaults
+import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
+import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
@@ -309,23 +311,38 @@ fun CameraScreen(
 
         val cameraLutRenderEffect = remember(cameraLutBitmap) {
             if (cameraLutBitmap != null && Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
-                LutShader.createLutRenderEffect(cameraLutBitmap, 17f)
+                try {
+                    LutShader.createLutRenderEffect(cameraLutBitmap, 17f)
+                } catch (t: Throwable) {
+                    Log.w("CameraScreen", "Failed to create LutRenderEffect: ${t.localizedMessage}")
+                    null
+                }
             } else null
         }
 
         val filmGrainRenderEffect = remember(isGrainEnabled) {
             if (isGrainEnabled && Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
-                FilmGrainShader.createFilmGrainEffect(1080f, 2400f)
+                try {
+                    FilmGrainShader.createFilmGrainEffect(1080f, 2400f)
+                } catch (t: Throwable) {
+                    Log.w("CameraScreen", "Failed to create FilmGrainEffect: ${t.localizedMessage}")
+                    null
+                }
             } else null
         }
 
         val activeRenderEffect = remember(selectedMode, isZebrasEnabled, isPeakingEnabled, cameraLutRenderEffect, filmGrainRenderEffect) {
-            when {
-                selectedMode == CameraMode.PRO && isZebrasEnabled && Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU -> AgslShaders.createZebrasEffect()
-                selectedMode == CameraMode.PRO && isPeakingEnabled && Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU -> AgslShaders.createFocusPeakingEffect()
-                filmGrainRenderEffect != null -> filmGrainRenderEffect
-                cameraLutRenderEffect != null -> cameraLutRenderEffect
-                else -> null
+            try {
+                when {
+                    selectedMode == CameraMode.PRO && isZebrasEnabled && Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU -> AgslShaders.createZebrasEffect()
+                    selectedMode == CameraMode.PRO && isPeakingEnabled && Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU -> AgslShaders.createFocusPeakingEffect()
+                    filmGrainRenderEffect != null -> filmGrainRenderEffect
+                    cameraLutRenderEffect != null -> cameraLutRenderEffect
+                    else -> null
+                }
+            } catch (t: Throwable) {
+                Log.w("CameraScreen", "AGSL RenderEffect creation failed (${t.localizedMessage}). Safe fallback to raw preview.", t)
+                null
             }
         }
 
@@ -342,7 +359,11 @@ fun CameraScreen(
                     .graphicsLayer {
                         scaleX = if (cameraController.isFrontCamera) -1f else 1f
                         if (activeRenderEffect != null && Build.VERSION.SDK_INT >= Build.VERSION_CODES.S) {
-                            renderEffect = activeRenderEffect.asComposeRenderEffect()
+                            try {
+                                renderEffect = activeRenderEffect.asComposeRenderEffect()
+                            } catch (t: Throwable) {
+                                Log.w("CameraScreen", "Failed to apply graphicsLayer renderEffect: ${t.localizedMessage}")
+                            }
                         }
                     },
                 onTextureViewCreated = { view ->
