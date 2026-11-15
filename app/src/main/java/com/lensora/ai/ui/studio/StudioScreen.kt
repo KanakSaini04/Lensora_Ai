@@ -31,8 +31,6 @@ import androidx.compose.material.icons.outlined.Palette
 import androidx.compose.material.icons.outlined.WbSunny
 import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonDefaults
-import androidx.compose.material3.Card
-import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
@@ -54,6 +52,7 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.graphics.ColorFilter
 import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalContext
@@ -81,6 +80,11 @@ fun StudioScreen() {
     var exposureValue by remember { mutableFloatStateOf(0.0f) }
     var contrastValue by remember { mutableFloatStateOf(0.0f) }
 
+    // Real-time GPU ColorFilter matrix derived from Exposure & Contrast sliders
+    val realTimeColorFilter = remember(exposureValue, contrastValue) {
+        ColorFilter.colorMatrix(ImageEditor.createColorMatrix(exposureValue, contrastValue))
+    }
+
     LaunchedEffect(Unit) {
         photoUris = galleryRepository.getAllPhotos()
     }
@@ -96,7 +100,11 @@ fun StudioScreen() {
                     )
                 },
                 actions = {
-                    IconButton(onClick = { Toast.makeText(context, "Undo Pass", Toast.LENGTH_SHORT).show() }) {
+                    IconButton(onClick = {
+                        exposureValue = 0.0f
+                        contrastValue = 0.0f
+                        Toast.makeText(context, "Reset Edit Pass", Toast.LENGTH_SHORT).show()
+                    }) {
                         Icon(imageVector = Icons.AutoMirrored.Outlined.Undo, contentDescription = "Undo", tint = ColorWhite)
                     }
                     IconButton(onClick = { Toast.makeText(context, "Redo Pass", Toast.LENGTH_SHORT).show() }) {
@@ -126,7 +134,7 @@ fun StudioScreen() {
                 .padding(innerPadding)
                 .background(PitchBlackBackground),
         ) {
-            // 1. TOP SECTION (~50% Height): Photo Preview Canvas Area
+            // 1. TOP SECTION (~50% Height): Photo Preview Canvas Area with Real-Time GPU ColorFilter
             Box(
                 modifier = Modifier
                     .fillMaxWidth()
@@ -139,6 +147,7 @@ fun StudioScreen() {
                         model = photoUris[selectedPhotoIndex],
                         contentDescription = "Studio Active Image",
                         contentScale = ContentScale.Fit,
+                        colorFilter = realTimeColorFilter,
                         modifier = Modifier.fillMaxSize(),
                     )
                 } else {
@@ -282,7 +291,7 @@ fun StudioScreen() {
 
                 Spacer(modifier = Modifier.height(12.dp))
 
-                // Interactive Sliders (Exposure & Contrast)
+                // Interactive Sliders (Exposure & Contrast) with 60fps GPU preview updates
                 Column(
                     verticalArrangement = Arrangement.spacedBy(4.dp),
                 ) {
