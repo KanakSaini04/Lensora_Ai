@@ -4,7 +4,7 @@
 
 **Lensora_Ai** (`com.lensora.ai`) is an AI-first computational camera application built on Android 16 (API 36) using Jetpack Compose, Material 3 (Obsidian Royal Theme), Hilt dependency injection, and a pure **Camera2 L0 Safe Core HAL Engine** (strictly zero CameraX dependencies).
 
-This report presents a complete end-to-end audit of all implemented components, hardware capability probe results, L0 atomic capture journals, UI overlays, camera hardware zoom control engines, tap-to-focus metering, flash controls, mode selection state wiring, thermal/storage guards, L1 Light AI Scene Classifier, L2 AI Planner Foundation, L3/L4 WorkManager Processing Queue & Quality Validator, Pinterest-Style Masonry Gallery Tab UI, Settings Tab & AI Center Control Room, Vibes Tab & Color Presets UI, Studio Tab UI Skeleton, L3 Real ColorMatrix Computational Engine, GitHub DLC Model Downloader, Studio Real-Time Image Editing, Studio Export Pipeline, Vibes to Studio Color Science Integration, L3 TFLite AI Inference Engine, Google Drive Cloud Sync Architecture, Auto-Purge & Storage Cleanup Engine, Camera UI State Persistence, Real TFLite Model & Manifest Integration, Pro Mode HUD & Manual Controls, Video Recording Engine, RAW / DNG Capture Pipeline, and live device/emulator verification results.
+This report presents a complete end-to-end audit of all implemented components, hardware capability probe results, L0 atomic capture journals, UI overlays, camera hardware zoom control engines, tap-to-focus metering, flash controls, mode selection state wiring, thermal/storage guards, L1 Light AI Scene Classifier, L2 AI Planner Foundation, L3/L4 WorkManager Processing Queue & Quality Validator, Pinterest-Style Masonry Gallery Tab UI, Settings Tab & AI Center Control Room, Vibes Tab & Color Presets UI, Studio Tab UI Skeleton, L3 Real ColorMatrix Computational Engine, GitHub DLC Model Downloader, Studio Real-Time Image Editing, Studio Export Pipeline, Vibes to Studio Color Science Integration, L3 TFLite AI Inference Engine, Google Drive Cloud Sync Architecture, Auto-Purge & Storage Cleanup Engine, Camera UI State Persistence, Real TFLite Model & Manifest Integration, Pro Mode HUD & Manual Controls, Video Recording Engine, RAW / DNG Capture Pipeline, Camera Flip & Shutter Timer, and live device/emulator verification results.
 
 ---
 
@@ -403,7 +403,21 @@ The **Probe Lab** audits camera hardware capabilities at runtime without opening
 
 ---
 
-## 31. Verification & Crash Audit Results
+## 31. Phase 11, Step 31: Camera Flip & Shutter Timer
+
+1. **`CameraController.kt` Camera Switching**:
+   - Implemented `switchCamera` dynamically cycling between `LENS_FACING_BACK` and `LENS_FACING_FRONT` camera IDs.
+   - Tracks `isFrontCamera` boolean state.
+2. **`CameraTopBar.kt` Timer Cycling**:
+   - Implemented `TimerMode` cycling (`OFF` -> `3s` -> `10s` -> `OFF`) updating top bar icons and state badges.
+3. **`CameraScreen.kt` Flip & Countdown UI**:
+   - Added Camera Flip button (`Icons.Outlined.Cameraswitch`) beside the shutter control.
+   - Mirrored front camera preview horizontally (`graphicsLayer { scaleX = -1f }`).
+   - Implemented large center countdown overlay ("3... 2... 1...") triggering photo capture upon hitting 0.
+
+---
+
+## 32. Verification & Crash Audit Results
 
 - **Build Status**: `./gradlew assembleDebug` & `./gradlew installDebug` - **100% SUCCESS**.
 - **Static Code Analysis**: Analyzed all Kotlin source files in `app/src/main/java` - **0 Errors, 0 Warnings**.

@@ -13,6 +13,8 @@ import androidx.compose.material.icons.outlined.GridOff
 import androidx.compose.material.icons.outlined.GridOn
 import androidx.compose.material.icons.outlined.Settings
 import androidx.compose.material.icons.outlined.Timer
+import androidx.compose.material.icons.outlined.Timer10
+import androidx.compose.material.icons.outlined.Timer3
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.runtime.Composable
@@ -24,11 +26,24 @@ import com.lensora.ai.ui.theme.ColorMutedGray
 import com.lensora.ai.ui.theme.ColorWhite
 import com.lensora.ai.ui.theme.RoyalBlue
 
+enum class TimerMode(val seconds: Int, val displayName: String) {
+    OFF(0, "Off"),
+    SEC_3(3, "3s"),
+    SEC_10(10, "10s");
+
+    fun next(): TimerMode = when (this) {
+        OFF -> SEC_3
+        SEC_3 -> SEC_10
+        SEC_10 -> OFF
+    }
+}
+
 @Composable
 fun CameraTopBar(
     modifier: Modifier = Modifier,
     flashMode: CameraController.FlashMode = CameraController.FlashMode.AUTO,
     isGridVisible: Boolean = false,
+    timerMode: TimerMode = TimerMode.OFF,
     onFlashClick: () -> Unit = {},
     onTimerClick: () -> Unit = {},
     onGridClick: () -> Unit = {},
@@ -58,10 +73,15 @@ fun CameraTopBar(
 
         // Timer Button
         IconButton(onClick = onTimerClick) {
+            val (timerIcon, timerTint) = when (timerMode) {
+                TimerMode.OFF -> Icons.Outlined.Timer to ColorMutedGray
+                TimerMode.SEC_3 -> Icons.Outlined.Timer3 to RoyalBlue
+                TimerMode.SEC_10 -> Icons.Outlined.Timer10 to RoyalBlue
+            }
             Icon(
-                imageVector = Icons.Outlined.Timer,
-                contentDescription = "Timer Toggle",
-                tint = ColorWhite,
+                imageVector = timerIcon,
+                contentDescription = "Timer Mode: ${timerMode.displayName}",
+                tint = timerTint,
             )
         }
 

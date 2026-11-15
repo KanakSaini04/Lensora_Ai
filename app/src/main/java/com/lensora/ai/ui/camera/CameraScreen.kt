@@ -34,6 +34,7 @@ import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.outlined.Cameraswitch
 import androidx.compose.material.icons.outlined.PhotoCamera
 import androidx.compose.material.icons.outlined.PhotoLibrary
 import androidx.compose.material3.Button
@@ -56,6 +57,7 @@ import androidx.compose.ui.draw.clip
 import androidx.compose.ui.geometry.Offset
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.drawscope.Stroke
+import androidx.compose.ui.graphics.graphicsLayer
 import androidx.compose.ui.input.pointer.pointerInput
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalContext
@@ -143,6 +145,10 @@ fun CameraScreen(
         var proShutterNs by remember { mutableStateOf(4_000_000L) } // 1/250s
         var isRawEnabled by remember { mutableStateOf(cameraPrefs.getBoolean("raw_dng_enabled", false)) }
 
+        // Timer State & Countdown
+        var timerMode by remember { mutableStateOf(TimerMode.OFF) }
+        var countdownRemaining by remember { mutableIntStateOf(0) }
+
         // Video Recording State
         var isRecordingVideo by remember { mutableStateOf(false) }
         var recordingSeconds by remember { mutableIntStateOf(0) }
@@ -172,6 +178,43 @@ fun CameraScreen(
                 while (isActive && isRecordingVideo) {
                     delay(1000)
                     recordingSeconds++
+                }
+            }
+        }
+
+        val display = if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.R) {
+            context.display
+        } else {
+            @Suppress("DEPRECATION")
+            (context.getSystemService(Context.WINDOW_SERVICE) as? WindowManager)?.defaultDisplay
+        }
+
+        val deviceRotationDegrees = when (display?.rotation) {
+            Surface.ROTATION_90 -> 90
+            Surface.ROTATION_180 -> 180
+            Surface.ROTATION_270 -> 270
+            else -> 0
+        }
+
+        // Shutter Timer Countdown Tick Effect
+        LaunchedEffect(countdownRemaining) {
+            if (countdownRemaining > 0) {
+                delay(1000)
+                val next = countdownRemaining - 1
+                countdownRemaining = next
+                if (next == 0) {
+                    cameraController.takePicture(
+                        displayRotationDegrees = deviceRotationDegrees,
+                        isRawEnabled = isRawEnabled && selectedMode == CameraMode.PRO,
+                        onPhotoSaved = { uri, msg ->
+                            recentPhotos = (listOf(uri) + recentPhotos).distinct().take(10)
+                            Toast.makeText(context, msg, Toast.LENGTH_SHORT).show()
+                        },
+                        onError = { err ->
+                            Toast.makeText(context, err, Toast.LENGTH_SHORT).show()
+                        },
+                    )
+                    timerMode = TimerMode.OFF
                 }
             }
         }
@@ -220,29 +263,19 @@ fun CameraScreen(
             }
         }
 
-        val display = if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.R) {
-            context.display
-        } else {
-            @Suppress("DEPRECATION")
-            (context.getSystemService(Context.WINDOW_SERVICE) as? WindowManager)?.defaultDisplay
-        }
-
-        val deviceRotationDegrees = when (display?.rotation) {
-            Surface.ROTATION_90 -> 90
-            Surface.ROTATION_180 -> 180
-            Surface.ROTATION_270 -> 270
-            else -> 0
-        }
-
         Box(
             modifier = Modifier
                 .fillMaxSize()
                 .background(PitchBlackBackground),
         ) {
-            // Edge-to-edge Live Camera Viewfinder
+            // Edge-to-edge Live Camera Viewfinder (Mirrored horizontally for front camera)
             CameraPreview(
                 cameraController = cameraController,
-                modifier = Modifier.fillMaxSize(),
+                modifier = Modifier
+                    .fillMaxSize()
+                    .graphicsLayer {
+                        scaleX = if (cameraController.isFrontCamera) -1f else 1f
+                    },
                 onTextureViewCreated = { view ->
                     textureViewRef = view
                 },
@@ -251,6 +284,21 @@ fun CameraScreen(
             // 3x3 Canvas Grid Overlay
             if (isGridVisible) {
                 GridOverlay(modifier = Modifier.fillMaxSize())
+            }
+
+            // Large Center Shutter Timer Countdown Overlay (3... 2... 1...)
+            if (countdownRemaining > 0) {
+                Box(
+                    modifier = Modifier.fillMaxSize(),
+                    contentAlignment = Alignment.Center,
+                ) {
+                    Text(
+                        text = "$countdownRemaining",
+                        color = ColorWhite,
+                        fontSize = 96.sp,
+                        fontWeight = FontWeight.Bold,
+                    )
+                }
             }
 
             // Animated Focus Ring Overlay
@@ -289,6 +337,7 @@ fun CameraScreen(
                 modifier = Modifier.align(Alignment.TopCenter),
                 flashMode = flashMode,
                 isGridVisible = isGridVisible,
+                timerMode = timerMode,
                 onFlashClick = {
                     val nextFlash = when (flashMode) {
                         CameraController.FlashMode.OFF -> CameraController.FlashMode.ON
@@ -301,7 +350,8 @@ fun CameraScreen(
                     Toast.makeText(context, "Flash: ${nextFlash.name}", Toast.LENGTH_SHORT).show()
                 },
                 onTimerClick = {
-                    Toast.makeText(context, "Timer: Off", Toast.LENGTH_SHORT).show()
+                    timerMode = timerMode.next()
+                    Toast.makeText(context, "Timer: ${timerMode.displayName}", Toast.LENGTH_SHORT).show()
                 },
                 onGridClick = {
                     isGridVisible = !isGridVisible
@@ -405,7 +455,7 @@ fun CameraScreen(
                         .padding(bottom = 12.dp),
                 )
 
-                // Shutter Controls Row
+                // Shutter Controls Row (Gallery Thumbnail + Shutter Button + Camera Flip Button)
                 Row(
                     modifier = Modifier
                         .fillMaxWidth()
@@ -484,23 +534,54 @@ fun CameraScreen(
                                         )
                                     }
                                 } else {
-                                    cameraController.takePicture(
-                                        displayRotationDegrees = deviceRotationDegrees,
-                                        isRawEnabled = isRawEnabled && selectedMode == CameraMode.PRO,
-                                        onPhotoSaved = { uri, msg ->
-                                            recentPhotos = (listOf(uri) + recentPhotos).distinct().take(10)
-                                            Toast.makeText(context, msg, Toast.LENGTH_SHORT).show()
-                                        },
-                                        onError = { err ->
-                                            Toast.makeText(context, err, Toast.LENGTH_SHORT).show()
-                                        },
-                                    )
+                                    if (timerMode != TimerMode.OFF && countdownRemaining == 0) {
+                                        countdownRemaining = timerMode.seconds
+                                    } else if (countdownRemaining == 0) {
+                                        cameraController.takePicture(
+                                            displayRotationDegrees = deviceRotationDegrees,
+                                            isRawEnabled = isRawEnabled && selectedMode == CameraMode.PRO,
+                                            onPhotoSaved = { uri, msg ->
+                                                recentPhotos = (listOf(uri) + recentPhotos).distinct().take(10)
+                                                Toast.makeText(context, msg, Toast.LENGTH_SHORT).show()
+                                            },
+                                            onError = { err ->
+                                                Toast.makeText(context, err, Toast.LENGTH_SHORT).show()
+                                            },
+                                        )
+                                    }
                                 }
                             },
                     )
 
-                    // Placeholder Spacer for balanced layout
-                    Spacer(modifier = Modifier.size(52.dp))
+                    // Camera Flip Button (Front / Back camera switch)
+                    Box(
+                        modifier = Modifier
+                            .size(52.dp)
+                            .clip(CircleShape)
+                            .background(CharcoalSurface)
+                            .border(
+                                width = 2.dp,
+                                color = ColorWhite,
+                                shape = CircleShape,
+                            )
+                            .clickable {
+                                if (!isRecordingVideo) {
+                                    val textureView = textureViewRef
+                                    val surfaceTexture = textureView?.surfaceTexture
+                                    if (textureView != null && surfaceTexture != null) {
+                                        cameraController.switchCamera(surfaceTexture, textureView.width, textureView.height)
+                                    }
+                                }
+                            },
+                        contentAlignment = Alignment.Center,
+                    ) {
+                        Icon(
+                            imageVector = Icons.Outlined.Cameraswitch,
+                            contentDescription = "Switch Camera Lens Facing",
+                            tint = ColorWhite,
+                            modifier = Modifier.size(26.dp),
+                        )
+                    }
                 }
             }
         }
