@@ -110,15 +110,28 @@ fun CameraScreen(
         val galleryRepository = remember { GalleryRepository(context) }
         val sceneClassifier = remember { SceneClassifier(context) }
         val aiPlanner = remember { AiPlanner() }
+        val cameraPrefs = remember { context.getSharedPreferences("lensora_camera_prefs", Context.MODE_PRIVATE) }
 
         var recentPhotos by remember { mutableStateOf<List<Uri>>(emptyList()) }
-        var selectedMode by remember { mutableStateOf(CameraMode.PHOTO) }
+
+        // Persisted UI preferences restoration
+        var selectedMode by remember {
+            val modeName = cameraPrefs.getString("camera_mode", CameraMode.PHOTO.name)
+            mutableStateOf(try { CameraMode.valueOf(modeName ?: "PHOTO") } catch (e: Exception) { CameraMode.PHOTO })
+        }
         var selectedZoom by remember { mutableStateOf("1x") }
         var currentZoomRatio by remember { mutableFloatStateOf(1.0f) }
 
+        // Pro Mode Manual Exposure State
+        var proIsoValue by remember { mutableStateOf(400) }
+        var proShutterNs by remember { mutableStateOf(4_000_000L) } // 1/250s
+
         var focusTapOffset by remember { mutableStateOf<Offset?>(null) }
-        var isGridVisible by remember { mutableStateOf(false) }
-        var flashMode by remember { mutableStateOf(CameraController.FlashMode.AUTO) }
+        var isGridVisible by remember { mutableStateOf(cameraPrefs.getBoolean("grid_enabled", false)) }
+        var flashMode by remember {
+            val flashName = cameraPrefs.getString("flash_mode", CameraController.FlashMode.AUTO.name)
+            mutableStateOf(try { CameraController.FlashMode.valueOf(flashName ?: "AUTO") } catch (e: Exception) { CameraController.FlashMode.AUTO })
+        }
         var aiBadgeText by remember { mutableStateOf("\u2728 AI: Auto") }
         var textureViewRef by remember { mutableStateOf<TextureView?>(null) }
 
@@ -132,6 +145,12 @@ fun CameraScreen(
         LaunchedEffect(hasCameraPermission) {
             if (hasCameraPermission) {
                 recentPhotos = galleryRepository.getRecentPhotos(limit = 10)
+                // Apply restored persistent settings to cameraController
+                cameraController.setFlashMode(flashMode)
+                cameraController.setCameraMode(selectedMode)
+                if (selectedMode == CameraMode.PRO) {
+                    cameraController.setManualExposure(proIsoValue, proShutterNs)
+                }
             }
         }
 
@@ -153,7 +172,9 @@ fun CameraScreen(
                                 val processingPlan = aiPlanner.createPlan(sceneType)
                                 withContext(Dispatchers.Main) {
                                     aiBadgeText = label
-                                    cameraController.applyProcessingPlan(processingPlan)
+                                    if (selectedMode != CameraMode.PRO) {
+                                        cameraController.applyProcessingPlan(processingPlan)
+                                    }
                                 }
                             }
                         }
@@ -241,6 +262,7 @@ fun CameraScreen(
                     }
                     flashMode = nextFlash
                     cameraController.setFlashMode(nextFlash)
+                    cameraPrefs.edit().putString("flash_mode", nextFlash.name).apply()
                     Toast.makeText(context, "Flash: ${nextFlash.name}", Toast.LENGTH_SHORT).show()
                 },
                 onTimerClick = {
@@ -248,6 +270,7 @@ fun CameraScreen(
                 },
                 onGridClick = {
                     isGridVisible = !isGridVisible
+                    cameraPrefs.edit().putBoolean("grid_enabled", isGridVisible).apply()
                     Toast.makeText(
                         context,
                         if (isGridVisible) "Grid Enabled" else "Grid Disabled",
@@ -267,7 +290,7 @@ fun CameraScreen(
                 statusText = aiBadgeText,
             )
 
-            // Bottom Overlays: Zoom Pills + Mode Carousel + Shutter & Thumbnail Controls
+            // Bottom Overlays: Pro Controls (if PRO) + Zoom Pills + Mode Carousel + Shutter & Thumbnail Controls
             Column(
                 modifier = Modifier
                     .align(Alignment.BottomCenter)
@@ -275,6 +298,23 @@ fun CameraScreen(
                     .padding(bottom = 24.dp),
                 horizontalAlignment = Alignment.CenterHorizontally,
             ) {
+                // Pro Mode HUD Controls (Only visible when PRO mode is selected)
+                if (selectedMode == CameraMode.PRO) {
+                    ProModeControls(
+                        isoValue = proIsoValue,
+                        shutterSpeedNs = proShutterNs,
+                        onIsoChanged = { iso ->
+                            proIsoValue = iso
+                            cameraController.setManualExposure(iso, proShutterNs)
+                        },
+                        onShutterSpeedChanged = { shutterNs ->
+                            proShutterNs = shutterNs
+                            cameraController.setManualExposure(proIsoValue, shutterNs)
+                        },
+                        modifier = Modifier.padding(bottom = 6.dp),
+                    )
+                }
+
                 // Zoom Pills Container (0.6x, 1x, 2x, 3x)
                 ZoomPills(
                     selectedZoom = selectedZoom,
@@ -299,6 +339,10 @@ fun CameraScreen(
                     onModeSelected = { mode ->
                         selectedMode = mode
                         cameraController.setCameraMode(mode)
+                        cameraPrefs.edit().putString("camera_mode", mode.name).apply()
+                        if (mode == CameraMode.PRO) {
+                            cameraController.setManualExposure(proIsoValue, proShutterNs)
+                        }
                     },
                     modifier = Modifier
                         .fillMaxWidth()

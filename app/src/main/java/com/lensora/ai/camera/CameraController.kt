@@ -317,26 +317,47 @@ class CameraController(
         try {
             when (mode) {
                 CameraMode.AI_AUTO -> {
+                    builder.set(CaptureRequest.CONTROL_AE_MODE, CaptureRequest.CONTROL_AE_MODE_ON)
                     builder.set(CaptureRequest.CONTROL_MODE, CaptureRequest.CONTROL_MODE_AUTO)
                     builder.set(CaptureRequest.CONTROL_SCENE_MODE, CaptureRequest.CONTROL_SCENE_MODE_DISABLED)
                 }
                 CameraMode.PHOTO -> {
+                    builder.set(CaptureRequest.CONTROL_AE_MODE, CaptureRequest.CONTROL_AE_MODE_ON)
                     builder.set(CaptureRequest.CONTROL_MODE, CaptureRequest.CONTROL_MODE_AUTO)
                 }
                 CameraMode.PORTRAIT -> {
+                    builder.set(CaptureRequest.CONTROL_AE_MODE, CaptureRequest.CONTROL_AE_MODE_ON)
                     builder.set(CaptureRequest.CONTROL_MODE, CaptureRequest.CONTROL_MODE_AUTO)
                     builder.set(CaptureRequest.CONTROL_SCENE_MODE, CaptureRequest.CONTROL_SCENE_MODE_PORTRAIT)
                 }
                 CameraMode.VIDEO -> {
+                    builder.set(CaptureRequest.CONTROL_AE_MODE, CaptureRequest.CONTROL_AE_MODE_ON)
                     builder.set(CaptureRequest.CONTROL_MODE, CaptureRequest.CONTROL_MODE_AUTO)
                 }
                 CameraMode.PRO -> {
+                    builder.set(CaptureRequest.CONTROL_AE_MODE, CaptureRequest.CONTROL_AE_MODE_OFF)
                     builder.set(CaptureRequest.CONTROL_MODE, CaptureRequest.CONTROL_MODE_OFF)
                 }
             }
             session.setRepeatingRequest(builder.build(), null, backgroundHandler)
         } catch (e: Exception) {
             Log.e(tag, "Error setting camera mode ${mode.name}", e)
+        }
+    }
+
+    fun setManualExposure(iso: Int, shutterNs: Long) {
+        try {
+            val builder = previewRequestBuilder ?: return
+            val session = captureSession ?: return
+
+            builder.set(CaptureRequest.CONTROL_AE_MODE, CaptureRequest.CONTROL_AE_MODE_OFF)
+            builder.set(CaptureRequest.SENSOR_SENSITIVITY, iso)
+            builder.set(CaptureRequest.SENSOR_EXPOSURE_TIME, shutterNs)
+
+            session.setRepeatingRequest(builder.build(), null, backgroundHandler)
+            Log.i(tag, "Applied Pro Mode Manual Exposure: ISO=$iso, Shutter=${shutterNs}ns (${shutterNs / 1_000_000}ms)")
+        } catch (e: Exception) {
+            Log.w(tag, "Manual exposure setting failed or unsupported on current HAL: ${e.localizedMessage}")
         }
     }
 
