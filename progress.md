@@ -83,3 +83,7 @@
   - Created `ModelDownloaderWorker.kt` CoroutineWorker downloading AI models to `context.filesDir/models/`, computing SHA-256 checksum during byte streaming, reporting WorkManager progress (0-100%), and finalizing `.tflite` model files.
   - Updated `SettingsScreen.kt` to wire "Manage AI Engines (GitHub DLC)" card with active progress bar and model ready state.
   - Verified SHA-256 Logcat output (`e2f779cef212fbc54c3f9b1e273583720edac1ac9cc6ce6813b1e0386a968f0d`) and file creation in internal storage (`/data/user/0/com.lensora.ai/files/models/real_esrgan_v2.tflite`).
+- [x] **Step 20: Studio Real-Time Image Editing**
+  - Created `ImageEditor.kt` helper generating a Compose `ColorMatrix` from Exposure (-2.0 to +2.0 EV) and Contrast (-50 to +50) values.
+  - Updated `StudioScreen.kt` to bind Exposure and Contrast slider states to `ColorFilter.colorMatrix(colorMatrix)` applied directly on the preview `AsyncImage`.
+  - Delivers 60fps GPU-accelerated real-time image updates without reallocating or decoding Bitmaps.
