@@ -1,10 +1,10 @@
-# Lensora_Ai Comprehensive Architecture & Final Project Audit Report
+# Lensora_Ai Comprehensive Architecture & Final Polish Report
 
 ## Executive Summary
 
 **Lensora_Ai** (`com.lensora.ai`) is an AI-first computational camera application built on Android 16 (API 36) using Jetpack Compose, Material 3 (Obsidian Royal Theme), Hilt dependency injection, and a pure **Camera2 L0 Safe Core HAL Engine** (strictly zero CameraX dependencies).
 
-This report presents a complete, end-to-end audit of all implemented components, hardware capability probe results, L0 atomic capture journals, UI overlays, camera hardware zoom control engines, tap-to-focus metering, flash controls, mode selection state wiring, thermal/storage guards, L1 Light AI Scene Classifier, L2 AI Planner Foundation, L3/L4 WorkManager Processing Queue & Quality Validator, Pinterest-Style Masonry Gallery Tab UI, Settings Tab & AI Center Control Room, Vibes Tab & Color Presets UI, Studio Tab UI Skeleton, L3 Real ColorMatrix Computational Engine, GitHub DLC Model Downloader, Studio Real-Time Image Editing, Studio Export Pipeline, Vibes to Studio Color Science Integration, L3 TFLite AI Inference Engine, Google Drive Cloud Sync Architecture, Auto-Purge & Storage Cleanup Engine, Camera UI State Persistence, Real TFLite Model & Manifest Integration, Pro Mode HUD & Manual Controls, Video Recording Engine, RAW / DNG Capture Pipeline, Camera Flip & Shutter Timer, Cinematic Video Mode, The "MORE" Modes Menu, Pro HUD AGSL Shaders & UI Screenshot Capture, Studio AI Object Eraser (LaMa Inpainting), Real LUT Engine (.cube Parser + AGSL), Live Camera LUT Application, Advanced Modes Hardware Wiring, Studio Export Polish (Vibe + Timestamp), and the Final Visual Audit across all 12 core app screens.
+This report presents a complete end-to-end audit of all implemented components, hardware capability probe results, L0 atomic capture journals, UI overlays, camera hardware zoom control engines, tap-to-focus metering, flash controls, mode selection state wiring, thermal/storage guards, L1 Light AI Scene Classifier, L2 AI Planner Foundation, L3/L4 WorkManager Processing Queue & Quality Validator, Pinterest-Style Masonry Gallery Tab UI, Settings Tab & AI Center Control Room, Vibes Tab & Color Presets UI, Studio Tab UI Skeleton, L3 Real ColorMatrix Computational Engine, GitHub DLC Model Downloader, Studio Real-Time Image Editing, Studio Export Pipeline, Vibes to Studio Color Science Integration, L3 TFLite AI Inference Engine, Google Drive Cloud Sync Architecture, Auto-Purge & Storage Cleanup Engine, Camera UI State Persistence, Real TFLite Model & Manifest Integration, Pro Mode HUD & Manual Controls, Video Recording Engine, RAW / DNG Capture Pipeline, Camera Flip & Shutter Timer, Cinematic Video Mode, The "MORE" Modes Menu, Pro HUD AGSL Shaders & UI Screenshot Capture, Studio AI Object Eraser (LaMa Inpainting), Real LUT Engine (.cube Parser + AGSL), Live Camera LUT Application, Advanced Modes Hardware Wiring, Studio Export Polish (Vibe + Timestamp), and the Final Visual Polish fixes.
 
 ---
 
@@ -32,45 +32,17 @@ The **Probe Lab** audits camera hardware capabilities at runtime without opening
 
 ---
 
-## 3. Final Visual Audit Screenshot Package (`ui_photos/`)
+## 3. Final Visual Polish Audit Package
 
-Every UI screen in Lensora_Ai has been systematically audited, verified, and captured in high-resolution PNG format.
-
-| Screenshot File | Target UI Screen & State | File Size | Verification Findings |
+| Screenshot File | Verified UI Feature | Result | Key Audit Findings |
 | :--- | :--- | :---: | :--- |
-| `01_camera_ai_auto.png` | Default AI Auto Mode Viewfinder | 1.57 MB | Viewfinder active, 60fps frame stream, AI badge (`✨ AI: Portrait`), zoom pills, time overlay. |
-| `02_camera_pro.png` | PRO Mode with HUD Sliders | 1.12 MB | Pro HUD visible with manual ISO (400), Shutter Speed (1/250s), RAW toggle, Zebras & Focus Peaking. |
-| `03_camera_video.png` | VIDEO Mode Viewfinder | 1.46 MB | Video recording HUD, Red shutter control button, 10 Mbps H264 MP4 encoder session. |
-| `04_camera_cinematic.png` | CINEMATIC 24fps Mode | 435 KB | 2.39:1 aspect ratio pure black letterboxing bars overlay, locked 24 FPS target AE range (`[24, 24]`). |
-| `05_more_modes_sheet.png` | MORE Camera Modes Bottom Sheet | 215 KB | Obsidian Royal `ModalBottomSheet` displaying 8 **PRO TOOLS** and 9 **SIGNATURE BRANDS**. |
-| `06_camera_astro.png` | ASTRO Mode Viewfinder | 864 KB | Camera2 HAL infinity focus lock (`LENS_FOCUS_DISTANCE = 0f`) and 30s long exposure preset. |
-| `07_camera_leica.png` | LEICA Signature Brand Mode | 865 KB | Active Leica B&W LUT color matrix preset applied to background capture queue. |
-| `08_studio.png` | Studio Tab Editor Canvas | 781 KB | 50% Photo Canvas, 15% Filmstrip Queue, 35% Editing Panel with Exposure/Contrast sliders & 3-Way Color Wheels. |
-| `09_gallery.png` | Pinterest Masonry Gallery Tab | 1.02 MB | Compose `LazyVerticalStaggeredGrid` (2 columns) displaying MediaStore captured photos. |
-| `10_vibes.png` | Vibes Tab & Color Presets | 646 KB | Segmented tabs (`LUTs`, `Presets`, `Templates`), trending cards, and 3D CUBE / TONE CURVE badges. |
-| `11_settings.png` | Settings Control Room | 179 KB | Full control room list with AI status, Cloud Sync toggle, DLC Model Downloader, and Auto-Purge cleaner. |
-| `12_probe_lab.png` | Hardware Probe Lab | 222 KB | Real-time diagnostic cards for Probe P1 (200MP), Probe P2 (RAW), and Probe P3 (24fps Cinema). |
+| `01_camera_fixed_badge.png` | Camera Viewfinder AI Badge Positioning | `PASS` | Top padding increased to `128.dp`. AI / Mode badge sits cleanly below Top Bar icons with **ZERO visual overlap**. |
+| `06_camera_astro_fixed.png` | Astro Mode Preview Shader Isolation | `PASS` | AGSL `renderEffect` explicitly set to `null` for `ASTRO` mode, producing a **100% clear, raw TextureView camera feed**. Hardware 30s exposure & infinity focus lock applied to HAL session. |
 
 ---
 
-## 4. System Status Audit Summary
+## 4. Verification & Logcat Crash Audit
 
-1. **Git Repository & Branching State**:
-   - Branch: `audit/full-screenshot-verification`
-   - All previous PRs (#1 through #49) merged into `dev`.
-   - `git status` clean and synchronized.
-2. **Cloud Storage & Sync Engine**:
-   - `CloudSyncWorker` CoroutineWorker verified with SHA-256 stream hashing, 3s network upload delay, and `ContentResolver.delete()` MediaStore auto-purge when `auto_purge_enabled` is ON.
-   - Settings switches (`cloud_sync_enabled`, `auto_purge_enabled`) persisted in `SharedPreferences` (`lensora_prefs`).
-3. **AI Modules & Model Downloader**:
-   - `SceneClassifier` 500ms background thread preview classifier active.
-   - `ModelDownloaderWorker` parses `manifest.json`, downloads MobileNet v1 1.0 224 model ZIP via OkHttp, unzips `.tflite` entry, verifies SHA-256, and stores in `context.filesDir/models/mobilenet_v1_1.0_224.tflite`.
-4. **Logcat Crash Audit**:
-   - Command: `adb logcat -d -s AndroidRuntime:E`
-   - **0 Runtime Crashes (`AndroidRuntime:E`)** on current build.
-
----
-
-## 5. Absolute Screenshot Directory Path
-All generated screenshots are located at:
-`C:/Users/kanak/AndroidStudioProjects/Lensora_Ai/ui_photos`
+- **Build Status**: `./gradlew assembleDebug` & `./gradlew installDebug` - **100% SUCCESS**.
+- **ADB Grants**: Granted `CAMERA` and `RECORD_AUDIO` permissions programmatically.
+- **Logcat Crash Audit**: `adb logcat -d -s AndroidRuntime:E` - **0 Runtime Crashes (`AndroidRuntime:E`)**.
