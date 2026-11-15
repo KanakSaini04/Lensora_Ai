@@ -4,7 +4,7 @@
 
 **Lensora_Ai** (`com.lensora.ai`) is an AI-first computational camera application built on Android 16 (API 36) using Jetpack Compose, Material 3 (Obsidian Royal Theme), Hilt dependency injection, and a pure **Camera2 L0 Safe Core HAL Engine** (strictly zero CameraX dependencies).
 
-This report presents a complete end-to-end audit of all implemented components, hardware capability probe results, L0 atomic capture journals, UI overlays, camera hardware zoom control engines, tap-to-focus metering, flash controls, mode selection state wiring, thermal/storage guards, L1 Light AI Scene Classifier, L2 AI Planner Foundation, L3/L4 WorkManager Processing Queue & Quality Validator, Pinterest-Style Masonry Gallery Tab UI, Settings Tab & AI Center Control Room, Vibes Tab & Color Presets UI, Studio Tab UI Skeleton, L3 Real ColorMatrix Computational Engine, GitHub DLC Model Downloader, Studio Real-Time Image Editing, Studio Export Pipeline, Vibes to Studio Color Science Integration, L3 TFLite AI Inference Engine, Google Drive Cloud Sync Architecture, Auto-Purge & Storage Cleanup Engine, Camera UI State Persistence, Real TFLite Model & Manifest Integration, Pro Mode HUD & Manual Controls, and live device/emulator verification results.
+This report presents a complete end-to-end audit of all implemented components, hardware capability probe results, L0 atomic capture journals, UI overlays, camera hardware zoom control engines, tap-to-focus metering, flash controls, mode selection state wiring, thermal/storage guards, L1 Light AI Scene Classifier, L2 AI Planner Foundation, L3/L4 WorkManager Processing Queue & Quality Validator, Pinterest-Style Masonry Gallery Tab UI, Settings Tab & AI Center Control Room, Vibes Tab & Color Presets UI, Studio Tab UI Skeleton, L3 Real ColorMatrix Computational Engine, GitHub DLC Model Downloader, Studio Real-Time Image Editing, Studio Export Pipeline, Vibes to Studio Color Science Integration, L3 TFLite AI Inference Engine, Google Drive Cloud Sync Architecture, Auto-Purge & Storage Cleanup Engine, Camera UI State Persistence, Real TFLite Model & Manifest Integration, Pro Mode HUD & Manual Controls, Video Recording Engine, and live device/emulator verification results.
 
 ---
 
@@ -378,7 +378,21 @@ The **Probe Lab** audits camera hardware capabilities at runtime without opening
 
 ---
 
-## 29. Verification & Crash Audit Results
+## 29. Phase 9, Step 29: Video Recording Engine
+
+1. **`VideoRecorder.kt` Architecture**:
+   - Wraps `MediaRecorder` configured for MPEG_4 format, H264 video encoder, AAC audio encoder, and 10 Mbps video bitrate.
+   - Saves temporary `.mp4.tmp` file in cache directory, then atomized and moved to MediaStore (`Movies/Lensora_Ai`) under `video/mp4`.
+2. **`CameraController.kt` Video Capture Session**:
+   - Implemented `startVideoRecording` configuring Camera2 `TEMPLATE_RECORD` capture session streaming to both preview surface and MediaRecorder surface.
+   - Implemented `stopVideoRecording` restoring `TEMPLATE_PREVIEW` capture session cleanly.
+3. **`CameraScreen.kt` UI Controls & Permissions**:
+   - Added `RECORD_AUDIO` permission to `AndroidManifest.xml` and runtime request handler.
+   - Displays Red shutter button in VIDEO mode, live recording timer badge (`🔴 00:05`), and safe recording release on tab disposal.
+
+---
+
+## 30. Verification & Crash Audit Results
 
 - **Build Status**: `./gradlew assembleDebug` & `./gradlew installDebug` - **100% SUCCESS**.
 - **Static Code Analysis**: Analyzed all Kotlin source files in `app/src/main/java` - **0 Errors, 0 Warnings**.

@@ -46,6 +46,7 @@ import androidx.compose.runtime.DisposableEffect
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableFloatStateOf
+import androidx.compose.runtime.mutableIntStateOf
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
@@ -93,15 +94,30 @@ fun CameraScreen(
         )
     }
 
+    var hasAudioPermission by remember {
+        mutableStateOf(
+            ContextCompat.checkSelfPermission(
+                context,
+                Manifest.permission.RECORD_AUDIO,
+            ) == PackageManager.PERMISSION_GRANTED,
+        )
+    }
+
     val permissionLauncher = rememberLauncherForActivityResult(
-        contract = ActivityResultContracts.RequestPermission(),
-    ) { isGranted ->
-        hasCameraPermission = isGranted
+        contract = ActivityResultContracts.RequestMultiplePermissions(),
+    ) { permissions ->
+        hasCameraPermission = permissions[Manifest.permission.CAMERA] ?: hasCameraPermission
+        hasAudioPermission = permissions[Manifest.permission.RECORD_AUDIO] ?: hasAudioPermission
     }
 
     LaunchedEffect(Unit) {
-        if (!hasCameraPermission) {
-            permissionLauncher.launch(Manifest.permission.CAMERA)
+        if (!hasCameraPermission || !hasAudioPermission) {
+            permissionLauncher.launch(
+                arrayOf(
+                    Manifest.permission.CAMERA,
+                    Manifest.permission.RECORD_AUDIO,
+                ),
+            )
         }
     }
 
@@ -123,8 +139,12 @@ fun CameraScreen(
         var currentZoomRatio by remember { mutableFloatStateOf(1.0f) }
 
         // Pro Mode Manual Exposure State
-        var proIsoValue by remember { mutableStateOf(400) }
+        var proIsoValue by remember { mutableIntStateOf(400) }
         var proShutterNs by remember { mutableStateOf(4_000_000L) } // 1/250s
+
+        // Video Recording State
+        var isRecordingVideo by remember { mutableStateOf(false) }
+        var recordingSeconds by remember { mutableIntStateOf(0) }
 
         var focusTapOffset by remember { mutableStateOf<Offset?>(null) }
         var isGridVisible by remember { mutableStateOf(cameraPrefs.getBoolean("grid_enabled", false)) }
@@ -137,8 +157,21 @@ fun CameraScreen(
 
         DisposableEffect(Unit) {
             onDispose {
+                if (isRecordingVideo) {
+                    cameraController.stopVideoRecording(onVideoSaved = { _, _ -> }, onError = {})
+                }
                 cameraController.closeCamera()
                 sceneClassifier.close()
+            }
+        }
+
+        LaunchedEffect(isRecordingVideo) {
+            if (isRecordingVideo) {
+                recordingSeconds = 0
+                while (isActive && isRecordingVideo) {
+                    delay(1000)
+                    recordingSeconds++
+                }
             }
         }
 
@@ -172,7 +205,7 @@ fun CameraScreen(
                                 val processingPlan = aiPlanner.createPlan(sceneType)
                                 withContext(Dispatchers.Main) {
                                     aiBadgeText = label
-                                    if (selectedMode != CameraMode.PRO) {
+                                    if (selectedMode != CameraMode.PRO && !isRecordingVideo) {
                                         cameraController.applyProcessingPlan(processingPlan)
                                     }
                                 }
@@ -282,13 +315,25 @@ fun CameraScreen(
                 },
             )
 
-            // Frosted Glass AI Badge at Top Center (Driven dynamically by SceneClassifier)
-            AiBadge(
-                modifier = Modifier
-                    .align(Alignment.TopCenter)
-                    .padding(top = 56.dp),
-                statusText = aiBadgeText,
-            )
+            // Frosted Glass AI Badge / Recording Timer Overlay at Top Center
+            if (isRecordingVideo) {
+                val mins = recordingSeconds / 60
+                val secs = recordingSeconds % 60
+                val timerText = String.format(Locale.US, "\uD83D\uDD34 REC %02d:%02d", mins, secs)
+                AiBadge(
+                    modifier = Modifier
+                        .align(Alignment.TopCenter)
+                        .padding(top = 56.dp),
+                    statusText = timerText,
+                )
+            } else {
+                AiBadge(
+                    modifier = Modifier
+                        .align(Alignment.TopCenter)
+                        .padding(top = 56.dp),
+                    statusText = aiBadgeText,
+                )
+            }
 
             // Bottom Overlays: Pro Controls (if PRO) + Zoom Pills + Mode Carousel + Shutter & Thumbnail Controls
             Column(
@@ -299,7 +344,7 @@ fun CameraScreen(
                 horizontalAlignment = Alignment.CenterHorizontally,
             ) {
                 // Pro Mode HUD Controls (Only visible when PRO mode is selected)
-                if (selectedMode == CameraMode.PRO) {
+                if (selectedMode == CameraMode.PRO && !isRecordingVideo) {
                     ProModeControls(
                         isoValue = proIsoValue,
                         shutterSpeedNs = proShutterNs,
@@ -337,11 +382,13 @@ fun CameraScreen(
                 CameraModeCarousel(
                     selectedMode = selectedMode,
                     onModeSelected = { mode ->
-                        selectedMode = mode
-                        cameraController.setCameraMode(mode)
-                        cameraPrefs.edit().putString("camera_mode", mode.name).apply()
-                        if (mode == CameraMode.PRO) {
-                            cameraController.setManualExposure(proIsoValue, proShutterNs)
+                        if (!isRecordingVideo) {
+                            selectedMode = mode
+                            cameraController.setCameraMode(mode)
+                            cameraPrefs.edit().putString("camera_mode", mode.name).apply()
+                            if (mode == CameraMode.PRO) {
+                                cameraController.setManualExposure(proIsoValue, proShutterNs)
+                            }
                         }
                     },
                     modifier = Modifier
@@ -368,7 +415,7 @@ fun CameraScreen(
                                 color = ColorWhite,
                                 shape = CircleShape,
                             )
-                            .clickable { onOpenQuickView() },
+                            .clickable { if (!isRecordingVideo) onOpenQuickView() },
                         contentAlignment = Alignment.Center,
                     ) {
                         val latestPhotoUri = recentPhotos.firstOrNull()
@@ -389,29 +436,56 @@ fun CameraScreen(
                         }
                     }
 
-                    // Obsidian Royal Shutter Button
+                    // Obsidian Royal Shutter Button (Red in VIDEO mode, White in Photo modes)
+                    val shutterColor = if (selectedMode == CameraMode.VIDEO) Color(0xFFDC2626) else ColorWhite
+
                     Box(
                         modifier = Modifier
                             .size(76.dp)
                             .border(width = 4.dp, color = ColorWhite, shape = CircleShape)
                             .padding(5.dp)
                             .clip(CircleShape)
-                            .background(ColorWhite)
+                            .background(shutterColor)
                             .clickable {
-                                cameraController.takePicture(
-                                    displayRotationDegrees = deviceRotationDegrees,
-                                    onPhotoSaved = { uri, msg ->
-                                        recentPhotos = (listOf(uri) + recentPhotos).distinct().take(10)
-                                        Toast
-                                            .makeText(context, msg, Toast.LENGTH_SHORT)
-                                            .show()
-                                    },
-                                    onError = { err ->
-                                        Toast
-                                            .makeText(context, err, Toast.LENGTH_SHORT)
-                                            .show()
-                                    },
-                                )
+                                if (selectedMode == CameraMode.VIDEO) {
+                                    if (isRecordingVideo) {
+                                        cameraController.stopVideoRecording(
+                                            onVideoSaved = { uri, msg ->
+                                                isRecordingVideo = false
+                                                recentPhotos = (listOf(uri) + recentPhotos).distinct().take(10)
+                                                Toast.makeText(context, msg, Toast.LENGTH_SHORT).show()
+                                            },
+                                            onError = { err ->
+                                                isRecordingVideo = false
+                                                Toast.makeText(context, err, Toast.LENGTH_SHORT).show()
+                                            },
+                                        )
+                                    } else {
+                                        cameraController.startVideoRecording(
+                                            hasAudioPermission = hasAudioPermission,
+                                            displayRotationDegrees = deviceRotationDegrees,
+                                            onRecordingStarted = {
+                                                isRecordingVideo = true
+                                                Toast.makeText(context, "Recording started...", Toast.LENGTH_SHORT).show()
+                                            },
+                                            onError = { err ->
+                                                isRecordingVideo = false
+                                                Toast.makeText(context, err, Toast.LENGTH_SHORT).show()
+                                            },
+                                        )
+                                    }
+                                } else {
+                                    cameraController.takePicture(
+                                        displayRotationDegrees = deviceRotationDegrees,
+                                        onPhotoSaved = { uri, msg ->
+                                            recentPhotos = (listOf(uri) + recentPhotos).distinct().take(10)
+                                            Toast.makeText(context, msg, Toast.LENGTH_SHORT).show()
+                                        },
+                                        onError = { err ->
+                                            Toast.makeText(context, err, Toast.LENGTH_SHORT).show()
+                                        },
+                                    )
+                                }
                             },
                     )
 
@@ -447,18 +521,25 @@ fun CameraScreen(
                 )
                 Spacer(modifier = Modifier.height(8.dp))
                 Text(
-                    text = "Lensora_Ai requires camera permission to capture live preview and photos.",
+                    text = "Lensora_Ai requires camera and microphone permissions to capture video.",
                     style = MaterialTheme.typography.bodyLarge,
                     color = ColorMutedGray,
                 )
                 Spacer(modifier = Modifier.height(24.dp))
                 Button(
-                    onClick = { permissionLauncher.launch(Manifest.permission.CAMERA) },
+                    onClick = {
+                        permissionLauncher.launch(
+                            arrayOf(
+                                Manifest.permission.CAMERA,
+                                Manifest.permission.RECORD_AUDIO,
+                            ),
+                        )
+                    },
                     colors = ButtonDefaults.buttonColors(containerColor = RoyalBlue),
                     shape = RoundedCornerShape(8.dp),
                 ) {
                     Text(
-                        text = "Grant Permission",
+                        text = "Grant Permissions",
                         color = ColorWhite,
                         fontWeight = FontWeight.Bold,
                     )
