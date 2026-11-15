@@ -21,6 +21,7 @@ import androidx.compose.material.icons.automirrored.filled.ArrowForwardIos
 import androidx.compose.material.icons.outlined.AutoAwesome
 import androidx.compose.material.icons.outlined.CleaningServices
 import androidx.compose.material.icons.outlined.CloudSync
+import androidx.compose.material.icons.outlined.DeleteSweep
 import androidx.compose.material.icons.outlined.Download
 import androidx.compose.material.icons.outlined.Info
 import androidx.compose.material.icons.outlined.Memory
@@ -74,6 +75,7 @@ fun SettingsScreen(
     val prefs = remember { context.getSharedPreferences("lensora_prefs", Context.MODE_PRIVATE) }
     val workManager = remember { WorkManager.getInstance(context) }
     var isCloudSyncEnabled by remember { mutableStateOf(prefs.getBoolean("cloud_sync_enabled", false)) }
+    var isAutoPurgeEnabled by remember { mutableStateOf(prefs.getBoolean("auto_purge_enabled", true)) }
 
     // Model Downloader WorkState
     var activeWorkId by remember { mutableStateOf<UUID?>(null) }
@@ -290,6 +292,54 @@ fun SettingsScreen(
             // Section 3: Storage & Cache
             item {
                 SectionHeader(title = "STORAGE & MAINTENANCE")
+
+                // Auto-Purge Local Masters Toggle
+                ListItem(
+                    headlineContent = {
+                        Text(
+                            text = "Auto-Purge Local Masters",
+                            color = ColorWhite,
+                            fontWeight = FontWeight.SemiBold,
+                        )
+                    },
+                    supportingContent = {
+                        Text(
+                            text = "Delete local master files from MediaStore after successful cloud sync",
+                            color = ColorMutedGray,
+                            fontSize = 12.sp,
+                        )
+                    },
+                    leadingContent = {
+                        Icon(
+                            imageVector = Icons.Outlined.DeleteSweep,
+                            contentDescription = "Auto Purge",
+                            tint = ColorWhite,
+                        )
+                    },
+                    trailingContent = {
+                        Switch(
+                            checked = isAutoPurgeEnabled,
+                            onCheckedChange = { isChecked ->
+                                isAutoPurgeEnabled = isChecked
+                                prefs.edit().putBoolean("auto_purge_enabled", isChecked).apply()
+                                Toast.makeText(
+                                    context,
+                                    if (isChecked) "Auto-Purge Enabled" else "Auto-Purge Disabled",
+                                    Toast.LENGTH_SHORT,
+                                ).show()
+                            },
+                            colors = SwitchDefaults.colors(
+                                checkedThumbColor = ColorWhite,
+                                checkedTrackColor = RoyalBlue,
+                                uncheckedThumbColor = ColorMutedGray,
+                                uncheckedTrackColor = PitchBlackBackground,
+                            ),
+                        )
+                    },
+                    colors = ListItemDefaults.colors(containerColor = CharcoalSurface),
+                    modifier = Modifier.padding(horizontal = 16.dp, vertical = 4.dp),
+                )
+
                 ListItem(
                     headlineContent = {
                         Text(

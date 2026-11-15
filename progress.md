@@ -112,3 +112,7 @@
   - Computes SHA-256 checksum during stream read, simulates 3s upload delay, and logs `"Upload verified"`.
   - Updated `SettingsScreen.kt` to persist "Cloud Sync (Google Drive)" toggle switch state in `SharedPreferences`.
   - Updated `AiProcessorWorker.kt` to check Cloud Sync state upon photo capture completion and enqueue `CloudSyncWorker`.
+- [x] **Step 25: Auto-Purge & Storage Cleanup Engine**
+  - Updated `SettingsScreen.kt` to add persistent "Auto-Purge Local Masters" toggle switch (Default: ON) saved in `SharedPreferences`.
+  - Updated `CloudSyncWorker.kt` to execute safe local MediaStore file deletion via `ContentResolver.delete()` upon successful upload verification and SHA-256 checksum check when Auto-Purge is enabled.
+  - Updated `AiProcessorWorker.kt` to pass `auto_purge_enabled` to `CloudSyncWorker` inputData.
