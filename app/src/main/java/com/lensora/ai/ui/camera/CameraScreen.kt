@@ -87,6 +87,8 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.isActive
 import kotlinx.coroutines.withContext
+import java.text.SimpleDateFormat
+import java.util.Date
 import java.util.Locale
 
 @OptIn(ExperimentalMaterial3Api::class)
@@ -150,6 +152,16 @@ fun CameraScreen(
 
         var recentPhotos by remember { mutableStateOf<List<Uri>>(emptyList()) }
 
+        // Dynamic VN-Style Timestamp State
+        var currentTimeString by remember { mutableStateOf("") }
+        LaunchedEffect(Unit) {
+            val sdf = SimpleDateFormat("HH:mm:ss", Locale.US)
+            while (isActive) {
+                currentTimeString = sdf.format(Date())
+                delay(1000)
+            }
+        }
+
         // Persisted UI preferences restoration
         var selectedMode by remember {
             val modeName = cameraPrefs.getString("camera_mode", CameraMode.PHOTO.name)
@@ -167,6 +179,7 @@ fun CameraScreen(
         var isRawEnabled by remember { mutableStateOf(cameraPrefs.getBoolean("raw_dng_enabled", false)) }
         var isZebrasEnabled by remember { mutableStateOf(false) }
         var isPeakingEnabled by remember { mutableStateOf(false) }
+        var isGrainEnabled by remember { mutableStateOf(cameraPrefs.getBoolean("grain_enabled", false)) }
 
         // Timer State & Countdown
         var timerMode by remember { mutableStateOf(TimerMode.OFF) }
@@ -300,10 +313,17 @@ fun CameraScreen(
             } else null
         }
 
-        val activeRenderEffect = remember(selectedMode, isZebrasEnabled, isPeakingEnabled, cameraLutRenderEffect) {
+        val filmGrainRenderEffect = remember(isGrainEnabled) {
+            if (isGrainEnabled && Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
+                FilmGrainShader.createFilmGrainEffect(1080f, 2400f)
+            } else null
+        }
+
+        val activeRenderEffect = remember(selectedMode, isZebrasEnabled, isPeakingEnabled, cameraLutRenderEffect, filmGrainRenderEffect) {
             when {
                 selectedMode == CameraMode.PRO && isZebrasEnabled && Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU -> AgslShaders.createZebrasEffect()
                 selectedMode == CameraMode.PRO && isPeakingEnabled && Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU -> AgslShaders.createFocusPeakingEffect()
+                filmGrainRenderEffect != null -> filmGrainRenderEffect
                 cameraLutRenderEffect != null -> cameraLutRenderEffect
                 else -> null
             }
@@ -314,7 +334,7 @@ fun CameraScreen(
                 .fillMaxSize()
                 .background(PitchBlackBackground),
         ) {
-            // Edge-to-edge Live Camera Viewfinder (Mirrored horizontally for front camera + AGSL LUT Shader)
+            // Edge-to-edge Live Camera Viewfinder (Mirrored horizontally for front camera + AGSL Shaders)
             CameraPreview(
                 cameraController = cameraController,
                 modifier = Modifier
@@ -329,6 +349,16 @@ fun CameraScreen(
                     textureViewRef = view
                 },
             )
+
+            // PHOTO Mode Thin White Aesthetic Border Overlay
+            if (selectedMode == CameraMode.PHOTO && customModeName == null) {
+                Box(
+                    modifier = Modifier
+                        .fillMaxSize()
+                        .padding(16.dp)
+                        .border(width = 1.dp, color = ColorWhite.copy(alpha = 0.5f), shape = RoundedCornerShape(12.dp)),
+                )
+            }
 
             // 2.39:1 Cinematic Aspect Ratio Pure Black Letterboxing Overlay (Only visible in CINEMATIC mode)
             if (selectedMode == CameraMode.CINEMATIC && customModeName == null) {
@@ -358,6 +388,27 @@ fun CameraScreen(
             // 3x3 Canvas Grid Overlay
             if (isGridVisible) {
                 GridOverlay(modifier = Modifier.fillMaxSize())
+            }
+
+            // Glowing Cyan VN-Style Timestamp Overlay at Bottom-Left Corner
+            if (currentTimeString.isNotEmpty()) {
+                Box(
+                    modifier = Modifier
+                        .align(Alignment.BottomStart)
+                        .padding(start = 24.dp, bottom = 180.dp)
+                        .clip(RoundedCornerShape(6.dp))
+                        .background(CharcoalSurface.copy(alpha = 0.65f))
+                        .border(width = 1.dp, color = Color(0xFF00E5FF).copy(alpha = 0.4f), shape = RoundedCornerShape(6.dp))
+                        .padding(horizontal = 10.dp, vertical = 4.dp),
+                ) {
+                    Text(
+                        text = "LENSORA • $currentTimeString",
+                        color = Color(0xFF00E5FF),
+                        fontSize = 12.sp,
+                        fontWeight = FontWeight.Bold,
+                        letterSpacing = 1.2.sp,
+                    )
+                }
             }
 
             // Large Center Shutter Timer Countdown Overlay (3... 2... 1...)
@@ -406,11 +457,12 @@ fun CameraScreen(
                     },
             )
 
-            // Transparent Camera Top Bar Controls with Vibe Preset Selector
+            // Transparent Camera Top Bar Controls with Vibe Selector & Film Grain Toggle
             CameraTopBar(
                 modifier = Modifier.align(Alignment.TopCenter),
                 flashMode = flashMode,
                 isGridVisible = isGridVisible,
+                isGrainEnabled = isGrainEnabled,
                 timerMode = timerMode,
                 onFlashClick = {
                     val nextFlash = when (flashMode) {
@@ -436,6 +488,11 @@ fun CameraScreen(
                     }
                     VibeState.selectedVibe = nextVibe
                     Toast.makeText(context, "Vibe LUT: ${nextVibe.displayName}", Toast.LENGTH_SHORT).show()
+                },
+                onGrainClick = {
+                    isGrainEnabled = !isGrainEnabled
+                    cameraPrefs.edit().putBoolean("grain_enabled", isGrainEnabled).apply()
+                    Toast.makeText(context, if (isGrainEnabled) "Film Grain Enabled" else "Film Grain Disabled", Toast.LENGTH_SHORT).show()
                 },
                 onGridClick = {
                     isGridVisible = !isGridVisible

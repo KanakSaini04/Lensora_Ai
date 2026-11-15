@@ -220,3 +220,11 @@
 - [x] **Step 39: Advanced Modes Hardware Wiring**
   - Implemented `setAdvancedMode(modeName: String)` in `CameraController.kt` with 100% try-catch safety wrapping Camera2 session updates (`ASTRO` focus infinity & long exposure, `PRO MACRO` minimum focus distance, `LEICA`/`ZEISS`/`HASSELBLAD` Vibe presets, `PANORAMA` v2.0 notice).
   - Updated `CameraScreen.kt` wiring `MoreModesSheet` mode selection callback to `cameraController.setAdvancedMode`.
+
+## Phase 20: Camera Aesthetic Overlays (VN-Style) (100% COMPLETE)
+
+- [x] **Step 40: Camera Aesthetic Overlays (VN-Style)**
+  - Created `FilmGrainShader.kt` implementing AGSL vintage film grain shader (`FILM_GRAIN_AGSL`) and `createFilmGrainEffect`.
+  - Updated `CameraTopBar.kt` adding Film Grain toggle button (`Icons.Outlined.Grain`).
+  - Updated `CameraScreen.kt` adding glowing Cyan (`#00E5FF`) timestamp text overlay (`LENSORA • HH:mm:ss`), thin 1.dp white aesthetic border overlay for PHOTO mode, and AGSL film grain pass.
+  - Captured screenshot `ui_photos/camera_aesthetic.png`.
