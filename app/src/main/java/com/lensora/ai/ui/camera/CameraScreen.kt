@@ -136,7 +136,17 @@ fun CameraScreen(
         val galleryRepository = remember { GalleryRepository(context) }
         val sceneClassifier = remember { SceneClassifier(context) }
         val aiPlanner = remember { AiPlanner() }
-        val cameraPrefs = remember { context.getSharedPreferences("lensora_camera_prefs", Context.MODE_PRIVATE) }
+        val cameraPrefs = remember {
+            try {
+                context.getSharedPreferences("lensora_camera_prefs", Context.MODE_PRIVATE)
+            } catch (e: Exception) {
+                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) {
+                    context.createDeviceProtectedStorageContext().getSharedPreferences("lensora_camera_prefs", Context.MODE_PRIVATE)
+                } else {
+                    context.getSharedPreferences("lensora_camera_prefs", Context.MODE_PRIVATE)
+                }
+            }
+        }
 
         var recentPhotos by remember { mutableStateOf<List<Uri>>(emptyList()) }
 
@@ -279,7 +289,9 @@ fun CameraScreen(
 
         // Real-Time Viewfinder AGSL LUT Shader Pass
         val cameraLutBitmap = remember(VibeState.selectedVibe) {
-            ImageEditor.getLutStripBitmap(context, VibeState.selectedVibe)
+            if (VibeState.selectedVibe == VibePreset.CINEMATIC) {
+                ImageEditor.getLutStripBitmap(context, VibePreset.CINEMATIC)
+            } else null
         }
 
         val cameraLutRenderEffect = remember(cameraLutBitmap) {
@@ -419,6 +431,7 @@ fun CameraScreen(
                     val nextVibe = when (VibeState.selectedVibe) {
                         VibePreset.NONE -> VibePreset.CINEMATIC
                         VibePreset.CINEMATIC -> VibePreset.LEICA
+                        VibePreset.LEICA -> VibePreset.ROYAL_GOLD
                         else -> VibePreset.NONE
                     }
                     VibeState.selectedVibe = nextVibe
@@ -438,41 +451,30 @@ fun CameraScreen(
                 },
             )
 
-            // Frosted Glass AI Badge & Quick Vibe Selector Pill Overlay at Top Center
-            Row(
-                modifier = Modifier
-                    .align(Alignment.TopCenter)
-                    .padding(top = 56.dp),
-                horizontalArrangement = Arrangement.spacedBy(8.dp),
-                verticalAlignment = Alignment.CenterVertically,
-            ) {
-                if (isRecordingVideo) {
-                    val mins = recordingSeconds / 60
-                    val secs = recordingSeconds % 60
-                    val timerText = String.format(Locale.US, "\uD83D\uDD34 REC %02d:%02d", mins, secs)
-                    AiBadge(statusText = timerText)
-                } else {
-                    val badgeText = when {
-                        customModeName != null -> "\u2728 Mode: $customModeName"
-                        selectedMode == CameraMode.CINEMATIC -> "\uD83C\uDFAC 24fps 2.39:1 Cinematic"
-                        else -> aiBadgeText
-                    }
-                    AiBadge(statusText = badgeText)
-
-                    // Quick Vibe Selector Pill
-                    VibePill(
-                        selectedVibe = VibeState.selectedVibe,
-                        onClick = {
-                            val nextVibe = when (VibeState.selectedVibe) {
-                                VibePreset.NONE -> VibePreset.CINEMATIC
-                                VibePreset.CINEMATIC -> VibePreset.LEICA
-                                else -> VibePreset.NONE
-                            }
-                            VibeState.selectedVibe = nextVibe
-                            Toast.makeText(context, "Vibe LUT: ${nextVibe.displayName}", Toast.LENGTH_SHORT).show()
-                        },
-                    )
+            // Frosted Glass AI Badge / Recording Timer Overlay at Top Center
+            if (isRecordingVideo) {
+                val mins = recordingSeconds / 60
+                val secs = recordingSeconds % 60
+                val timerText = String.format(Locale.US, "\uD83D\uDD34 REC %02d:%02d", mins, secs)
+                AiBadge(
+                    modifier = Modifier
+                        .align(Alignment.TopCenter)
+                        .padding(top = 56.dp),
+                    statusText = timerText,
+                )
+            } else {
+                val badgeText = when {
+                    VibeState.selectedVibe != VibePreset.NONE -> "\uD83C\uDFAC Vibe: ${VibeState.selectedVibe.displayName}"
+                    customModeName != null -> "\u2728 Mode: $customModeName"
+                    selectedMode == CameraMode.CINEMATIC -> "\uD83C\uDFAC 24fps 2.39:1 Cinematic"
+                    else -> aiBadgeText
                 }
+                AiBadge(
+                    modifier = Modifier
+                        .align(Alignment.TopCenter)
+                        .padding(top = 56.dp),
+                    statusText = badgeText,
+                )
             }
 
             // Bottom Overlays: Pro Controls (if PRO) + Zoom Pills + Mode Carousel + Shutter & Thumbnail Controls
@@ -855,37 +857,6 @@ private fun AiBadge(
     ) {
         Text(
             text = statusText,
-            color = ColorWhite,
-            fontSize = 12.sp,
-            fontWeight = FontWeight.Bold,
-        )
-    }
-}
-
-@Composable
-private fun VibePill(
-    selectedVibe: VibePreset,
-    onClick: () -> Unit,
-    modifier: Modifier = Modifier,
-) {
-    val (label, containerColor) = when (selectedVibe) {
-        VibePreset.NONE -> "\uD83C\uDFA8 Vibe: None" to CharcoalSurface.copy(alpha = 0.75f)
-        VibePreset.CINEMATIC -> "\uD83C\uDFAC Teal & Orange" to RoyalBlue.copy(alpha = 0.85f)
-        VibePreset.LEICA -> "\uD83D\uDCF7 Leica B&W" to Color(0xFF333333).copy(alpha = 0.85f)
-        else -> "\uD83C\uDFA8 ${selectedVibe.displayName}" to RoyalBlue.copy(alpha = 0.85f)
-    }
-
-    Box(
-        modifier = modifier
-            .clip(CircleShape)
-            .background(containerColor)
-            .border(width = 1.dp, color = ColorWhite.copy(alpha = 0.35f), shape = CircleShape)
-            .clickable { onClick() }
-            .padding(horizontal = 12.dp, vertical = 6.dp),
-        contentAlignment = Alignment.Center,
-    ) {
-        Text(
-            text = label,
             color = ColorWhite,
             fontSize = 12.sp,
             fontWeight = FontWeight.Bold,
