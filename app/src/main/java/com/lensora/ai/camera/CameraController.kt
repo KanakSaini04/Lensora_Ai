@@ -72,6 +72,9 @@ class CameraController(
     private var currentCameraMode: CameraMode = CameraMode.PHOTO
     private var activeProcessingPlan: ProcessingPlan? = null
 
+    private var videoRecorder: VideoRecorder? = null
+    private var isRecordingVideo = false
+
     private var powerManager: PowerManager? = null
     private var thermalStatusListener: PowerManager.OnThermalStatusChangedListener? = null
     private var currentThermalStatus: Int = PowerManager.THERMAL_STATUS_NONE
@@ -361,6 +364,104 @@ class CameraController(
         }
     }
 
+    fun startVideoRecording(
+        hasAudioPermission: Boolean,
+        displayRotationDegrees: Int,
+        onRecordingStarted: () -> Unit,
+        onError: (String) -> Unit,
+    ) {
+        try {
+            val device = cameraDevice ?: run {
+                onError("Camera device unavailable")
+                return
+            }
+            val previewSurf = previewSurface ?: run {
+                onError("Preview surface unavailable")
+                return
+            }
+            val handler = backgroundHandler ?: run {
+                onError("Handler unavailable")
+                return
+            }
+
+            val recorder = VideoRecorder(context)
+            videoRecorder = recorder
+            val recordSurface = recorder.prepare(hasAudioPermission, sensorOrientation, displayRotationDegrees)
+
+            captureSession?.close()
+
+            val recordBuilder = device.createCaptureRequest(CameraDevice.TEMPLATE_RECORD)
+            recordBuilder.addTarget(previewSurf)
+            recordBuilder.addTarget(recordSurface)
+            recordBuilder.set(CaptureRequest.CONTROL_AF_MODE, CaptureRequest.CONTROL_AF_MODE_CONTINUOUS_VIDEO)
+            applyZoom(recordBuilder, currentZoomRatio)
+            previewRequestBuilder = recordBuilder
+
+            val outputs = listOf(
+                OutputConfiguration(previewSurf),
+                OutputConfiguration(recordSurface),
+            )
+
+            val executor = Executor { command -> handler.post(command) }
+
+            val sessionConfig = SessionConfiguration(
+                SessionConfiguration.SESSION_REGULAR,
+                outputs,
+                executor,
+                object : CameraCaptureSession.StateCallback() {
+                    override fun onConfigured(session: CameraCaptureSession) {
+                        captureSession = session
+                        try {
+                            session.setRepeatingRequest(recordBuilder.build(), null, backgroundHandler)
+                            recorder.start()
+                            isRecordingVideo = true
+                            onRecordingStarted()
+                            Log.i(tag, "Camera2 video capture session configured and recording started.")
+                        } catch (e: Exception) {
+                            Log.e(tag, "Error starting video recording request", e)
+                            onError("Failed to start video capture request: ${e.localizedMessage}")
+                        }
+                    }
+
+                    override fun onConfigureFailed(session: CameraCaptureSession) {
+                        Log.e(tag, "Video capture session configuration failed")
+                        onError("Video capture session configuration failed")
+                    }
+                },
+            )
+
+            device.createCaptureSession(sessionConfig)
+        } catch (e: Exception) {
+            Log.e(tag, "Error setting up video recording session", e)
+            onError("Video setup error: ${e.localizedMessage}")
+        }
+    }
+
+    fun stopVideoRecording(
+        onVideoSaved: (Uri, String) -> Unit,
+        onError: (String) -> Unit,
+    ) {
+        try {
+            if (!isRecordingVideo) return
+            isRecordingVideo = false
+
+            val videoUri = videoRecorder?.stop()
+            videoRecorder?.release()
+            videoRecorder = null
+
+            createCameraPreviewSession()
+
+            if (videoUri != null) {
+                onVideoSaved(videoUri, "Saved video to Gallery!")
+            } else {
+                onError("Failed to save video to MediaStore")
+            }
+        } catch (e: Exception) {
+            Log.e(tag, "Error stopping video recording", e)
+            onError("Video stop error: ${e.localizedMessage}")
+        }
+    }
+
     fun setZoomRatio(ratio: Float) {
         try {
             val builder = previewRequestBuilder ?: return
@@ -638,6 +739,12 @@ class CameraController(
     fun closeCamera() {
         try {
             closeThermalGuard()
+
+            if (isRecordingVideo) {
+                videoRecorder?.release()
+                videoRecorder = null
+                isRecordingVideo = false
+            }
 
             captureSession?.close()
             captureSession = null

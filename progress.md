@@ -132,10 +132,18 @@
   - Updated `SettingsScreen.kt` UI with "Download MobileNet Model" button and ready status.
   - Updated `AiProcessorWorker.kt` to load MobileNet `.tflite` model, construct `1x224x224x3` float input buffer, execute TFLite inference (`1x1001` classes), and log output array size and latency in Logcat.
 
-## Phase 8: Pro Mode HUD & Manual Controls
+## Phase 8: Pro Mode HUD & Manual Controls (100% COMPLETE)
 
 - [x] **Step 28: Pro Mode HUD & Manual Controls**
   - Created `ProModeControls.kt` with manual ISO (100 to 3200) and Shutter Speed (1/1000s to 1/30s) sliders styled in Obsidian Royal palette.
   - Updated `CameraController.kt` with `setManualExposure(iso, shutterNs)` applying `CaptureRequest.SENSOR_SENSITIVITY` and `CaptureRequest.SENSOR_EXPOSURE_TIME` while disabling auto-exposure (`CONTROL_AE_MODE_OFF`).
   - Restored auto-exposure (`CONTROL_AE_MODE_ON`) when leaving PRO mode.
   - Updated `CameraScreen.kt` displaying Pro HUD overlay when PRO mode is selected.
+
+## Phase 9: Video Recording Engine
+
+- [x] **Step 29: Video Recording Engine**
+  - Added `RECORD_AUDIO` permission to `AndroidManifest.xml` and runtime permission request handler in `CameraScreen.kt`.
+  - Created `VideoRecorder.kt` wrapping `MediaRecorder` with MP4 format, H264 video encoder, AAC audio encoder, and atomic MediaStore (`Movies/Lensora_Ai`) output save.
+  - Updated `CameraController.kt` with `startVideoRecording` and `stopVideoRecording` creating Camera2 `TEMPLATE_RECORD` capture session.
+  - Updated `CameraScreen.kt` with red shutter button in VIDEO mode, live recording timer badge (`🔴 00:05`), and safe recording release on tab disposal.
