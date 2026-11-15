@@ -110,15 +110,24 @@ fun CameraScreen(
         val galleryRepository = remember { GalleryRepository(context) }
         val sceneClassifier = remember { SceneClassifier(context) }
         val aiPlanner = remember { AiPlanner() }
+        val cameraPrefs = remember { context.getSharedPreferences("lensora_camera_prefs", Context.MODE_PRIVATE) }
 
         var recentPhotos by remember { mutableStateOf<List<Uri>>(emptyList()) }
-        var selectedMode by remember { mutableStateOf(CameraMode.PHOTO) }
+
+        // Persisted UI preferences restoration
+        var selectedMode by remember {
+            val modeName = cameraPrefs.getString("camera_mode", CameraMode.PHOTO.name)
+            mutableStateOf(try { CameraMode.valueOf(modeName ?: "PHOTO") } catch (e: Exception) { CameraMode.PHOTO })
+        }
         var selectedZoom by remember { mutableStateOf("1x") }
         var currentZoomRatio by remember { mutableFloatStateOf(1.0f) }
 
         var focusTapOffset by remember { mutableStateOf<Offset?>(null) }
-        var isGridVisible by remember { mutableStateOf(false) }
-        var flashMode by remember { mutableStateOf(CameraController.FlashMode.AUTO) }
+        var isGridVisible by remember { mutableStateOf(cameraPrefs.getBoolean("grid_enabled", false)) }
+        var flashMode by remember {
+            val flashName = cameraPrefs.getString("flash_mode", CameraController.FlashMode.AUTO.name)
+            mutableStateOf(try { CameraController.FlashMode.valueOf(flashName ?: "AUTO") } catch (e: Exception) { CameraController.FlashMode.AUTO })
+        }
         var aiBadgeText by remember { mutableStateOf("\u2728 AI: Auto") }
         var textureViewRef by remember { mutableStateOf<TextureView?>(null) }
 
@@ -132,6 +141,9 @@ fun CameraScreen(
         LaunchedEffect(hasCameraPermission) {
             if (hasCameraPermission) {
                 recentPhotos = galleryRepository.getRecentPhotos(limit = 10)
+                // Apply restored persistent settings to cameraController
+                cameraController.setFlashMode(flashMode)
+                cameraController.setCameraMode(selectedMode)
             }
         }
 
@@ -241,6 +253,7 @@ fun CameraScreen(
                     }
                     flashMode = nextFlash
                     cameraController.setFlashMode(nextFlash)
+                    cameraPrefs.edit().putString("flash_mode", nextFlash.name).apply()
                     Toast.makeText(context, "Flash: ${nextFlash.name}", Toast.LENGTH_SHORT).show()
                 },
                 onTimerClick = {
@@ -248,6 +261,7 @@ fun CameraScreen(
                 },
                 onGridClick = {
                     isGridVisible = !isGridVisible
+                    cameraPrefs.edit().putBoolean("grid_enabled", isGridVisible).apply()
                     Toast.makeText(
                         context,
                         if (isGridVisible) "Grid Enabled" else "Grid Disabled",
@@ -299,6 +313,7 @@ fun CameraScreen(
                     onModeSelected = { mode ->
                         selectedMode = mode
                         cameraController.setCameraMode(mode)
+                        cameraPrefs.edit().putString("camera_mode", mode.name).apply()
                     },
                     modifier = Modifier
                         .fillMaxWidth()
