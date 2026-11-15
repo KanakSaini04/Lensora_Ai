@@ -9,7 +9,6 @@ import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.outlined.FlashAuto
 import androidx.compose.material.icons.outlined.FlashOff
 import androidx.compose.material.icons.outlined.FlashOn
-import androidx.compose.material.icons.outlined.Grain
 import androidx.compose.material.icons.outlined.GridOff
 import androidx.compose.material.icons.outlined.GridOn
 import androidx.compose.material.icons.outlined.Palette
@@ -47,12 +46,10 @@ fun CameraTopBar(
     modifier: Modifier = Modifier,
     flashMode: CameraController.FlashMode = CameraController.FlashMode.AUTO,
     isGridVisible: Boolean = false,
-    isGrainEnabled: Boolean = false,
     timerMode: TimerMode = TimerMode.OFF,
     onFlashClick: () -> Unit = {},
     onTimerClick: () -> Unit = {},
     onVibeClick: () -> Unit = {},
-    onGrainClick: () -> Unit = {},
     onGridClick: () -> Unit = {},
     onSettingsClick: () -> Unit = {},
 ) {
@@ -92,21 +89,12 @@ fun CameraTopBar(
             )
         }
 
-        // Vibe Preset / LUT Selector Button
+        // Vibe Preset / LUT Selector Button (Sets active Vibe for background capture & Studio)
         IconButton(onClick = onVibeClick) {
             Icon(
                 imageVector = Icons.Outlined.Palette,
                 contentDescription = "Vibe LUT Selector",
                 tint = if (VibeState.selectedVibe != VibePreset.NONE) RoyalBlue else ColorWhite,
-            )
-        }
-
-        // Film Grain AGSL Toggle Button
-        IconButton(onClick = onGrainClick) {
-            Icon(
-                imageVector = Icons.Outlined.Grain,
-                contentDescription = "Film Grain Toggle",
-                tint = if (isGrainEnabled) RoyalBlue else ColorMutedGray,
             )
         }
 
