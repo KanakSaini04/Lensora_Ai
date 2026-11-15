@@ -140,10 +140,17 @@
   - Restored auto-exposure (`CONTROL_AE_MODE_ON`) when leaving PRO mode.
   - Updated `CameraScreen.kt` displaying Pro HUD overlay when PRO mode is selected.
 
-## Phase 9: Video Recording Engine
+## Phase 9: Video Recording Engine (100% COMPLETE)
 
 - [x] **Step 29: Video Recording Engine**
   - Added `RECORD_AUDIO` permission to `AndroidManifest.xml` and runtime permission request handler in `CameraScreen.kt`.
   - Created `VideoRecorder.kt` wrapping `MediaRecorder` with MP4 format, H264 video encoder, AAC audio encoder, and atomic MediaStore (`Movies/Lensora_Ai`) output save.
   - Updated `CameraController.kt` with `startVideoRecording` and `stopVideoRecording` creating Camera2 `TEMPLATE_RECORD` capture session.
   - Updated `CameraScreen.kt` with red shutter button in VIDEO mode, live recording timer badge (`🔴 00:05`), and safe recording release on tab disposal.
+
+## Phase 10: RAW / DNG Capture Pipeline
+
+- [x] **Step 30: RAW / DNG Capture Pipeline**
+  - Updated `ProModeControls.kt` with "Save RAW (DNG)" toggle switch saved in `lensora_camera_prefs`.
+  - Updated `CameraController.kt` using `android.hardware.camera2.DngCreator` on `Dispatchers.IO` to construct and write uncompressed RAW `.dng` files to MediaStore under `Pictures/Lensora_Ai/RAW/`.
+  - Implemented 100% crash-safe fallback to standard JPEG capture if `DngCreator` execution fails or if HAL lacks unexposed raw stream access.

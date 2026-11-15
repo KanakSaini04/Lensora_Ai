@@ -138,9 +138,10 @@ fun CameraScreen(
         var selectedZoom by remember { mutableStateOf("1x") }
         var currentZoomRatio by remember { mutableFloatStateOf(1.0f) }
 
-        // Pro Mode Manual Exposure State
+        // Pro Mode Manual Exposure & RAW State
         var proIsoValue by remember { mutableIntStateOf(400) }
         var proShutterNs by remember { mutableStateOf(4_000_000L) } // 1/250s
+        var isRawEnabled by remember { mutableStateOf(cameraPrefs.getBoolean("raw_dng_enabled", false)) }
 
         // Video Recording State
         var isRecordingVideo by remember { mutableStateOf(false) }
@@ -181,6 +182,7 @@ fun CameraScreen(
                 // Apply restored persistent settings to cameraController
                 cameraController.setFlashMode(flashMode)
                 cameraController.setCameraMode(selectedMode)
+                cameraController.setRawCaptureEnabled(isRawEnabled)
                 if (selectedMode == CameraMode.PRO) {
                     cameraController.setManualExposure(proIsoValue, proShutterNs)
                 }
@@ -348,6 +350,7 @@ fun CameraScreen(
                     ProModeControls(
                         isoValue = proIsoValue,
                         shutterSpeedNs = proShutterNs,
+                        isRawEnabled = isRawEnabled,
                         onIsoChanged = { iso ->
                             proIsoValue = iso
                             cameraController.setManualExposure(iso, proShutterNs)
@@ -355,6 +358,12 @@ fun CameraScreen(
                         onShutterSpeedChanged = { shutterNs ->
                             proShutterNs = shutterNs
                             cameraController.setManualExposure(proIsoValue, shutterNs)
+                        },
+                        onRawToggled = { raw ->
+                            isRawEnabled = raw
+                            cameraPrefs.edit().putBoolean("raw_dng_enabled", raw).apply()
+                            cameraController.setRawCaptureEnabled(raw)
+                            Toast.makeText(context, if (raw) "RAW DNG Enabled" else "RAW DNG Disabled", Toast.LENGTH_SHORT).show()
                         },
                         modifier = Modifier.padding(bottom = 6.dp),
                     )
@@ -477,6 +486,7 @@ fun CameraScreen(
                                 } else {
                                     cameraController.takePicture(
                                         displayRotationDegrees = deviceRotationDegrees,
+                                        isRawEnabled = isRawEnabled && selectedMode == CameraMode.PRO,
                                         onPhotoSaved = { uri, msg ->
                                             recentPhotos = (listOf(uri) + recentPhotos).distinct().take(10)
                                             Toast.makeText(context, msg, Toast.LENGTH_SHORT).show()
