@@ -611,10 +611,36 @@ class CameraController(private val context: Context) {
                 builder.set(CaptureRequest.CONTROL_AE_EXPOSURE_COMPENSATION, targetStep)
             }
 
-            builder.set(CaptureRequest.CONTROL_AF_MODE, plan.targetAfMode)
+            // L2 Hardware Tuning logic
+            if (plan.isoTarget != null) {
+                val isoRange = characteristics.get(CameraCharacteristics.SENSOR_INFO_SENSITIVITY_RANGE)
+                val minIso = isoRange?.lower ?: 100
+                val targetIso = plan.isoTarget.coerceIn(minIso, isoRange?.upper ?: 3200)
+                builder.set(CaptureRequest.CONTROL_AE_MODE, CaptureRequest.CONTROL_AE_MODE_OFF)
+                builder.set(CaptureRequest.SENSOR_SENSITIVITY, targetIso)
+                Log.i(tag, "L2 Hardware Tuning: ${plan.sceneType} detected, locking ISO to $targetIso (min ISO: $minIso)")
+            } else {
+                builder.set(CaptureRequest.CONTROL_AE_MODE, CaptureRequest.CONTROL_AE_MODE_ON)
+            }
+
+            if (plan.focusDistance != null) {
+                builder.set(CaptureRequest.CONTROL_AF_MODE, CaptureRequest.CONTROL_AF_MODE_OFF)
+                builder.set(CaptureRequest.LENS_FOCUS_DISTANCE, plan.focusDistance)
+                Log.i(tag, "L2 Hardware Tuning: ${plan.sceneType} detected, locking focus to infinity (0.0f)")
+            } else {
+                builder.set(CaptureRequest.CONTROL_AF_MODE, plan.targetAfMode)
+            }
+
+            if (plan.faceAeLock) {
+                builder.set(CaptureRequest.CONTROL_AE_LOCK, true)
+                Log.i(tag, "L2 Hardware Tuning: Portrait detected, locking AE for face region")
+            } else {
+                builder.set(CaptureRequest.CONTROL_AE_LOCK, false)
+            }
+
             session.setRepeatingRequest(builder.build(), null, backgroundHandler)
         } catch (e: Exception) {
-            Log.e(tag, "Error applying AI execution plan", e)
+            Log.e(tag, "Error applying AI execution plan hardware tuning", e)
         }
     }
 

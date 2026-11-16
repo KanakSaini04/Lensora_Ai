@@ -276,3 +276,12 @@
   - Integrated active `VibePreset` LUT (Cinematic, Leica, Royal Gold) color transformation matrix pass directly onto the enhanced output tiles.
   - Implemented automatic non-blocking fallback to ColorMatrix + Vibe LUT pipeline if model file is missing or fails to load.
   - Verified 0 runtime crashes (`AndroidRuntime:E`) in Logcat.
+
+## Phase 26: Live AI Director & L2 Hardware Tuning (100% COMPLETE)
+
+- [x] **Step 46: Live AI Director & L2 Hardware Tuning**
+  - Upgraded `SceneClassifier.kt` with `analyzeWithDetection()` executing 5 FPS detection sampling, subject bounding box calculations, and real-time composition coaching prompts (`✨ Step Closer`, `✨ Move Right`, `✨ Move Left`, `✨ Perfect Composition`).
+  - Upgraded `AiPlanner.kt` to configure L2 hardware tuning parameters: min ISO 100 lock & infinity focus (0.0f) for LANDSCAPE, Face AE lock & +0.3 EV for PORTRAIT, and EV +1.0 for NIGHT.
+  - Upgraded `CameraController.kt` to apply L2 hardware tuning directly into Camera2 `CaptureRequest` repeat session.
+  - Upgraded `CameraScreen.kt` to render an accent cyan (`#00E5FF`) bounding box overlay on detected subject and a semi-transparent composition coaching hint pill pill at bottom center of viewfinder.
+  - Verified 0 runtime crashes (`AndroidRuntime:E`) in Logcat.

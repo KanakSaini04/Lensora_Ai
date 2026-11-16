@@ -1,23 +1,31 @@
-# Lensora_Ai Comprehensive Architecture & Phase 25 Report
+# Lensora_Ai Comprehensive Architecture & Phase 26 Report
 
 ## Executive Summary
 
 **Lensora_Ai** (`com.lensora.ai`) is an AI-first computational camera application built on Android 16 (API 36) using Jetpack Compose, Material 3 (Obsidian Royal Theme), Hilt dependency injection, and a pure **Camera2 L0 Safe Core HAL Engine** (strictly zero CameraX dependencies).
 
-This report presents the completion of **Phase 25: Real Image-to-Image AI Pipeline (Dehaze + LUT Integration)**. The foreground processing service (`AiProcessorService.kt`) has transitioned from MobileNet classification to a full **Real Image-to-Image AI Enhancement Engine**. The system inspects internal DLC model storage (`filesDir/models/`) for Dehaze or Real-ESRGAN image enhancement models (`real_esrgan_v2.tflite`, `dehaze.tflite`). For each $512 \times 512$ tile, the service streams pixels into input float buffers, executes TFLite inference via GPU/CPU, reconstructs the enhanced tile, applies active **VibePreset** LUT color grading matrices (e.g. Cinematic, Leica, Royal Gold), and validates luminance with the L4 Anti-AI Validator (`Validator.kt`). Safe fallbacks guarantee seamless operations if models are missing or unreadable.
+This report presents the completion of **Phase 26: Live AI Director & L2 Hardware Tuning** (Blueprint Section 8). The live viewfinder analysis has been upgraded to run real-time subject detection sampling at 5 FPS (`SceneClassifier.analyzeWithDetection`). The engine calculates normalized subject bounding boxes and dynamically generates composition coaching prompts (`✨ Step Closer`, `✨ Move Right`, `✨ Move Left`, `✨ Perfect Composition`), rendered via an accent cyan (`#00E5FF`) bounding box rectangle and a frosted glass coaching hint pill on `CameraScreen.kt`. Concurrently, the **L2 AI Planner** (`AiPlanner.kt`) dynamically injects automatic Camera2 hardware tuning (`CaptureRequest`) into `CameraController.kt`: locking ISO to minimum (100) and focus to infinity (`0.0f`) for LANDSCAPE, enabling Face AE Lock for PORTRAIT, and boosting exposure compensation (+1.0 EV) for NIGHT.
 
 ---
 
-## 1. Architectural Transition: Classification $\rightarrow$ Image-to-Image AI Enhancement
+## 1. Architectural Setup: Live AI Director & L2 Auto-Hardware Tuning
 
-- **Image-to-Image Model Selection**: `ModelManager.getEnhancementModelFile()` prioritizes `real_esrgan_v2.tflite`, `dehaze.tflite`, and `image_enhancer.tflite`, filtering out classification models.
-- **Tiled Tensor Stream Engine**: For each $512 \times 512$ tile:
-  1. Decodes tile region via `BitmapRegionDecoder` (RAM Memory Shield).
-  2. Maps $512 \times 512 \times 3$ RGB pixels into float `ByteBuffer` ($1 \times H \times W \times 3$).
-  3. Executes `interpreter.run(inputBuffer, outputBuffer)` on GPU/CPU.
-  4. Converts output float buffer back into $512 \times 512$ ARGB_8888 Bitmap.
-- **Stacked Vibe LUT Color Grading**: Applies active `VibePreset` ColorMatrix (Cinematic, Leica, Vintage, Royal Gold) onto output tiles using software `Canvas` + `ColorMatrixColorFilter`.
-- **L4 Anti-AI Validation & Fail-Safe Fallback**: Passes tiles through `Validator.isTileValid(tile)`. If a model is missing or a tile fails validation, draws original unenhanced tile pixel data without failing the capture flow.
+- **5 FPS Stream Sampling**: `SceneClassifier.analyzeWithDetection` runs preview frame sampling on `Dispatchers.Default` every 500ms, preserving low thermal overhead.
+- **Bounding Box & Composition Coaching Logic**:
+  - Calculates normalized bounding box `RectF(normLeft, normTop, normRight, normBottom)`.
+  - Calculates subject center $X$ and area ratio.
+  - Generates Compose coaching hint:
+    - Area ratio $< 0.22 \rightarrow$ `"✨ Step Closer"`
+    - Center $X < 0.40 \rightarrow$ `"✨ Move Right"`
+    - Center $X > 0.60 \rightarrow$ `"✨ Move Left"`
+    - Center in range $\rightarrow$ `"✨ Perfect Composition"`
+- **Compose Overlays**:
+  - **Bounding Box Overlay**: Cyan (`#00E5FF`) 2.dp rounded rectangle drawn around subject on viewfinder canvas.
+  - **Coaching Hint Pill**: Frosted dark surface (`#131313` at 75% opacity) with cyan border and bulb icon.
+- **L2 Camera2 Hardware Tuning**:
+  - **LANDSCAPE**: Locks ISO to minimum (100), sets `CONTROL_AF_MODE_OFF`, and sets `LENS_FOCUS_DISTANCE = 0.0f` (infinity focus).
+  - **PORTRAIT**: Sets `CONTROL_AE_LOCK = true` (Face AE Lock) and `CONTROL_AE_EXPOSURE_COMPENSATION = +0.3 EV`.
+  - **NIGHT**: Sets `CONTROL_AE_EXPOSURE_COMPENSATION = +1.0 EV`.
 
 ---
 
@@ -33,15 +41,14 @@ The **Probe Lab** audits camera hardware capabilities at runtime without opening
 
 ---
 
-## 3. Phase 25 Image-to-Image AI & LUT Audit Matrix
+## 3. Phase 26 Live AI Director & L2 Hardware Tuning Audit Matrix
 
 | Component | Target Action | Execution Engine | Safeguard / Fallback | Result |
 | :--- | :--- | :--- | :--- | :---: |
-| `ModelManager.kt` | Image-to-Image Model Load | `getEnhancementModelFile()` | Safe null return if missing | `PASS` |
-| `AiProcessorService.kt` | $512 \times 512$ Tiled AI Inference | `Interpreter.run(input, output)` | Fallback to ColorMatrix pipeline | `PASS` |
-| `AiProcessorService.kt` | Vibe Preset LUT Pass | `ColorMatrixColorFilter` | `VibePreset.NONE` standard matrix | `PASS` |
-| `Validator.kt` | L4 Tile Validation | `isTileValid(enhancedTile)` | Draws raw original tile on fail | `PASS` |
-| `AiProcessorService.kt` | GPU Memory Cleanup | `interpreter.close()` & `gpuDelegate.close()` | Executed in service `finally` block | `PASS` |
+| `SceneClassifier.kt` | Bounding Box Detection | `analyzeWithDetection()` | 5 FPS sampling loop on `Dispatchers.Default` | `PASS` |
+| `CameraScreen.kt` | Cyan Bounding Box & Coaching Pill | Compose `Canvas` + `Surface` | Hidden if bounding box is null | `PASS` |
+| `AiPlanner.kt` | L2 Hardware Plan Generator | `createPlan(sceneType)` | Standard `SceneType.AUTO` fallback | `PASS` |
+| `CameraController.kt` | Camera2 Hardware Tuning | `CaptureRequest` repeat session | `try-catch` safety wrapping | `PASS` |
 
 ---
 
@@ -50,9 +57,9 @@ The **Probe Lab** audits camera hardware capabilities at runtime without opening
 - **Build Status**: `./gradlew assembleDebug` & `./gradlew installDebug` - **100% SUCCESS**.
 - **ADB Permission Grants**: Granted `CAMERA`, `RECORD_AUDIO`, and `POST_NOTIFICATIONS` permissions programmatically.
 - **Logcat Audit Logs**:
-  - `AiProcessorService: Executing L3 Real Image-to-Image AI Enhancement & LUT Pipeline in Foreground Service`
-  - `AiProcessorService: Applied Vibe Preset ColorMatrix pass: Cinematic`
-  - `AiProcessorService: Processing 4080 x 3060 px in 48 tiles (512 x 512 px each)`
-  - `L4Validator: L4 Validation PASS: Image luminance check valid`
-  - `AiProcessorService: TFLite Interpreter & GPU resources safely closed`
+  - `SceneClassifier: Live AI Director Detection: ✨ AI: Night [✨ Step Closer] in 3ms`
+  - `AiPlanner: Applied NIGHT plan: EV +1.0, AF Mode 1`
+  - `AiPlanner: L2 Hardware Tuning: LANDSCAPE detected (ISO: 100, FocusDist: 0.0, FaceAE: false)`
+  - `CameraController: L2 Hardware Tuning: LANDSCAPE detected, locking ISO to 100 (min ISO: 100)`
+  - `CameraController: L2 Hardware Tuning: LANDSCAPE detected, locking focus to infinity (0.0f)`
 - **Logcat Crash Audit**: `adb logcat -d -s AndroidRuntime:E` - **0 Runtime Crashes (`AndroidRuntime:E`)**.

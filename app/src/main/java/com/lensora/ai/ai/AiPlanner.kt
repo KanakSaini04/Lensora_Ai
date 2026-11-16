@@ -16,6 +16,9 @@ data class ProcessingPlan(
     val sceneType: SceneType,
     val targetEvOffset: Float,
     val targetAfMode: Int,
+    val isoTarget: Int? = null,
+    val focusDistance: Float? = null,
+    val faceAeLock: Boolean = false,
 )
 
 class AiPlanner {
@@ -27,11 +30,14 @@ class AiPlanner {
                 sceneType = SceneType.PORTRAIT,
                 targetEvOffset = 0.3f,
                 targetAfMode = CaptureRequest.CONTROL_AF_MODE_CONTINUOUS_PICTURE,
+                faceAeLock = true,
             )
             SceneType.LANDSCAPE -> ProcessingPlan(
                 sceneType = SceneType.LANDSCAPE,
                 targetEvOffset = -0.2f,
-                targetAfMode = CaptureRequest.CONTROL_AF_MODE_AUTO,
+                targetAfMode = CaptureRequest.CONTROL_AF_MODE_OFF,
+                isoTarget = 100,
+                focusDistance = 0.0f, // Infinity focus
             )
             SceneType.NIGHT -> ProcessingPlan(
                 sceneType = SceneType.NIGHT,
@@ -50,10 +56,17 @@ class AiPlanner {
             )
         }
 
-        Log.i(
-            tag,
-            "Applied ${plan.sceneType} plan: EV ${String.format(Locale.US, "%+.1f", plan.targetEvOffset)}, AF Mode ${plan.targetAfMode}",
-        )
+        if (plan.isoTarget != null || plan.focusDistance != null || plan.faceAeLock) {
+            Log.i(
+                tag,
+                "L2 Hardware Tuning: ${plan.sceneType} detected (ISO: ${plan.isoTarget ?: "Auto"}, FocusDist: ${plan.focusDistance ?: "Auto"}, FaceAE: ${plan.faceAeLock})",
+            )
+        } else {
+            Log.i(
+                tag,
+                "Applied ${plan.sceneType} plan: EV ${String.format(Locale.US, "%+.1f", plan.targetEvOffset)}, AF Mode ${plan.targetAfMode}",
+            )
+        }
         return plan
     }
 
