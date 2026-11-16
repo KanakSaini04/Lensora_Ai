@@ -99,4 +99,39 @@ graph TD
     ProbeEngine -->|P1 Result| P1[P1 200MP: Binned to 12.5MP]
     ProbeEngine -->|P2 Result| P2[P2 RAW_SENSOR: PASS]
     ProbeEngine -->|P3 Result| P3[P3 24fps Cinema: PASS]
+
+---
+
+## 5. Editor Import Data Flow (`com.lensora.ai.editor.import`)
+
+```mermaid
+sequenceDiagram
+    autonumber
+    participant UI as ProjectsScreen UI
+    participant VM as ProjectViewModel
+    participant Importer as ProjectImporter
+    participant Guard as StorageGuard (StatFs)
+    participant MediaStore as System Photo Picker
+    participant Disk as Local FilesDir Storage
+
+    UI->>MediaStore: Launch PickMultipleVisualMedia (max 30)
+    MediaStore-->>UI: Picked Media URIs
+    UI->>VM: startImport(pickedUris, projectName)
+    VM->>Importer: importMediaFlow(pickedUris)
+    Importer->>Guard: evaluateStorageGuard(availableBytes, requiredBytes)
+    alt Storage Low (< Required Bytes)
+        Guard-->>Importer: Storage Guard Blocked
+        Importer-->>UI: Emit ImportState.StorageBlocked
+    else Storage Space Available
+        Guard-->>Importer: Storage Guard PASS
+        loop For Each Picked URI
+            Importer->>Disk: Stream Bytes to filesDir/projects/<id>/media/<clipId>.<ext>.tmp
+            Importer->>Disk: Atomic Rename to <clipId>.<ext>
+            Importer->>Importer: Extract Duration (MediaMetadataRetriever)
+            Importer-->>UI: Emit ImportState.Progress
+        end
+        Importer->>Disk: Save Project JSON atomically (<id>.json.tmp -> <id>.json)
+        Importer-->>UI: Emit ImportState.Success(project)
+    end
+```
 ```
