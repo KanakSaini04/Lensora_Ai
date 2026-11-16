@@ -358,15 +358,7 @@ fun CameraScreen(
                 }
             }
 
-            // PHOTO Mode Thin White Aesthetic Border Overlay
-            if (selectedMode == CameraMode.PHOTO && customModeName == null) {
-                Box(
-                    modifier = Modifier
-                        .fillMaxSize()
-                        .padding(16.dp)
-                        .border(width = 1.dp, color = ColorWhite.copy(alpha = 0.5f), shape = RoundedCornerShape(12.dp)),
-                )
-            }
+
 
             // 2.39:1 Cinematic Aspect Ratio Pure Black Letterboxing Overlay (Top 12% & Bottom 12% bars, 76% center viewfinder)
             if (selectedMode == CameraMode.CINEMATIC && customModeName == null) {

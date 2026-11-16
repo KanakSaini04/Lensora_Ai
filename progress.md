@@ -318,3 +318,11 @@
   - Organised bottom overlay controls (AI Coaching Pill, Zoom Pills, Mode Carousel, Shutter Row) inside a single bottom-aligned Column with navigationBarsPadding().
   - Eliminated all component collisions on physical devices and emulators.
   - Verified 0 runtime crashes (adb logcat -d -s AndroidRuntime:E).
+
+## Phase 31: Hardware Audit Protocol & System Diagnostics (100% COMPLETE)
+
+- [x] **Step 51: Hardware Audit Protocol & System Diagnostics Dashboard**
+  - Implemented SystemMonitor.kt fetching real-time RAM, Battery Temp, and Thermal Status.
+  - Added "System Diagnostics" card in SettingsScreen.kt with 2-second live polling.
+  - Created docs/Document/DEVICE_AUDIT_PROTOCOL.md containing the full 6-test physical audit matrix.
+  - Verified 0 runtime crashes.
