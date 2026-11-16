@@ -500,7 +500,7 @@ fun CameraScreen(
                 },
             )
 
-            // Frosted Glass AI Badge / Recording Timer Overlay at Top Center (Padding 128.dp cleanly below Top Bar Icons)
+            // Frosted Glass AI Badge / Recording Timer Overlay at Top Center (Padding 80.dp cleanly below Top Bar Icons)
             if (isRecordingVideo) {
                 val mins = recordingSeconds / 60
                 val secs = recordingSeconds % 60
@@ -508,7 +508,8 @@ fun CameraScreen(
                 AiBadge(
                     modifier = Modifier
                         .align(Alignment.TopCenter)
-                        .padding(top = 128.dp),
+                        .statusBarsPadding()
+                        .padding(top = 80.dp),
                     statusText = timerText,
                 )
             } else {
@@ -521,7 +522,8 @@ fun CameraScreen(
                 AiBadge(
                     modifier = Modifier
                         .align(Alignment.TopCenter)
-                        .padding(top = 128.dp),
+                        .statusBarsPadding()
+                        .padding(top = 80.dp),
                     statusText = badgeText,
                 )
             }
