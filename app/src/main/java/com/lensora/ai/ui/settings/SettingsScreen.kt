@@ -28,6 +28,7 @@ import androidx.compose.material.icons.outlined.Download
 import androidx.compose.material.icons.outlined.Info
 import androidx.compose.material.icons.outlined.Memory
 import androidx.compose.material.icons.outlined.Science
+import androidx.compose.material.icons.outlined.Speed
 import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.Card
@@ -47,10 +48,12 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
@@ -67,7 +70,11 @@ import com.lensora.ai.ui.theme.ColorMutedGray
 import com.lensora.ai.ui.theme.ColorWhite
 import com.lensora.ai.ui.theme.PitchBlackBackground
 import com.lensora.ai.ui.theme.RoyalBlue
+import com.lensora.ai.utils.SystemMonitor
+import com.lensora.ai.utils.SystemStats
+import kotlinx.coroutines.delay
 import java.io.File
+import java.util.Locale
 import java.util.UUID
 
 @OptIn(ExperimentalMaterial3Api::class)
@@ -114,6 +121,17 @@ fun SettingsScreen(
     }
     val isLamaModelDownloaded = lamaModelFile.exists() && lamaModelFile.length() > 0
 
+    // System Monitor State
+    val systemMonitor = remember { SystemMonitor(context) }
+    var systemStats by remember { mutableStateOf(systemMonitor.getSystemStats()) }
+
+    LaunchedEffect(Unit) {
+        while (true) {
+            systemStats = systemMonitor.getSystemStats()
+            delay(2000)
+        }
+    }
+
     Scaffold(
         topBar = {
             TopAppBar(
@@ -137,9 +155,99 @@ fun SettingsScreen(
                 .padding(innerPadding)
                 .background(PitchBlackBackground),
         ) {
-            // Section 1: AI Center
+            // Section 1: AI Center & System Diagnostics
             item {
-                SectionHeader(title = "AI CONTROL CENTER")
+                SectionHeader(title = "SYSTEM & AI CONTROL CENTER")
+
+                // Real-Time System Diagnostics Card
+                Card(
+                    colors = CardDefaults.cardColors(containerColor = CharcoalSurface),
+                    shape = RoundedCornerShape(12.dp),
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .padding(horizontal = 16.dp, vertical = 4.dp),
+                ) {
+                    Column(
+                        modifier = Modifier.padding(16.dp),
+                    ) {
+                        Row(
+                            verticalAlignment = Alignment.CenterVertically,
+                        ) {
+                            Icon(
+                                imageVector = Icons.Outlined.Speed,
+                                contentDescription = "System Diagnostics",
+                                tint = AccentCyan,
+                            )
+                            Spacer(modifier = Modifier.width(12.dp))
+                            Column {
+                                Text(
+                                    text = "System Diagnostics Dashboard",
+                                    color = ColorWhite,
+                                    fontWeight = FontWeight.Bold,
+                                    fontSize = 14.sp,
+                                )
+                                Text(
+                                    text = "Redmi Note 13 Pro 5G | Live Stats (2s)",
+                                    color = ColorMutedGray,
+                                    fontSize = 12.sp,
+                                )
+                            }
+                        }
+
+                        Spacer(modifier = Modifier.height(12.dp))
+
+                        Row(
+                            modifier = Modifier.fillMaxWidth(),
+                            horizontalArrangement = Arrangement.SpaceBetween,
+                        ) {
+                            Column {
+                                Text(text = "RAM Usage", color = ColorMutedGray, fontSize = 11.sp)
+                                Text(
+                                    text = String.format(Locale.US, "%.1f GB / %.1f GB (%d%%)", systemStats.ramUsedGb, systemStats.ramTotalGb, systemStats.ramPercentage),
+                                    color = ColorWhite,
+                                    fontSize = 13.sp,
+                                    fontWeight = FontWeight.SemiBold,
+                                )
+                            }
+                            Column(horizontalAlignment = Alignment.End) {
+                                Text(text = "Battery Temp", color = ColorMutedGray, fontSize = 11.sp)
+                                Text(
+                                    text = String.format(Locale.US, "%.1f °C", systemStats.batteryTempCelsius),
+                                    color = if (systemStats.batteryTempCelsius > 40f) Color(0xFFEF4444) else AccentCyan,
+                                    fontSize = 13.sp,
+                                    fontWeight = FontWeight.SemiBold,
+                                )
+                            }
+                        }
+
+                        Spacer(modifier = Modifier.height(8.dp))
+
+                        Row(
+                            modifier = Modifier.fillMaxWidth(),
+                            horizontalArrangement = Arrangement.SpaceBetween,
+                        ) {
+                            Column {
+                                Text(text = "Thermal State", color = ColorMutedGray, fontSize = 11.sp)
+                                Text(
+                                    text = systemStats.thermalStatus,
+                                    color = if (systemStats.thermalStatus == "NONE" || systemStats.thermalStatus == "LIGHT") AccentCyan else RoyalBlue,
+                                    fontSize = 13.sp,
+                                    fontWeight = FontWeight.SemiBold,
+                                )
+                            }
+                            Column(horizontalAlignment = Alignment.End) {
+                                Text(text = "AI Engines", color = ColorMutedGray, fontSize = 11.sp)
+                                Text(
+                                    text = if (systemStats.lamaModelReady) "LaMa: Ready | MobileNet: Ready" else "MobileNet: Ready",
+                                    color = ColorWhite,
+                                    fontSize = 13.sp,
+                                    fontWeight = FontWeight.SemiBold,
+                                )
+                            }
+                        }
+                    }
+                }
+
                 ListItem(
                     headlineContent = {
                         Text(
