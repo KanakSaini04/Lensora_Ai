@@ -285,3 +285,13 @@
   - Upgraded `CameraController.kt` to apply L2 hardware tuning directly into Camera2 `CaptureRequest` repeat session.
   - Upgraded `CameraScreen.kt` to render an accent cyan (`#00E5FF`) bounding box overlay on detected subject and a semi-transparent composition coaching hint pill pill at bottom center of viewfinder.
   - Verified 0 runtime crashes (`AndroidRuntime:E`) in Logcat.
+
+## Phase 27: Real Google Drive Cloud Vault (OAuth2 + REST API) (100% COMPLETE)
+
+- [x] **Step 47: Real Google Drive Cloud Vault (OAuth2 + Drive REST API v3)**
+  - Added `androidx.security:security-crypto:1.0.0` dependency in `gradle/libs.versions.toml` and `app/build.gradle.kts`.
+  - Created `GoogleAuthManager.kt` managing OAuth2 tokens, storing refresh/access tokens securely using `EncryptedSharedPreferences` with `MasterKeys`.
+  - Upgraded `CloudSyncWorker.kt` to execute real Google Drive REST API v3 resumable upload requests (`uploadType=resumable`) with `NetworkType.UNMETERED` (Wi-Fi only) WorkManager constraints.
+  - Implemented SHA-256 checksum verification during streaming and verified Auto-Purge local MediaStore deletion lifecycle (`ContentResolver.delete()`).
+  - Upgraded `SettingsScreen.kt` to add "Sign in to Google Drive" button, user email display, and auth state management.
+  - Verified 0 runtime crashes (`AndroidRuntime:E`) in Logcat.

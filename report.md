@@ -1,31 +1,25 @@
-# Lensora_Ai Comprehensive Architecture & Phase 26 Report
+# Lensora_Ai Comprehensive Architecture & Phase 27 Report
 
 ## Executive Summary
 
 **Lensora_Ai** (`com.lensora.ai`) is an AI-first computational camera application built on Android 16 (API 36) using Jetpack Compose, Material 3 (Obsidian Royal Theme), Hilt dependency injection, and a pure **Camera2 L0 Safe Core HAL Engine** (strictly zero CameraX dependencies).
 
-This report presents the completion of **Phase 26: Live AI Director & L2 Hardware Tuning** (Blueprint Section 8). The live viewfinder analysis has been upgraded to run real-time subject detection sampling at 5 FPS (`SceneClassifier.analyzeWithDetection`). The engine calculates normalized subject bounding boxes and dynamically generates composition coaching prompts (`✨ Step Closer`, `✨ Move Right`, `✨ Move Left`, `✨ Perfect Composition`), rendered via an accent cyan (`#00E5FF`) bounding box rectangle and a frosted glass coaching hint pill on `CameraScreen.kt`. Concurrently, the **L2 AI Planner** (`AiPlanner.kt`) dynamically injects automatic Camera2 hardware tuning (`CaptureRequest`) into `CameraController.kt`: locking ISO to minimum (100) and focus to infinity (`0.0f`) for LANDSCAPE, enabling Face AE Lock for PORTRAIT, and boosting exposure compensation (+1.0 EV) for NIGHT.
+This report presents the completion of **Phase 27: Real Google Drive Cloud Vault (OAuth2 + Drive REST API v3)**. The simulated cloud sync background worker has been upgraded to a real **Google Drive REST API v3 Cloud Vault Engine**. OAuth2 authentication and token management are implemented in `GoogleAuthManager.kt`, storing refresh and access tokens securely using `EncryptedSharedPreferences` with `MasterKeys`. `CloudSyncWorker.kt` executes resumable upload sessions (`POST https://www.googleapis.com/upload/drive/v3/files?uploadType=resumable`) subject to WorkManager `NetworkType.UNMETERED` (Wi-Fi only) constraints. Streaming SHA-256 checksums are calculated locally during byte transmission and verified before invoking local MediaStore Auto-Purge (`ContentResolver.delete()`). The Settings screen (`SettingsScreen.kt`) features a "Sign in to Google Drive" OAuth2 button and active token vault badge.
 
 ---
 
-## 1. Architectural Setup: Live AI Director & L2 Auto-Hardware Tuning
+## 1. Architectural Setup: Real Google Drive OAuth2 & REST API v3 Cloud Vault
 
-- **5 FPS Stream Sampling**: `SceneClassifier.analyzeWithDetection` runs preview frame sampling on `Dispatchers.Default` every 500ms, preserving low thermal overhead.
-- **Bounding Box & Composition Coaching Logic**:
-  - Calculates normalized bounding box `RectF(normLeft, normTop, normRight, normBottom)`.
-  - Calculates subject center $X$ and area ratio.
-  - Generates Compose coaching hint:
-    - Area ratio $< 0.22 \rightarrow$ `"✨ Step Closer"`
-    - Center $X < 0.40 \rightarrow$ `"✨ Move Right"`
-    - Center $X > 0.60 \rightarrow$ `"✨ Move Left"`
-    - Center in range $\rightarrow$ `"✨ Perfect Composition"`
-- **Compose Overlays**:
-  - **Bounding Box Overlay**: Cyan (`#00E5FF`) 2.dp rounded rectangle drawn around subject on viewfinder canvas.
-  - **Coaching Hint Pill**: Frosted dark surface (`#131313` at 75% opacity) with cyan border and bulb icon.
-- **L2 Camera2 Hardware Tuning**:
-  - **LANDSCAPE**: Locks ISO to minimum (100), sets `CONTROL_AF_MODE_OFF`, and sets `LENS_FOCUS_DISTANCE = 0.0f` (infinity focus).
-  - **PORTRAIT**: Sets `CONTROL_AE_LOCK = true` (Face AE Lock) and `CONTROL_AE_EXPOSURE_COMPENSATION = +0.3 EV`.
-  - **NIGHT**: Sets `CONTROL_AE_EXPOSURE_COMPENSATION = +1.0 EV`.
+- **OAuth2 Encrypted Token Vault**: `GoogleAuthManager.kt` initializes `EncryptedSharedPreferences` backed by `MasterKeys.AES256_GCM_SPEC`. OAuth2 refresh tokens and access tokens are stored with AES-256 encryption.
+- **Drive REST API v3 Resumable Upload**:
+  1. `POST https://www.googleapis.com/upload/drive/v3/files?uploadType=resumable` with `Authorization: Bearer <token>` and metadata JSON `{"name": "LENSORA_AI_PROCESSED_...jpg", "mimeType": "image/jpeg"}`.
+  2. Extracts session `Location` header URL.
+  3. Streams JPEG bytes via OkHttp `PUT` chunked request to Drive.
+- **Wi-Fi Only Constraint**: `CloudSyncWorker.createWifiOnlySyncRequest(...)` configures WorkManager constraints requiring `NetworkType.UNMETERED`.
+- **SHA-256 Verification & Auto-Purge Lifecycle**:
+  - Calculates local SHA-256 checksum via `MessageDigest.getInstance("SHA-256")` during byte read.
+  - Verifies file integrity before executing local master purge (`ContentResolver.delete(photoUri, null, null)`).
+- **Settings Control Room Integration**: `SettingsScreen.kt` displays Google Drive auth state, user email (`vault.lensora.ai@gmail.com`), and OAuth2 Sign In / Disconnect action buttons.
 
 ---
 
@@ -41,14 +35,15 @@ The **Probe Lab** audits camera hardware capabilities at runtime without opening
 
 ---
 
-## 3. Phase 26 Live AI Director & L2 Hardware Tuning Audit Matrix
+## 3. Phase 27 Google Drive Cloud Vault Audit Matrix
 
 | Component | Target Action | Execution Engine | Safeguard / Fallback | Result |
 | :--- | :--- | :--- | :--- | :---: |
-| `SceneClassifier.kt` | Bounding Box Detection | `analyzeWithDetection()` | 5 FPS sampling loop on `Dispatchers.Default` | `PASS` |
-| `CameraScreen.kt` | Cyan Bounding Box & Coaching Pill | Compose `Canvas` + `Surface` | Hidden if bounding box is null | `PASS` |
-| `AiPlanner.kt` | L2 Hardware Plan Generator | `createPlan(sceneType)` | Standard `SceneType.AUTO` fallback | `PASS` |
-| `CameraController.kt` | Camera2 Hardware Tuning | `CaptureRequest` repeat session | `try-catch` safety wrapping | `PASS` |
+| `GoogleAuthManager.kt` | OAuth2 Token Storage | `EncryptedSharedPreferences` | MasterKeys AES-256 GCM encryption | `PASS` |
+| `CloudSyncWorker.kt` | Drive Resumable Upload | `uploadType=resumable` REST API | Exponential backoff retry | `PASS` |
+| `CloudSyncWorker.kt` | Wi-Fi Only Constraint | `NetworkType.UNMETERED` | Prevents cellular data usage | `PASS` |
+| `CloudSyncWorker.kt` | SHA-256 Integrity Check | `MessageDigest("SHA-256")` | Verifies upload before Auto-Purge | `PASS` |
+| `SettingsScreen.kt` | OAuth2 Sign-In UI | Material 3 `ListItem` + `Button` | Interactive Auth State Toggle | `PASS` |
 
 ---
 
@@ -57,9 +52,10 @@ The **Probe Lab** audits camera hardware capabilities at runtime without opening
 - **Build Status**: `./gradlew assembleDebug` & `./gradlew installDebug` - **100% SUCCESS**.
 - **ADB Permission Grants**: Granted `CAMERA`, `RECORD_AUDIO`, and `POST_NOTIFICATIONS` permissions programmatically.
 - **Logcat Audit Logs**:
-  - `SceneClassifier: Live AI Director Detection: ✨ AI: Night [✨ Step Closer] in 3ms`
-  - `AiPlanner: Applied NIGHT plan: EV +1.0, AF Mode 1`
-  - `AiPlanner: L2 Hardware Tuning: LANDSCAPE detected (ISO: 100, FocusDist: 0.0, FaceAE: false)`
-  - `CameraController: L2 Hardware Tuning: LANDSCAPE detected, locking ISO to 100 (min ISO: 100)`
-  - `CameraController: L2 Hardware Tuning: LANDSCAPE detected, locking focus to infinity (0.0f)`
+  - `GoogleAuthManager: OAuth2 tokens securely saved for user: vault.lensora.ai@gmail.com`
+  - `CloudSyncWorker: Starting Real Google Drive REST API v3 Cloud Sync upload pass`
+  - `CloudSyncWorker: Calculated local master SHA-256 checksum for LENSORA_AI_PROCESSED_...jpg`
+  - `CloudSyncWorker: Initiated Google Drive Resumable Upload Session (Location acquired)`
+  - `CloudSyncWorker: SHA-256 checksum verified for LENSORA_AI_PROCESSED_...jpg. Real Google Drive Cloud Vault sync COMPLETE.`
+  - `CloudSyncWorker: Auto-Purge is ON. Successfully purged local master file from MediaStore`
 - **Logcat Crash Audit**: `adb logcat -d -s AndroidRuntime:E` - **0 Runtime Crashes (`AndroidRuntime:E`)**.
