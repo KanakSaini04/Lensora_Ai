@@ -61,6 +61,26 @@ class ModelManager(
         return otherModels?.firstOrNull()
     }
 
+    fun getLamaModelFile(): File? {
+        val modelsDir = File(context.filesDir, "models")
+        if (!modelsDir.exists()) return null
+
+        val candidates = listOf(
+            "lama_dilated.tflite",
+            "lama_inpainting.tflite",
+            "object_eraser.tflite",
+        )
+
+        for (candidate in candidates) {
+            val file = File(modelsDir, candidate)
+            if (file.exists() && file.length() > 0) {
+                Log.i(tag, "Found LaMa-Dilated Inpainting model: ${file.name} (${file.length()} bytes)")
+                return file
+            }
+        }
+        return null
+    }
+
     fun close() {
         try {
             interpreter?.close()
