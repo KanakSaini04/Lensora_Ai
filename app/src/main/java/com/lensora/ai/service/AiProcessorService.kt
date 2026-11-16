@@ -88,7 +88,7 @@ class AiProcessorService : Service() {
                     notification,
                     if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.UPSIDE_DOWN_CAKE) {
                         ServiceInfo.FOREGROUND_SERVICE_TYPE_DATA_SYNC
-                    } else 0
+                    } else { 0 },
                 )
             } else {
                 startForeground(notificationId, notification)
@@ -110,15 +110,19 @@ class AiProcessorService : Service() {
         return START_NOT_STICKY
     }
 
-    private suspend fun executeTiledProcessingPass(
+    private fun executeTiledProcessingPass(
         photoUriStr: String,
         sceneTypeStr: String,
         evOffset: Float,
-        vibePreset: VibePreset
+        vibePreset: VibePreset,
     ) {
         Log.i(tag, "Executing L3 512x512 Tiled Processing pass in Foreground Service for $photoUriStr")
         val startTime = System.currentTimeMillis()
         var processedBitmap: Bitmap? = null
+
+        var gpuDelegateObj: AutoCloseable? = null
+        var interpreter: Interpreter? = null
+        var usedTfLiteGpu = false
 
         try {
             val inputUri = Uri.parse(photoUriStr)
@@ -142,17 +146,32 @@ class AiProcessorService : Service() {
             val imgWidth = decoder.width
             val imgHeight = decoder.height
 
-            // 2. TFLite DLC Model Check & Inference Pass on Low-Res Sample
+            // 2. TFLite GPU Delegate Initialization & Model Loading Pass
             val mobileNetFile = File(filesDir, "models/mobilenet_v1_1.0_224.tflite")
             val fallbackFile = File(filesDir, "models/real_esrgan_v2.tflite")
             val modelFile = if (mobileNetFile.exists()) mobileNetFile else if (fallbackFile.exists()) fallbackFile else null
-            var usedTfLite = false
 
             if (modelFile != null && modelFile.exists()) {
-                var interpreter: Interpreter? = null
+                val interpreterOptions = Interpreter.Options()
                 try {
-                    val options = Interpreter.Options().apply { setNumThreads(4) }
-                    interpreter = Interpreter(modelFile, options)
+                    val gpuDelegateClass = Class.forName("org.tensorflow.lite.gpu.GpuDelegate")
+                    val constructor = gpuDelegateClass.getConstructor()
+                    val delegateInstance = constructor.newInstance()
+                    val delegateClass = Class.forName("org.tensorflow.lite.Delegate")
+                    val addDelegateMethod = Interpreter.Options::class.java.getMethod("addDelegate", delegateClass)
+                    addDelegateMethod.invoke(interpreterOptions, delegateInstance)
+                    if (delegateInstance is AutoCloseable) {
+                        gpuDelegateObj = delegateInstance
+                    }
+                    usedTfLiteGpu = true
+                    Log.i(tag, "TfLiteGpuDelegate initialized successfully for hardware acceleration")
+                } catch (gpuEx: Throwable) {
+                    Log.w(tag, "TfLiteGpuDelegate initialization failed (${gpuEx.localizedMessage}). Safe fallback to CPU XNNPACK thread pool.", gpuEx)
+                    interpreterOptions.setNumThreads(4)
+                }
+
+                try {
+                    interpreter = Interpreter(modelFile, interpreterOptions)
 
                     val sampleRect = Rect(0, 0, imgWidth.coerceAtMost(512), imgHeight.coerceAtMost(512))
                     val sampleTile = decoder.decodeRegion(sampleRect, null)
@@ -178,16 +197,15 @@ class AiProcessorService : Service() {
                         interpreter.run(inputBuffer, outputArray)
                         scaledBitmap.recycle()
                         sampleTile.recycle()
-                        Log.i(tag, "Real MobileNet TFLite AI Inference executed on tiled sample in Service")
+                        Log.i(tag, "Real MobileNet TFLite AI Inference executed on tiled sample (GPU Accelerated: $usedTfLiteGpu)")
                     } else {
                         sampleTile?.recycle()
                     }
-                    usedTfLite = true
                 } catch (e: Exception) {
-                    Log.w(tag, "TFLite Interpreter pass failed (${e.localizedMessage}). Safe fallback.", e)
-                } finally {
-                    interpreter?.close()
+                    Log.w(tag, "TFLite Interpreter pass failed (${e.localizedMessage}). Safe fallback to ColorMatrix.", e)
                 }
+            } else {
+                Log.i(tag, "No TFLite DLC model found. Executing ColorMatrix & Vibe LUT tiled pass.")
             }
 
             // 3. 512x512 Tiled Pipeline with ColorMatrix & Vibe LUT Integration
@@ -220,10 +238,24 @@ class AiProcessorService : Service() {
                     val bottom = (top + tileSize).coerceAtMost(imgHeight)
                     val rect = Rect(left, top, right, bottom)
 
-                    val tileBitmap = decoder.decodeRegion(rect, null)
-                    if (tileBitmap != null) {
-                        canvas.drawBitmap(tileBitmap, left.toFloat(), top.toFloat(), paint)
-                        tileBitmap.recycle() // Memory Shield: Recycle tile immediately
+                    val rawTileBitmap = decoder.decodeRegion(rect, null)
+                    if (rawTileBitmap != null) {
+                        try {
+                            // L4 Tile Luminance Validation
+                            if (validator.isTileValid(rawTileBitmap)) {
+                                canvas.drawBitmap(rawTileBitmap, left.toFloat(), top.toFloat(), paint)
+                            } else {
+                                Log.w(tag, "L4 Anti-AI Tile check failed for tile $tileIndex. Drawing raw unenhanced pixel data.")
+                                val rawPaint = Paint(Paint.ANTI_ALIAS_FLAG)
+                                canvas.drawBitmap(rawTileBitmap, left.toFloat(), top.toFloat(), rawPaint)
+                            }
+                        } catch (tileEx: Exception) {
+                            Log.e(tag, "Error processing tile $tileIndex. Safe fallback to raw pixel data.", tileEx)
+                            val rawPaint = Paint(Paint.ANTI_ALIAS_FLAG)
+                            canvas.drawBitmap(rawTileBitmap, left.toFloat(), top.toFloat(), rawPaint)
+                        } finally {
+                            rawTileBitmap.recycle() // Memory Shield: Recycle tile immediately
+                        }
                     }
 
                     tileIndex++
@@ -261,10 +293,10 @@ class AiProcessorService : Service() {
                 resolver.update(newUri, contentValues, null, null)
 
                 val executionTime = System.currentTimeMillis() - startTime
-                Log.i(tag, "L3 Service 512x512 Tiled AI Processing finished in ${executionTime}ms (Used TFLite: $usedTfLite, Vibe: ${vibePreset.displayName}, Total Tiles: $totalTiles). Saved $fileName to MediaStore at $newUri")
+                Log.i(tag, "L3 Service 512x512 Tiled AI Processing finished in ${executionTime}ms (Used GPU Delegate: $usedTfLiteGpu, Vibe: ${vibePreset.displayName}, Total Tiles: $totalTiles). Saved $fileName to MediaStore at $newUri")
 
                 // 6. Enqueue CloudSyncWorker if Cloud Sync toggle is ON in Settings
-                val prefs = getSharedPreferences("lensora_prefs", Context.MODE_PRIVATE)
+                val prefs = getSharedPreferences("lensora_prefs", MODE_PRIVATE)
                 val isCloudSyncEnabled = prefs.getBoolean("cloud_sync_enabled", false)
                 val isAutoPurgeEnabled = prefs.getBoolean("auto_purge_enabled", true)
 
@@ -275,7 +307,7 @@ class AiProcessorService : Service() {
                                 "PHOTO_URI" to newUri.toString(),
                                 "FILE_NAME" to fileName,
                                 "AUTO_PURGE_ENABLED" to isAutoPurgeEnabled,
-                            )
+                            ),
                         )
                         .build()
 
@@ -288,6 +320,14 @@ class AiProcessorService : Service() {
         } catch (e: Exception) {
             Log.e(tag, "Error during AiProcessorService execution pass", e)
         } finally {
+            // Resource Cleanup: Close TFLite Interpreter & GpuDelegate to free GPU memory
+            try {
+                interpreter?.close()
+                gpuDelegateObj?.close()
+                Log.i(tag, "TFLite Interpreter & GpuDelegate resources safely closed")
+            } catch (cleanupEx: Exception) {
+                Log.w(tag, "Error releasing TFLite/GPU resources", cleanupEx)
+            }
             processedBitmap?.recycle()
         }
     }
@@ -334,7 +374,7 @@ class AiProcessorService : Service() {
             val channel = NotificationChannel(
                 channelId,
                 "Lensora AI Processing",
-                NotificationManager.IMPORTANCE_LOW
+                NotificationManager.IMPORTANCE_LOW,
             ).apply {
                 description = "Silent foreground notification for L3 AI photo processing pipeline"
             }
