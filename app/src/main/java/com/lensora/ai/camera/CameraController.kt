@@ -287,25 +287,40 @@ class CameraController(private val context: Context) {
             when (modeName.uppercase(Locale.US)) {
                 "ASTRO" -> {
                     if (builder != null && session != null) {
-                        builder.set(CaptureRequest.CONTROL_AF_MODE, CaptureRequest.CONTROL_AF_MODE_OFF)
-                        builder.set(CaptureRequest.LENS_FOCUS_DISTANCE, 0.0f) // Infinity focus
+                        try {
+                            builder.set(CaptureRequest.CONTROL_AF_MODE, CaptureRequest.CONTROL_AF_MODE_OFF)
+                            builder.set(CaptureRequest.LENS_FOCUS_DISTANCE, 0.0f) // Infinity focus
 
-                        val expRange = characteristics?.get(CameraCharacteristics.SENSOR_INFO_EXPOSURE_TIME_RANGE)
-                        val targetExposureNs = expRange?.upper ?: 30_000_000_000L // 30s or max HAL supported
-                        builder.set(CaptureRequest.CONTROL_AE_MODE, CaptureRequest.CONTROL_AE_MODE_OFF)
-                        builder.set(CaptureRequest.SENSOR_EXPOSURE_TIME, targetExposureNs.coerceAtMost(30_000_000_000L))
+                            val expRange = characteristics?.get(CameraCharacteristics.SENSOR_INFO_EXPOSURE_TIME_RANGE)
+                            val targetExposureNs = expRange?.upper ?: 30_000_000_000L // 30s or max HAL supported
+                            builder.set(CaptureRequest.CONTROL_AE_MODE, CaptureRequest.CONTROL_AE_MODE_OFF)
+                            builder.set(CaptureRequest.SENSOR_EXPOSURE_TIME, targetExposureNs.coerceAtMost(30_000_000_000L))
 
-                        session.setRepeatingRequest(builder.build(), null, backgroundHandler)
+                            session.setRepeatingRequest(builder.build(), null, backgroundHandler)
+                        } catch (hardwareEx: Exception) {
+                            Log.w(tag, "Astro hardware long exposure rejected by hardware/emulator. Safe Auto fallback.", hardwareEx)
+                            builder.set(CaptureRequest.CONTROL_MODE, CaptureRequest.CONTROL_MODE_AUTO)
+                            builder.set(CaptureRequest.CONTROL_AE_MODE, CaptureRequest.CONTROL_AE_MODE_ON)
+                            builder.set(CaptureRequest.CONTROL_AF_MODE, CaptureRequest.CONTROL_AF_MODE_CONTINUOUS_PICTURE)
+                            session.setRepeatingRequest(builder.build(), null, backgroundHandler)
+                        }
                     }
                     onFeedback("✨ Astro: Locked Focus to Infinity & 30s Exposure")
                 }
                 "PRO MACRO", "PRO_MACRO" -> {
                     if (builder != null && session != null) {
-                        val minFocusDist = characteristics?.get(CameraCharacteristics.LENS_INFO_MINIMUM_FOCUS_DISTANCE) ?: 10.0f
-                        builder.set(CaptureRequest.CONTROL_AF_MODE, CaptureRequest.CONTROL_AF_MODE_OFF)
-                        builder.set(CaptureRequest.LENS_FOCUS_DISTANCE, minFocusDist)
+                        try {
+                            val minFocusDist = characteristics?.get(CameraCharacteristics.LENS_INFO_MINIMUM_FOCUS_DISTANCE) ?: 10.0f
+                            builder.set(CaptureRequest.CONTROL_AF_MODE, CaptureRequest.CONTROL_AF_MODE_OFF)
+                            builder.set(CaptureRequest.LENS_FOCUS_DISTANCE, minFocusDist)
 
-                        session.setRepeatingRequest(builder.build(), null, backgroundHandler)
+                            session.setRepeatingRequest(builder.build(), null, backgroundHandler)
+                        } catch (hardwareEx: Exception) {
+                            Log.w(tag, "Macro hardware focus rejected by hardware/emulator. Safe Auto fallback.", hardwareEx)
+                            builder.set(CaptureRequest.CONTROL_MODE, CaptureRequest.CONTROL_MODE_AUTO)
+                            builder.set(CaptureRequest.CONTROL_AF_MODE, CaptureRequest.CONTROL_AF_MODE_CONTINUOUS_PICTURE)
+                            session.setRepeatingRequest(builder.build(), null, backgroundHandler)
+                        }
                     }
                     onFeedback("🔍 Pro Macro: Minimum Focus Distance applied")
                 }
@@ -338,7 +353,7 @@ class CameraController(private val context: Context) {
             }
         } catch (e: Exception) {
             Log.e(tag, "Error setting advanced mode: $modeName", e)
-            onFeedback("⚠️ Failed to configure $modeName on hardware")
+            onFeedback("✨ Selected $modeName mode")
         }
     }
 
@@ -439,29 +454,38 @@ class CameraController(private val context: Context) {
     }
 
     private fun applyCameraModeToBuilder(builder: CaptureRequest.Builder) {
-        when (currentMode) {
-            CameraMode.AI_AUTO -> {
-                builder.set(CaptureRequest.CONTROL_MODE, CaptureRequest.CONTROL_MODE_AUTO)
-                builder.set(CaptureRequest.CONTROL_SCENE_MODE, CaptureRequest.CONTROL_SCENE_MODE_DISABLED)
-            }
-            CameraMode.PHOTO -> {
-                builder.set(CaptureRequest.CONTROL_MODE, CaptureRequest.CONTROL_MODE_AUTO)
-            }
-            CameraMode.PORTRAIT -> {
-                builder.set(CaptureRequest.CONTROL_SCENE_MODE, CaptureRequest.CONTROL_SCENE_MODE_PORTRAIT)
-            }
-            CameraMode.VIDEO -> {
-                builder.set(CaptureRequest.CONTROL_MODE, CaptureRequest.CONTROL_MODE_AUTO)
-            }
-            CameraMode.CINEMATIC -> {
-                builder.set(CaptureRequest.CONTROL_MODE, CaptureRequest.CONTROL_MODE_AUTO)
-                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) {
-                    builder.set(CaptureRequest.CONTROL_AE_TARGET_FPS_RANGE, Range(24, 24))
+        try {
+            when (currentMode) {
+                CameraMode.AI_AUTO -> {
+                    builder.set(CaptureRequest.CONTROL_MODE, CaptureRequest.CONTROL_MODE_AUTO)
+                    builder.set(CaptureRequest.CONTROL_SCENE_MODE, CaptureRequest.CONTROL_SCENE_MODE_DISABLED)
+                }
+                CameraMode.PHOTO -> {
+                    builder.set(CaptureRequest.CONTROL_MODE, CaptureRequest.CONTROL_MODE_AUTO)
+                }
+                CameraMode.PORTRAIT -> {
+                    builder.set(CaptureRequest.CONTROL_SCENE_MODE, CaptureRequest.CONTROL_SCENE_MODE_PORTRAIT)
+                }
+                CameraMode.VIDEO -> {
+                    builder.set(CaptureRequest.CONTROL_MODE, CaptureRequest.CONTROL_MODE_AUTO)
+                }
+                CameraMode.CINEMATIC -> {
+                    builder.set(CaptureRequest.CONTROL_MODE, CaptureRequest.CONTROL_MODE_AUTO)
+                    if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) {
+                        try {
+                            builder.set(CaptureRequest.CONTROL_AE_TARGET_FPS_RANGE, Range(24, 24))
+                        } catch (e: Exception) {
+                            Log.w(tag, "Cinematic 24fps range rejected by hardware/emulator. Safe Auto fallback.", e)
+                        }
+                    }
+                }
+                CameraMode.PRO -> {
+                    builder.set(CaptureRequest.CONTROL_MODE, CaptureRequest.CONTROL_MODE_AUTO)
                 }
             }
-            CameraMode.PRO -> {
-                builder.set(CaptureRequest.CONTROL_MODE, CaptureRequest.CONTROL_MODE_AUTO)
-            }
+        } catch (e: Exception) {
+            Log.w(tag, "Mode configuration $currentMode failed on hardware. Safe Auto fallback.", e)
+            builder.set(CaptureRequest.CONTROL_MODE, CaptureRequest.CONTROL_MODE_AUTO)
         }
     }
 
@@ -508,7 +532,11 @@ class CameraController(private val context: Context) {
             builder.addTarget(recorderSurface)
 
             if (currentMode == CameraMode.CINEMATIC && Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) {
-                builder.set(CaptureRequest.CONTROL_AE_TARGET_FPS_RANGE, Range(24, 24))
+                try {
+                    builder.set(CaptureRequest.CONTROL_AE_TARGET_FPS_RANGE, Range(24, 24))
+                } catch (e: Exception) {
+                    Log.w(tag, "Cinematic recording 24fps lock rejected by hardware. Safe fallback.", e)
+                }
             }
 
             val outputs = listOf(

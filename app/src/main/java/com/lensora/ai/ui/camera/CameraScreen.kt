@@ -60,7 +60,6 @@ import androidx.compose.ui.draw.clip
 import androidx.compose.ui.geometry.Offset
 import androidx.compose.ui.geometry.Size
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.graphics.asComposeRenderEffect
 import androidx.compose.ui.graphics.drawscope.Stroke
 import androidx.compose.ui.graphics.graphicsLayer
 import androidx.compose.ui.input.pointer.pointerInput
@@ -76,8 +75,6 @@ import com.lensora.ai.ai.SceneClassifier
 import com.lensora.ai.camera.CameraController
 import com.lensora.ai.camera.CameraMode
 import com.lensora.ai.data.GalleryRepository
-import com.lensora.ai.ui.studio.ImageEditor
-import com.lensora.ai.ui.studio.LutShader
 import com.lensora.ai.ui.theme.CharcoalSurface
 import com.lensora.ai.ui.theme.ColorMutedGray
 import com.lensora.ai.ui.theme.ColorWhite
@@ -301,62 +298,18 @@ fun CameraScreen(
             }
         }
 
-        // Real-Time Viewfinder AGSL LUT Shader Pass (Disabled for ASTRO / Custom modes for raw clear preview)
-        val cameraLutBitmap = remember(VibeState.selectedVibe) {
-            if (VibeState.selectedVibe == VibePreset.CINEMATIC) {
-                ImageEditor.getLutStripBitmap(context, VibePreset.CINEMATIC)
-            } else null
-        }
-
-        val cameraLutRenderEffect = remember(cameraLutBitmap) {
-            if (cameraLutBitmap != null && Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
-                try {
-                    LutShader.createLutRenderEffect(cameraLutBitmap, 17f)
-                } catch (t: Throwable) {
-                    Log.w("CameraScreen", "Failed to create LutRenderEffect: ${t.localizedMessage}")
-                    null
-                }
-            } else null
-        }
-
-        val activeRenderEffect = remember(selectedMode, customModeName, isZebrasEnabled, isPeakingEnabled, cameraLutRenderEffect) {
-            try {
-                if (customModeName != null) {
-                    null // Explicit raw clear TextureView preview for all MORE custom modes (ASTRO, Macro, Leica, etc.)
-                } else {
-                    when {
-                        selectedMode == CameraMode.PRO && isZebrasEnabled && Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU -> AgslShaders.createZebrasEffect()
-                        selectedMode == CameraMode.PRO && isPeakingEnabled && Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU -> AgslShaders.createFocusPeakingEffect()
-                        cameraLutRenderEffect != null -> cameraLutRenderEffect
-                        else -> null
-                    }
-                }
-            } catch (t: Throwable) {
-                Log.w("CameraScreen", "AGSL RenderEffect creation failed (${t.localizedMessage}). Safe fallback to raw preview.", t)
-                null
-            }
-        }
-
         Box(
             modifier = Modifier
                 .fillMaxSize()
                 .background(PitchBlackBackground),
         ) {
-            // Live Camera Viewfinder (Mirrored horizontally for front camera + Safe AGSL RenderEffect)
+            // Pure Raw Camera2 Viewfinder (Mirrored horizontally for front camera)
             CameraPreview(
                 cameraController = cameraController,
                 modifier = Modifier
                     .fillMaxSize()
                     .graphicsLayer {
                         scaleX = if (cameraController.isFrontCamera) -1f else 1f
-                        if (activeRenderEffect != null && Build.VERSION.SDK_INT >= Build.VERSION_CODES.S) {
-                            try {
-                                renderEffect = activeRenderEffect.asComposeRenderEffect()
-                            } catch (t: Throwable) {
-                                Log.w("CameraScreen", "Failed to apply graphicsLayer renderEffect: ${t.localizedMessage}")
-                                renderEffect = null
-                            }
-                        }
                     },
                 onTextureViewCreated = { view ->
                     textureViewRef = view
