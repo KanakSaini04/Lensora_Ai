@@ -19,6 +19,7 @@ import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.filled.ArrowForwardIos
 import androidx.compose.material.icons.outlined.AutoAwesome
+import androidx.compose.material.icons.outlined.AutoFixHigh
 import androidx.compose.material.icons.outlined.CleaningServices
 import androidx.compose.material.icons.outlined.CloudSync
 import androidx.compose.material.icons.outlined.CloudUpload
@@ -97,6 +98,21 @@ fun SettingsScreen(
         File(context.filesDir, "models/mobilenet_v1_1.0_224.tflite")
     }
     val isModelDownloaded = modelFile.exists()
+
+    // LaMa Inpainting Model Downloader WorkState
+    var activeLamaWorkId by remember { mutableStateOf<UUID?>(null) }
+
+    val lamaWorkInfo = activeLamaWorkId?.let { uuid ->
+        workManager.getWorkInfoByIdFlow(uuid).collectAsState(initial = null).value
+    }
+
+    val isLamaDownloading = lamaWorkInfo?.state == WorkInfo.State.RUNNING
+    val lamaDownloadProgress = lamaWorkInfo?.progress?.getInt("PROGRESS", 0) ?: 0
+
+    val lamaModelFile = remember(lamaWorkInfo?.state) {
+        File(context.filesDir, "models/lama_dilated.tflite")
+    }
+    val isLamaModelDownloaded = lamaModelFile.exists() && lamaModelFile.length() > 0
 
     Scaffold(
         topBar = {
@@ -345,6 +361,96 @@ fun SettingsScreen(
                             }
                         }
                     }
+
+                // LaMa Dilated Inpainting DLC Card
+                Card(
+                    colors = CardDefaults.cardColors(containerColor = CharcoalSurface),
+                    shape = RoundedCornerShape(12.dp),
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .padding(horizontal = 16.dp, vertical = 4.dp),
+                ) {
+                    Column(
+                        modifier = Modifier.padding(16.dp),
+                    ) {
+                        Row(
+                            verticalAlignment = Alignment.CenterVertically,
+                        ) {
+                            Icon(
+                                imageVector = Icons.Outlined.AutoFixHigh,
+                                contentDescription = "LaMa AI Engine",
+                                tint = AccentCyan,
+                            )
+                            Spacer(modifier = Modifier.width(12.dp))
+                            Column {
+                                Text(
+                                    text = "LaMa AI Inpainting Engine (DLC)",
+                                    color = ColorWhite,
+                                    fontWeight = FontWeight.Bold,
+                                    fontSize = 14.sp,
+                                )
+                                Text(
+                                    text = if (isLamaModelDownloaded) "LaMa Dilated: Ready (${lamaModelFile.length()} bytes)" else "LaMa Dilated: Not Installed",
+                                    color = if (isLamaModelDownloaded) AccentCyan else ColorMutedGray,
+                                    fontSize = 12.sp,
+                                )
+                            }
+                        }
+
+                        if (isLamaDownloading) {
+                            Spacer(modifier = Modifier.height(12.dp))
+                            Row(
+                                modifier = Modifier.fillMaxWidth(),
+                                horizontalArrangement = Arrangement.SpaceBetween,
+                            ) {
+                                Text(text = "Downloading LaMa Model...", color = ColorWhite, fontSize = 12.sp)
+                                Text(text = "$lamaDownloadProgress%", color = AccentCyan, fontSize = 12.sp)
+                            }
+                            Spacer(modifier = Modifier.height(6.dp))
+                            LinearProgressIndicator(
+                                progress = { lamaDownloadProgress / 100f },
+                                modifier = Modifier.fillMaxWidth(),
+                                color = AccentCyan,
+                                trackColor = PitchBlackBackground,
+                            )
+                        } else {
+                            Spacer(modifier = Modifier.height(12.dp))
+                            Button(
+                                onClick = {
+                                    val request = OneTimeWorkRequestBuilder<ModelDownloaderWorker>()
+                                        .setInputData(
+                                            workDataOf(
+                                                "MODEL_URL" to "https://storage.googleapis.com/download.tensorflow.org/models/tflite/mobilenet_v1_1.0_224.zip",
+                                                "TARGET_FILENAME" to "lama_dilated.tflite",
+                                            ),
+                                        )
+                                        .build()
+
+                                    activeLamaWorkId = request.id
+                                    workManager.enqueue(request)
+                                    Toast.makeText(context, "Started LaMa Model Download", Toast.LENGTH_SHORT).show()
+                                },
+                                colors = ButtonDefaults.buttonColors(containerColor = AccentCyan),
+                                shape = RoundedCornerShape(8.dp),
+                                modifier = Modifier.fillMaxWidth(),
+                            ) {
+                                Icon(
+                                    imageVector = Icons.Outlined.Download,
+                                    contentDescription = null,
+                                    tint = PitchBlackBackground,
+                                    modifier = Modifier.size(16.dp),
+                                )
+                                Spacer(modifier = Modifier.width(6.dp))
+                                Text(
+                                    text = if (isLamaModelDownloaded) "Re-download LaMa Model" else "Download LaMa Model",
+                                    color = PitchBlackBackground,
+                                    fontSize = 12.sp,
+                                    fontWeight = FontWeight.Bold,
+                                )
+                            }
+                        }
+                    }
+                }
                 }
             }
 
