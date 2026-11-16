@@ -1,8 +1,11 @@
 package com.lensora.ai.ui.navigation
 
-import androidx.compose.foundation.background
-import androidx.compose.foundation.layout.Box
-import androidx.compose.foundation.layout.fillMaxSize
+import androidx.activity.compose.BackHandler
+import androidx.compose.animation.core.tween
+import androidx.compose.animation.fadeIn
+import androidx.compose.animation.fadeOut
+import androidx.compose.animation.slideInHorizontally
+import androidx.compose.animation.slideOutHorizontally
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.outlined.AutoFixHigh
@@ -11,7 +14,6 @@ import androidx.compose.material.icons.outlined.PhotoLibrary
 import androidx.compose.material.icons.outlined.Settings
 import androidx.compose.material.icons.outlined.Style
 import androidx.compose.material3.Icon
-import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.NavigationBar
 import androidx.compose.material3.NavigationBarItem
 import androidx.compose.material3.NavigationBarItemDefaults
@@ -19,22 +21,27 @@ import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
-import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.vector.ImageVector
+import androidx.compose.ui.hapticfeedback.HapticFeedbackType
+import androidx.compose.ui.platform.LocalHapticFeedback
 import androidx.navigation.NavGraph.Companion.findStartDestination
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.currentBackStackEntryAsState
 import androidx.navigation.compose.rememberNavController
+import com.lensora.ai.ui.camera.CameraScreen
+import com.lensora.ai.ui.gallery.GalleryScreen
+import com.lensora.ai.ui.gallery.QuickViewScreen
 import com.lensora.ai.ui.probe.ProbeLabScreen
 import com.lensora.ai.ui.settings.SettingsScreen
+import com.lensora.ai.ui.studio.StudioScreen
 import com.lensora.ai.ui.theme.CharcoalSurface
 import com.lensora.ai.ui.theme.ColorMutedGray
 import com.lensora.ai.ui.theme.ColorWhite
-import com.lensora.ai.ui.theme.PitchBlackBackground
 import com.lensora.ai.ui.theme.RoyalBlue
+import com.lensora.ai.ui.vibes.VibesScreen
 
 sealed class NavScreen(
     val route: String,
@@ -53,6 +60,7 @@ sealed class NavScreen(
 }
 
 const val ROUTE_PROBE_LAB = "probe_lab"
+const val ROUTE_QUICK_VIEW = "quick_view"
 
 @Composable
 fun AppNavigation(
@@ -60,8 +68,16 @@ fun AppNavigation(
 ) {
     val navBackStackEntry by navController.currentBackStackEntryAsState()
     val currentRoute = navBackStackEntry?.destination?.route
+    val haptic = LocalHapticFeedback.current
 
     val isTopLevelRoute = NavScreen.items.any { it.route == currentRoute }
+
+    // Predictive back handler for nested screens
+    if (!isTopLevelRoute && currentRoute != null) {
+        BackHandler {
+            navController.popBackStack()
+        }
+    }
 
     Scaffold(
         bottomBar = {
@@ -90,6 +106,10 @@ fun AppNavigation(
                             ),
                             onClick = {
                                 if (currentRoute != screen.route) {
+                                    try {
+                                        haptic.performHapticFeedback(HapticFeedbackType.TextHandleMove)
+                                    } catch (_: Exception) {}
+
                                     navController.navigate(screen.route) {
                                         popUpTo(navController.graph.findStartDestination().id) {
                                             saveState = true
@@ -109,38 +129,49 @@ fun AppNavigation(
             navController = navController,
             startDestination = NavScreen.Camera.route,
             modifier = Modifier.padding(innerPadding),
+            enterTransition = {
+                slideInHorizontally(initialOffsetX = { 250 }, animationSpec = tween(280)) + fadeIn(animationSpec = tween(280))
+            },
+            exitTransition = {
+                slideOutHorizontally(targetOffsetX = { -250 }, animationSpec = tween(280)) + fadeOut(animationSpec = tween(280))
+            },
+            popEnterTransition = {
+                slideInHorizontally(initialOffsetX = { -250 }, animationSpec = tween(280)) + fadeIn(animationSpec = tween(280))
+            },
+            popExitTransition = {
+                slideOutHorizontally(targetOffsetX = { 250 }, animationSpec = tween(280)) + fadeOut(animationSpec = tween(280))
+            },
         ) {
-            composable(NavScreen.Camera.route) { TabContent(title = "Camera Screen") }
-            composable(NavScreen.Studio.route) { TabContent(title = "Studio Screen") }
-            composable(NavScreen.Gallery.route) { TabContent(title = "Gallery Screen") }
-            composable(NavScreen.Vibes.route) { TabContent(title = "Vibes Screen") }
+            composable(NavScreen.Camera.route) {
+                CameraScreen(
+                    onOpenQuickView = { navController.navigate(ROUTE_QUICK_VIEW) },
+                )
+            }
+            composable(NavScreen.Studio.route) { StudioScreen() }
+            composable(NavScreen.Gallery.route) {
+                GalleryScreen(
+                    onPhotoClick = { _, _ ->
+                        navController.navigate(ROUTE_QUICK_VIEW)
+                    },
+                )
+            }
+            composable(NavScreen.Vibes.route) { VibesScreen() }
             composable(NavScreen.Settings.route) {
                 SettingsScreen(
-                    onOpenProbeLab = { navController.navigate(ROUTE_PROBE_LAB) }
+                    onOpenProbeLab = { navController.navigate(ROUTE_PROBE_LAB) },
                 )
             }
             composable(ROUTE_PROBE_LAB) {
                 ProbeLabScreen(
-                    onNavigateBack = { navController.popBackStack() }
+                    onNavigateBack = { navController.popBackStack() },
+                )
+            }
+            composable(ROUTE_QUICK_VIEW) {
+                QuickViewScreen(
+                    onNavigateBack = { navController.popBackStack() },
                 )
             }
         }
-    }
-}
-
-@Composable
-private fun TabContent(title: String) {
-    Box(
-        modifier = Modifier
-            .fillMaxSize()
-            .background(PitchBlackBackground),
-        contentAlignment = Alignment.Center,
-    ) {
-        Text(
-            text = title,
-            style = MaterialTheme.typography.titleLarge,
-            color = ColorWhite,
-        )
     }
 }
 
