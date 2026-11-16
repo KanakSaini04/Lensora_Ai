@@ -26,6 +26,7 @@ import androidx.compose.foundation.Canvas
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
+import androidx.compose.ui.draw.blur
 import androidx.compose.foundation.gestures.detectTapGestures
 import androidx.compose.foundation.gestures.detectTransformGestures
 import androidx.compose.foundation.layout.Arrangement
@@ -684,14 +685,14 @@ fun CameraScreen(
                         }
                     }
 
-                    // Obsidian Royal Shutter Button (Red in VIDEO & CINEMATIC modes, White in Photo modes)
+                    // Refined Obsidian Royal Multi-Ring Camera Shutter Button
                     val isVideoRecordingMode = (selectedMode == CameraMode.VIDEO || selectedMode == CameraMode.CINEMATIC) && customModeName == null
                     val shutterColor = if (isVideoRecordingMode) Color(0xFFDC2626) else ColorWhite
                     val haptic = LocalHapticFeedback.current
                     var isShutterPressed by remember { mutableStateOf(false) }
 
                     val shutterScale by animateFloatAsState(
-                        targetValue = if (isShutterPressed || isRecordingVideo) 0.9f else 1.0f,
+                        targetValue = if (isShutterPressed || isRecordingVideo) 0.88f else 1.0f,
                         animationSpec = spring(
                             dampingRatio = Spring.DampingRatioMediumBouncy,
                             stiffness = Spring.StiffnessMediumLow,
@@ -699,69 +700,78 @@ fun CameraScreen(
                         label = "ShutterSpringScale",
                     )
 
+                    // Outer Tactile Ring (2dp stroke, 82dp size)
                     Box(
                         modifier = Modifier
-                            .size(76.dp)
-                            .graphicsLayer {
-                                scaleX = shutterScale
-                                scaleY = shutterScale
-                            }
-                            .border(width = 4.dp, color = ColorWhite, shape = CircleShape)
-                            .padding(5.dp)
-                            .clip(CircleShape)
-                            .background(shutterColor)
-                            .clickable {
-                                try {
-                                    haptic.performHapticFeedback(HapticFeedbackType.TextHandleMove)
-                                } catch (_: Exception) {}
-
-                                if (isVideoRecordingMode) {
-                                    if (isRecordingVideo) {
-                                        cameraController.stopVideoRecording(
-                                            onVideoSaved = { uri, msg ->
-                                                isRecordingVideo = false
-                                                recentPhotos = (listOf(uri) + recentPhotos).distinct().take(10)
-                                                Toast.makeText(context, msg, Toast.LENGTH_SHORT).show()
-                                            },
-                                            onError = { err ->
-                                                isRecordingVideo = false
-                                                Toast.makeText(context, err, Toast.LENGTH_SHORT).show()
-                                            },
-                                        )
-                                    } else {
-                                        cameraController.startVideoRecording(
-                                            hasAudioPermission = hasAudioPermission,
-                                            displayRotationDegrees = deviceRotationDegrees,
-                                            onRecordingStarted = {
-                                                isRecordingVideo = true
-                                                Toast.makeText(context, "Recording started...", Toast.LENGTH_SHORT).show()
-                                            },
-                                            onError = { err ->
-                                                isRecordingVideo = false
-                                                Toast.makeText(context, err, Toast.LENGTH_SHORT).show()
-                                            },
-                                        )
-                                    }
-                                } else {
-                                    if (timerMode != TimerMode.OFF && countdownRemaining == 0) {
-                                        countdownRemaining = timerMode.seconds
-                                    } else if (countdownRemaining == 0) {
-                                        cameraController.takePicture(
-                                            displayRotationDegrees = deviceRotationDegrees,
-                                            isRawEnabled = isRawEnabled && selectedMode == CameraMode.PRO,
-                                            vibePreset = VibeState.selectedVibe.name,
-                                            onPhotoSaved = { uri, msg ->
-                                                recentPhotos = (listOf(uri) + recentPhotos).distinct().take(10)
-                                                Toast.makeText(context, msg, Toast.LENGTH_SHORT).show()
-                                            },
-                                            onError = { err ->
-                                                Toast.makeText(context, err, Toast.LENGTH_SHORT).show()
-                                            },
-                                        )
-                                    }
+                            .size(82.dp)
+                            .border(width = 2.dp, color = ColorWhite.copy(alpha = 0.7f), shape = CircleShape)
+                            .padding(4.dp),
+                        contentAlignment = Alignment.Center,
+                    ) {
+                        // Inner Tactile Shutter Core
+                        Box(
+                            modifier = Modifier
+                                .size(70.dp)
+                                .graphicsLayer {
+                                    scaleX = shutterScale
+                                    scaleY = shutterScale
                                 }
-                            },
-                    )
+                                .border(width = 1.5.dp, color = ColorWhite.copy(alpha = 0.4f), shape = CircleShape)
+                                .clip(CircleShape)
+                                .background(shutterColor)
+                                .clickable {
+                                    try {
+                                        haptic.performHapticFeedback(HapticFeedbackType.TextHandleMove)
+                                    } catch (_: Exception) {}
+
+                                    if (isVideoRecordingMode) {
+                                        if (isRecordingVideo) {
+                                            cameraController.stopVideoRecording(
+                                                onVideoSaved = { uri, msg ->
+                                                    isRecordingVideo = false
+                                                    recentPhotos = (listOf(uri) + recentPhotos).distinct().take(10)
+                                                    Toast.makeText(context, msg, Toast.LENGTH_SHORT).show()
+                                                },
+                                                onError = { err ->
+                                                    isRecordingVideo = false
+                                                    Toast.makeText(context, err, Toast.LENGTH_SHORT).show()
+                                                },
+                                            )
+                                        } else {
+                                            cameraController.startVideoRecording(
+                                                hasAudioPermission = hasAudioPermission,
+                                                displayRotationDegrees = deviceRotationDegrees,
+                                                onRecordingStarted = {
+                                                    isRecordingVideo = true
+                                                    Toast.makeText(context, "Recording started...", Toast.LENGTH_SHORT).show()
+                                                },
+                                                onError = { err ->
+                                                    isRecordingVideo = false
+                                                    Toast.makeText(context, err, Toast.LENGTH_SHORT).show()
+                                                },
+                                            )
+                                        }
+                                    } else {
+                                        if (timerMode != TimerMode.OFF && countdownRemaining == 0) {
+                                            countdownRemaining = timerMode.seconds
+                                        } else if (countdownRemaining == 0) {
+                                            cameraController.takePicture(
+                                                displayRotationDegrees = deviceRotationDegrees,
+                                                isRawEnabled = isRawEnabled && selectedMode == CameraMode.PRO,
+                                                vibePreset = VibeState.selectedVibe.name,
+                                                onPhotoSaved = { uri, msg ->
+                                                    recentPhotos = (listOf(uri) + recentPhotos).distinct().take(10)
+                                                    Toast.makeText(context, msg, Toast.LENGTH_SHORT).show()
+                                                },
+                                                onError = { err ->
+                                                    Toast.makeText(context, err, Toast.LENGTH_SHORT).show()
+                                                },
+                                            )
+                                        }
+                                    }
+                                },
+                        )
+                    }
 
                     // Camera Flip Button (Front / Back camera switch)
                     Box(
@@ -951,9 +961,10 @@ private fun AiBadge(
     Box(
         modifier = modifier
             .clip(CircleShape)
-            .background(CharcoalSurface.copy(alpha = 0.75f))
-            .border(width = 1.dp, color = ColorWhite.copy(alpha = 0.25f), shape = CircleShape)
-            .padding(horizontal = 14.dp, vertical = 6.dp),
+            .blur(12.dp)
+            .background(CharcoalSurface.copy(alpha = 0.55f))
+            .border(width = 1.dp, color = ColorWhite.copy(alpha = 0.3f), shape = CircleShape)
+            .padding(horizontal = 16.dp, vertical = 7.dp),
         contentAlignment = Alignment.Center,
     ) {
         AnimatedContent(

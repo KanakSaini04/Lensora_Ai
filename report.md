@@ -1,33 +1,31 @@
-# Lensora_Ai Comprehensive Architecture & Phase 31 Report
+# Lensora_Ai Comprehensive Architecture & Phase 32 Report
 
 ## Executive Summary
 
 **Lensora_Ai** (`com.lensora.ai`) is an AI-first computational camera application built on Android 16 (API 36) using Jetpack Compose, Material 3 (Obsidian Royal Theme), Hilt dependency injection, and a pure **Camera2 L0 Safe Core HAL Engine** (strictly zero CameraX dependencies).
 
-This report presents the completion of **Phase 31: Hardware Audit Protocol & System Diagnostics Dashboard**. To monitor physical hardware behavior on the target Redmi Note 13 Pro 5G (Snapdragon 7s Gen 2, 8GB RAM), a real-time system monitoring utility (`SystemMonitor.kt`) has been implemented. It polls memory usage via `ActivityManager.MemoryInfo`, battery temperature via `BatteryManager`, thermal state via `PowerManager.currentThermalStatus`, and AI model status via `ModelManager`. A live **System Diagnostics Dashboard** card has been integrated into `SettingsScreen.kt`, updating stats every 2 seconds (`delay(2000)`). In addition, an enterprise physical testing protocol has been specified in `docs/Document/DEVICE_AUDIT_PROTOCOL.md`.
+This report presents the completion of **Phase 32: Final Camera UI Perfection & Edge-to-Edge Cleanup**. Following real-device physical UX testing on the target Redmi Note 13 Pro 5G, four targeted UI refinements were implemented across `CameraScreen.kt` and `CameraModeCarousel.kt`:
+1. **White Border Removal**: Deleted the floating 1.dp white aesthetic border overlay from `CameraScreen.kt` to expose a 100% raw, edge-to-edge camera preview.
+2. **Camera Preview Aspect Scaling**: Verified `CameraPreview` (`AndroidView` wrapping `TextureView`) fills 100% of available screen real estate via `Modifier.fillMaxSize()` without aspect ratio clipping or black bars.
+3. **Carousel Horizontal Breathing Room**: Configured `CameraModeCarousel.kt` `LazyRow` with `contentPadding = PaddingValues(horizontal = 32.dp)` so boundary items ("AI AUTO", "CINEMATIC", "MORE") never touch screen edges.
+4. **AI Badge Top-Center Anchor**: Anchored `AiBadge` at `Alignment.TopCenter` with `.statusBarsPadding()` and `padding(top = 80.dp)`, positioning it below `CameraTopBar` and the Top-Left Cyan Timestamp.
 
 A comprehensive multi-tier emulator regression audit confirmed **0 Runtime Crashes (`AndroidRuntime:E`)**.
 
 ---
 
-## 1. Architectural Setup: System Diagnostics & Hardware Audit Engine
+## 1. Architectural Setup: Native Edge-to-Edge Viewfinder & Mode Carousel
 
-- **SystemMonitor Utility (`SystemMonitor.kt`)**:
-  - `ramUsedGb`, `ramTotalGb`, `ramPercentage` calculated using `ActivityManager.MemoryInfo`.
-  - `batteryTempCelsius` calculated using `BatteryManager.EXTRA_TEMPERATURE` divided by 10.
-  - `thermalStatus` fetched via `PowerManager.currentThermalStatus` (NONE / LIGHT / MODERATE / SEVERE / CRITICAL).
-  - AI Engine readiness flags (`lamaModelReady`, `esrganModelReady`).
-- **Real-Time Settings Dashboard (`SettingsScreen.kt`)**:
-  - `System Diagnostics Dashboard` card embedded in `SettingsScreen.kt` under "SYSTEM & AI CONTROL CENTER".
-  - Refreshes live metrics every 2 seconds via a Compose `LaunchedEffect(Unit)` loop with `delay(2000)`.
-- **Physical Device Audit Protocol (`docs/Document/DEVICE_AUDIT_PROTOCOL.md`)**:
-  - Enterprise documentation defining 6 hardware audit test procedures:
-    1. **Rapid Capture Stress Test**: 10 photo captures in AI Auto, checking thermal stability ($< 42^\circ\text{C}$).
-    2. **Real-Time LaMa Object Eraser**: GPU Inpainting pass with $512 \times 512$ tile Memory Shield.
-    3. **Foreground Service Protection**: HyperOS task kill resistance with persistent notification.
-    4. **Google Drive Cloud Vault & Auto-Purge**: OAuth2 resumable upload & SHA-256 local MediaStore purge.
-    5. **Pro Mode HUD & RAW DNG Capture**: Manual ISO/Shutter speed sliders and uncompressed DNG capture.
-    6. **24fps Cinematic Video & Letterboxing**: 24fps target range lock and 2.39:1 letterboxing bars.
+- **Raw Viewfinder (`CameraScreen.kt`)**:
+  - `CameraPreview` (`TextureView`) fills the entire screen canvas via `Modifier.fillMaxSize()`.
+  - Floating 1.dp border overlay removed completely.
+- **Mode Carousel Breathing Room (`CameraModeCarousel.kt`)**:
+  - `LazyRow` uses `contentPadding = PaddingValues(horizontal = 32.dp)` and `horizontalArrangement = Arrangement.spacedBy(24.dp)`.
+  - Edge carousel items ("AI AUTO", "CINEMATIC", "MORE") scroll smoothly with ample padding from device display edges.
+- **AI Badge Top-Center Alignment (`CameraScreen.kt`)**:
+  - `AiBadge` status pill anchored at `Alignment.TopCenter` with `statusBarsPadding()` + `top = 80.dp` margin.
+- **System Monitoring & Diagnostics Integration**:
+  - Real-time system monitoring via `SystemMonitor.kt` continues polling RAM, battery temp, thermal status, and AI engine readiness every 2 seconds in `SettingsScreen.kt`.
 
 ---
 
@@ -43,15 +41,15 @@ The **Probe Lab** audits camera hardware capabilities at runtime without opening
 
 ---
 
-## 3. Phase 31 System Diagnostics Audit Matrix
+## 3. Phase 32 Camera UI Audit Matrix
 
 | Component | Target Action | Execution Engine | Safeguard / Fallback | Result |
 | :--- | :--- | :--- | :--- | :---: |
-| `SystemMonitor.kt` | Live RAM Polling | `ActivityManager.MemoryInfo` | Fallback default 8.0 GB total | `PASS` |
-| `SystemMonitor.kt` | Battery Temperature | `BatteryManager.EXTRA_TEMPERATURE` | Default $28.0^\circ\text{C}$ fallback | `PASS` |
-| `SystemMonitor.kt` | Thermal Status | `PowerManager.currentThermalStatus` | Thermal status string mapping | `PASS` |
-| `SettingsScreen.kt` | Live Stats Dashboard | Compose `LaunchedEffect(Unit)` | 2s polling loop (`delay(2000)`) | `PASS` |
-| `DEVICE_AUDIT_PROTOCOL.md` | Audit Protocol Spec | Markdown Enterprise Doc | 6 physical test procedures | `PASS` |
+| `CameraScreen.kt` | 1.dp White Border Removal | Code Removal | 100% Raw Viewfinder | `PASS` |
+| `CameraScreen.kt` | CameraPreview Edge-to-Edge | `TextureView` | Clean aspect ratio scaling | `PASS` |
+| `CameraModeCarousel.kt` | Carousel Padding | `LazyRow` `contentPadding` | `PaddingValues(horizontal = 32.dp)` | `PASS` |
+| `CameraScreen.kt` | AI Badge Top Anchor | `Alignment.TopCenter` | `top = 80.dp` + `statusBarsPadding()` | `PASS` |
+| `SystemMonitor.kt` | Live Stats Dashboard | Compose `LaunchedEffect` | 2s polling loop (`delay(2000)`) | `PASS` |
 
 ---
 
@@ -60,6 +58,7 @@ The **Probe Lab** audits camera hardware capabilities at runtime without opening
 - **Build Status**: `./gradlew assembleDebug` & `./gradlew installDebug` - **100% SUCCESS**.
 - **ADB Permission Grants**: Granted `CAMERA`, `RECORD_AUDIO`, and `POST_NOTIFICATIONS` permissions programmatically.
 - **Interactive Device Audit**:
-  - Opened Settings tab on emulator/device. Verified System Diagnostics Dashboard card displays live RAM, battery temp, thermal state, and AI engine readiness.
-  - Confirmed metrics update dynamically every 2 seconds.
+  - Opened camera view. Verified NO white border overlay around viewfinder.
+  - Scrolled mode carousel to far right edge. Verified "CINEMATIC" and "MORE" are fully visible with horizontal breathing room.
+  - Confirmed AI Badge is cleanly centered at `top = 80.dp`.
 - **Logcat Crash Audit**: `adb logcat -d -s AndroidRuntime:E` - **0 Runtime Crashes (`AndroidRuntime:E`)**.
