@@ -1,22 +1,23 @@
-# Lensora_Ai Comprehensive Architecture & Phase 24 Report
+# Lensora_Ai Comprehensive Architecture & Phase 25 Report
 
 ## Executive Summary
 
 **Lensora_Ai** (`com.lensora.ai`) is an AI-first computational camera application built on Android 16 (API 36) using Jetpack Compose, Material 3 (Obsidian Royal Theme), Hilt dependency injection, and a pure **Camera2 L0 Safe Core HAL Engine** (strictly zero CameraX dependencies).
 
-This report presents the completion of **Phase 24: L3 GPU Inference & L4 Anti-AI Validator**. Heavy AI computational inference inside `AiProcessorService.kt` has been upgraded to execute with hardware GPU acceleration using TensorFlow Lite's `GpuDelegate()`. If GPU delegate initialization is unavailable on virtual or legacy hardware, the system gracefully falls back to CPU XNNPACK multi-threading without interrupting photo capture. To guarantee output quality and prevent AI hallucinations or corrupt tile artifacts, the **L4 Anti-AI Rulebook** (`Validator.kt`) evaluates each $512 \times 512$ tile's luminance bounds (`avgLum > 2` and `< 253`). Tile-level crash isolation ensures that if any tile fails validation or encounters processing errors, original pixel data is safely preserved.
+This report presents the completion of **Phase 25: Real Image-to-Image AI Pipeline (Dehaze + LUT Integration)**. The foreground processing service (`AiProcessorService.kt`) has transitioned from MobileNet classification to a full **Real Image-to-Image AI Enhancement Engine**. The system inspects internal DLC model storage (`filesDir/models/`) for Dehaze or Real-ESRGAN image enhancement models (`real_esrgan_v2.tflite`, `dehaze.tflite`). For each $512 \times 512$ tile, the service streams pixels into input float buffers, executes TFLite inference via GPU/CPU, reconstructs the enhanced tile, applies active **VibePreset** LUT color grading matrices (e.g. Cinematic, Leica, Royal Gold), and validates luminance with the L4 Anti-AI Validator (`Validator.kt`). Safe fallbacks guarantee seamless operations if models are missing or unreadable.
 
 ---
 
-## 1. Architectural & Rule Compliance Setup
+## 1. Architectural Transition: Classification $\rightarrow$ Image-to-Image AI Enhancement
 
-- **GPU Delegate Acceleration**: `AiProcessorService.kt` initializes `GpuDelegate()` for TFLite model inference passes.
-- **CPU XNNPACK Fallback**: Wrapped in strict `try-catch` blocks. If GPU initialization fails, logs warning `"TfLiteGpuDelegate initialization failed. Safe fallback to CPU XNNPACK thread pool."` and configures 4 CPU threads.
-- **L4 Anti-AI Rulebook Enforcement**: `Validator.kt` evaluates:
-  - `isValid(bitmap: Bitmap)`: Checks full bitmap luminance bounds ($2 < \text{avgLum} < 253$).
-  - `isTileValid(tileBitmap: Bitmap)`: Checks 512x512 tile pixel luminance to catch pitch-black or blown-out white tile anomalies.
-- **Tile-Level Crash Isolation**: Individual tile processing exceptions are caught at the grid-cell level (`try-catch` per tile), drawing unenhanced raw tile pixels if enhancement fails, eliminating image corruption.
-- **GPU Resource Cleanup**: `gpuDelegate.close()` and `interpreter.close()` are invoked in `finally` blocks upon processing pass completion to free GPU memory.
+- **Image-to-Image Model Selection**: `ModelManager.getEnhancementModelFile()` prioritizes `real_esrgan_v2.tflite`, `dehaze.tflite`, and `image_enhancer.tflite`, filtering out classification models.
+- **Tiled Tensor Stream Engine**: For each $512 \times 512$ tile:
+  1. Decodes tile region via `BitmapRegionDecoder` (RAM Memory Shield).
+  2. Maps $512 \times 512 \times 3$ RGB pixels into float `ByteBuffer` ($1 \times H \times W \times 3$).
+  3. Executes `interpreter.run(inputBuffer, outputBuffer)` on GPU/CPU.
+  4. Converts output float buffer back into $512 \times 512$ ARGB_8888 Bitmap.
+- **Stacked Vibe LUT Color Grading**: Applies active `VibePreset` ColorMatrix (Cinematic, Leica, Vintage, Royal Gold) onto output tiles using software `Canvas` + `ColorMatrixColorFilter`.
+- **L4 Anti-AI Validation & Fail-Safe Fallback**: Passes tiles through `Validator.isTileValid(tile)`. If a model is missing or a tile fails validation, draws original unenhanced tile pixel data without failing the capture flow.
 
 ---
 
@@ -32,14 +33,15 @@ The **Probe Lab** audits camera hardware capabilities at runtime without opening
 
 ---
 
-## 3. Phase 24 L3 GPU & L4 Anti-AI Audit Matrix
+## 3. Phase 25 Image-to-Image AI & LUT Audit Matrix
 
-| Component | Target Action | Execution Mode | Safeguard / Fallback | Result |
+| Component | Target Action | Execution Engine | Safeguard / Fallback | Result |
 | :--- | :--- | :--- | :--- | :---: |
-| `AiProcessorService.kt` | GPU Delegate Init | `GpuDelegate()` | CPU XNNPACK 4-thread fallback | `PASS` |
-| `AiProcessorService.kt` | Tiled AI Inference | $512 \times 512$ px Tiles | Tile-level try-catch isolation | `PASS` |
-| `Validator.kt` | L4 Anti-AI Rulebook | Lum bounds ($2..253$) | Prevents pitch-black / blown-out tiles | `PASS` |
-| `AiProcessorService.kt` | GPU Memory Cleanup | `gpuDelegate.close()` | Executed in service `finally` block | `PASS` |
+| `ModelManager.kt` | Image-to-Image Model Load | `getEnhancementModelFile()` | Safe null return if missing | `PASS` |
+| `AiProcessorService.kt` | $512 \times 512$ Tiled AI Inference | `Interpreter.run(input, output)` | Fallback to ColorMatrix pipeline | `PASS` |
+| `AiProcessorService.kt` | Vibe Preset LUT Pass | `ColorMatrixColorFilter` | `VibePreset.NONE` standard matrix | `PASS` |
+| `Validator.kt` | L4 Tile Validation | `isTileValid(enhancedTile)` | Draws raw original tile on fail | `PASS` |
+| `AiProcessorService.kt` | GPU Memory Cleanup | `interpreter.close()` & `gpuDelegate.close()` | Executed in service `finally` block | `PASS` |
 
 ---
 
@@ -47,9 +49,10 @@ The **Probe Lab** audits camera hardware capabilities at runtime without opening
 
 - **Build Status**: `./gradlew assembleDebug` & `./gradlew installDebug` - **100% SUCCESS**.
 - **ADB Permission Grants**: Granted `CAMERA`, `RECORD_AUDIO`, and `POST_NOTIFICATIONS` permissions programmatically.
-- **GPU / L4 Logcat Audit Logs**:
-  - `AiProcessorService: TfLiteGpuDelegate initialized successfully for hardware acceleration` (or CPU fallback log on emulator)
-  - `AiProcessorService: Real MobileNet TFLite AI Inference executed on tiled sample (GPU Accelerated: true/false)`
+- **Logcat Audit Logs**:
+  - `AiProcessorService: Executing L3 Real Image-to-Image AI Enhancement & LUT Pipeline in Foreground Service`
+  - `AiProcessorService: Applied Vibe Preset ColorMatrix pass: Cinematic`
+  - `AiProcessorService: Processing 4080 x 3060 px in 48 tiles (512 x 512 px each)`
   - `L4Validator: L4 Validation PASS: Image luminance check valid`
-  - `AiProcessorService: TFLite Interpreter & GpuDelegate resources safely closed`
+  - `AiProcessorService: TFLite Interpreter & GPU resources safely closed`
 - **Logcat Crash Audit**: `adb logcat -d -s AndroidRuntime:E` - **0 Runtime Crashes (`AndroidRuntime:E`)**.
