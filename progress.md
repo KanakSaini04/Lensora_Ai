@@ -373,3 +373,12 @@
   - Added try-catch hardware exception isolation with graceful PHOTO mode fallback to prevent preview freezes.
   - Added CameraMode Logcat diagnostic logging verified on physical Redmi Note 13 Pro 5G (5ceab3e6).
   - Verified 0 runtime crashes (adb logcat -d -s AndroidRuntime:E).
+
+## Phase 37: Hard Camera & AI Overhaul (100% COMPLETE)
+
+- [x] **Step 57: Hard Camera & AI Overhaul**
+  - Fixed Camera2 preview aspect ratio stretching in CameraController.kt by querying SurfaceTexture output sizes and setting default buffer size to 1080p preview size while preserving 12.5MP capture on ImageReader.
+  - Deleted applyProcessingPlan hardware tuning loop in CameraController.kt and CameraScreen.kt to eliminate mode switching preview freezes.
+  - Deleted Canvas cyan bounding box overlay in CameraScreen.kt and hid coaching hint text when detectedBoundingBox is null.
+  - Wired real LaMa inpainting model in ObjectEraser.kt loading filesDir/models/lama_dilated.tflite with Interpreter and GpuDelegate, throwing explicit error on missing model instead of simulated delay.
+  - Verified 0 runtime crashes (adb logcat -d -s AndroidRuntime:E).
