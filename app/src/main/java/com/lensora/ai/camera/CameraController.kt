@@ -692,10 +692,10 @@ class CameraController(private val context: Context) {
 
                         // Enqueue L3 WorkManager Computational AI Processor pass
                         val workData = Data.Builder()
-                            .putString("input_uri", uri.toString())
-                            .putString("scene_type", currentMode.name)
-                            .putFloat("ev_offset", 0.0f)
-                            .putString("vibe_preset", vibePreset)
+                            .putString("PHOTO_URI", uri.toString())
+                            .putString("SCENE_TYPE", currentMode.name)
+                            .putFloat("EV_OFFSET", 0.0f)
+                            .putString("VIBE_PRESET", vibePreset)
                             .build()
 
                         val aiWorkRequest = OneTimeWorkRequestBuilder<AiProcessorWorker>()
@@ -801,7 +801,11 @@ class CameraController(private val context: Context) {
         try {
             thermalListener?.let { listener ->
                 if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q) {
-                    powerManager?.removeThermalStatusListener(listener)
+                    try {
+                        powerManager?.removeThermalStatusListener(listener)
+                    } catch (e: Exception) {
+                        Log.w(tag, "Safely ignored thermal listener removal error: ${e.localizedMessage}")
+                    }
                 }
             }
             thermalListener = null
