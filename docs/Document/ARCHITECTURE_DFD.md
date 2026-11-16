@@ -99,6 +99,7 @@ graph TD
     ProbeEngine -->|P1 Result| P1[P1 200MP: Binned to 12.5MP]
     ProbeEngine -->|P2 Result| P2[P2 RAW_SENSOR: PASS]
     ProbeEngine -->|P3 Result| P3[P3 24fps Cinema: PASS]
+```
 
 ---
 
@@ -111,11 +112,11 @@ sequenceDiagram
     participant VM as ProjectViewModel
     participant Importer as ProjectImporter
     participant Guard as StorageGuard (StatFs)
-    participant MediaStore as System Photo Picker
+    participant PhotoPicker as PhotoPicker (System)
     participant Disk as Local FilesDir Storage
 
-    UI->>MediaStore: Launch PickMultipleVisualMedia (max 30)
-    MediaStore-->>UI: Picked Media URIs
+    UI->>PhotoPicker: Launch PickMultipleVisualMedia (max 30)
+    PhotoPicker-->>UI: Picked Media URIs
     UI->>VM: startImport(pickedUris, projectName)
     VM->>Importer: importMediaFlow(pickedUris)
     Importer->>Guard: evaluateStorageGuard(availableBytes, requiredBytes)
@@ -133,5 +134,4 @@ sequenceDiagram
         Importer->>Disk: Save Project JSON atomically (<id>.json.tmp -> <id>.json)
         Importer-->>UI: Emit ImportState.Success(project)
     end
-```
 ```

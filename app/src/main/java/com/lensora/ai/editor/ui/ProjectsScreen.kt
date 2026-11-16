@@ -539,3 +539,23 @@ private fun ImportProgressDialog(
         }
     }
 }
+
+@androidx.compose.ui.tooling.preview.Preview
+@Composable
+fun ProjectsScreenPreview() {
+    val sampleClips = listOf(
+        Clip("c1", "", ClipType.PHOTO, 3000L),
+        Clip("c2", "", ClipType.VIDEO, 12500L),
+    )
+    val sampleProject = Project(
+        id = "sample_01",
+        name = "Summer Travel Vlog",
+        aspect = com.lensora.ai.editor.AspectRatio.NINE_SIXTEEN,
+        clips = sampleClips,
+    )
+    com.lensora.ai.ui.theme.Lensora_AiTheme {
+        Box(modifier = Modifier.fillMaxSize().background(PitchBlackBackground).padding(16.dp)) {
+            ProjectCard(project = sampleProject, onClick = {}, onDelete = {})
+        }
+    }
+}

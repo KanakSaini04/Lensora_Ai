@@ -22,7 +22,7 @@ Lensora_Ai delivers real-time AI scene classification, hardware capability probi
 
 ### 2.1 Layer Isolation Model (L0 - L4)
 - **L0 Safe HAL Engine**: Raw Camera2 API wrapper managing hardware capture requests, background threads, and atomic `.tmp` MediaStore file transactions. Guaranteed 100% crash safety via try-catch wrapping on all HAL invocations.
-- **L1 Light AI Foundation**: Real-time 2 FPS preview frame analysis using TensorFlow Lite (`SceneClassifier.kt`) running on `Dispatchers.Default`.
+- **L1 Light AI Foundation**: Real-time 500ms (2 FPS) preview frame analysis using TensorFlow Lite (`SceneClassifier.kt`) running on `Dispatchers.Default`.
 - **L2 AI Planner Engine**: Dynamic execution planner (`AiPlanner.kt`) converting AI scene labels into exposure compensation offsets (`targetEvOffset`) and auto-focus modes (`targetAfMode`).
 - **L3 AI Computational Engine**: Background WorkManager CoroutineWorker queue (`AiProcessorWorker.kt`) executing TFLite inference (MobileNet / Real-ESRGAN) or stacked ColorMatrix color grading.
 - **L4 Quality Verification**: Pre-finalization validation engine (`Validator.kt`) verifying bitmap integrity and average luminance bounds (`avgLum > 2`).

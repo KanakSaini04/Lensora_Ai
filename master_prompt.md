@@ -7,7 +7,7 @@
 
 ## 2. ARCHITECTURE (L0-L4)
 - L0 Safe Core: Camera2, capture journal (.tmp rename), thermal guard, storage guard. NEVER depends on AI.
-- L1 Light AI: 5fps scene classification, pose detection.
+- L1 Light AI: 500ms (2 FPS) scene classification, pose detection.
 - L2 Planner: Rule-based orchestrator.
 - L3 Heavy AI (Serial queue, 1 at a time): w8a8 Real-ESRGAN, LaMa-Dilated, MobileSAM, BioCLIP Mobile.
 - L4 Validator: Enforces Anti-AI Rulebook (no halos, preserve skin texture, max +/-15 color shift).
