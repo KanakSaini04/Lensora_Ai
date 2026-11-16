@@ -153,7 +153,6 @@ fun CameraScreen(
         val cameraController = remember { CameraController(context) }
         val galleryRepository = remember { GalleryRepository(context) }
         val sceneClassifier = remember { SceneClassifier(context) }
-        val aiPlanner = remember { AiPlanner() }
         val cameraPrefs = remember {
             try {
                 context.getSharedPreferences("lensora_camera_prefs", Context.MODE_PRIVATE)
@@ -300,15 +299,10 @@ fun CameraScreen(
                             }
                             if (bitmap != null) {
                                 val detectionResult = sceneClassifier.analyzeWithDetection(bitmap)
-                                val sceneType = AiPlanner.fromLabel(detectionResult.label)
-                                val processingPlan = aiPlanner.createPlan(sceneType)
                                 withContext(Dispatchers.Main) {
                                     aiBadgeText = detectionResult.label
                                     coachingHintText = detectionResult.coachingHint
                                     detectedBoundingBox = detectionResult.boundingBox
-                                    if (selectedMode != CameraMode.PRO && !isRecordingVideo) {
-                                        cameraController.applyProcessingPlan(processingPlan)
-                                    }
                                 }
                             }
                         }

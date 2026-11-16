@@ -178,7 +178,7 @@ class AiProcessorService : Service() {
                     Log.w(tag, "Failed to initialize TFLite Interpreter for ${enhancementModelFile.name}. Falling back to ColorMatrix engine.", e)
                 }
             } else {
-                Log.i(tag, "No Image-to-Image DLC model file found. Executing standard ColorMatrix + Vibe LUT tiled pass.")
+                Log.w(tag, "FALLBACK WARNING: Real-ESRGAN / Dehaze DLC model missing at filesDir/models/. Executing ColorMatrix fallback pass.")
             }
 
             // 3. Prepare Master Target Bitmap & Paint with Stacked ColorMatrix / Vibe LUT

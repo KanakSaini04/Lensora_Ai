@@ -111,29 +111,40 @@ class SceneClassifier(
                     else -> "✨ AI: Auto"
                 }
 
-                // Calculate bounding box and composition coaching prompt
-                if (subjectPixelCount > (pixelCount * 0.05)) {
-                    val normLeft = (minX.toFloat() / width).coerceIn(0.15f, 0.40f)
-                    val normTop = (minY.toFloat() / height).coerceIn(0.20f, 0.45f)
-                    val normRight = (maxX.toFloat() / width).coerceIn(0.60f, 0.85f)
-                    val normBottom = (maxY.toFloat() / height).coerceIn(0.65f, 0.88f)
+                // Calculate actual bounding box for Portrait subjects ONLY
+                if (detectedLabel == "✨ AI: Portrait" && subjectPixelCount > (pixelCount * 0.08)) {
+                    val normLeft = (minX.toFloat() / width).coerceIn(0.0f, 1.0f)
+                    val normTop = (minY.toFloat() / height).coerceIn(0.0f, 1.0f)
+                    val normRight = (maxX.toFloat() / width).coerceIn(0.0f, 1.0f)
+                    val normBottom = (maxY.toFloat() / height).coerceIn(0.0f, 1.0f)
 
-                    val box = RectF(normLeft, normTop, normRight, normBottom)
-                    boundingBox = box
+                    if (normRight > normLeft + 0.1f && normBottom > normTop + 0.1f) {
+                        val box = RectF(normLeft, normTop, normRight, normBottom)
+                        boundingBox = box
 
-                    val boxWidth = box.width()
-                    val boxHeight = box.height()
-                    val areaRatio = boxWidth * boxHeight
-                    val centerX = (box.left + box.right) / 2.0f
+                        val boxWidth = box.width()
+                        val boxHeight = box.height()
+                        val areaRatio = boxWidth * boxHeight
+                        val centerX = (box.left + box.right) / 2.0f
 
-                    coachingHint = when {
-                        areaRatio < 0.22f -> "✨ Step Closer"
-                        centerX < 0.40f -> "✨ Move Right"
-                        centerX > 0.60f -> "✨ Move Left"
-                        else -> "✨ Perfect Composition"
+                        coachingHint = when {
+                            areaRatio < 0.20f -> "✨ Step Closer"
+                            centerX < 0.40f -> "✨ Move Right"
+                            centerX > 0.60f -> "✨ Move Left"
+                            else -> "✨ Perfect Composition"
+                        }
+                    } else {
+                        boundingBox = null
+                        coachingHint = "✨ Step Closer"
                     }
                 } else {
-                    coachingHint = "✨ Step Closer"
+                    boundingBox = null
+                    coachingHint = when (detectedLabel) {
+                        "✨ AI: Landscape" -> "✨ Wide Horizon View"
+                        "✨ AI: Night" -> "✨ Hold Device Steady"
+                        "✨ AI: Sky" -> "✨ High Dynamic Range"
+                        else -> "✨ Perfect Framing"
+                    }
                 }
 
                 scaledBitmap.recycle()
