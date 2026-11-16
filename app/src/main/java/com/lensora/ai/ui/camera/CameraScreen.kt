@@ -331,30 +331,6 @@ fun CameraScreen(
                 },
             )
 
-            // Live AI Director Bounding Box Overlay (PHOTO & AI_AUTO modes)
-            if ((selectedMode == CameraMode.PHOTO || selectedMode == CameraMode.AI_AUTO) && customModeName == null && !isRecordingVideo) {
-                detectedBoundingBox?.let { box ->
-                    Canvas(modifier = Modifier.fillMaxSize()) {
-                        val w = size.width
-                        val h = size.height
-                        val left = box.left * w
-                        val top = box.top * h
-                        val right = box.right * w
-                        val bottom = box.bottom * h
-
-                        drawRoundRect(
-                            color = Color(0xFF00E5FF),
-                            topLeft = Offset(left, top),
-                            size = Size((right - left).coerceAtLeast(40f), (bottom - top).coerceAtLeast(40f)),
-                            cornerRadius = CornerRadius(16f, 16f),
-                            style = Stroke(width = 2.dp.toPx()),
-                        )
-                    }
-                }
-            }
-
-
-
             // 2.39:1 Cinematic Aspect Ratio Pure Black Letterboxing Overlay (Top 12% & Bottom 12% bars, 76% center viewfinder)
             if (selectedMode == CameraMode.CINEMATIC && customModeName == null) {
                 Canvas(modifier = Modifier.fillMaxSize()) {
@@ -532,8 +508,8 @@ fun CameraScreen(
                     .padding(bottom = 12.dp),
                 horizontalAlignment = Alignment.CenterHorizontally,
             ) {
-                // Live AI Director Composition Coaching Hint Pill
-                if (coachingHintText.isNotEmpty() && !isRecordingVideo) {
+                // Live AI Director Composition Coaching Hint Pill (Only visible when a real bounding box is detected)
+                if (coachingHintText.isNotEmpty() && detectedBoundingBox != null && !isRecordingVideo) {
                     Surface(
                         color = CharcoalSurface.copy(alpha = 0.75f),
                         shape = RoundedCornerShape(20.dp),
