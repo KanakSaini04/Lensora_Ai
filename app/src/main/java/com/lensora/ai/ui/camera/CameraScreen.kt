@@ -36,8 +36,10 @@ import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.layout.navigationBarsPadding
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.layout.statusBarsPadding
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
@@ -393,12 +395,13 @@ fun CameraScreen(
                 GridOverlay(modifier = Modifier.fillMaxSize())
             }
 
-            // Glowing Cyan VN-Style Timestamp Overlay at Bottom-Left Corner
+            // Glowing Cyan VN-Style Timestamp Overlay (Safely positioned in Top-Left zone below Top Bar)
             if (currentTimeString.isNotEmpty()) {
                 Box(
                     modifier = Modifier
-                        .align(Alignment.BottomStart)
-                        .padding(start = 24.dp, bottom = 180.dp)
+                        .align(Alignment.TopStart)
+                        .statusBarsPadding()
+                        .padding(start = 16.dp, top = 64.dp)
                         .clip(RoundedCornerShape(6.dp))
                         .background(CharcoalSurface.copy(alpha = 0.65f))
                         .border(width = 1.dp, color = Color(0xFF00E5FF).copy(alpha = 0.4f), shape = RoundedCornerShape(6.dp))
@@ -536,7 +539,8 @@ fun CameraScreen(
                 modifier = Modifier
                     .align(Alignment.BottomCenter)
                     .fillMaxWidth()
-                    .padding(bottom = 24.dp),
+                    .navigationBarsPadding()
+                    .padding(bottom = 12.dp),
                 horizontalAlignment = Alignment.CenterHorizontally,
             ) {
                 // Live AI Director Composition Coaching Hint Pill
