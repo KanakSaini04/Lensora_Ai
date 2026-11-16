@@ -1,21 +1,27 @@
-# Lensora_Ai Comprehensive Architecture & Phase 22 Report
+# Lensora_Ai Comprehensive Architecture & Phase 23 Report
 
 ## Executive Summary
 
 **Lensora_Ai** (`com.lensora.ai`) is an AI-first computational camera application built on Android 16 (API 36) using Jetpack Compose, Material 3 (Obsidian Royal Theme), Hilt dependency injection, and a pure **Camera2 L0 Safe Core HAL Engine** (strictly zero CameraX dependencies).
 
-This report presents the completion of **Phase 22: L3 Tiled Processing (Memory Shield)**. In accordance with Lensora_Ai's absolute **No-Risk Mandate**, loading full-resolution Bitmaps directly into RAM has been eliminated to prevent Out-Of-Memory (OOM) crashes on target hardware (Xiaomi Redmi Note 13 Pro 5G, 8GB RAM). The L3 Image Processing pipeline in `AiProcessorWorker.kt` and `ImageEditor.kt` has been fully refactored to use `BitmapRegionDecoder`, iterating through images in $512 \times 512$ tile regions. Each tile is processed, drawn to the target output canvas, and immediately recycled (`tileBitmap.recycle()`), creating a hardware memory shield that guarantees OOM-free processing even for massive sensor captures.
+This report presents the completion of **Phase 23: Foreground Service AI Pipeline (HyperOS Kill Protection)**. On aggressive OEM Android distributions (such as Xiaomi HyperOS 3.0 and Android 16 background quota management), WorkManager background jobs are subject to JobScheduler quotas and risk silent termination or execution delays during heavy CPU/GPU computational tasks. To guarantee OS kill protection and uninterrupted execution, the L3 AI computational pipeline has been migrated from WorkManager to a dedicated **Foreground Service** (`AiProcessorService.kt`). Triggered immediately upon capture completion, the service promotes itself to foreground status with a persistent silent notification (`✨ AI: Perfecting your photo...`), executes the 512x512 tiled processing pass on `Dispatchers.IO`, enqueues cloud sync if enabled, and cleanly stops itself upon completion (`stopForeground(STOP_FOREGROUND_REMOVE)` and `stopSelf()`).
 
 ---
 
 ## 1. Architectural & Rule Compliance Setup
 
-- **No Full Bitmaps Policy**: `BitmapFactory.decodeStream()` and `decodeFile()` for full-resolution image processing are strictly prohibited in L3 computational pipelines.
-- **`BitmapRegionDecoder` Enforcement**: All full-resolution image processing operations stream 512x512 tile regions using `BitmapRegionDecoder.newInstance(inputStream)` and `decoder.decodeRegion(rect, null)`.
-- **Memory Shield Routine**: Immediately following each tile pass (applying ColorMatrix contrast curves, Vibe LUT color science, or timestamp overlays), `tileBitmap.recycle()` is called before proceeding to the next grid cell.
-- **WorkManager Progress Reporting**: `AiProcessorWorker.kt` calculates progress percentage per tile cell and updates UI asynchronously via `setProgressAsync(workDataOf("progress" to progressPercent))`.
-- **Threading Model**: All tiled decoding and canvas composition runs strictly on `Dispatchers.IO`, preserving 60 FPS Compose rendering on the Main UI thread.
-- **Crash Safety Fallback**: BitmapRegionDecoder initialization and tile iterations are wrapped in strict `try-catch` blocks with automatic safe fallback if decoder operations fail.
+- **Foreground Service Migration**: L3 heavy computational tasks run inside `AiProcessorService.kt` extending `android.app.Service()`.
+- **Manifest Permissions**:
+  - `<uses-permission android:name="android.permission.FOREGROUND_SERVICE" />`
+  - `<uses-permission android:name="android.permission.FOREGROUND_SERVICE_DATA_SYNC" />`
+  - `<uses-permission android:name="android.permission.POST_NOTIFICATIONS" />`
+- **Service Declaration**: `<service android:name=".service.AiProcessorService" android:exported="false" android:foregroundServiceType="dataSync" />`
+- **Runtime Notification Permissions**: `MainActivity.kt` registers runtime permission launcher for `POST_NOTIFICATIONS` on Android 13+ (API 33+).
+- **Service Lifecycle & Notification Channel**:
+  - Creates Notification Channel `"ai_processing_channel"` with `NotificationManager.IMPORTANCE_LOW` (silent, non-intrusive).
+  - Invokes `startForeground(1001, notification)` with `FOREGROUND_SERVICE_TYPE_DATA_SYNC` on Android 10+.
+  - Bound to `CoroutineScope(Dispatchers.IO + SupervisorJob())`.
+  - Automatically calls `stopForeground(STOP_FOREGROUND_REMOVE)` and `stopSelf()` when the processing pass finishes or fails.
 
 ---
 
@@ -31,23 +37,27 @@ The **Probe Lab** audits camera hardware capabilities at runtime without opening
 
 ---
 
-## 3. Phase 22 Tiled Processing Audit Matrix
+## 3. Phase 23 Service Lifecycle Audit Matrix
 
-| Component | Target Function | Tiling Grid | Memory Shield Routine | Result |
-| :--- | :--- | :---: | :--- | :---: |
-| `AiProcessorWorker.kt` | Background AI Worker (`doWork`) | $512 \times 512$ px | `decoder.decodeRegion` $\rightarrow$ `canvas.drawBitmap` $\rightarrow$ `tileBitmap.recycle()` | `PASS` |
-| `ImageEditor.kt` | Studio High-Res Export (`exportImage`) | $512 \times 512$ px | `decoder.decodeRegion` $\rightarrow$ `canvas.drawBitmap` $\rightarrow$ `tileBitmap.recycle()` | `PASS` |
-| `CameraController.kt` | Photo Capture Enqueue (`takePicture`) | WorkData | Passes `"PHOTO_URI"`, `"SCENE_TYPE"`, `"EV_OFFSET"`, `"VIBE_PRESET"` | `PASS` |
+| Component | Target Action | Lifecycle Management | Notification Display | Result |
+| :--- | :--- | :--- | :--- | :---: |
+| `AiProcessorService.kt` | Foreground Promotion | `startForeground(1001, notification)` | `"✨ AI: Perfecting your photo..."` | `PASS` |
+| `AiProcessorService.kt` | Tiled Processing Pass | `serviceScope.launch(Dispatchers.IO)` | Silent Low Importance Channel | `PASS` |
+| `AiProcessorService.kt` | Service Cleanup | `stopForeground(STOP_FOREGROUND_REMOVE)` + `stopSelf()` | Notification Dismissed | `PASS` |
+| `CameraController.kt` | Capture Flow Trigger | `ContextCompat.startForegroundService(context, serviceIntent)` | `PHOTO_URI`, `SCENE_TYPE`, `VIBE_PRESET` | `PASS` |
+| `MainActivity.kt` | Runtime Permission | `registerForActivityResult(ActivityResultContracts.RequestPermission())` | `POST_NOTIFICATIONS` Prompt | `PASS` |
 
 ---
 
 ## 4. Verification & Logcat Crash Audit
 
 - **Build Status**: `./gradlew assembleDebug` & `./gradlew installDebug` - **100% SUCCESS**.
-- **ADB Permission Grants**: Granted `CAMERA` and `RECORD_AUDIO` permissions programmatically.
-- **Tiled Processing Verification**: Logcat logs explicitly verify 512x512 tile iterations:
-  - `AiProcessorWorker: Starting L3 512x512 Tiled AI Processing pass`
-  - `AiProcessorWorker: Processing 4080 x 3060 px in 48 tiles (512 x 512 px each)`
-  - `AiProcessorWorker: Tile 1 of 48 processed (0,0 - 512,512) [2%]`
-  - `ImageEditor: Export Tile 1 of 48 processed (0,0 - 512,512)`
+- **ADB Permission Grants**: Granted `CAMERA`, `RECORD_AUDIO`, and `POST_NOTIFICATIONS` permissions programmatically.
+- **Service Execution Verification**: Logcat logs confirm foreground service startup, tiling pass execution, and clean termination:
+  - `CameraController: Started L3 AiProcessorService for content://media/external/images/media/...`
+  - `AiProcessorService: Executing L3 512x512 Tiled Processing pass in Foreground Service`
+  - `AiProcessorService: Service processing 4080 x 3060 px in 48 tiles (512 x 512 px each)`
+  - `AiProcessorService: L3 Service 512x512 Tiled AI Processing finished in 920ms`
+  - `AiProcessorService: Cleaning up AiProcessorService and dismissing notification.`
+  - `AiProcessorService: AiProcessorService destroyed`
 - **Logcat Crash Audit**: `adb logcat -d -s AndroidRuntime:E` - **0 Runtime Crashes (`AndroidRuntime:E`)**.
