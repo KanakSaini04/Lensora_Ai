@@ -1,5 +1,11 @@
 package com.lensora.ai.ui.navigation
 
+import androidx.activity.compose.BackHandler
+import androidx.compose.animation.core.tween
+import androidx.compose.animation.fadeIn
+import androidx.compose.animation.fadeOut
+import androidx.compose.animation.slideInHorizontally
+import androidx.compose.animation.slideOutHorizontally
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.outlined.AutoFixHigh
@@ -17,6 +23,8 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.vector.ImageVector
+import androidx.compose.ui.hapticfeedback.HapticFeedbackType
+import androidx.compose.ui.platform.LocalHapticFeedback
 import androidx.navigation.NavGraph.Companion.findStartDestination
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.NavHost
@@ -60,8 +68,16 @@ fun AppNavigation(
 ) {
     val navBackStackEntry by navController.currentBackStackEntryAsState()
     val currentRoute = navBackStackEntry?.destination?.route
+    val haptic = LocalHapticFeedback.current
 
     val isTopLevelRoute = NavScreen.items.any { it.route == currentRoute }
+
+    // Predictive back handler for nested screens
+    if (!isTopLevelRoute && currentRoute != null) {
+        BackHandler {
+            navController.popBackStack()
+        }
+    }
 
     Scaffold(
         bottomBar = {
@@ -90,6 +106,10 @@ fun AppNavigation(
                             ),
                             onClick = {
                                 if (currentRoute != screen.route) {
+                                    try {
+                                        haptic.performHapticFeedback(HapticFeedbackType.TextHandleMove)
+                                    } catch (_: Exception) {}
+
                                     navController.navigate(screen.route) {
                                         popUpTo(navController.graph.findStartDestination().id) {
                                             saveState = true
@@ -109,10 +129,22 @@ fun AppNavigation(
             navController = navController,
             startDestination = NavScreen.Camera.route,
             modifier = Modifier.padding(innerPadding),
+            enterTransition = {
+                slideInHorizontally(initialOffsetX = { 250 }, animationSpec = tween(280)) + fadeIn(animationSpec = tween(280))
+            },
+            exitTransition = {
+                slideOutHorizontally(targetOffsetX = { -250 }, animationSpec = tween(280)) + fadeOut(animationSpec = tween(280))
+            },
+            popEnterTransition = {
+                slideInHorizontally(initialOffsetX = { -250 }, animationSpec = tween(280)) + fadeIn(animationSpec = tween(280))
+            },
+            popExitTransition = {
+                slideOutHorizontally(targetOffsetX = { 250 }, animationSpec = tween(280)) + fadeOut(animationSpec = tween(280))
+            },
         ) {
             composable(NavScreen.Camera.route) {
                 CameraScreen(
-                    onOpenQuickView = { navController.navigate(ROUTE_QUICK_VIEW) }
+                    onOpenQuickView = { navController.navigate(ROUTE_QUICK_VIEW) },
                 )
             }
             composable(NavScreen.Studio.route) { StudioScreen() }
@@ -120,23 +152,23 @@ fun AppNavigation(
                 GalleryScreen(
                     onPhotoClick = { _, _ ->
                         navController.navigate(ROUTE_QUICK_VIEW)
-                    }
+                    },
                 )
             }
             composable(NavScreen.Vibes.route) { VibesScreen() }
             composable(NavScreen.Settings.route) {
                 SettingsScreen(
-                    onOpenProbeLab = { navController.navigate(ROUTE_PROBE_LAB) }
+                    onOpenProbeLab = { navController.navigate(ROUTE_PROBE_LAB) },
                 )
             }
             composable(ROUTE_PROBE_LAB) {
                 ProbeLabScreen(
-                    onNavigateBack = { navController.popBackStack() }
+                    onNavigateBack = { navController.popBackStack() },
                 )
             }
             composable(ROUTE_QUICK_VIEW) {
                 QuickViewScreen(
-                    onNavigateBack = { navController.popBackStack() }
+                    onNavigateBack = { navController.popBackStack() },
                 )
             }
         }

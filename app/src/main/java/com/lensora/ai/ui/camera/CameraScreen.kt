@@ -12,8 +12,14 @@ import android.view.WindowManager
 import android.widget.Toast
 import androidx.activity.compose.rememberLauncherForActivityResult
 import androidx.activity.result.contract.ActivityResultContracts
+import androidx.compose.animation.AnimatedContent
+import androidx.compose.animation.fadeIn
+import androidx.compose.animation.fadeOut
+import androidx.compose.animation.togetherWith
 import androidx.compose.animation.core.FastOutSlowInEasing
+import androidx.compose.animation.core.Spring
 import androidx.compose.animation.core.animateFloatAsState
+import androidx.compose.animation.core.spring
 import androidx.compose.animation.core.tween
 import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.Canvas
@@ -71,6 +77,8 @@ import androidx.compose.ui.graphics.graphicsLayer
 import androidx.compose.ui.input.pointer.pointerInput
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.platform.LocalHapticFeedback
+import androidx.compose.ui.hapticfeedback.HapticFeedbackType
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
@@ -681,15 +689,34 @@ fun CameraScreen(
                     // Obsidian Royal Shutter Button (Red in VIDEO & CINEMATIC modes, White in Photo modes)
                     val isVideoRecordingMode = (selectedMode == CameraMode.VIDEO || selectedMode == CameraMode.CINEMATIC) && customModeName == null
                     val shutterColor = if (isVideoRecordingMode) Color(0xFFDC2626) else ColorWhite
+                    val haptic = LocalHapticFeedback.current
+                    var isShutterPressed by remember { mutableStateOf(false) }
+
+                    val shutterScale by animateFloatAsState(
+                        targetValue = if (isShutterPressed || isRecordingVideo) 0.9f else 1.0f,
+                        animationSpec = spring(
+                            dampingRatio = Spring.DampingRatioMediumBouncy,
+                            stiffness = Spring.StiffnessMediumLow,
+                        ),
+                        label = "ShutterSpringScale",
+                    )
 
                     Box(
                         modifier = Modifier
                             .size(76.dp)
+                            .graphicsLayer {
+                                scaleX = shutterScale
+                                scaleY = shutterScale
+                            }
                             .border(width = 4.dp, color = ColorWhite, shape = CircleShape)
                             .padding(5.dp)
                             .clip(CircleShape)
                             .background(shutterColor)
                             .clickable {
+                                try {
+                                    haptic.performHapticFeedback(HapticFeedbackType.TextHandleMove)
+                                } catch (_: Exception) {}
+
                                 if (isVideoRecordingMode) {
                                     if (isRecordingVideo) {
                                         cameraController.stopVideoRecording(
@@ -931,12 +958,20 @@ private fun AiBadge(
             .padding(horizontal = 14.dp, vertical = 6.dp),
         contentAlignment = Alignment.Center,
     ) {
-        Text(
-            text = statusText,
-            color = ColorWhite,
-            fontSize = 12.sp,
-            fontWeight = FontWeight.Bold,
-        )
+        AnimatedContent(
+            targetState = statusText,
+            transitionSpec = {
+                fadeIn(animationSpec = tween(220)) togetherWith fadeOut(animationSpec = tween(220))
+            },
+            label = "AiBadgeTextAnimation",
+        ) { text ->
+            Text(
+                text = text,
+                color = ColorWhite,
+                fontSize = 12.sp,
+                fontWeight = FontWeight.Bold,
+            )
+        }
     }
 }
 

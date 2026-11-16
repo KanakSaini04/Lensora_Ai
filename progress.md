@@ -295,3 +295,10 @@
   - Implemented SHA-256 checksum verification during streaming and verified Auto-Purge local MediaStore deletion lifecycle (`ContentResolver.delete()`).
   - Upgraded `SettingsScreen.kt` to add "Sign in to Google Drive" button, user email display, and auth state management.
   - Verified 0 runtime crashes (`AndroidRuntime:E`) in Logcat.
+
+## Phase 28: Real LaMa-Dilated Object Eraser (GPU Inpainting) (100% COMPLETE)
+
+- [x] **Step 48: Real LaMa-Dilated Object Eraser**
+  - Implemented real LaMa-Dilated TFLite inpainting in ObjectEraser.kt.
+  - Added GPU delegate inference with CPU fallback.
+  - Implemented 512x512 tiled inpainting and compositing.
