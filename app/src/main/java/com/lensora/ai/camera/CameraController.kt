@@ -443,15 +443,15 @@ class CameraController(private val context: Context) {
 
     fun setCameraMode(mode: CameraMode) {
         currentMode = mode
-        Log.d("CameraMode", "Switching to mode: ${mode.name} (${mode.displayName})")
+        Log.d("LensoraDebug", "Switching to mode $mode")
         val builder = previewRequestBuilder ?: return
         val session = captureSession ?: return
         try {
             applyCameraModeToBuilder(builder)
             session.setRepeatingRequest(builder.build(), null, backgroundHandler)
-            Log.d("CameraMode", "Successfully applied repeating request for mode: ${mode.name}")
+            Log.d("LensoraDebug", "Successfully applied mode $mode")
         } catch (e: Exception) {
-            Log.e("CameraMode", "Mode switch failed for ${mode.name}: ${e.localizedMessage}. Universal PHOTO fallback.", e)
+            Log.e("LensoraDebug", "Failed to apply mode: ${e.message}", e)
             try {
                 currentMode = CameraMode.PHOTO
                 builder.set(CaptureRequest.CONTROL_MODE, CaptureRequest.CONTROL_MODE_AUTO)
@@ -460,15 +460,15 @@ class CameraController(private val context: Context) {
                 builder.set(CaptureRequest.CONTROL_AE_EXPOSURE_COMPENSATION, 0)
                 session.setRepeatingRequest(builder.build(), null, backgroundHandler)
             } catch (fallbackEx: Exception) {
-                Log.e("CameraMode", "Critical error restoring preview session during mode switch fallback", fallbackEx)
+                Log.e("LensoraDebug", "Critical fallback error: ${fallbackEx.message}", fallbackEx)
             }
         }
     }
 
     private fun applyCameraModeToBuilder(builder: CaptureRequest.Builder) {
-        Log.d("CameraMode", "Configuring universal CaptureRequest.Builder for mode: ${currentMode.name}")
+        Log.d("LensoraDebug", "Configuring universal CaptureRequest.Builder for mode: $currentMode")
         try {
-            // Base Universal Controls (Zero SCENE_MODE calls for 100% Xiaomi HyperOS HAL compatibility)
+            // Base Universal Controls (100% FORCE CONTROL_MODE_AUTO, ZERO CONTROL_SCENE_MODE calls)
             builder.set(CaptureRequest.CONTROL_MODE, CaptureRequest.CONTROL_MODE_AUTO)
             builder.set(CaptureRequest.CONTROL_AE_MODE, CaptureRequest.CONTROL_AE_MODE_ON)
             builder.set(CaptureRequest.CONTROL_AF_MODE, CaptureRequest.CONTROL_AF_MODE_CONTINUOUS_PICTURE)
@@ -476,8 +476,8 @@ class CameraController(private val context: Context) {
             applyFlashToBuilder(builder)
 
             when (currentMode) {
-                CameraMode.AI_AUTO, CameraMode.PHOTO -> {
-                    // Universal Auto Photo setup
+                CameraMode.AI_AUTO, CameraMode.PHOTO, CameraMode.PRO -> {
+                    // Force clean AUTO mode without scene mode or forced FPS locks
                 }
                 CameraMode.PORTRAIT -> {
                     builder.set(CaptureRequest.CONTROL_AF_MODE, CaptureRequest.CONTROL_AF_MODE_CONTINUOUS_PICTURE)
@@ -486,13 +486,10 @@ class CameraController(private val context: Context) {
                         val step = cameraCharacteristics?.get(CameraCharacteristics.CONTROL_AE_COMPENSATION_STEP)?.toFloat() ?: 0.33f
                         val targetStep = (0.3f / step).toInt().coerceIn(range.lower, range.upper)
                         builder.set(CaptureRequest.CONTROL_AE_EXPOSURE_COMPENSATION, targetStep)
-                        Log.d("CameraMode", "Portrait Universal EV boost: +0.3 EV (step $targetStep)")
+                        Log.d("LensoraDebug", "Portrait Universal EV boost: +0.3 EV (step $targetStep)")
                     }
                 }
-                CameraMode.VIDEO -> {
-                    builder.set(CaptureRequest.CONTROL_AF_MODE, CaptureRequest.CONTROL_AF_MODE_CONTINUOUS_VIDEO)
-                }
-                CameraMode.CINEMATIC -> {
+                CameraMode.VIDEO, CameraMode.CINEMATIC -> {
                     builder.set(CaptureRequest.CONTROL_AF_MODE, CaptureRequest.CONTROL_AF_MODE_CONTINUOUS_VIDEO)
                     val fpsRanges = cameraCharacteristics?.get(CameraCharacteristics.CONTROL_AE_AVAILABLE_TARGET_FPS_RANGES)
                     val fixed24 = fpsRanges?.firstOrNull { it.lower == 24 && it.upper == 24 }
@@ -502,18 +499,15 @@ class CameraController(private val context: Context) {
                     if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) {
                         try {
                             builder.set(CaptureRequest.CONTROL_AE_TARGET_FPS_RANGE, safeRange)
-                            Log.d("CameraMode", "Applied CINEMATIC safe FPS range: $safeRange")
+                            Log.d("LensoraDebug", "Applied safe FPS range: $safeRange")
                         } catch (e: Exception) {
-                            Log.w("CameraMode", "Cinematic FPS range $safeRange rejected. Fallback to default.", e)
+                            Log.w("LensoraDebug", "FPS range $safeRange rejected. Keeping default.", e)
                         }
                     }
                 }
-                CameraMode.PRO -> {
-                    // Universal Pro mode setup
-                }
             }
         } catch (e: Exception) {
-            Log.e("CameraMode", "Universal mode configuration for ${currentMode.name} failed. Reverting to base AUTO.", e)
+            Log.e("LensoraDebug", "Failed to apply mode builder for $currentMode: ${e.message}", e)
             builder.set(CaptureRequest.CONTROL_MODE, CaptureRequest.CONTROL_MODE_AUTO)
             builder.set(CaptureRequest.CONTROL_AE_MODE, CaptureRequest.CONTROL_AE_MODE_ON)
             builder.set(CaptureRequest.CONTROL_AF_MODE, CaptureRequest.CONTROL_AF_MODE_CONTINUOUS_PICTURE)
