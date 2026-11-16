@@ -48,6 +48,7 @@ dependencies {
     implementation(libs.androidx.navigation.compose)
     implementation(libs.androidx.hilt.navigation.compose)
     implementation(libs.androidx.work.runtime.ktx)
+    implementation(libs.security.crypto)
     implementation(libs.hilt.android)
     implementation(libs.coil.compose)
     implementation(libs.tensorflow.lite)

@@ -290,18 +290,14 @@ class AiProcessorService : Service() {
                 val isAutoPurgeEnabled = prefs.getBoolean("auto_purge_enabled", true)
 
                 if (isCloudSyncEnabled) {
-                    val syncRequest = OneTimeWorkRequestBuilder<CloudSyncWorker>()
-                        .setInputData(
-                            workDataOf(
-                                "PHOTO_URI" to newUri.toString(),
-                                "FILE_NAME" to fileName,
-                                "AUTO_PURGE_ENABLED" to isAutoPurgeEnabled,
-                            ),
-                        )
-                        .build()
+                    val syncRequest = CloudSyncWorker.createWifiOnlySyncRequest(
+                        photoUriStr = newUri.toString(),
+                        fileName = fileName,
+                        autoPurgeEnabled = isAutoPurgeEnabled,
+                    )
 
                     WorkManager.getInstance(this).enqueue(syncRequest)
-                    Log.i(tag, "Cloud Sync toggle is ON. Enqueued CloudSyncWorker for $fileName (Auto-Purge: $isAutoPurgeEnabled)")
+                    Log.i(tag, "Cloud Sync toggle is ON. Enqueued Wi-Fi only CloudSyncWorker for $fileName (Auto-Purge: $isAutoPurgeEnabled)")
                 }
             } else {
                 Log.e(tag, "Failed to insert MediaStore entry for processed image in Service")
