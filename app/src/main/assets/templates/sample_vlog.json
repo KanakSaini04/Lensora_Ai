@@ -1,0 +1,32 @@
+{
+  "id": "sample_vlog_01",
+  "name": "Urban Vlog Beat 9:16",
+  "aspect": "NINE_SIXTEEN",
+  "musicAsset": "audio/vlog_beat.mp3",
+  "slots": [
+    {
+      "durationMs": 2500,
+      "vibePreset": "CINEMATIC",
+      "transitionIn": "FADE",
+      "text": "MORNING COFFEE"
+    },
+    {
+      "durationMs": 3000,
+      "vibePreset": "ROYAL_GOLD",
+      "transitionIn": "SLIDE",
+      "text": "CITY EXPLORATION"
+    },
+    {
+      "durationMs": 2000,
+      "vibePreset": "LEICA",
+      "transitionIn": "ZOOM",
+      "text": "STREET PORTRAIT"
+    },
+    {
+      "durationMs": 4000,
+      "vibePreset": "VINTAGE",
+      "transitionIn": "GLITCH",
+      "text": "SUNSET FINALE"
+    }
+  ]
+}

@@ -382,3 +382,24 @@
   - Deleted Canvas cyan bounding box overlay in CameraScreen.kt and hid coaching hint text when detectedBoundingBox is null.
   - Wired real LaMa inpainting model in ObjectEraser.kt loading filesDir/models/lama_dilated.tflite with Interpreter and GpuDelegate, throwing explicit error on missing model instead of simulated delay.
   - Verified 0 runtime crashes (adb logcat -d -s AndroidRuntime:E).
+
+## Phase 38: Camera Mode Audit & Honest UI (100% COMPLETE)
+
+- [x] **Step 58: Camera Mode Audit**
+  - Conducted line-by-line audit of all 27 camera modes across CameraController.kt, CameraScreen.kt, MoreModesSheet.kt, ImageEditor.kt, and VibeState.kt.
+  - Documented exact file and line references, Camera2 request key changes, 3D LUT matrices, and status classification (REAL / VIBE-ONLY / NOTICE-ONLY / NOTHING) in docs/MODE_AUDIT.md.
+  - Verified 0 runtime crashes on connected target hardware (adb logcat -d -s AndroidRuntime:E).
+
+- [x] **Step 59: Honest Modes & SOON Badges**
+  - Refactored MoreModesSheet.kt to display the 10 planned modes (Panorama, Tele-Cine, Time-Lapse, 3D Spatial, 360 Sphere, Stop Motion, Sony G, Samsung, Apple, Pixel) as disabled with a small Royal Blue outlined "SOON" badge and muted gray styling (#9CA3AF). Tapping them does nothing.
+  - Refactored CameraController.kt setAdvancedMode removing fake toast fallbacks for the 10 planned modes.
+  - Updated docs/Document/SRS.md section 3.2 and docs/MODE_AUDIT.md section 4.
+
+## Phase 39: VN-Style Video Editor Foundation (100% COMPLETE)
+
+- [x] **Step 60: Editor Foundation**
+  - Added Media3 1.11.1 dependencies (exoplayer, transformer, effect, common) and kotlinx.serialization in gradle/libs.versions.toml and app/build.gradle.kts. Updated compileSdk to 36.
+  - Created com.lensora.ai.editor serializable data models (Project, Clip, MusicTrack, Template, TemplateSlot, AspectRatio, ClipType, TransitionType) with validate() rules.
+  - Implemented ProjectRepository managing JSON project files in filesDir/projects/ with atomic .tmp journal saves.
+  - Implemented TemplateLoader and added assets/templates/sample_vlog.json (9:16 aspect ratio, 4 slots).
+  - Added EditorFoundationTest unit test suite verifying JSON round-trips, validation rules, atomic repository operations, corrupt JSON safety, and sample vlog template parsing (11/11 unit tests passed).

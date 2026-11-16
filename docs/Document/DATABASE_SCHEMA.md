@@ -83,3 +83,10 @@ Lensora_Ai uses three Android system storage mechanisms:
 | `cacheDir/LENSORA_<timestamp>.jpg.tmp` | Atomic L0 capture journal | Temporary during capture pass | Deleted immediately after MediaStore stream read completion. |
 | `cacheDir/RAW_<timestamp>.dng.tmp` | Atomic RAW DNG capture journal | Temporary during DngCreator pass | Deleted immediately after MediaStore serialization. |
 | `cacheDir/LENSORA_VIDEO_<timestamp>.mp4.tmp` | Atomic video recorder journal | Temporary during recording pass | Deleted immediately after MediaStore video finalization. |
+
+### 4.3 Editor Project Files Directory (`context.filesDir/projects/`)
+
+| File Pattern | Expected Format | Journaling Strategy | Description |
+| :--- | :--- | :--- | :--- |
+| `filesDir/projects/<id>.json` | JSON string (`Project` model) | Atomic `.tmp` journal rename | Serialized project metadata storing clips, trims, speed, volume, and music tracks. |
+| `filesDir/projects/<id>.json.tmp` | JSON string (`Project.serializer()`) | Temporary write buffer | Written atomically during `saveProject()`. Renamed to `<id>.json` upon write completion. |

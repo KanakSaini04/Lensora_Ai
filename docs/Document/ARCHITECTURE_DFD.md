@@ -99,4 +99,18 @@ graph TD
     ProbeEngine -->|P1 Result| P1[P1 200MP: Binned to 12.5MP]
     ProbeEngine -->|P2 Result| P2[P2 RAW_SENSOR: PASS]
     ProbeEngine -->|P3 Result| P3[P3 24fps Cinema: PASS]
+
+---
+
+## 5. Editor Data Flow & Project Storage (`com.lensora.ai.editor`)
+
+```mermaid
+graph TD
+    StudioUI[Studio Screen UI] -->|Project Operations| Repo[ProjectRepository]
+    Repo -->|Validate & Serialize| Json[Kotlinx.serialization JSON]
+    Json -->|Write .tmp Journal| TmpFile[filesDir/projects/<id>.json.tmp]
+    TmpFile -->|Atomic Rename| FinalFile[filesDir/projects/<id>.json]
+    StudioUI -->|Load Asset Templates| TLoader[TemplateLoader]
+    TLoader -->|Read & Parse| Assets[assets/templates/*.json]
+```
 ```
