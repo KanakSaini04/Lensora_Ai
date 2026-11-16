@@ -382,3 +382,10 @@
   - Deleted Canvas cyan bounding box overlay in CameraScreen.kt and hid coaching hint text when detectedBoundingBox is null.
   - Wired real LaMa inpainting model in ObjectEraser.kt loading filesDir/models/lama_dilated.tflite with Interpreter and GpuDelegate, throwing explicit error on missing model instead of simulated delay.
   - Verified 0 runtime crashes (adb logcat -d -s AndroidRuntime:E).
+
+## Phase 38: Camera Mode Audit (100% COMPLETE)
+
+- [x] **Step 58: Camera Mode Audit**
+  - Conducted line-by-line audit of all 27 camera modes across CameraController.kt, CameraScreen.kt, MoreModesSheet.kt, ImageEditor.kt, and VibeState.kt.
+  - Documented exact file and line references, Camera2 request key changes, 3D LUT matrices, and status classification (REAL / VIBE-ONLY / NOTICE-ONLY / NOTHING) in docs/MODE_AUDIT.md.
+  - Verified 0 runtime crashes on connected target hardware (adb logcat -d -s AndroidRuntime:E).
