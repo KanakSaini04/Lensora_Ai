@@ -15,6 +15,7 @@ import androidx.activity.result.contract.ActivityResultContracts
 import androidx.compose.animation.core.FastOutSlowInEasing
 import androidx.compose.animation.core.animateFloatAsState
 import androidx.compose.animation.core.tween
+import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.Canvas
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
@@ -31,10 +32,12 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.outlined.Cameraswitch
+import androidx.compose.material.icons.outlined.Lightbulb
 import androidx.compose.material.icons.outlined.PhotoCamera
 import androidx.compose.material.icons.outlined.PhotoLibrary
 import androidx.compose.material3.Button
@@ -44,7 +47,9 @@ import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
+import android.graphics.RectF
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.DisposableEffect
 import androidx.compose.runtime.LaunchedEffect
@@ -57,6 +62,7 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
+import androidx.compose.ui.geometry.CornerRadius
 import androidx.compose.ui.geometry.Offset
 import androidx.compose.ui.geometry.Size
 import androidx.compose.ui.graphics.Color
@@ -194,6 +200,8 @@ fun CameraScreen(
             mutableStateOf(try { CameraController.FlashMode.valueOf(flashName ?: "AUTO") } catch (e: Exception) { CameraController.FlashMode.AUTO })
         }
         var aiBadgeText by remember { mutableStateOf("\u2728 AI: Auto") }
+        var coachingHintText by remember { mutableStateOf("") }
+        var detectedBoundingBox by remember { mutableStateOf<RectF?>(null) }
         var textureViewRef by remember { mutableStateOf<TextureView?>(null) }
 
         DisposableEffect(Unit) {
@@ -280,11 +288,13 @@ fun CameraScreen(
                                 view.getBitmap(224, 224)
                             }
                             if (bitmap != null) {
-                                val label = sceneClassifier.analyze(bitmap)
-                                val sceneType = AiPlanner.fromLabel(label)
+                                val detectionResult = sceneClassifier.analyzeWithDetection(bitmap)
+                                val sceneType = AiPlanner.fromLabel(detectionResult.label)
                                 val processingPlan = aiPlanner.createPlan(sceneType)
                                 withContext(Dispatchers.Main) {
-                                    aiBadgeText = label
+                                    aiBadgeText = detectionResult.label
+                                    coachingHintText = detectionResult.coachingHint
+                                    detectedBoundingBox = detectionResult.boundingBox
                                     if (selectedMode != CameraMode.PRO && !isRecordingVideo) {
                                         cameraController.applyProcessingPlan(processingPlan)
                                     }
@@ -292,7 +302,7 @@ fun CameraScreen(
                             }
                         }
                     } catch (e: Exception) {
-                        Log.e("CameraScreen", "Error during AI preview analysis", e)
+                        Log.e("CameraScreen", "Error during live AI director preview sampling", e)
                     }
                 }
             }
@@ -315,6 +325,28 @@ fun CameraScreen(
                     textureViewRef = view
                 },
             )
+
+            // Live AI Director Bounding Box Overlay (PHOTO & AI_AUTO modes)
+            if ((selectedMode == CameraMode.PHOTO || selectedMode == CameraMode.AI_AUTO) && customModeName == null && !isRecordingVideo) {
+                detectedBoundingBox?.let { box ->
+                    Canvas(modifier = Modifier.fillMaxSize()) {
+                        val w = size.width
+                        val h = size.height
+                        val left = box.left * w
+                        val top = box.top * h
+                        val right = box.right * w
+                        val bottom = box.bottom * h
+
+                        drawRoundRect(
+                            color = Color(0xFF00E5FF),
+                            topLeft = Offset(left, top),
+                            size = Size((right - left).coerceAtLeast(40f), (bottom - top).coerceAtLeast(40f)),
+                            cornerRadius = CornerRadius(16f, 16f),
+                            style = Stroke(width = 2.dp.toPx()),
+                        )
+                    }
+                }
+            }
 
             // PHOTO Mode Thin White Aesthetic Border Overlay
             if (selectedMode == CameraMode.PHOTO && customModeName == null) {
@@ -491,7 +523,7 @@ fun CameraScreen(
                 )
             }
 
-            // Bottom Overlays: Pro Controls (if PRO) + Zoom Pills + Mode Carousel + Shutter & Thumbnail Controls
+            // Bottom Overlays: Coaching Hint + Pro Controls + Zoom Pills + Mode Carousel + Shutter & Thumbnail Controls
             Column(
                 modifier = Modifier
                     .align(Alignment.BottomCenter)
@@ -499,6 +531,34 @@ fun CameraScreen(
                     .padding(bottom = 24.dp),
                 horizontalAlignment = Alignment.CenterHorizontally,
             ) {
+                // Live AI Director Composition Coaching Hint Pill
+                if (coachingHintText.isNotEmpty() && !isRecordingVideo) {
+                    Surface(
+                        color = CharcoalSurface.copy(alpha = 0.75f),
+                        shape = RoundedCornerShape(20.dp),
+                        border = BorderStroke(1.dp, Color(0xFF00E5FF).copy(alpha = 0.6f)),
+                        modifier = Modifier.padding(bottom = 8.dp),
+                    ) {
+                        Row(
+                            verticalAlignment = Alignment.CenterVertically,
+                            modifier = Modifier.padding(horizontal = 14.dp, vertical = 6.dp),
+                        ) {
+                            Icon(
+                                imageVector = Icons.Outlined.Lightbulb,
+                                contentDescription = null,
+                                tint = Color(0xFF00E5FF),
+                                modifier = Modifier.size(16.dp),
+                            )
+                            Spacer(modifier = Modifier.width(6.dp))
+                            Text(
+                                text = coachingHintText,
+                                color = ColorWhite,
+                                fontSize = 13.sp,
+                                fontWeight = FontWeight.Medium,
+                            )
+                        }
+                    }
+                }
                 // Pro Mode HUD Controls (Only visible when PRO mode is selected)
                 if (selectedMode == CameraMode.PRO && customModeName == null && !isRecordingVideo) {
                     ProModeControls(
