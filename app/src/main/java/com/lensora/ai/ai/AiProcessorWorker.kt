@@ -3,12 +3,14 @@ package com.lensora.ai.ai
 import android.content.ContentValues
 import android.content.Context
 import android.graphics.Bitmap
-import android.graphics.BitmapFactory
+import android.graphics.BitmapRegionDecoder
 import android.graphics.Canvas
 import android.graphics.ColorMatrix
 import android.graphics.ColorMatrixColorFilter
 import android.graphics.Paint
+import android.graphics.Rect
 import android.net.Uri
+import android.os.Build
 import android.provider.MediaStore
 import android.util.Log
 import androidx.work.CoroutineWorker
@@ -34,33 +36,46 @@ class AiProcessorWorker(
     private val validator = Validator()
 
     override suspend fun doWork(): Result = withContext(Dispatchers.IO) {
-        val photoUriStr = inputData.getString("PHOTO_URI") ?: return@withContext Result.failure()
-        val sceneTypeStr = inputData.getString("SCENE_TYPE") ?: "AUTO"
-        val evOffset = inputData.getFloat("EV_OFFSET", 0.0f)
-        val vibeStr = inputData.getString("VIBE_PRESET") ?: "NONE"
+        val photoUriStr = inputData.getString("PHOTO_URI")
+            ?: inputData.getString("input_uri")
+            ?: return@withContext Result.failure()
+        val sceneTypeStr = inputData.getString("SCENE_TYPE")
+            ?: inputData.getString("scene_type")
+            ?: "AUTO"
+        val evOffset = inputData.getFloat("EV_OFFSET", inputData.getFloat("ev_offset", 0.0f))
+        val vibeStr = inputData.getString("VIBE_PRESET")
+            ?: inputData.getString("vibe_preset")
+            ?: "NONE"
         val vibePreset = try { VibePreset.valueOf(vibeStr) } catch (e: Exception) { VibePreset.NONE }
 
-        Log.i(tag, "Starting L3 AI Processing pass for $photoUriStr [Scene: $sceneTypeStr, EV: $evOffset, Vibe: ${vibePreset.displayName}]")
+        Log.i(tag, "Starting L3 512x512 Tiled AI Processing pass for $photoUriStr [Scene: $sceneTypeStr, EV: $evOffset, Vibe: ${vibePreset.displayName}]")
 
         val startTime = System.currentTimeMillis()
-        var srcBitmap: Bitmap? = null
         var processedBitmap: Bitmap? = null
 
         try {
             val inputUri = Uri.parse(photoUriStr)
             val resolver = context.contentResolver
 
-            // 1. Decode input image URI into Bitmap
-            srcBitmap = resolver.openInputStream(inputUri)?.use { inputStream ->
-                BitmapFactory.decodeStream(inputStream)
+            // 1. Memory Shield: Initialize BitmapRegionDecoder without decoding full image into RAM
+            val decoder = resolver.openInputStream(inputUri)?.use { inputStream ->
+                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.S) {
+                    BitmapRegionDecoder.newInstance(inputStream)
+                } else {
+                    @Suppress("DEPRECATION")
+                    BitmapRegionDecoder.newInstance(inputStream, false)
+                }
             }
 
-            if (srcBitmap == null) {
-                Log.w(tag, "Failed to decode input Bitmap from $photoUriStr. Keeping raw photo.")
+            if (decoder == null) {
+                Log.w(tag, "Failed to initialize BitmapRegionDecoder for $photoUriStr")
                 return@withContext Result.failure()
             }
 
-            // 2. TFLite DLC Model Check & Inference Attempt
+            val imgWidth = decoder.width
+            val imgHeight = decoder.height
+
+            // 2. TFLite Model Detection & Optional Inference Pass on Low-Res Sample
             val mobileNetFile = File(context.filesDir, "models/mobilenet_v1_1.0_224.tflite")
             val fallbackFile = File(context.filesDir, "models/real_esrgan_v2.tflite")
             val modelFile = if (mobileNetFile.exists()) mobileNetFile else if (fallbackFile.exists()) fallbackFile else null
@@ -69,20 +84,14 @@ class AiProcessorWorker(
             if (modelFile != null && modelFile.exists()) {
                 var interpreter: Interpreter? = null
                 try {
-                    Log.i(tag, "TFLite Model found at ${modelFile.absolutePath} (${modelFile.length()} bytes). Initializing TFLite Interpreter...")
-                    val options = Interpreter.Options().apply {
-                        setNumThreads(4)
-                    }
+                    val options = Interpreter.Options().apply { setNumThreads(4) }
                     interpreter = Interpreter(modelFile, options)
-                    val inputTensor = interpreter.getInputTensor(0)
-                    val outputTensor = interpreter.getOutputTensor(0)
 
-                    Log.i(tag, "TFLite Interpreter initialized. Input Tensor: ${inputTensor.shape().contentToString()} (${inputTensor.dataType()}), Output Tensor: ${outputTensor.shape().contentToString()} (${outputTensor.dataType()})")
+                    val sampleRect = Rect(0, 0, imgWidth.coerceAtMost(512), imgHeight.coerceAtMost(512))
+                    val sampleTile = decoder.decodeRegion(sampleRect, null)
 
-                    val inferenceStartTime = System.currentTimeMillis()
-
-                    if (modelFile.name.contains("mobilenet", ignoreCase = true)) {
-                        val scaledBitmap = Bitmap.createScaledBitmap(srcBitmap, 224, 224, true)
+                    if (sampleTile != null && modelFile.name.contains("mobilenet", ignoreCase = true)) {
+                        val scaledBitmap = Bitmap.createScaledBitmap(sampleTile, 224, 224, true)
                         val inputBuffer = ByteBuffer.allocateDirect(1 * 224 * 224 * 3 * 4).apply {
                             order(ByteOrder.nativeOrder())
                         }
@@ -101,26 +110,20 @@ class AiProcessorWorker(
                         val outputArray = Array(1) { FloatArray(1001) }
                         interpreter.run(inputBuffer, outputArray)
                         scaledBitmap.recycle()
-
-                        val inferenceTime = System.currentTimeMillis() - inferenceStartTime
-                        val outputSize = outputArray[0].size
-                        Log.i(tag, "Real MobileNet TFLite AI Inference executed in ${inferenceTime}ms. Output array size: $outputSize classes")
+                        sampleTile.recycle()
+                        Log.i(tag, "Real MobileNet TFLite AI Inference executed on tiled sample")
                     } else {
-                        val inferenceTime = System.currentTimeMillis() - inferenceStartTime
-                        Log.i(tag, "TFLite AI Inference execution pass completed in ${inferenceTime}ms")
+                        sampleTile?.recycle()
                     }
-
                     usedTfLite = true
                 } catch (e: Exception) {
-                    Log.w(tag, "TFLite Interpreter execution pass failed (${e.localizedMessage}). Falling back to ColorMatrix engine.", e)
+                    Log.w(tag, "TFLite Interpreter pass failed (${e.localizedMessage}). Safe fallback.", e)
                 } finally {
                     interpreter?.close()
                 }
-            } else {
-                Log.i(tag, "No TFLite DLC Model file found in internal storage. Falling back to ColorMatrix engine.")
             }
 
-            // 3. Fallback / Standard ColorMatrix Pass (with Vibe / LUT matrix integration)
+            // 3. 512x512 Tiled Pipeline with ColorMatrix & Vibe LUT Integration
             val colorMatrix = createColorMatrixForPlan(sceneTypeStr, evOffset)
             if (vibePreset != VibePreset.NONE) {
                 val vibeMatrix = ImageEditor.createVibeAndroidColorMatrix(vibePreset)
@@ -128,22 +131,45 @@ class AiProcessorWorker(
                 Log.i(tag, "Applied Vibe Preset ColorMatrix pass: ${vibePreset.displayName}")
             }
 
-            processedBitmap = Bitmap.createBitmap(
-                srcBitmap.width,
-                srcBitmap.height,
-                Bitmap.Config.ARGB_8888,
-            )
-
+            processedBitmap = Bitmap.createBitmap(imgWidth, imgHeight, Bitmap.Config.ARGB_8888)
             val canvas = Canvas(processedBitmap)
             val paint = Paint(Paint.ANTI_ALIAS_FLAG).apply {
                 colorFilter = ColorMatrixColorFilter(colorMatrix)
+                isFilterBitmap = true
             }
-            canvas.drawBitmap(srcBitmap, 0f, 0f, paint)
 
-            val finalBitmap = processedBitmap ?: srcBitmap
+            val tileSize = 512
+            val numCols = (imgWidth + tileSize - 1) / tileSize
+            val numRows = (imgHeight + tileSize - 1) / tileSize
+            val totalTiles = numCols * numRows
+
+            Log.i(tag, "Processing $imgWidth x $imgHeight px in $totalTiles tiles ($tileSize x $tileSize px each)")
+
+            var tileIndex = 0
+            for (row in 0 until numRows) {
+                for (col in 0 until numCols) {
+                    val left = col * tileSize
+                    val top = row * tileSize
+                    val right = (left + tileSize).coerceAtMost(imgWidth)
+                    val bottom = (top + tileSize).coerceAtMost(imgHeight)
+                    val rect = Rect(left, top, right, bottom)
+
+                    // Decode only 512x512 region
+                    val tileBitmap = decoder.decodeRegion(rect, null)
+                    if (tileBitmap != null) {
+                        canvas.drawBitmap(tileBitmap, left.toFloat(), top.toFloat(), paint)
+                        tileBitmap.recycle() // Memory Shield: Recycle tile immediately
+                    }
+
+                    tileIndex++
+                    val progressPercent = (tileIndex * 100) / totalTiles
+                    setProgressAsync(workDataOf("progress" to progressPercent))
+                    Log.d(tag, "Tile $tileIndex of $totalTiles processed ($left,$top - $right,$bottom) [$progressPercent%]")
+                }
+            }
 
             // 4. L4 Quality Validation Check
-            if (!validator.isValid(finalBitmap)) {
+            if (!validator.isValid(processedBitmap)) {
                 Log.w(tag, "L4 Validator failed: Processed bitmap invalid or pitch black. Keeping raw photo $photoUriStr")
                 return@withContext Result.failure()
             }
@@ -166,7 +192,7 @@ class AiProcessorWorker(
 
             if (newUri != null) {
                 resolver.openOutputStream(newUri)?.use { outStream ->
-                    finalBitmap.compress(Bitmap.CompressFormat.JPEG, 95, outStream)
+                    processedBitmap.compress(Bitmap.CompressFormat.JPEG, 95, outStream)
                 }
 
                 contentValues.clear()
@@ -174,7 +200,7 @@ class AiProcessorWorker(
                 resolver.update(newUri, contentValues, null, null)
 
                 val executionTime = System.currentTimeMillis() - startTime
-                Log.i(tag, "L3 AI Processing finished in ${executionTime}ms (Used TFLite: $usedTfLite, Vibe: ${vibePreset.displayName}). Saved $fileName to MediaStore at $newUri")
+                Log.i(tag, "L3 512x512 Tiled AI Processing finished in ${executionTime}ms (Used TFLite: $usedTfLite, Vibe: ${vibePreset.displayName}, Total Tiles: $totalTiles). Saved $fileName to MediaStore at $newUri")
 
                 // 6. Enqueue CloudSyncWorker if Cloud Sync toggle is ON in Settings
                 val prefs = context.getSharedPreferences("lensora_prefs", Context.MODE_PRIVATE)
@@ -202,11 +228,9 @@ class AiProcessorWorker(
                 Result.failure()
             }
         } catch (e: Exception) {
-            Log.e(tag, "Error during AiProcessorWorker execution", e)
+            Log.e(tag, "Error during AiProcessorWorker 512x512 tiled execution", e)
             Result.failure()
         } finally {
-            // Memory Hygiene: Recycle Bitmaps to prevent OOM
-            srcBitmap?.recycle()
             processedBitmap?.recycle()
         }
     }
@@ -214,10 +238,7 @@ class AiProcessorWorker(
     private fun createColorMatrixForPlan(sceneType: String, evOffset: Float): ColorMatrix {
         val matrix = ColorMatrix()
 
-        // Exposure Gain scale factor
         val evScale = 1.0f + (evOffset * 0.20f)
-
-        // Contrast scale factor per scene type
         val contrastScale = when (sceneType) {
             "PORTRAIT" -> 1.10f
             "LANDSCAPE" -> 1.15f
@@ -226,7 +247,6 @@ class AiProcessorWorker(
             else -> 1.05f
         }
 
-        // Combined scale factor & translation offset
         val combinedScale = contrastScale * evScale
         val translateOffset = 128f * (1f - contrastScale) + (evOffset * 15f)
 

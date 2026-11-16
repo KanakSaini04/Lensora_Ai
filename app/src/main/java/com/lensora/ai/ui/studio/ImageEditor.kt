@@ -3,7 +3,7 @@ package com.lensora.ai.ui.studio
 import android.content.ContentValues
 import android.content.Context
 import android.graphics.Bitmap
-import android.graphics.BitmapFactory
+import android.graphics.BitmapRegionDecoder
 import android.graphics.Canvas
 import android.graphics.ColorMatrix
 import android.graphics.ColorMatrixColorFilter
@@ -14,6 +14,7 @@ import android.net.Uri
 import android.os.Build
 import android.os.Environment
 import android.provider.MediaStore
+import android.util.Log
 import androidx.compose.ui.graphics.ColorMatrix as ComposeColorMatrix
 import com.lensora.ai.ui.vibes.VibePreset
 import kotlinx.coroutines.Dispatchers
@@ -23,6 +24,8 @@ import java.util.Date
 import java.util.Locale
 
 object ImageEditor {
+
+    private const val TAG = "ImageEditor"
 
     fun getLutStripBitmap(context: Context, vibe: VibePreset): Bitmap? {
         return when (vibe) {
@@ -109,23 +112,17 @@ object ImageEditor {
         vibe: VibePreset = VibePreset.NONE,
         includeTimestamp: Boolean = false,
     ): Result<Uri> = withContext(Dispatchers.IO) {
-        var srcBitmap: Bitmap? = null
         var editedBitmap: Bitmap? = null
         try {
-            // 1. Decode full-res source image from URI
-            val inputStream = context.contentResolver.openInputStream(inputUri)
-                ?: return@withContext Result.failure(Exception("Failed to open input stream for $inputUri"))
+            // 1. Memory Shield: Use BitmapRegionDecoder for 512x512 tiled processing (no full image decode into RAM)
+            val decoder = context.contentResolver.openInputStream(inputUri)?.use { inputStream ->
+                BitmapRegionDecoder.newInstance(inputStream)
+            } ?: return@withContext Result.failure(Exception("Failed to initialize BitmapRegionDecoder for $inputUri"))
 
-            srcBitmap = BitmapFactory.decodeStream(inputStream)
-            inputStream.close()
-
-            if (srcBitmap == null) {
-                return@withContext Result.failure(Exception("Failed to decode bitmap from $inputUri"))
-            }
+            val width = decoder.width
+            val height = decoder.height
 
             // 2. Create target mutable bitmap
-            val width = srcBitmap.width
-            val height = srcBitmap.height
             editedBitmap = Bitmap.createBitmap(width, height, Bitmap.Config.ARGB_8888)
 
             // 3. Construct combined stacked ColorMatrix (Base Exposure/Contrast + Vibe Preset)
@@ -133,16 +130,42 @@ object ImageEditor {
             val vibeMatrix = createVibeAndroidColorMatrix(vibe)
             baseMatrix.postConcat(vibeMatrix)
 
-            // 4. Render ColorMatrix onto software Canvas
             val canvas = Canvas(editedBitmap)
-            val paint = Paint().apply {
+            val paint = Paint(Paint.ANTI_ALIAS_FLAG).apply {
                 colorFilter = ColorMatrixColorFilter(baseMatrix)
-                isAntiAlias = true
                 isFilterBitmap = true
             }
-            canvas.drawBitmap(srcBitmap, 0f, 0f, paint)
 
-            // 4b. Draw VN-Style Timestamp Overlay on exported Bitmap if enabled
+            // 4. Memory Shield: 512x512 Tiled Pipeline
+            val tileSize = 512
+            val numCols = (width + tileSize - 1) / tileSize
+            val numRows = (height + tileSize - 1) / tileSize
+            val totalTiles = numCols * numRows
+
+            Log.i(TAG, "Starting Studio Export 512x512 Tiled pass ($width x $height px, Total Tiles: $totalTiles)")
+
+            var tileIndex = 0
+            for (row in 0 until numRows) {
+                for (col in 0 until numCols) {
+                    val left = col * tileSize
+                    val top = row * tileSize
+                    val right = (left + tileSize).coerceAtMost(width)
+                    val bottom = (top + tileSize).coerceAtMost(height)
+                    val rect = Rect(left, top, right, bottom)
+
+                    // Decode only 512x512 tile
+                    val tileBitmap = decoder.decodeRegion(rect, null)
+                    if (tileBitmap != null) {
+                        canvas.drawBitmap(tileBitmap, left.toFloat(), top.toFloat(), paint)
+                        tileBitmap.recycle() // Memory Shield: Recycle tile immediately!
+                    }
+
+                    tileIndex++
+                    Log.d(TAG, "Export Tile $tileIndex of $totalTiles processed ($left,$top - $right,$bottom)")
+                }
+            }
+
+            // 4b. Draw VN-Style Timestamp Overlay on exported Canvas if enabled
             if (includeTimestamp) {
                 val timeStr = SimpleDateFormat("HH:mm:ss", Locale.US).format(Date())
                 val textToDraw = "LENSORA • $timeStr"
@@ -225,11 +248,12 @@ object ImageEditor {
 
             Result.success(uri)
         } catch (oom: OutOfMemoryError) {
+            Log.e(TAG, "OOM Error during export", oom)
             Result.failure(Exception("Image too large to export"))
         } catch (e: Exception) {
+            Log.e(TAG, "Error during exportImage tiled pass", e)
             Result.failure(e)
         } finally {
-            srcBitmap?.recycle()
             editedBitmap?.recycle()
         }
     }

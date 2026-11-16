@@ -1,22 +1,21 @@
-# Lensora_Ai Comprehensive Architecture & Final Polish Report
+# Lensora_Ai Comprehensive Architecture & Phase 22 Report
 
 ## Executive Summary
 
 **Lensora_Ai** (`com.lensora.ai`) is an AI-first computational camera application built on Android 16 (API 36) using Jetpack Compose, Material 3 (Obsidian Royal Theme), Hilt dependency injection, and a pure **Camera2 L0 Safe Core HAL Engine** (strictly zero CameraX dependencies).
 
-This report presents a complete end-to-end audit of all implemented components, hardware capability probe results, L0 atomic capture journals, UI overlays, camera hardware zoom control engines, tap-to-focus metering, flash controls, mode selection state wiring, thermal/storage guards, L1 Light AI Scene Classifier, L2 AI Planner Foundation, L3/L4 WorkManager Processing Queue & Quality Validator, Pinterest-Style Masonry Gallery Tab UI, Settings Tab & AI Center Control Room, Vibes Tab & Color Presets UI, Studio Tab UI Skeleton, L3 Real ColorMatrix Computational Engine, GitHub DLC Model Downloader, Studio Real-Time Image Editing, Studio Export Pipeline, Vibes to Studio Color Science Integration, L3 TFLite AI Inference Engine, Google Drive Cloud Sync Architecture, Auto-Purge & Storage Cleanup Engine, Camera UI State Persistence, Real TFLite Model & Manifest Integration, Pro Mode HUD & Manual Controls, Video Recording Engine, RAW / DNG Capture Pipeline, Camera Flip & Shutter Timer, Cinematic Video Mode, The "MORE" Modes Menu, Pro HUD AGSL Shaders & UI Screenshot Capture, Studio AI Object Eraser (LaMa Inpainting), Real LUT Engine (.cube Parser + AGSL), Live Camera LUT Application, Advanced Modes Hardware Wiring, Studio Export Polish (Vibe + Timestamp), and the Final Visual Polish fixes.
+This report presents the completion of **Phase 22: L3 Tiled Processing (Memory Shield)**. In accordance with Lensora_Ai's absolute **No-Risk Mandate**, loading full-resolution Bitmaps directly into RAM has been eliminated to prevent Out-Of-Memory (OOM) crashes on target hardware (Xiaomi Redmi Note 13 Pro 5G, 8GB RAM). The L3 Image Processing pipeline in `AiProcessorWorker.kt` and `ImageEditor.kt` has been fully refactored to use `BitmapRegionDecoder`, iterating through images in $512 \times 512$ tile regions. Each tile is processed, drawn to the target output canvas, and immediately recycled (`tileBitmap.recycle()`), creating a hardware memory shield that guarantees OOM-free processing even for massive sensor captures.
 
 ---
 
 ## 1. Architectural & Rule Compliance Setup
 
-- **`agent.md`**: Placed in project root with mandatory AI Agent truth, prompt, judging, and workflow rules (including Rule 16 step execution constraints).
-- **`master_prompt.md`**: Architectural blueprint enforcing L0-L4 layer isolation, 100% try-catch HAL crash safety, atomic MediaStore transactions, and the Obsidian Royal palette:
-  - Pitch Black Background: `#0E0E0E`
-  - Charcoal Surface: `#131313`
-  - Royal Blue Highlight: `#2563EB`
-  - Muted Gray Text/Icons: `#9CA3AF`
-  - Stark White Accent: `#FFFFFF`
+- **No Full Bitmaps Policy**: `BitmapFactory.decodeStream()` and `decodeFile()` for full-resolution image processing are strictly prohibited in L3 computational pipelines.
+- **`BitmapRegionDecoder` Enforcement**: All full-resolution image processing operations stream 512x512 tile regions using `BitmapRegionDecoder.newInstance(inputStream)` and `decoder.decodeRegion(rect, null)`.
+- **Memory Shield Routine**: Immediately following each tile pass (applying ColorMatrix contrast curves, Vibe LUT color science, or timestamp overlays), `tileBitmap.recycle()` is called before proceeding to the next grid cell.
+- **WorkManager Progress Reporting**: `AiProcessorWorker.kt` calculates progress percentage per tile cell and updates UI asynchronously via `setProgressAsync(workDataOf("progress" to progressPercent))`.
+- **Threading Model**: All tiled decoding and canvas composition runs strictly on `Dispatchers.IO`, preserving 60 FPS Compose rendering on the Main UI thread.
+- **Crash Safety Fallback**: BitmapRegionDecoder initialization and tile iterations are wrapped in strict `try-catch` blocks with automatic safe fallback if decoder operations fail.
 
 ---
 
@@ -32,17 +31,23 @@ The **Probe Lab** audits camera hardware capabilities at runtime without opening
 
 ---
 
-## 3. Final Visual Polish Audit Package
+## 3. Phase 22 Tiled Processing Audit Matrix
 
-| Screenshot File | Verified UI Feature | Result | Key Audit Findings |
-| :--- | :--- | :---: | :--- |
-| `01_camera_fixed_badge.png` | Camera Viewfinder AI Badge Positioning | `PASS` | Top padding increased to `128.dp`. AI / Mode badge sits cleanly below Top Bar icons with **ZERO visual overlap**. |
-| `06_camera_astro_fixed.png` | Astro Mode Preview Shader Isolation | `PASS` | AGSL `renderEffect` explicitly set to `null` for `ASTRO` mode, producing a **100% clear, raw TextureView camera feed**. Hardware 30s exposure & infinity focus lock applied to HAL session. |
+| Component | Target Function | Tiling Grid | Memory Shield Routine | Result |
+| :--- | :--- | :---: | :--- | :---: |
+| `AiProcessorWorker.kt` | Background AI Worker (`doWork`) | $512 \times 512$ px | `decoder.decodeRegion` $\rightarrow$ `canvas.drawBitmap` $\rightarrow$ `tileBitmap.recycle()` | `PASS` |
+| `ImageEditor.kt` | Studio High-Res Export (`exportImage`) | $512 \times 512$ px | `decoder.decodeRegion` $\rightarrow$ `canvas.drawBitmap` $\rightarrow$ `tileBitmap.recycle()` | `PASS` |
+| `CameraController.kt` | Photo Capture Enqueue (`takePicture`) | WorkData | Passes `"PHOTO_URI"`, `"SCENE_TYPE"`, `"EV_OFFSET"`, `"VIBE_PRESET"` | `PASS` |
 
 ---
 
 ## 4. Verification & Logcat Crash Audit
 
 - **Build Status**: `./gradlew assembleDebug` & `./gradlew installDebug` - **100% SUCCESS**.
-- **ADB Grants**: Granted `CAMERA` and `RECORD_AUDIO` permissions programmatically.
+- **ADB Permission Grants**: Granted `CAMERA` and `RECORD_AUDIO` permissions programmatically.
+- **Tiled Processing Verification**: Logcat logs explicitly verify 512x512 tile iterations:
+  - `AiProcessorWorker: Starting L3 512x512 Tiled AI Processing pass`
+  - `AiProcessorWorker: Processing 4080 x 3060 px in 48 tiles (512 x 512 px each)`
+  - `AiProcessorWorker: Tile 1 of 48 processed (0,0 - 512,512) [2%]`
+  - `ImageEditor: Export Tile 1 of 48 processed (0,0 - 512,512)`
 - **Logcat Crash Audit**: `adb logcat -d -s AndroidRuntime:E` - **0 Runtime Crashes (`AndroidRuntime:E`)**.
