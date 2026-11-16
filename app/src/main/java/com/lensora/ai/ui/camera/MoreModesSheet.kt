@@ -35,6 +35,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
@@ -48,29 +49,30 @@ import com.lensora.ai.ui.theme.RoyalBlue
 data class ModeItem(
     val name: String,
     val icon: ImageVector,
+    val isEnabled: Boolean = true,
 )
 
 val proToolsList = listOf(
-    ModeItem("Astro", Icons.Outlined.Stars),
-    ModeItem("Panorama", Icons.Outlined.Panorama),
-    ModeItem("Tele-Cine", Icons.Outlined.Movie),
-    ModeItem("Pro Macro", Icons.Outlined.Camera),
-    ModeItem("Time-Lapse", Icons.Outlined.Timelapse),
-    ModeItem("3D Spatial", Icons.Outlined.AutoAwesome),
-    ModeItem("360 Sphere", Icons.Outlined.PhotoCamera),
-    ModeItem("Stop Motion", Icons.Outlined.Videocam),
+    ModeItem("Astro", Icons.Outlined.Stars, isEnabled = true),
+    ModeItem("Panorama", Icons.Outlined.Panorama, isEnabled = false),
+    ModeItem("Tele-Cine", Icons.Outlined.Movie, isEnabled = false),
+    ModeItem("Pro Macro", Icons.Outlined.Camera, isEnabled = true),
+    ModeItem("Time-Lapse", Icons.Outlined.Timelapse, isEnabled = false),
+    ModeItem("3D Spatial", Icons.Outlined.AutoAwesome, isEnabled = false),
+    ModeItem("360 Sphere", Icons.Outlined.PhotoCamera, isEnabled = false),
+    ModeItem("Stop Motion", Icons.Outlined.Videocam, isEnabled = false),
 )
 
 val signatureBrandsList = listOf(
-    ModeItem("Leica", Icons.Outlined.FilterVintage),
-    ModeItem("ZEISS", Icons.Outlined.AutoAwesome),
-    ModeItem("Hasselblad", Icons.Outlined.Camera),
-    ModeItem("XMAGE", Icons.Outlined.Stars),
-    ModeItem("Harcourt", Icons.Outlined.FilterVintage),
-    ModeItem("Sony G", Icons.Outlined.PhotoCamera),
-    ModeItem("Samsung", Icons.Outlined.AutoAwesome),
-    ModeItem("Apple", Icons.Outlined.Camera),
-    ModeItem("Pixel", Icons.Outlined.Stars),
+    ModeItem("Leica", Icons.Outlined.FilterVintage, isEnabled = true),
+    ModeItem("ZEISS", Icons.Outlined.AutoAwesome, isEnabled = true),
+    ModeItem("Hasselblad", Icons.Outlined.Camera, isEnabled = true),
+    ModeItem("XMAGE", Icons.Outlined.Stars, isEnabled = true),
+    ModeItem("Harcourt", Icons.Outlined.FilterVintage, isEnabled = true),
+    ModeItem("Sony G", Icons.Outlined.PhotoCamera, isEnabled = false),
+    ModeItem("Samsung", Icons.Outlined.AutoAwesome, isEnabled = false),
+    ModeItem("Apple", Icons.Outlined.Camera, isEnabled = false),
+    ModeItem("Pixel", Icons.Outlined.Stars, isEnabled = false),
 )
 
 @OptIn(ExperimentalMaterial3Api::class)
@@ -121,8 +123,10 @@ fun MoreModesSheet(
             ) {
                 items(proToolsList) { item ->
                     ModeCard(item = item, onClick = {
-                        onModeSelected(item.name)
-                        onDismissRequest()
+                        if (item.isEnabled) {
+                            onModeSelected(item.name)
+                            onDismissRequest()
+                        }
                     })
                 }
             }
@@ -149,8 +153,10 @@ fun MoreModesSheet(
             ) {
                 items(signatureBrandsList) { item ->
                     ModeCard(item = item, onClick = {
-                        onModeSelected(item.name)
-                        onDismissRequest()
+                        if (item.isEnabled) {
+                            onModeSelected(item.name)
+                            onDismissRequest()
+                        }
                     })
                 }
             }
@@ -165,16 +171,45 @@ private fun ModeCard(
     item: ModeItem,
     onClick: () -> Unit,
 ) {
+    val isEnabled = item.isEnabled
+    val cardModifier = if (isEnabled) {
+        Modifier.clickable { onClick() }
+    } else {
+        Modifier
+    }
+
     Box(
         modifier = Modifier
             .fillMaxWidth()
             .clip(RoundedCornerShape(10.dp))
             .background(PitchBlackBackground)
-            .border(width = 1.dp, color = ColorWhite.copy(alpha = 0.12f), shape = RoundedCornerShape(10.dp))
-            .clickable { onClick() }
-            .padding(vertical = 12.dp, horizontal = 4.dp),
+            .border(
+                width = 1.dp,
+                color = if (isEnabled) ColorWhite.copy(alpha = 0.12f) else Color(0xFF1E2330),
+                shape = RoundedCornerShape(10.dp),
+            )
+            .then(cardModifier)
+            .padding(vertical = 10.dp, horizontal = 4.dp),
         contentAlignment = Alignment.Center,
     ) {
+        if (!isEnabled) {
+            // Small "SOON" badge with Royal Blue outline and muted gray text #9CA3AF
+            Box(
+                modifier = Modifier
+                    .align(Alignment.TopEnd)
+                    .padding(end = 4.dp, top = 2.dp)
+                    .border(width = 1.dp, color = RoyalBlue, shape = RoundedCornerShape(4.dp))
+                    .padding(horizontal = 4.dp, vertical = 1.dp),
+            ) {
+                Text(
+                    text = "SOON",
+                    color = Color(0xFF9CA3AF),
+                    fontSize = 8.sp,
+                    fontWeight = FontWeight.Bold,
+                )
+            }
+        }
+
         Column(
             horizontalAlignment = Alignment.CenterHorizontally,
             verticalArrangement = Arrangement.Center,
@@ -182,13 +217,13 @@ private fun ModeCard(
             Icon(
                 imageVector = item.icon,
                 contentDescription = item.name,
-                tint = RoyalBlue,
+                tint = if (isEnabled) RoyalBlue else Color(0xFF9CA3AF),
                 modifier = Modifier.size(22.dp),
             )
             Spacer(modifier = Modifier.height(4.dp))
             Text(
                 text = item.name,
-                color = ColorWhite,
+                color = if (isEnabled) ColorWhite else Color(0xFF9CA3AF),
                 fontSize = 11.sp,
                 fontWeight = FontWeight.SemiBold,
                 maxLines = 1,

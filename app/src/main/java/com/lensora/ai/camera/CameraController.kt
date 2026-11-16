@@ -348,16 +348,12 @@ class CameraController(private val context: Context) {
                     VibeState.selectedVibe = VibePreset.LEICA
                     onFeedback("🎬 Studio Harcourt Portrait Black & White Applied")
                 }
-                "PANORAMA" -> {
-                    onFeedback("🌐 Panorama 360 Sweep Mode is coming in v2.0 update")
-                }
                 else -> {
-                    onFeedback("✨ Mode '$modeName' Selected")
+                    Log.i(tag, "Ignoring unhandled or planned mode: $modeName")
                 }
             }
         } catch (e: Exception) {
             Log.e(tag, "Error setting advanced mode: $modeName", e)
-            onFeedback("✨ Selected $modeName mode")
         }
     }
 
