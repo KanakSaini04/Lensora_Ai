@@ -301,7 +301,7 @@ fun CameraScreen(
             }
         }
 
-        // Real-Time Viewfinder AGSL LUT Shader Pass (Disabled for ASTRO mode for raw clear preview)
+        // Real-Time Viewfinder AGSL LUT Shader Pass (Disabled for ASTRO / Custom modes for raw clear preview)
         val cameraLutBitmap = remember(VibeState.selectedVibe) {
             if (VibeState.selectedVibe == VibePreset.CINEMATIC) {
                 ImageEditor.getLutStripBitmap(context, VibePreset.CINEMATIC)
@@ -321,8 +321,8 @@ fun CameraScreen(
 
         val activeRenderEffect = remember(selectedMode, customModeName, isZebrasEnabled, isPeakingEnabled, cameraLutRenderEffect) {
             try {
-                if (customModeName?.equals("ASTRO", ignoreCase = true) == true) {
-                    null // Explicit raw clear TextureView preview for Astro long exposure mode
+                if (customModeName != null) {
+                    null // Explicit raw clear TextureView preview for all MORE custom modes (ASTRO, Macro, Leica, etc.)
                 } else {
                     when {
                         selectedMode == CameraMode.PRO && isZebrasEnabled && Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU -> AgslShaders.createZebrasEffect()
@@ -373,28 +373,25 @@ fun CameraScreen(
                 )
             }
 
-            // 2.39:1 Cinematic Aspect Ratio Pure Black Letterboxing Overlay (Only visible in CINEMATIC mode)
+            // 2.39:1 Cinematic Aspect Ratio Pure Black Letterboxing Overlay (Top 12% & Bottom 12% bars, 76% center viewfinder)
             if (selectedMode == CameraMode.CINEMATIC && customModeName == null) {
                 Canvas(modifier = Modifier.fillMaxSize()) {
                     val screenWidth = size.width
                     val screenHeight = size.height
-                    val targetHeight = screenWidth / 2.39f
-                    val barHeight = (screenHeight - targetHeight) / 2f
+                    val barHeight = screenHeight * 0.12f // Top 12% and Bottom 12% pure black cinematic bars
 
-                    if (barHeight > 0) {
-                        // Top Pure Black Letterbox Bar
-                        drawRect(
-                            color = Color.Black,
-                            topLeft = Offset(0f, 0f),
-                            size = Size(screenWidth, barHeight),
-                        )
-                        // Bottom Pure Black Letterbox Bar
-                        drawRect(
-                            color = Color.Black,
-                            topLeft = Offset(0f, screenHeight - barHeight),
-                            size = Size(screenWidth, barHeight),
-                        )
-                    }
+                    // Top Pure Black Letterbox Bar (Top 12%)
+                    drawRect(
+                        color = Color.Black,
+                        topLeft = Offset(0f, 0f),
+                        size = Size(screenWidth, barHeight),
+                    )
+                    // Bottom Pure Black Letterbox Bar (Bottom 12%)
+                    drawRect(
+                        color = Color.Black,
+                        topLeft = Offset(0f, screenHeight - barHeight),
+                        size = Size(screenWidth, barHeight),
+                    )
                 }
             }
 
