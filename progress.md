@@ -267,3 +267,12 @@
   - Implemented tile-level crash isolation in `AiProcessorService.kt`: if tile processing encounters errors or fails L4 validation, original unenhanced tile pixel data is safely drawn to prevent image corruption.
   - Implemented GPU resource cleanup (`gpuDelegate.close()` and `interpreter.close()`) in service `finally` block.
   - Verified 0 runtime crashes (`AndroidRuntime:E`) in Logcat.
+
+## Phase 25: Real Image-to-Image AI Pipeline (Dehaze + LUT) (100% COMPLETE)
+
+- [x] **Step 45: Real Image-to-Image AI Pipeline (Dehaze + LUT Integration)**
+  - Upgraded `ModelManager.kt` with `getEnhancementModelFile()` prioritizing Image-to-Image models (`real_esrgan_v2.tflite`, `dehaze.tflite`, `image_enhancer.tflite`).
+  - Upgraded `AiProcessorService.kt` to execute 512x512 tiled Image-to-Image TFLite inference: converts tile Bitmap to `ByteBuffer` input, runs `interpreter.run(input, output)`, and converts output buffer back to enhanced tile Bitmap.
+  - Integrated active `VibePreset` LUT (Cinematic, Leica, Royal Gold) color transformation matrix pass directly onto the enhanced output tiles.
+  - Implemented automatic non-blocking fallback to ColorMatrix + Vibe LUT pipeline if model file is missing or fails to load.
+  - Verified 0 runtime crashes (`AndroidRuntime:E`) in Logcat.
