@@ -35,11 +35,11 @@ class ObjectEraser(
         val lamaModelFile = modelManager.getLamaModelFile()
 
         if (lamaModelFile == null || !lamaModelFile.exists()) {
-            Log.w(tag, "lama_dilated.tflite model file missing. Fallback to Content-Aware Inpainting algorithm.")
+            Log.e(tag, "LaMa TFLite model file missing. Eraser pass aborted.")
             Handler(Looper.getMainLooper()).post {
-                Toast.makeText(context, "Please download the LaMa model in Settings", Toast.LENGTH_SHORT).show()
+                Toast.makeText(context, "LaMa Model missing! Please download LaMa model in Settings.", Toast.LENGTH_LONG).show()
             }
-            return@withContext runFastContentAwareInpainting(sourceBitmap, maskBitmap)
+            return@withContext sourceBitmap
         }
 
         var gpuDelegateObj: AutoCloseable? = null
