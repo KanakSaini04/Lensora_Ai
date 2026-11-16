@@ -166,9 +166,8 @@ class CameraController(private val context: Context) {
                 2,
             )
 
-            // Fix Camera Preview Aspect Ratio Stretching: Use standard SurfaceTexture preview size (e.g. 1920x1080)
-            val previewSizes = map?.getOutputSizes(SurfaceTexture::class.java)
-            val previewSize = previewSizes?.firstOrNull { it.width <= 1920 } ?: android.util.Size(1920, 1080)
+            // Fix Camera Preview Aspect Ratio Stretching: Filter preview size closest to 1920x1080
+            val previewSize = map?.getOutputSizes(SurfaceTexture::class.java)?.filter { it.width <= 1920 && it.height <= 1080 }?.firstOrNull() ?: android.util.Size(1920, 1080)
 
             surfaceTexture.setDefaultBufferSize(previewSize.width, previewSize.height)
             previewSurface = Surface(surfaceTexture)
