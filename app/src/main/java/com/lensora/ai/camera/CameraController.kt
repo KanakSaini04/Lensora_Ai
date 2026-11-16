@@ -3,6 +3,7 @@ package com.lensora.ai.camera
 import android.annotation.SuppressLint
 import android.content.ContentValues
 import android.content.Context
+import android.content.Intent
 import android.graphics.ImageFormat
 import android.graphics.SurfaceTexture
 import android.hardware.camera2.CameraCaptureSession
@@ -690,19 +691,15 @@ class CameraController(private val context: Context) {
 
                         tempFile.delete()
 
-                        // Enqueue L3 WorkManager Computational AI Processor pass
-                        val workData = Data.Builder()
-                            .putString("PHOTO_URI", uri.toString())
-                            .putString("SCENE_TYPE", currentMode.name)
-                            .putFloat("EV_OFFSET", 0.0f)
-                            .putString("VIBE_PRESET", vibePreset)
-                            .build()
-
-                        val aiWorkRequest = OneTimeWorkRequestBuilder<AiProcessorWorker>()
-                            .setInputData(workData)
-                            .build()
-
-                        WorkManager.getInstance(context).enqueue(aiWorkRequest)
+                        // Trigger L3 Foreground Service Computational AI Processor pass
+                        val serviceIntent = Intent(context, com.lensora.ai.service.AiProcessorService::class.java).apply {
+                            putExtra("PHOTO_URI", uri.toString())
+                            putExtra("SCENE_TYPE", currentMode.name)
+                            putExtra("EV_OFFSET", 0.0f)
+                            putExtra("VIBE_PRESET", vibePreset)
+                        }
+                        androidx.core.content.ContextCompat.startForegroundService(context, serviceIntent)
+                        Log.i(tag, "Started L3 AiProcessorService for $uri")
 
                         // RAW / DNG Capture Pipeline
                         if (isRawEnabled && Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) {
