@@ -364,3 +364,12 @@
   - Verified live System Diagnostics Dashboard stats (RAM: 3.8GB/8.0GB, Temp: 32.4°C, Thermal: NONE).
   - Rewrote test_report.md with actual physical device audit matrices and thermal/performance data.
   - Verified 0 runtime crashes (adb logcat -d -s AndroidRuntime:E).
+
+## Phase 36: Camera Mode Switching & Session Stability Fix (100% COMPLETE)
+
+- [x] **Step 56: Camera Mode Switching & Session Stability Fix**
+  - Upgraded CameraController.kt setCameraMode & applyCameraModeToBuilder with Camera2 CONTROL_MODE_USE_SCENE_MODE checks for PORTRAIT mode.
+  - Added clean AE/AF/Flash resets when switching between AI AUTO, PHOTO, PORTRAIT, VIDEO, PRO, CINEMATIC, and MORE modes.
+  - Added try-catch hardware exception isolation with graceful PHOTO mode fallback to prevent preview freezes.
+  - Added CameraMode Logcat diagnostic logging verified on physical Redmi Note 13 Pro 5G (5ceab3e6).
+  - Verified 0 runtime crashes (adb logcat -d -s AndroidRuntime:E).
