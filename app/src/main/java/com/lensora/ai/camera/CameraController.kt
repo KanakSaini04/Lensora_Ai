@@ -443,50 +443,81 @@ class CameraController(private val context: Context) {
 
     fun setCameraMode(mode: CameraMode) {
         currentMode = mode
-        Log.i(tag, "Camera mode changed to: ${mode.name} (${mode.displayName})")
+        Log.d("CameraMode", "Switching to mode: ${mode.name} (${mode.displayName})")
         val builder = previewRequestBuilder ?: return
         val session = captureSession ?: return
         try {
             applyCameraModeToBuilder(builder)
             session.setRepeatingRequest(builder.build(), null, backgroundHandler)
+            Log.d("CameraMode", "Successfully applied repeating request for mode: ${mode.name}")
         } catch (e: Exception) {
-            Log.e(tag, "Error updating camera mode: $mode", e)
+            Log.e("CameraMode", "Mode switch failed for ${mode.name}: ${e.localizedMessage}. Safe fallback to PHOTO mode.", e)
+            try {
+                currentMode = CameraMode.PHOTO
+                builder.set(CaptureRequest.CONTROL_MODE, CaptureRequest.CONTROL_MODE_AUTO)
+                builder.set(CaptureRequest.CONTROL_SCENE_MODE, CaptureRequest.CONTROL_SCENE_MODE_DISABLED)
+                builder.set(CaptureRequest.CONTROL_AE_MODE, CaptureRequest.CONTROL_AE_MODE_ON)
+                builder.set(CaptureRequest.CONTROL_AF_MODE, CaptureRequest.CONTROL_AF_MODE_CONTINUOUS_PICTURE)
+                session.setRepeatingRequest(builder.build(), null, backgroundHandler)
+            } catch (fallbackEx: Exception) {
+                Log.e("CameraMode", "Critical error restoring preview session during mode switch fallback", fallbackEx)
+            }
         }
     }
 
     private fun applyCameraModeToBuilder(builder: CaptureRequest.Builder) {
+        Log.d("CameraMode", "Configuring CaptureRequest.Builder for mode: ${currentMode.name}")
         try {
+            // Reset base AE/AF controls to clean auto defaults
+            builder.set(CaptureRequest.CONTROL_AE_MODE, CaptureRequest.CONTROL_AE_MODE_ON)
+            builder.set(CaptureRequest.CONTROL_AF_MODE, CaptureRequest.CONTROL_AF_MODE_CONTINUOUS_PICTURE)
+            applyFlashToBuilder(builder)
+
             when (currentMode) {
-                CameraMode.AI_AUTO -> {
+                CameraMode.AI_AUTO, CameraMode.PHOTO -> {
                     builder.set(CaptureRequest.CONTROL_MODE, CaptureRequest.CONTROL_MODE_AUTO)
                     builder.set(CaptureRequest.CONTROL_SCENE_MODE, CaptureRequest.CONTROL_SCENE_MODE_DISABLED)
                 }
-                CameraMode.PHOTO -> {
-                    builder.set(CaptureRequest.CONTROL_MODE, CaptureRequest.CONTROL_MODE_AUTO)
-                }
                 CameraMode.PORTRAIT -> {
-                    builder.set(CaptureRequest.CONTROL_SCENE_MODE, CaptureRequest.CONTROL_SCENE_MODE_PORTRAIT)
+                    val sceneModes = cameraCharacteristics?.get(CameraCharacteristics.CONTROL_AVAILABLE_SCENE_MODES)
+                    val hasPortrait = sceneModes?.contains(CaptureRequest.CONTROL_SCENE_MODE_PORTRAIT) == true
+                    if (hasPortrait) {
+                        builder.set(CaptureRequest.CONTROL_MODE, CaptureRequest.CONTROL_MODE_USE_SCENE_MODE)
+                        builder.set(CaptureRequest.CONTROL_SCENE_MODE, CaptureRequest.CONTROL_SCENE_MODE_PORTRAIT)
+                    } else {
+                        Log.w("CameraMode", "PORTRAIT scene mode not in available scene modes list. Safe AUTO fallback.")
+                        builder.set(CaptureRequest.CONTROL_MODE, CaptureRequest.CONTROL_MODE_AUTO)
+                        builder.set(CaptureRequest.CONTROL_SCENE_MODE, CaptureRequest.CONTROL_SCENE_MODE_DISABLED)
+                    }
                 }
                 CameraMode.VIDEO -> {
                     builder.set(CaptureRequest.CONTROL_MODE, CaptureRequest.CONTROL_MODE_AUTO)
+                    builder.set(CaptureRequest.CONTROL_SCENE_MODE, CaptureRequest.CONTROL_SCENE_MODE_DISABLED)
                 }
                 CameraMode.CINEMATIC -> {
                     builder.set(CaptureRequest.CONTROL_MODE, CaptureRequest.CONTROL_MODE_AUTO)
-                    if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) {
+                    builder.set(CaptureRequest.CONTROL_SCENE_MODE, CaptureRequest.CONTROL_SCENE_MODE_DISABLED)
+                    val fpsRanges = cameraCharacteristics?.get(CameraCharacteristics.CONTROL_AE_AVAILABLE_TARGET_FPS_RANGES)
+                    val targetRange = fpsRanges?.firstOrNull { it.lower == 24 && it.upper == 24 }
+                        ?: fpsRanges?.firstOrNull { it.lower <= 24 && it.upper >= 24 }
+                    if (targetRange != null && Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) {
                         try {
-                            builder.set(CaptureRequest.CONTROL_AE_TARGET_FPS_RANGE, Range(24, 24))
+                            builder.set(CaptureRequest.CONTROL_AE_TARGET_FPS_RANGE, targetRange)
+                            Log.d("CameraMode", "Applied CINEMATIC FPS range: $targetRange")
                         } catch (e: Exception) {
-                            Log.w(tag, "Cinematic 24fps range rejected by hardware/emulator. Safe Auto fallback.", e)
+                            Log.w("CameraMode", "Cinematic FPS range $targetRange rejected. Safe fallback.", e)
                         }
                     }
                 }
                 CameraMode.PRO -> {
                     builder.set(CaptureRequest.CONTROL_MODE, CaptureRequest.CONTROL_MODE_AUTO)
+                    builder.set(CaptureRequest.CONTROL_SCENE_MODE, CaptureRequest.CONTROL_SCENE_MODE_DISABLED)
                 }
             }
         } catch (e: Exception) {
-            Log.w(tag, "Mode configuration $currentMode failed on hardware. Safe Auto fallback.", e)
+            Log.e("CameraMode", "Mode configuration for ${currentMode.name} failed on HAL. Safe AUTO fallback.", e)
             builder.set(CaptureRequest.CONTROL_MODE, CaptureRequest.CONTROL_MODE_AUTO)
+            builder.set(CaptureRequest.CONTROL_SCENE_MODE, CaptureRequest.CONTROL_SCENE_MODE_DISABLED)
         }
     }
 
