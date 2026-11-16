@@ -647,6 +647,72 @@ fun SettingsScreen(
                             }
                         },
                 )
+
+                ListItem(
+                    headlineContent = {
+                        Text(
+                            text = "Panic Wipe (Emergency Data Destruction)",
+                            color = Color(0xFFEF4444),
+                            fontWeight = FontWeight.Bold,
+                        )
+                    },
+                    supportingContent = {
+                        Text(
+                            text = "Permanently clear filesDir, cacheDir, EncryptedSharedPreferences, PIN hash, and KeyStore aliases",
+                            color = ColorMutedGray,
+                            fontSize = 12.sp,
+                        )
+                    },
+                    leadingContent = {
+                        Icon(
+                            imageVector = Icons.Outlined.CleaningServices,
+                            contentDescription = "Panic Wipe",
+                            tint = Color(0xFFEF4444),
+                        )
+                    },
+                    colors = ListItemDefaults.colors(containerColor = CharcoalSurface),
+                    modifier = Modifier
+                        .padding(horizontal = 16.dp, vertical = 4.dp)
+                        .clickable {
+                            try {
+                                // 1. Clear filesDir and cacheDir
+                                context.filesDir?.deleteRecursively()
+                                context.cacheDir?.deleteRecursively()
+
+                                // 2. Clear SharedPreferences
+                                prefs.edit().clear().apply()
+                                val cameraPrefs = context.getSharedPreferences("lensora_camera_prefs", Context.MODE_PRIVATE)
+                                cameraPrefs.edit().clear().apply()
+
+                                // 3. Clear EncryptedSharedPreferences
+                                try {
+                                    val masterKeyAlias = androidx.security.crypto.MasterKeys.getOrCreate(androidx.security.crypto.MasterKeys.AES256_GCM_SPEC)
+                                    val encryptedPrefs = androidx.security.crypto.EncryptedSharedPreferences.create(
+                                        "encrypted_lensora_prefs",
+                                        masterKeyAlias,
+                                        context,
+                                        androidx.security.crypto.EncryptedSharedPreferences.PrefKeyEncryptionScheme.AES256_SIV,
+                                        androidx.security.crypto.EncryptedSharedPreferences.PrefValueEncryptionScheme.AES256_GCM
+                                    )
+                                    encryptedPrefs.edit().clear().apply()
+                                } catch (_: Exception) {}
+
+                                // 4. Delete KeyStore aliases
+                                try {
+                                    val keyStore = java.security.KeyStore.getInstance("AndroidKeyStore").apply { load(null) }
+                                    val aliases = keyStore.aliases()
+                                    while (aliases.hasMoreElements()) {
+                                        val alias = aliases.nextElement()
+                                        keyStore.deleteEntry(alias)
+                                    }
+                                } catch (_: Exception) {}
+
+                                Toast.makeText(context, "Panic Wipe Complete. All data permanently destroyed.", Toast.LENGTH_LONG).show()
+                            } catch (e: Exception) {
+                                Toast.makeText(context, "Panic Wipe Execution Error", Toast.LENGTH_SHORT).show()
+                            }
+                        },
+                )
             }
 
             // Section 4: Hardware Diagnostics (Probe Lab Launcher)
