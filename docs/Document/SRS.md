@@ -44,10 +44,12 @@ Lensora_Ai delivers real-time AI scene classification, hardware capability probi
 - **FR-05 (Grid & Timers)**: 3x3 Canvas rule-of-thirds grid overlay and shutter countdown timer (`OFF`, `3s`, `10s`).
 - **FR-06 (Camera Flip)**: Switch between `LENS_FACING_BACK` and `LENS_FACING_FRONT` with horizontal preview mirroring.
 
-### 3.2 Computational Modes (27 Camera Modes)
-- **Core Modes**: `AI AUTO`, `PHOTO`, `PORTRAIT`, `VIDEO`, `PRO`, `CINEMATIC`.
-- **Pro Tools (8 Modes)**: `Astro` (infinity focus lock & 30s manual exposure), `Panorama`, `Tele-Cine`, `Pro Macro` (minimum focus distance), `Time-Lapse`, `3D Spatial`, `360 Sphere`, `Stop Motion`.
-- **Signature Brands (9 Modes)**: `Leica` (B&W grading), `ZEISS` (T* anti-reflex), `Hasselblad` (natural color solution), `XMAGE`, `Harcourt`, `Sony G`, `Samsung`, `Apple`, `Pixel`.
+### 3.2 Computational Modes (23 Active Modes + 4 Feature Controls, 10 Planned)
+- **Active Core Modes (6)**: `AI AUTO`, `PHOTO`, `PORTRAIT`, `VIDEO`, `PRO`, `CINEMATIC`.
+- **Active Pro Tools (2 Modes)**: `Astro` (infinity focus lock & 30s manual exposure), `Pro Macro` (minimum focus distance).
+- **Active Signature Brands (5 Modes)**: `Leica` (B&W grading), `ZEISS` (T* anti-reflex), `Hasselblad` (natural color solution), `XMAGE` (vivid color science), `Harcourt` (portrait black & white).
+- **Active Feature Controls (4 Controls)**: `RAW DNG Capture`, `Flash Controls` (OFF/ON/AUTO), `Hardware Zoom` (0.6x to 3x+), `Tap-to-Focus`.
+- **Planned Modes (10 "SOON" Modes)**: `Panorama`, `Tele-Cine`, `Time-Lapse`, `3D Spatial`, `360 Sphere`, `Stop Motion`, `Sony G`, `Samsung`, `Apple`, `Pixel` (displayed in MoreModesSheet with "SOON" badge, pending hardware sensors/future updates).
 
 ### 3.3 Pro Mode HUD & Overlays
 - **FR-07 (Manual Exposure Sliders)**: Manual ISO slider (100 to 3200) and Shutter Speed slider (1/1000s to 1/30s) applying `SENSOR_SENSITIVITY` and `SENSOR_EXPOSURE_TIME`.
