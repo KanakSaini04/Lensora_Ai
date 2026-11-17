@@ -90,5 +90,5 @@ Lensora_Ai uses three Android system storage mechanisms:
 | :--- | :--- | :--- | :--- |
 | `filesDir/projects/<id>.json` | JSON string (`Project` model) | Atomic `.tmp` journal rename | Serialized project metadata storing clips, trims, speed, volume, and music tracks. |
 | `filesDir/projects/<id>.json.tmp` | JSON string (`Project.serializer()`) | Temporary write buffer | Written atomically during `saveProject()`. Renamed to `<id>.json` upon write completion. |
-| `filesDir/projects/<id>/media/<clipId>.<ext>` | Binary JPEG / MP4 | Atomic `.tmp` journal rename | Local project media file copied by `ProjectImporter`. |
-| `filesDir/projects/<id>/media/<clipId>.<ext>.tmp` | Binary byte stream | Temporary write buffer | Streamed atomically during media import pass. Renamed to `<clipId>.<ext>` upon byte copy completion. |
+| `filesDir/projects/<id>/media/<clipId>.<ext>` | Image (JPEG/PNG/HEIC/WebP) / Video (MP4/MOV/WebM/MKV) | Atomic `.tmp` journal rename | Local project media file copied by `ProjectImporter`. Extension derived via `MimeTypeMap` against safe whitelist (`jpg`, `jpeg`, `png`, `webp`, `heic`, `heif`, `mp4`, `mov`, `webm`, `3gp`, `mkv`). |
+| `filesDir/projects/<id>/media/<clipId>.<ext>.tmp` | Binary byte stream | Temporary write buffer | Streamed atomically during media import pass. Renamed to `<clipId>.<ext>` upon byte copy completion. Cleaned up by `sweepOrphanProjects()` if older than 30 minutes. |

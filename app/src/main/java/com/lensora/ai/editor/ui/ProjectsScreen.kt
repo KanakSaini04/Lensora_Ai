@@ -533,6 +533,27 @@ private fun ImportProgressDialog(
                         }
                     }
 
+                    is ImportState.Success -> {
+                        if (importState.skippedCount > 0) {
+                            Text("IMPORT WARNING", color = Color(0xFFEAB308), fontSize = 12.sp, fontWeight = FontWeight.Bold)
+                            Spacer(modifier = Modifier.height(12.dp))
+                            Text(
+                                "${importState.skippedCount} file(s) could not be imported",
+                                color = ColorWhite,
+                                fontSize = 15.sp,
+                                fontWeight = FontWeight.SemiBold,
+                            )
+                            Spacer(modifier = Modifier.height(20.dp))
+                            Button(
+                                onClick = onDismiss,
+                                colors = ButtonDefaults.buttonColors(containerColor = RoyalBlue),
+                                shape = RoundedCornerShape(8.dp),
+                            ) {
+                                Text("OK", color = ColorWhite, fontWeight = FontWeight.Bold)
+                            }
+                        }
+                    }
+
                     else -> {}
                 }
             }

@@ -118,4 +118,50 @@ class ProjectRepository(
             false
         }
     }
+
+    suspend fun sweepOrphanProjects(
+        clockMillis: () -> Long = { System.currentTimeMillis() },
+        maxAgeMs: Long = 30 * 60 * 1000L,
+    ): Int = withContext(Dispatchers.IO) {
+        if (!baseDir.exists()) return@withContext 0
+
+        var deletedCount = 0
+        val now = clockMillis()
+
+        try {
+            // 1. Delete orphan *.tmp files older than maxAgeMs
+            baseDir.walkTopDown().forEach { file ->
+                if (file.isFile && file.name.endsWith(".tmp")) {
+                    val age = now - file.lastModified()
+                    if (age > maxAgeMs) {
+                        if (file.delete()) {
+                            Log.i(tag, "Sweep deleted stale .tmp file ${file.name} (age ${age / 1000}s)")
+                            deletedCount++
+                        }
+                    }
+                }
+            }
+
+            // 2. Delete orphan project folders with no matching <id>.json older than maxAgeMs
+            baseDir.listFiles()?.forEach { file ->
+                if (file.isDirectory) {
+                    val folderId = file.name
+                    val matchingJson = File(baseDir, "$folderId.json")
+                    if (!matchingJson.exists()) {
+                        val age = now - file.lastModified()
+                        if (age > maxAgeMs) {
+                            if (file.deleteRecursively()) {
+                                Log.i(tag, "Sweep deleted orphan project directory $folderId (age ${age / 1000}s)")
+                                deletedCount++
+                            }
+                        }
+                    }
+                }
+            }
+        } catch (e: Exception) {
+            Log.e(tag, "Error sweeping orphan project files", e)
+        }
+
+        deletedCount
+    }
 }

@@ -11,6 +11,7 @@ import com.lensora.ai.editor.import.ImportState
 import com.lensora.ai.editor.import.ProjectImporter
 import dagger.hilt.android.lifecycle.HiltViewModel
 import dagger.hilt.android.qualifiers.ApplicationContext
+import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
@@ -39,15 +40,22 @@ class ProjectViewModel @Inject constructor(
     private var importJob: Job? = null
 
     init {
-        loadProjects()
+        viewModelScope.launch(Dispatchers.IO) {
+            repository.sweepOrphanProjects()
+            loadProjectsInternal()
+        }
     }
 
     fun loadProjects() {
-        viewModelScope.launch {
-            _uiState.update { it.copy(isLoading = true) }
-            val list = repository.listProjects()
-            _uiState.update { it.copy(projects = list, isLoading = false) }
+        viewModelScope.launch(Dispatchers.IO) {
+            loadProjectsInternal()
         }
+    }
+
+    private suspend fun loadProjectsInternal() {
+        _uiState.update { it.copy(isLoading = true) }
+        val list = repository.listProjects()
+        _uiState.update { it.copy(projects = list, isLoading = false) }
     }
 
     fun startImport(
@@ -56,11 +64,11 @@ class ProjectViewModel @Inject constructor(
         aspectRatio: AspectRatio = AspectRatio.NINE_SIXTEEN,
     ) {
         importJob?.cancel()
-        importJob = viewModelScope.launch {
+        importJob = viewModelScope.launch(Dispatchers.IO) {
             importer.importMediaFlow(pickedUris, projectName, aspectRatio).collect { state ->
                 _uiState.update { it.copy(importState = state) }
                 if (state is ImportState.Success) {
-                    loadProjects()
+                    loadProjectsInternal()
                     _uiState.update { it.copy(selectedProject = state.project) }
                 }
             }
@@ -82,12 +90,12 @@ class ProjectViewModel @Inject constructor(
     }
 
     fun deleteProject(projectId: String) {
-        viewModelScope.launch {
+        viewModelScope.launch(Dispatchers.IO) {
             repository.deleteProject(projectId)
             if (_uiState.value.selectedProject?.id == projectId) {
                 _uiState.update { it.copy(selectedProject = null) }
             }
-            loadProjects()
+            loadProjectsInternal()
         }
     }
 }
