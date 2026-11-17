@@ -98,6 +98,60 @@ data class BrushStroke(
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun StudioScreen() {
+    var studioTabMode by remember { mutableStateOf("PHOTO") }
+
+    if (studioTabMode == "VIDEO") {
+        Column(modifier = Modifier.fillMaxSize()) {
+            // Segmented Top Bar for PHOTO | VIDEO Toggle
+            TopAppBar(
+                title = {
+                    Row(
+                        verticalAlignment = Alignment.CenterVertically,
+                        modifier = Modifier
+                            .clip(RoundedCornerShape(8.dp))
+                            .background(PitchBlackBackground)
+                            .padding(2.dp),
+                    ) {
+                        Box(
+                            modifier = Modifier
+                                .clip(RoundedCornerShape(6.dp))
+                                .background(if (studioTabMode == "PHOTO") RoyalBlue else Color.Transparent)
+                                .clickable { studioTabMode = "PHOTO" }
+                                .padding(horizontal = 12.dp, vertical = 4.dp),
+                        ) {
+                            Text("PHOTO", color = ColorWhite, fontSize = 11.sp, fontWeight = FontWeight.Bold)
+                        }
+                        Box(
+                            modifier = Modifier
+                                .clip(RoundedCornerShape(6.dp))
+                                .background(if (studioTabMode == "VIDEO") RoyalBlue else Color.Transparent)
+                                .clickable { studioTabMode = "VIDEO" }
+                                .padding(horizontal = 12.dp, vertical = 4.dp),
+                        ) {
+                            Text("VIDEO", color = ColorWhite, fontSize = 11.sp, fontWeight = FontWeight.Bold)
+                        }
+                    }
+                },
+                colors = TopAppBarDefaults.topAppBarColors(containerColor = CharcoalSurface),
+            )
+            com.lensora.ai.editor.ui.ProjectsScreen()
+        }
+    } else {
+        StudioPhotoContent(
+            onSwitchToVideoTab = { studioTabMode = "VIDEO" },
+            onSwitchToPhotoTab = { studioTabMode = "PHOTO" },
+            studioTabMode = studioTabMode,
+        )
+    }
+}
+
+@OptIn(ExperimentalMaterial3Api::class)
+@Composable
+private fun StudioPhotoContent(
+    onSwitchToVideoTab: () -> Unit,
+    onSwitchToPhotoTab: () -> Unit,
+    studioTabMode: String,
+) {
     val context = LocalContext.current
     val coroutineScope = rememberCoroutineScope()
     val galleryRepository = remember { GalleryRepository(context) }
@@ -158,11 +212,32 @@ fun StudioScreen() {
             TopAppBar(
                 title = {
                     Row(verticalAlignment = Alignment.CenterVertically) {
-                        Text(
-                            text = "Studio",
-                            color = ColorWhite,
-                            fontWeight = FontWeight.Bold,
-                        )
+                        Row(
+                            verticalAlignment = Alignment.CenterVertically,
+                            modifier = Modifier
+                                .clip(RoundedCornerShape(8.dp))
+                                .background(PitchBlackBackground)
+                                .padding(2.dp),
+                        ) {
+                            Box(
+                                modifier = Modifier
+                                    .clip(RoundedCornerShape(6.dp))
+                                    .background(if (studioTabMode == "PHOTO") RoyalBlue else Color.Transparent)
+                                    .clickable { onSwitchToPhotoTab() }
+                                    .padding(horizontal = 12.dp, vertical = 4.dp),
+                            ) {
+                                Text("PHOTO", color = ColorWhite, fontSize = 11.sp, fontWeight = FontWeight.Bold)
+                            }
+                            Box(
+                                modifier = Modifier
+                                    .clip(RoundedCornerShape(6.dp))
+                                    .background(if (studioTabMode == "VIDEO") RoyalBlue else Color.Transparent)
+                                    .clickable { onSwitchToVideoTab() }
+                                    .padding(horizontal = 12.dp, vertical = 4.dp),
+                            ) {
+                                Text("VIDEO", color = ColorWhite, fontSize = 11.sp, fontWeight = FontWeight.Bold)
+                            }
+                        }
                         if (VibeState.selectedVibe != VibePreset.NONE) {
                             Spacer(modifier = Modifier.width(6.dp))
                             Box(

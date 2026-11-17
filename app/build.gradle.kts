@@ -3,11 +3,12 @@ plugins {
     alias(libs.plugins.kotlin.compose)
     alias(libs.plugins.hilt.android)
     alias(libs.plugins.ksp)
+    alias(libs.plugins.kotlin.serialization)
 }
 
 android {
     namespace = "com.lensora.ai"
-    compileSdk = 35
+    compileSdk = 36
 
     defaultConfig {
         applicationId = "com.lensora.ai"
@@ -62,6 +63,11 @@ dependencies {
     implementation(libs.okhttp)
     implementation(libs.zxing.core)
     implementation(libs.androidx.core.splashscreen)
+    implementation(libs.media3.exoplayer)
+    implementation(libs.media3.transformer)
+    implementation(libs.media3.effect)
+    implementation(libs.media3.common)
+    implementation(libs.kotlinx.serialization.json)
     ksp(libs.hilt.compiler)
 
     testImplementation(libs.junit)
