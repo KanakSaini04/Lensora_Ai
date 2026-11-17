@@ -426,3 +426,11 @@
   - Implemented pure CoachingHintHelper.coachingHintFor(box: RectF?) helper in SceneClassifier.kt returning null when no subject box is detected and hiding pill UI completely.
   - Added SceneClassifierTest.kt unit test suite testing coachingHintFor null, centered, small, left, and right box mappings (21/21 total unit tests passed).
   - Verified 0 runtime crashes on physical Redmi Note 13 Pro 5G (adb logcat -d -s AndroidRuntime:E).
+
+## Phase 41: Claude Review Folder Tooling (100% COMPLETE)
+
+- [x] **Step 63: Claude Review Folder System**
+  - Implemented scripts/prepare_claude_review.ps1 in PowerShell 5.1+ supporting -Step, -Base, and -Extra arguments with path safety checks, atomic folder wipe/rebuild, 00_README_FIRST.md generation, git metadata, doc copies, changed source copies, test outputs/summaries, build logs, adb device info, System.Drawing screenshot validation (black/white/duplicate detection), secrets scanning, and Claude_review.zip archive creation.
+  - Updated .gitignore to ignore transient Claude/ and Claude_review.zip.
+  - Updated agent.md adding Rule 17 for mandatory review package generation.
+  - Updated README.md with short "Review Workflow" section and CHANGELOG.md.
