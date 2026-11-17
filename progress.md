@@ -423,6 +423,6 @@
 - [x] **Step 62: Camera Overlay Fix**
   - Removed Modifier.blur() from AI badge and overlay pills in CameraScreen.kt, replacing with sharp, translucent dark glass styling (Color(0xFF131313).copy(alpha = 0.65f) and 1.dp border ColorWhite.copy(alpha = 0.15f)).
   - Restructured top overlays into a single top-aligned Column (TopBar -> Timestamp Pill -> AI Badge) guaranteeing zero collision or overlap at 1.0x and 1.3x font scales.
-  - Implemented pure coachingHintFor(box: RectF?) helper in SceneClassifier.kt returning null when no subject box is detected and hiding pill UI completely.
+  - Implemented pure CoachingHintHelper.coachingHintFor(box: RectF?) helper in SceneClassifier.kt returning null when no subject box is detected and hiding pill UI completely.
   - Added SceneClassifierTest.kt unit test suite testing coachingHintFor null, centered, small, left, and right box mappings (21/21 total unit tests passed).
   - Verified 0 runtime crashes on physical Redmi Note 13 Pro 5G (adb logcat -d -s AndroidRuntime:E).
