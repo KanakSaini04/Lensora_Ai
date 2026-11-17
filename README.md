@@ -82,7 +82,7 @@ The UI is built with the **Obsidian Royal** color palette:
 
 | Tab | Key Functionality & Highlights |
 | :--- | :--- |
-| 📷 **Camera** | Pure edge-to-edge TextureView viewfinder, Frosted Glass `blur(12.dp)` status pills, Multi-Ring Tactile Shutter Button ($82\text{dp}$ outer ring, $70\text{dp}$ core, spring scale `0.88f`), Zoom Pills (`0.6x`, `1x`, `2x`, `3x`), Pro HUD (Zebras, Focus Peaking, ISO, Shutter), 2.39:1 Cinematic Letterboxing. |
+| 📷 **Camera** | Pure edge-to-edge TextureView viewfinder, translucent glass status pills, Multi-Ring Tactile Shutter Button ($82\text{dp}$ outer ring, $70\text{dp}$ core, spring scale `0.88f`), Zoom Pills (`0.6x`, `1x`, `2x`, `3x`), Pro HUD (Zebras, Focus Peaking, ISO, Shutter), 2.39:1 Cinematic Letterboxing. |
 | 🎨 **Studio** | Real-time Exposure (-2.0 to +2.0 EV) & Contrast (-50 to +50) GPU processing, **LaMa GPU Object Eraser** with interactive brush mask Canvas, VN-Style Vintage Timestamp overlay, 512x512 tiled high-res export. |
 | 🖼️ **Gallery** | Pinterest-style Masonry Grid layout displaying local photos, single-tap Quick View swipable viewer with haptic feedback. |
 | 🎞️ **Vibes** | 3D LUT Color Science presets (Cinematic Teal & Orange, Leica B&W, Royal Gold, Vintage Film), AGSL film grain shaders, VN aesthetic template cards. |
