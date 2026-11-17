@@ -6,11 +6,13 @@ import android.net.Uri
 import android.os.StatFs
 import android.provider.OpenableColumns
 import android.util.Log
+import android.webkit.MimeTypeMap
 import com.lensora.ai.editor.AspectRatio
 import com.lensora.ai.editor.Clip
 import com.lensora.ai.editor.ClipType
 import com.lensora.ai.editor.Project
 import com.lensora.ai.editor.ProjectRepository
+import kotlinx.coroutines.CancellationException
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.flow
@@ -27,9 +29,39 @@ sealed class ImportState {
     object Idle : ImportState()
     data class StorageBlocked(val availableBytes: Long, val requiredBytes: Long) : ImportState()
     data class Progress(val currentClip: Int, val totalClips: Int, val currentClipName: String) : ImportState()
-    data class Success(val project: Project) : ImportState()
+    data class Success(val project: Project, val skippedCount: Int = 0) : ImportState()
     data class Error(val message: String) : ImportState()
     object Cancelled : ImportState()
+}
+
+object ExtensionHelper {
+    val ALLOWED_EXTENSIONS = setOf(
+        "jpg", "jpeg", "png", "webp", "heic", "heif",
+        "mp4", "mov", "webm", "3gp", "mkv"
+    )
+
+    fun deriveExtension(context: Context, uri: Uri, mimeType: String?, isVideo: Boolean): String {
+        val cleanMime = mimeType?.lowercase(Locale.US)?.ifBlank { null }
+            ?: try {
+                context.contentResolver.getType(uri)?.lowercase(Locale.US)
+            } catch (_: Exception) {
+                null
+            }
+
+        val rawExt = cleanMime?.let {
+            MimeTypeMap.getSingleton().getExtensionFromMimeType(it)
+        }?.lowercase(Locale.US)
+
+        val fallbackExt = if (isVideo) "mp4" else "jpg"
+
+        val finalExt = if (rawExt != null && rawExt in ALLOWED_EXTENSIONS) {
+            rawExt
+        } else {
+            fallbackExt
+        }
+
+        return ".$finalExt"
+    }
 }
 
 object StorageGuard {
@@ -68,6 +100,7 @@ class ProjectImporter(
             val durationStr = retriever.extractMetadata(MediaMetadataRetriever.METADATA_KEY_DURATION)
             durationStr?.toLongOrNull()?.takeIf { it > 0 } ?: defaultDurationMs
         } catch (e: Exception) {
+            if (e is CancellationException) throw e
             Log.w(tag, "Failed to extract video duration for $filePath. Fallback to $defaultDurationMs ms.", e)
             defaultDurationMs
         } finally {
@@ -86,6 +119,7 @@ class ProjectImporter(
                 } else 0L
             } ?: 0L
         } catch (e: Exception) {
+            if (e is CancellationException) throw e
             Log.w(tag, "Failed to query size for $uri", e)
             0L
         }
@@ -122,20 +156,20 @@ class ProjectImporter(
         }
 
         val clips = mutableListOf<Clip>()
+        var skippedCount = 0
 
         try {
             for ((index, uri) in pickedUris.withIndex()) {
                 if (!coroutineContext.isActive) {
                     Log.i(tag, "Import cancelled during processing clip $index")
                     cleanupFolder(projectDir)
-                    emit(ImportState.Cancelled)
-                    return@flow
+                    throw CancellationException("Import cancelled")
                 }
 
-                val mimeType = context.contentResolver.getType(uri) ?: ""
-                val isVideo = mimeType.startsWith("video", ignoreCase = true) || uri.toString().lowercase(Locale.US).contains("mp4") || uri.toString().lowercase(Locale.US).contains("video")
+                val mimeType = try { context.contentResolver.getType(uri) } catch (_: Exception) { null }
+                val isVideo = mimeType?.startsWith("video", ignoreCase = true) == true
                 val clipType = if (isVideo) ClipType.VIDEO else ClipType.PHOTO
-                val ext = if (isVideo) ".mp4" else ".jpg"
+                val ext = ExtensionHelper.deriveExtension(context, uri, mimeType, isVideo)
 
                 val clipId = "clip_${System.currentTimeMillis()}_$index"
                 val destFile = File(mediaDir, "$clipId$ext")
@@ -154,7 +188,7 @@ class ProjectImporter(
                                 var read: Int
                                 while (input.read(buffer).also { read = it } != -1) {
                                     if (!coroutineContext.isActive) {
-                                        throw InterruptedException("Import cancelled during byte stream copy")
+                                        throw CancellationException("Import cancelled during byte stream copy")
                                     }
                                     output.write(buffer, 0, read)
                                 }
@@ -172,11 +206,10 @@ class ProjectImporter(
                             copySuccess = true
                         }
                     }
-                } catch (e: InterruptedException) {
-                    Log.i(tag, "Import stream copy interrupted for $uri")
+                } catch (e: CancellationException) {
+                    Log.i(tag, "Import stream copy cancelled for $uri")
                     cleanupFolder(projectDir)
-                    emit(ImportState.Cancelled)
-                    return@flow
+                    throw e
                 } catch (e: Exception) {
                     Log.e(tag, "Error copying stream for $uri to $tmpFile", e)
                     if (tmpFile.exists()) tmpFile.delete()
@@ -185,6 +218,7 @@ class ProjectImporter(
 
                 if (!copySuccess || !destFile.exists()) {
                     Log.w(tag, "Skipping uncopyable media file $uri")
+                    skippedCount++
                     continue
                 }
 
@@ -205,6 +239,7 @@ class ProjectImporter(
                     clips.add(clip)
                 } else {
                     Log.w(tag, "Clip $clipId failed validation. Skipping.")
+                    skippedCount++
                 }
             }
 
@@ -225,13 +260,17 @@ class ProjectImporter(
 
             val saved = repository.saveProject(project)
             if (saved) {
-                Log.i(tag, "Project $projectId successfully created with ${clips.size} clips")
-                emit(ImportState.Success(project))
+                Log.i(tag, "Project $projectId successfully created with ${clips.size} clips (skipped $skippedCount)")
+                emit(ImportState.Success(project, skippedCount = skippedCount))
             } else {
                 cleanupFolder(projectDir)
                 emit(ImportState.Error("Failed to save project metadata"))
             }
 
+        } catch (e: CancellationException) {
+            Log.i(tag, "Import job cancelled")
+            cleanupFolder(projectDir)
+            throw e
         } catch (e: Exception) {
             Log.e(tag, "Unhandled exception during media import", e)
             cleanupFolder(projectDir)

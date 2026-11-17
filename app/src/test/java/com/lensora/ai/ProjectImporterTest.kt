@@ -2,6 +2,7 @@ package com.lensora.ai
 
 import com.lensora.ai.editor.Clip
 import com.lensora.ai.editor.ClipType
+import com.lensora.ai.editor.import.ExtensionHelper
 import com.lensora.ai.editor.import.StorageGuard
 import org.junit.Assert.assertEquals
 import org.junit.Assert.assertFalse
@@ -17,9 +18,27 @@ class ProjectImporterTest {
     val tempFolder = TemporaryFolder()
 
     @Test
-    fun testStorageGuardEvaluation() {
-        val twoGb = 2L * 1024 * 1024 * 1024
+    fun testExtensionHelperWhitelist() {
+        val allowed = ExtensionHelper.ALLOWED_EXTENSIONS
+        assertTrue(allowed.contains("jpg"))
+        assertTrue(allowed.contains("jpeg"))
+        assertTrue(allowed.contains("png"))
+        assertTrue(allowed.contains("webp"))
+        assertTrue(allowed.contains("heic"))
+        assertTrue(allowed.contains("heif"))
+        assertTrue(allowed.contains("mp4"))
+        assertTrue(allowed.contains("mov"))
+        assertTrue(allowed.contains("webm"))
+        assertTrue(allowed.contains("3gp"))
+        assertTrue(allowed.contains("mkv"))
 
+        assertFalse(allowed.contains("exe"))
+        assertFalse(allowed.contains("apk"))
+        assertFalse(allowed.contains("bat"))
+    }
+
+    @Test
+    fun testStorageGuardEvaluation() {
         // 1. Enough space: Available 5 GB, Total picked 100 MB -> Required 2.1 GB -> PASS
         val enoughAvailable = 5L * 1024 * 1024 * 1024
         val pickedSize = 100L * 1024 * 1024

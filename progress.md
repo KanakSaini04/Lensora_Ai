@@ -410,3 +410,10 @@
   - Implemented ProjectsScreen.kt with project cards, "+ New Project" button launching system Photo Picker (ActivityResultContracts.PickMultipleVisualMedia max 30 items), import progress dialog, and read-only project detail view with Coil clip thumbnails (max 256px).
   - Added ProjectImporterTest.kt unit test suite testing StorageGuard evaluation, clip building/fallbacks, and .tmp file cleanup.
   - Verified 0 runtime crashes on Redmi Note 13 Pro 5G (adb logcat -d -s AndroidRuntime:E).
+
+- [x] **Step 61b: Importer Hardening**
+  - Updated ProjectImporter.kt extension logic deriving extension from picked file's MIME type via MimeTypeMap against safe whitelist (jpg, jpeg, png, webp, heic, heif, mp4, mov, webm, 3gp, mkv) with .jpg/.mp4 fallbacks and MIME-only video checks.
+  - Implemented sweepOrphanProjects() in ProjectRepository.kt deleting orphan project folders and stale .tmp files older than 30 minutes with pure clock injection. Called in ProjectViewModel init on Dispatchers.IO.
+  - Added skippedCount to ImportState.Success with UI alert on ProjectsScreen.kt.
+  - Enforced CancellationException rethrow hygiene across ProjectImporter.kt streams and moved repository calls to Dispatchers.IO.
+  - Added unit test suite covering ExtensionHelper whitelist, StorageGuard, and ProjectRepositoryTest orphan sweep (11/11 unit tests passed).
