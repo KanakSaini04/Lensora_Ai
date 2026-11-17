@@ -210,7 +210,7 @@ fun CameraScreen(
             mutableStateOf(try { CameraController.FlashMode.valueOf(flashName ?: "AUTO") } catch (e: Exception) { CameraController.FlashMode.AUTO })
         }
         var aiBadgeText by remember { mutableStateOf("\u2728 AI: Auto") }
-        var coachingHintText by remember { mutableStateOf("") }
+        var coachingHintText by remember { mutableStateOf<String?>(null) }
         var detectedBoundingBox by remember { mutableStateOf<RectF?>(null) }
         var textureViewRef by remember { mutableStateOf<TextureView?>(null) }
 
@@ -358,28 +358,6 @@ fun CameraScreen(
                 GridOverlay(modifier = Modifier.fillMaxSize())
             }
 
-            // Glowing Cyan VN-Style Timestamp Overlay (Safely positioned in Top-Left zone below Top Bar)
-            if (currentTimeString.isNotEmpty()) {
-                Box(
-                    modifier = Modifier
-                        .align(Alignment.TopStart)
-                        .statusBarsPadding()
-                        .padding(start = 16.dp, top = 64.dp)
-                        .clip(RoundedCornerShape(6.dp))
-                        .background(CharcoalSurface.copy(alpha = 0.65f))
-                        .border(width = 1.dp, color = Color(0xFF00E5FF).copy(alpha = 0.4f), shape = RoundedCornerShape(6.dp))
-                        .padding(horizontal = 10.dp, vertical = 4.dp),
-                ) {
-                    Text(
-                        text = "LENSORA • $currentTimeString",
-                        color = Color(0xFF00E5FF),
-                        fontSize = 12.sp,
-                        fontWeight = FontWeight.Bold,
-                        letterSpacing = 1.2.sp,
-                    )
-                }
-            }
-
             // Large Center Shutter Timer Countdown Overlay (3... 2... 1...)
             if (countdownRemaining > 0) {
                 Box(
@@ -426,75 +404,89 @@ fun CameraScreen(
                     },
             )
 
-            // Transparent Camera Top Bar Controls
-            CameraTopBar(
-                modifier = Modifier.align(Alignment.TopCenter),
-                flashMode = flashMode,
-                isGridVisible = isGridVisible,
-                timerMode = timerMode,
-                onFlashClick = {
-                    val nextFlash = when (flashMode) {
-                        CameraController.FlashMode.OFF -> CameraController.FlashMode.ON
-                        CameraController.FlashMode.ON -> CameraController.FlashMode.AUTO
-                        CameraController.FlashMode.AUTO -> CameraController.FlashMode.OFF
-                    }
-                    flashMode = nextFlash
-                    cameraController.setFlashMode(nextFlash)
-                    cameraPrefs.edit().putString("flash_mode", nextFlash.name).apply()
-                    Toast.makeText(context, "Flash: ${nextFlash.name}", Toast.LENGTH_SHORT).show()
-                },
-                onTimerClick = {
-                    timerMode = timerMode.next()
-                    Toast.makeText(context, "Timer: ${timerMode.displayName}", Toast.LENGTH_SHORT).show()
-                },
-                onVibeClick = {
-                    val nextVibe = when (VibeState.selectedVibe) {
-                        VibePreset.NONE -> VibePreset.CINEMATIC
-                        VibePreset.CINEMATIC -> VibePreset.LEICA
-                        VibePreset.LEICA -> VibePreset.ROYAL_GOLD
-                        else -> VibePreset.NONE
-                    }
-                    VibeState.selectedVibe = nextVibe
-                    Toast.makeText(context, "Vibe LUT: ${nextVibe.displayName}", Toast.LENGTH_SHORT).show()
-                },
-                onGridClick = {
-                    isGridVisible = !isGridVisible
-                    cameraPrefs.edit().putBoolean("grid_enabled", isGridVisible).apply()
-                    Toast.makeText(
-                        context,
-                        if (isGridVisible) "Grid Enabled" else "Grid Disabled",
-                        Toast.LENGTH_SHORT,
-                    ).show()
-                },
-                onSettingsClick = {
-                    Toast.makeText(context, "Camera Settings", Toast.LENGTH_SHORT).show()
-                },
-            )
-
-            // Frosted Glass AI Badge / Recording Timer Overlay at Top Center (Padding 80.dp cleanly below Top Bar Icons)
-            if (isRecordingVideo) {
-                val mins = recordingSeconds / 60
-                val secs = recordingSeconds % 60
-                val timerText = String.format(Locale.US, "\uD83D\uDD34 REC %02d:%02d", mins, secs)
-                AiBadge(
-                    modifier = Modifier
-                        .align(Alignment.TopCenter)
-                        .statusBarsPadding()
-                        .padding(top = 80.dp),
-                    statusText = timerText,
+            // Top Overlays Column: Top Bar -> Timestamp Pill -> AI Badge (Stacked cleanly to eliminate overlap at all font scales)
+            Column(
+                modifier = Modifier
+                    .align(Alignment.TopCenter)
+                    .fillMaxWidth(),
+                horizontalAlignment = Alignment.CenterHorizontally,
+            ) {
+                CameraTopBar(
+                    flashMode = flashMode,
+                    isGridVisible = isGridVisible,
+                    timerMode = timerMode,
+                    onFlashClick = {
+                        val nextFlash = when (flashMode) {
+                            CameraController.FlashMode.OFF -> CameraController.FlashMode.ON
+                            CameraController.FlashMode.ON -> CameraController.FlashMode.AUTO
+                            CameraController.FlashMode.AUTO -> CameraController.FlashMode.OFF
+                        }
+                        flashMode = nextFlash
+                        cameraController.setFlashMode(nextFlash)
+                        cameraPrefs.edit().putString("flash_mode", nextFlash.name).apply()
+                        Toast.makeText(context, "Flash: ${nextFlash.name}", Toast.LENGTH_SHORT).show()
+                    },
+                    onTimerClick = {
+                        timerMode = timerMode.next()
+                        Toast.makeText(context, "Timer: ${timerMode.displayName}", Toast.LENGTH_SHORT).show()
+                    },
+                    onVibeClick = {
+                        val nextVibe = when (VibeState.selectedVibe) {
+                            VibePreset.NONE -> VibePreset.CINEMATIC
+                            VibePreset.CINEMATIC -> VibePreset.LEICA
+                            VibePreset.LEICA -> VibePreset.ROYAL_GOLD
+                            else -> VibePreset.NONE
+                        }
+                        VibeState.selectedVibe = nextVibe
+                        Toast.makeText(context, "Vibe LUT: ${nextVibe.displayName}", Toast.LENGTH_SHORT).show()
+                    },
+                    onGridClick = {
+                        isGridVisible = !isGridVisible
+                        cameraPrefs.edit().putBoolean("grid_enabled", isGridVisible).apply()
+                        Toast.makeText(
+                            context,
+                            if (isGridVisible) "Grid Enabled" else "Grid Disabled",
+                            Toast.LENGTH_SHORT,
+                        ).show()
+                    },
+                    onSettingsClick = {
+                        Toast.makeText(context, "Camera Settings", Toast.LENGTH_SHORT).show()
+                    },
                 )
-            } else {
-                val badgeText = when {
-                    VibeState.selectedVibe != VibePreset.NONE -> "\uD83C\uDFAC Vibe: ${VibeState.selectedVibe.displayName}"
-                    customModeName != null -> "\u2728 Mode: $customModeName"
-                    selectedMode == CameraMode.CINEMATIC -> "\uD83C\uDFAC 24fps 2.39:1 Cinematic"
-                    else -> aiBadgeText
+
+                if (currentTimeString.isNotEmpty()) {
+                    Box(
+                        modifier = Modifier
+                            .padding(top = 2.dp, bottom = 4.dp)
+                            .clip(RoundedCornerShape(6.dp))
+                            .background(Color(0xFF131313).copy(alpha = 0.65f))
+                            .border(width = 1.dp, color = Color(0xFF00E5FF).copy(alpha = 0.4f), shape = RoundedCornerShape(6.dp))
+                            .padding(horizontal = 10.dp, vertical = 4.dp),
+                    ) {
+                        Text(
+                            text = "LENSORA • $currentTimeString",
+                            color = Color(0xFF00E5FF),
+                            fontSize = 11.sp,
+                            fontWeight = FontWeight.Bold,
+                            letterSpacing = 1.1.sp,
+                        )
+                    }
                 }
+
+                val badgeText = if (isRecordingVideo) {
+                    val mins = recordingSeconds / 60
+                    val secs = recordingSeconds % 60
+                    String.format(Locale.US, "\uD83D\uDD34 REC %02d:%02d", mins, secs)
+                } else {
+                    when {
+                        VibeState.selectedVibe != VibePreset.NONE -> "\uD83C\uDFAC Vibe: ${VibeState.selectedVibe.displayName}"
+                        customModeName != null -> "\u2728 Mode: $customModeName"
+                        selectedMode == CameraMode.CINEMATIC -> "\uD83C\uDFAC 24fps 2.39:1 Cinematic"
+                        else -> aiBadgeText
+                    }
+                }
+
                 AiBadge(
-                    modifier = Modifier
-                        .align(Alignment.TopCenter)
-                        .statusBarsPadding()
-                        .padding(top = 80.dp),
                     statusText = badgeText,
                 )
             }
@@ -508,8 +500,9 @@ fun CameraScreen(
                     .padding(bottom = 12.dp),
                 horizontalAlignment = Alignment.CenterHorizontally,
             ) {
-                // Live AI Director Composition Coaching Hint Pill (Only visible when a real bounding box is detected)
-                if (coachingHintText.isNotEmpty() && detectedBoundingBox != null && !isRecordingVideo) {
+                // Live AI Director Composition Coaching Hint Pill (Only visible when a real bounding box is detected and hint is non-null)
+                val currentHint = coachingHintText
+                if (!currentHint.isNullOrEmpty() && detectedBoundingBox != null && !isRecordingVideo) {
                     Surface(
                         color = CharcoalSurface.copy(alpha = 0.75f),
                         shape = RoundedCornerShape(20.dp),
@@ -528,7 +521,7 @@ fun CameraScreen(
                             )
                             Spacer(modifier = Modifier.width(6.dp))
                             Text(
-                                text = coachingHintText,
+                                text = currentHint,
                                 color = ColorWhite,
                                 fontSize = 13.sp,
                                 fontWeight = FontWeight.Medium,

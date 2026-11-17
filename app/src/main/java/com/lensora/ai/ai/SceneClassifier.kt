@@ -13,8 +13,26 @@ data class DetectionResult(
     val label: String = "✨ AI: Auto",
     val confidence: Float = 0.85f,
     val boundingBox: RectF? = null,
-    val coachingHint: String = "✨ Perfect Composition",
+    val coachingHint: String? = null,
 )
+
+object CoachingHintHelper {
+    fun coachingHintFor(box: RectF?): String? {
+        if (box == null) return null
+
+        val boxWidth = box.right - box.left
+        val boxHeight = box.bottom - box.top
+        val areaRatio = boxWidth * boxHeight
+        val centerX = (box.left + box.right) / 2.0f
+
+        return when {
+            areaRatio < 0.20f -> "✨ Step Closer"
+            centerX < 0.40f -> "✨ Move Right"
+            centerX > 0.60f -> "✨ Move Left"
+            else -> "✨ Perfect Composition"
+        }
+    }
+}
 
 class SceneClassifier(
     private val context: Context,
@@ -48,12 +66,12 @@ class SceneClassifier(
 
         var detectedLabel = "✨ AI: Auto"
         var boundingBox: RectF? = null
-        var coachingHint = "✨ Perfect Composition"
+        var coachingHint: String? = null
         val confidence = 0.88f
 
         val inferenceTimeMs = measureTimeMillis {
             try {
-                // Downscale bitmap to 224x224 input size for max 5 FPS stream analysis
+                // Downscale bitmap to 224x224 input size for stream analysis
                 val width = 224
                 val height = 224
                 val scaledBitmap = Bitmap.createScaledBitmap(bitmap, width, height, true)
@@ -119,43 +137,25 @@ class SceneClassifier(
                     val normBottom = (maxY.toFloat() / height).coerceIn(0.0f, 1.0f)
 
                     if (normRight > normLeft + 0.1f && normBottom > normTop + 0.1f) {
-                        val box = RectF(normLeft, normTop, normRight, normBottom)
-                        boundingBox = box
-
-                        val boxWidth = box.width()
-                        val boxHeight = box.height()
-                        val areaRatio = boxWidth * boxHeight
-                        val centerX = (box.left + box.right) / 2.0f
-
-                        coachingHint = when {
-                            areaRatio < 0.20f -> "✨ Step Closer"
-                            centerX < 0.40f -> "✨ Move Right"
-                            centerX > 0.60f -> "✨ Move Left"
-                            else -> "✨ Perfect Composition"
-                        }
+                        boundingBox = RectF(normLeft, normTop, normRight, normBottom)
                     } else {
                         boundingBox = null
-                        coachingHint = "✨ Step Closer"
                     }
                 } else {
                     boundingBox = null
-                    coachingHint = when (detectedLabel) {
-                        "✨ AI: Landscape" -> "✨ Wide Horizon View"
-                        "✨ AI: Night" -> "✨ Hold Device Steady"
-                        "✨ AI: Sky" -> "✨ High Dynamic Range"
-                        else -> "✨ Perfect Framing"
-                    }
                 }
 
+                coachingHint = CoachingHintHelper.coachingHintFor(boundingBox)
                 scaledBitmap.recycle()
             } catch (e: Exception) {
                 Log.e(tag, "Error during live AI director detection inference", e)
                 detectedLabel = "✨ AI: Auto"
-                coachingHint = "✨ Auto Framing"
+                boundingBox = null
+                coachingHint = null
             }
         }
 
-        Log.d(tag, "Live AI Director Detection: $detectedLabel [$coachingHint] in ${inferenceTimeMs}ms")
+        Log.d(tag, "AI Director Analysis: box=$boundingBox, hint=$coachingHint, label=$detectedLabel in ${inferenceTimeMs}ms")
         return@withContext DetectionResult(
             label = detectedLabel,
             confidence = confidence,
