@@ -448,3 +448,6 @@
 
 - [x] **Step 64: Documentation Sync**
   - Synchronized README.md with verified codebase facts (compileSdk 36, minSdk 33, targetSdk 35, 21 passed unit tests, 2 FPS / 500 ms sampling rate, honest 27 mode status table, L1 classifier heuristic description, and Known Limitations section).
+
+- [x] **Step 64a: Neural Model Audit**
+  - Conducted read-only audit of offline neural AI models in docs/MODEL_AUDIT.md mapping asset presence, DLC manifest definitions, code ingestion configurations, and tensor dimension specs.
