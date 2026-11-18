@@ -7,10 +7,11 @@ import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.LazyRow
-import androidx.compose.foundation.lazy.items
+import androidx.compose.foundation.lazy.itemsIndexed
 import androidx.compose.foundation.lazy.rememberLazyListState
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -31,6 +32,20 @@ fun CameraModeCarousel(
 ) {
     val listState = rememberLazyListState()
 
+    val selectedIndex = remember(selectedMode, customModeName) {
+        if (customModeName != null) {
+            CameraMode.modes.size
+        } else {
+            CameraMode.modes.indexOf(selectedMode).coerceAtLeast(0)
+        }
+    }
+
+    LaunchedEffect(selectedIndex) {
+        if (selectedIndex in 0..CameraMode.modes.size) {
+            listState.animateScrollToItem(selectedIndex)
+        }
+    }
+
     LazyRow(
         state = listState,
         modifier = modifier,
@@ -38,7 +53,7 @@ fun CameraModeCarousel(
         horizontalArrangement = Arrangement.spacedBy(24.dp),
         verticalAlignment = Alignment.CenterVertically,
     ) {
-        items(CameraMode.modes) { mode ->
+        itemsIndexed(CameraMode.modes) { _, mode ->
             val isSelected = mode == selectedMode && customModeName == null
             Box(
                 modifier = Modifier
