@@ -437,5 +437,5 @@
 
 - [x] **Step 62b: AiBadge Blur Fix**
   - Step 62b: AiBadge blur was NOT removed in Step 62; removed now. Deleted Modifier.blur(12.dp) from AiBadge in CameraScreen.kt and removed unused import.
-  - Added statusBarsPadding() to top overlay Column in CameraScreen.kt ensuring CameraTopBar, Timestamp Pill, and AiBadge clear status bars and cutouts cleanly.
+  - Added statusBarsPadding() to top overlay Column in CameraScreen.kt ensuring CameraTopBar, Timestamp Pill, and AiBadge clear status bars and cutouts cleanly (Overlay clearance visual check: NOT VERIFIED - headless emulator display buffer).
   - Deleted legacy black PNG files from docs/screenshots/.

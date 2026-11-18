@@ -13,8 +13,8 @@
 ### Added
 - **Claude Review Tooling**: Created `scripts/prepare_claude_review.ps1` for automated, atomic creation of `Claude/` workspace and `Claude_review.zip` review archives. Includes secrets scanning, screenshot validation, test summaries, and `00_README_FIRST.md` problem reports.
 
-## [Unreleased] - Step 62b (2026-11-17)
+## [Unreleased] - Step 62b (2026-11-18)
 
 ### Fixed
 - **AiBadge Blur Removal**: Step 62b: AiBadge blur was NOT removed in Step 62; removed now. Deleted `.blur(12.dp)` from `AiBadge` in `CameraScreen.kt` and removed unused import.
-- **Top Bar Insets**: Added `statusBarsPadding()` to top overlay `Column` in `CameraScreen.kt` to ensure `CameraTopBar`, Timestamp Pill, and `AiBadge` clear status bars and cutouts cleanly.
+- **Top Bar Insets**: Added `statusBarsPadding()` to top overlay `Column` in `CameraScreen.kt` to ensure `CameraTopBar`, Timestamp Pill, and `AiBadge` clear status bars and cutouts cleanly (Overlay clearance visual check: NOT VERIFIED - headless emulator display buffer).

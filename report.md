@@ -342,7 +342,7 @@ drwxrwxrwx 3 u0_a282 u0_a282 3452 2026-11-17 20:52 proj_1731800000001
 ---
 
 ## 8. Projects Screen Screenshot
-![Projects Screen](docs/screenshots/projects.png)
+NOT VERIFIED - screenshot pending (Step 61c)
 
 ---
 
