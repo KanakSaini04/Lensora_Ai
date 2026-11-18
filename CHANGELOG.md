@@ -28,3 +28,8 @@
 
 ### Changed
 - **Documentation Synchronization**: Synchronized `README.md` with verified code architecture (2 FPS / 500 ms AI sampling rate, compileSdk 36, minSdk 33, targetSdk 35, 21 passed unit tests, honest 27 Camera Modes status table, honest L1 SceneClassifier heuristic description, and Known Limitations section).
+
+## [Unreleased] - Step 64a (2026-11-18)
+
+### Added
+- **Neural Model Audit**: Created `docs/MODEL_AUDIT.md` performing a read-only audit of offline neural models (`scene_classifier.tflite`, `lama_dilated.tflite`, `real_esrgan_v2.tflite`, `dehaze.tflite`), mapping asset presence, DLC manifest definitions, tile input tensor dimensions, and super-resolution output expansion notes.
