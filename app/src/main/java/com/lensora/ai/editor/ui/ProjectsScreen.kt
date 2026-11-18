@@ -164,13 +164,10 @@ fun ProjectsScreen(
         ) {
             val selectedProj = uiState.selectedProject
             if (selectedProj != null) {
-                // Read-Only Project View (Clips Thumbnail Strip & Details)
-                ReadOnlyProjectView(
+                EditorScreen(
                     project = selectedProj,
-                    onDelete = {
-                        viewModel.deleteProject(selectedProj.id)
-                        Toast.makeText(context, "Deleted Project ${selectedProj.name}", Toast.LENGTH_SHORT).show()
-                    },
+                    viewModel = viewModel,
+                    onBackClick = { viewModel.selectProject(null) },
                 )
             } else {
                 // Projects List View

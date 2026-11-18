@@ -343,6 +343,16 @@
 
 - [x] **Step 52: Final Camera UI Perfection & Edge-to-Edge Cleanup**
   - Removed thin 1.dp white aesthetic border overlay from CameraScreen.kt.
+
+## Phase 33: Timeline UI & Edit Operations Engine (100% COMPLETE)
+
+- [x] **Step 66: Timeline UI + Trim/Split/Reorder/Delete Engine**
+  - Implemented pure JVM `TimelineEditEngine.kt` supporting `trim()`, `split()`, `reorder()`, `delete()`, and `totalDurationMs()` with boundary validation.
+  - Implemented in-memory `TimelineUndoRedoStack` managing up to 50 timeline states.
+  - Built `EditorScreen.kt` with ExoPlayer preview player (Media3), scrubber bar, interactive horizontal clip timeline, and clip edit controls panel.
+  - Updated `ProjectViewModel.kt` for atomic clip edit state persistence via `ProjectRepository` on `Dispatchers.IO`.
+  - Created `TimelineEditEngineTest.kt` unit test suite (9 pure JVM tests covering trim bounds, zero-length, split at edges, reorder bounds, delete missing id, and undo/redo stack).
+  - Captured emulator screenshot `docs/screenshots/step66/editor_timeline.png` and verified 0 logcat runtime crashes.
   - Configured CameraModeCarousel.kt LazyRow with 32.dp horizontal content padding so edge items (AI AUTO, CINEMATIC) never touch screen glass.
   - Anchored AiBadge in CameraScreen.kt cleanly to TopCenter with 80.dp statusBarsPadding().
   - Verified 100% edge-to-edge TextureView viewfinder without aspect ratio clipping or black bars.

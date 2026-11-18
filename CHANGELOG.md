@@ -1,5 +1,13 @@
 # Changelog - Lensora_Ai
 
+## [Unreleased] - Step 66 (2026-11-18)
+
+### Added
+- **Timeline Edit Engine**: Created pure `TimelineEditEngine.kt` supporting clip `trim()`, `split()`, `reorder()`, `delete()`, and `totalDurationMs()` calculation with bound safety.
+- **Undo / Redo Stack**: Implemented `TimelineUndoRedoStack` in-memory history stack tracking up to 50 timeline states.
+- **Video Editor Timeline UI**: Built `EditorScreen.kt` featuring Media3 ExoPlayer preview player, scrubber bar, horizontal clip timeline, and clip edit controls panel.
+- **Unit Testing**: Created `TimelineEditEngineTest.kt` unit test suite covering trim bounds, zero-length, split at edges, reorder bounds, delete missing id, and undo/redo stack (bringing total unit test suite to 40/40 passed across 8 test classes).
+
 ## [Unreleased] - Step 65 / 65c (2026-11-18)
 
 ### Changed
