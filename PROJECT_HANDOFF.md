@@ -5,11 +5,11 @@
 > Rules for this file: every fact must come from the repo, a test run or a device/emulator check. Unknown = **NOT VERIFIED**. No secrets, tokens, keystores, PINs or personal data.
 
 ## 0. Status block (update every step)
-- **Last updated**: 2026-11-18 15:10:00 UTC
-- **Branch / HEAD**: `dev` / `57cf438`
-- **Last completed step**: Step 65b (Neural Model Supply Chain Audit & Plan)
-- **In progress**: None (Batch B complete)
-- **Unit tests**: 21 passed, 0 skipped, 0 failed across 5 test classes (`SceneClassifierTest`: 5, `ProjectImporterTest`: 4, `ProjectRepositoryTest`: 1, `EditorFoundationTest`: 5, `AiPlannerTest`: 6)
+- **Last updated**: 2026-11-18 15:35:00 UTC
+- **Branch / HEAD**: `dev` / `82c9b15`
+- **Last completed step**: Step 65-fix (Documentation Drift Correction)
+- **In progress**: None
+- **Unit tests**: 21 passed, 0 skipped, 0 failed across 6 test classes (`ExampleUnitTest`: 1, `AiPlannerTest`: 5, `EditorFoundationTest`: 5, `ProjectImporterTest`: 4, `ProjectRepositoryTest`: 1, `SceneClassifierTest`: 5)
 - **Last emulator check**: `emulator-5554` (`Medium_Phone`), 2026-11-18 (Verified CameraModeCarousel auto-scroll, unlocked via PIN recipe, sharp AI badge without blur, 0 crashes); **Last physical-device (Redmi) check**: Step 62 (Camera tab top overlays & typography verification on Redmi Note 13 Pro 5G `2312DRA50I`)
 
 ## 1. Boot order for a new AI
@@ -58,9 +58,10 @@
 ### Recent Pull Requests History (Last 15)
 | PR ID | Title | Branch | Status |
 | :--- | :--- | :--- | :---: |
+| **#96** | docs: Populate PROJECT_HANDOFF.md Single Source of Truth | `docs-project-handoff-update` | MERGED |
 | **#95** | docs: Step 65b - Neural Model Supply Chain Plan | `step-65b-model-supply-plan` | MERGED |
 | **#94** | docs: Step 63e - Docs Sync & Step62c Screenshots | `step-63e-docs-sync` | MERGED |
-| **#93** | fix(ui): Step 65a - CameraModeCarousel Auto-Scroll | `step-65a-carousel-autoscroll` | OPEN |
+| **#93** | fix(ui): Step 65a - CameraModeCarousel Auto-Scroll | `step-65a-carousel-autoscroll` | MERGED |
 | **#92** | docs: Step 64a - Neural Model Audit | `step-64a-model-audit` | MERGED |
 | **#91** | docs: Step 64 - Documentation Sync | `step-64-docs-sync` | MERGED |
 | **#90** | docs: Step 63d - Run and Device Policy | `step-63d-run-device-policy` | MERGED |
@@ -72,7 +73,6 @@
 | **#84** | feat(editor): Step 61 - Video Editor Media Import & Projects Screen | `step-61-editor-import` | MERGED |
 | **#83** | feat(editor): Step 60 - Editor Foundation & Media3 | `step-60-editor-foundation` | OPEN |
 | **#82** | feat(ui): Step 59 - Honest Modes & SOON Badges | `step-59-honest-modes` | OPEN |
-| **#81** | docs(audit): Step 58 - Camera Mode Audit | `step-58-mode-audit` | OPEN |
 
 ## 5. Environment, build, run, test
 - **Development Environment**: Windows 11 host, Android Studio (Ladybug 2024.2.1 or 2026.1), JDK 17.
@@ -298,11 +298,12 @@ Lensora_Ai/
 
 ## 13. Testing and evidence
 - **Unit Test Suite**: 21 passed unit tests run via `./gradlew cleanTestDebugUnitTest testDebugUnitTest --rerun-tasks`:
-  - `SceneClassifierTest`: 5 tests covering pure `CoachingHintHelper.coachingHintFor(box)` mappings.
+  - `ExampleUnitTest`: 1 test covering base environment check.
+  - `AiPlannerTest`: 5 tests covering L2 scene tuning parameters.
+  - `EditorFoundationTest`: 5 tests covering `Project` / `Clip` data model validation.
   - `ProjectImporterTest`: 4 tests covering `ExtensionHelper` whitelist, `StorageGuard` 2GB limit, and MIME checks.
   - `ProjectRepositoryTest`: 1 test covering atomic JSON saves & `sweepOrphanProjects` orphan sweep.
-  - `EditorFoundationTest`: 5 tests covering `Project` / `Clip` data model validation.
-  - `AiPlannerTest`: 6 tests covering L2 scene tuning parameters.
+  - `SceneClassifierTest`: 5 tests covering pure `CoachingHintHelper.coachingHintFor(box)` mappings.
 - **Run Policy (GEMINI.md Section 10)**:
   - After EVERY change: build, install, launch on emulator, paste `logcat -d -s AndroidRuntime:E`. Label EMULATOR or DEVICE.
   - Emulator never counts as Redmi verification.
@@ -330,17 +331,17 @@ Lensora_Ai/
   - Phase 43: Batch A & B execution (CameraModeCarousel auto-scroll fix, Run & Device policy, PR cleanup audit, Model Supply Plan `docs/MODEL_SUPPLY_PLAN.md`).
 
 ## 16. Current status
-- **Working (with evidence)**: Camera2 preview/capture engine, Obsidian Royal 5-tab UI, Mode carousel auto-scroll, 6 core active camera modes, LaMa GPU object eraser, ProjectImporter with 2GB Storage Guard & MimeTypeMap whitelist, ProjectRepository orphan sweep, `prepare_claude_review.ps1` tooling, 21/21 passed unit tests, 0 runtime crashes.
+- **Working (with evidence)**: Camera2 preview/capture engine, Obsidian Royal 5-tab UI, Mode carousel auto-scroll, 6 core active camera modes, LaMa GPU object eraser, ProjectImporter with 2GB Storage Guard & MimeTypeMap whitelist, ProjectRepository orphan sweep, `prepare_claude_review.ps1` tooling, 21/21 passed unit tests across 6 test classes, 0 runtime crashes.
 - **Implemented, NOT verified**: Astrophotography, Pro Macro, High-Res upscale, Night Vision noise reduction, Document scan PDF export, Google Drive OAuth2 upload on physical device.
 - **Broken / blocked**: None.
 
 ## 17. Known issues and risks (by severity)
-1. **AI Model Supply Chain Mismatch**: `assets/manifest.json` specifies `"model_name": "mobilenet_v1_1.0_224.tflite"`, whereas `SceneClassifier.kt:47` requests `"scene_classifier.tflite"`. `real_esrgan_v2.tflite` and `dehaze.tflite` are unlisted in DLC manifest. (See [`docs/MODEL_SUPPLY_PLAN.md`](file:///C:/Users/kanak/AndroidStudioProjects/Lensora_Ai/docs/MODEL_SUPPLY_PLAN.md)).
+1. **AI Model Supply Chain Mismatch**: `assets/manifest.json` specifies `"model_name": "mobilenet_v1_1.0_224.tflite"`, whereas `SceneClassifier.kt:47` requests `"scene_classifier.tflite"`. `real_esrgan_v2.tflite` and `dehaze.tflite` are unlisted in DLC manifest. Do NOT rename `mobilenet_v1_1.0_224` to `scene_classifier.tflite`: ImageNet labels != scene labels. Needs a real scene model. (See [`docs/MODEL_SUPPLY_PLAN.md`](file:///C:/Users/kanak/AndroidStudioProjects/Lensora_Ai/docs/MODEL_SUPPLY_PLAN.md)).
 2. **L1 Scene Classifier Heuristics**: Live scene labels use a 224x224 color-brightness pixel heuristic pass; real TFLite tensor array inference model outputs are planned.
 3. **Debug APK Size**: Debug APK size is $\approx 90.33\text{ MB}$ ($94,720,306$ bytes) with R8 minification disabled for debug builds.
 
 ## 17b. Roadmap (ordered, one task per step)
-1. Step 65: Model pipeline fix (update `assets/manifest.json`, align file names, add SHA-256 checksums).
+1. Step 65: manifest.json per-model file_name + sha256 fields (url = null where no real host exists), ModelManager file-existence guards, "Model Unavailable" downloader UI state. No invented URLs.
 2. Step 61c: Projects screen & media import physical device evidence.
 3. Step 64b: Real L1 TFLite model tensor inference pass + real subject box detector for coaching hints.
 4. Step 66: Video editor multi-track timeline UI & clip trim/split controls.
@@ -351,9 +352,10 @@ Lensora_Ai/
 9. Final physical device camera verification pass on Redmi Note 13 Pro 5G.
 
 ## 18. Open questions for the user
-- Hosting repository / CDN endpoints for DLC model zip downloads (`real_esrgan_v2.zip`, `dehaze.zip`).
+- Hosting repository / CDN endpoints for DLC model zip downloads (`real_esrgan_v2.zip`, `dehaze.zip`). `lama_dilated / real_esrgan_v2 / dehaze: no verified public host. NOT VERIFIED.`
 
 ## 19. Update log of this file
 | Date | Step | What changed |
 | --- | --- | --- |
 | 2026-11-18 | Step 65b / Batch B | Fully populated all sections, repository file links, PR history, architecture, 27 mode status, neural model supply plan, and step roadmap. |
+| 2026-11-18 | Step 65-fix | Corrected handoff drift, test class counts, PR table statuses, roadmap, and supply plan header. |

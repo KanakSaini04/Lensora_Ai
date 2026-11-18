@@ -1,4 +1,4 @@
-# Neural Model Supply Chain Audit & Remediation Plan - Step 64b
+# Neural Model Supply Chain Audit & Remediation Plan - Step 65b
 
 **Audit Date**: 2026-11-18
 **Mode**: READ-ONLY Model Supply Chain Plan (No production code modifications applied)
@@ -44,24 +44,36 @@
 ## 3. Required File-by-File Edits (NOT APPLIED)
 
 ### 1. `app/src/main/assets/manifest.json`
-- **Edit Needed**: Add entries for `real_esrgan_v2.tflite` and `dehaze.tflite` DLC download endpoints, and align `model_name` to `"scene_classifier.tflite"`.
+- **Edit Needed**: Add per-model `file_name`, `url`, and `sha256` keys. For models without a verified public host, set `"url": null` and `"sha256": null` (NOT VERIFIED - no confirmed host). Do not invent fake URLs.
 
 ```json
 {
-  "model_name": "scene_classifier.tflite",
-  "url": "https://storage.googleapis.com/download.tensorflow.org/models/tflite/mobilenet_v1_1.0_224.zip",
-  "lama_model_name": "lama_dilated.tflite",
-  "lama_url": "https://storage.googleapis.com/download.tensorflow.org/models/tflite/lama_dilated.zip",
-  "esrgan_model_name": "real_esrgan_v2.tflite",
-  "esrgan_url": "https://storage.googleapis.com/download.tensorflow.org/models/tflite/real_esrgan_v2.zip",
-  "dehaze_model_name": "dehaze.tflite",
-  "dehaze_url": "https://storage.googleapis.com/download.tensorflow.org/models/tflite/dehaze.zip"
+  "scene_classifier": {
+    "file_name": "scene_classifier.tflite",
+    "url": null,
+    "sha256": null
+  },
+  "lama_dilated": {
+    "file_name": "lama_dilated.tflite",
+    "url": null,
+    "sha256": null
+  },
+  "real_esrgan_v2": {
+    "file_name": "real_esrgan_v2.tflite",
+    "url": null,
+    "sha256": null
+  },
+  "dehaze": {
+    "file_name": "dehaze.tflite",
+    "url": null,
+    "sha256": null
+  }
 }
 ```
 
 ### 2. `app/src/main/java/com/lensora/ai/ai/SceneClassifier.kt`
 - **Line 47**: `modelManager?.loadModel("scene_classifier.tflite")`
-- **Edit Needed**: Ensure filename matches DLC manifest target filename.
+- **Edit Needed**: Ensure filename matches DLC manifest target filename. Treat missing `scene_classifier.tflite` as unavailable and fall back to the heuristic pass.
 
 ### 3. `app/src/main/java/com/lensora/ai/ai/ModelManager.kt`
 - **Lines 44-46**: `loadModel("real_esrgan_v2.tflite")`, `loadModel("dehaze.tflite")`
@@ -69,4 +81,9 @@
 
 ### 4. `app/src/main/java/com/lensora/ai/ui/settings/SettingsScreen.kt`
 - **Lines 105, 120, 443, 532**: Hardcoded model filenames `"mobilenet_v1_1.0_224.tflite"`
-- **Edit Needed**: Replace hardcoded string constants with manifest references.
+- **Edit Needed**: Replace hardcoded string constants with manifest references and display "Model Unavailable" when `"url"` is `null`.
+
+---
+
+## 4. Scene classifier caveat
+The ImageNet MobileNet model (`mobilenet_v1_1.0_224.tflite`) classifies general ImageNet objects (1000 categories) and is NOT a scene classification model. Do NOT alias or rename `mobilenet_v1_1.0_224.tflite` to `scene_classifier.tflite`. The loader in `SceneClassifier.kt` must treat missing `scene_classifier.tflite` as unavailable and fall back gracefully to the color-brightness heuristic pass.

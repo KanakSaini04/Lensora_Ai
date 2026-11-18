@@ -38,3 +38,8 @@
 
 ### Added
 - **Model Supply Chain Plan**: Created `docs/MODEL_SUPPLY_PLAN.md` mapping DLC manifest endpoints, WorkManager download destinations, and exact runtime loader file expectation mismatches across `SceneClassifier.kt`, `ModelManager.kt`, and `SettingsScreen.kt`.
+
+## [Unreleased] - Step 65-fix (2026-11-18)
+
+### Fixed
+- **Documentation Drift Corrections**: Corrected `PROJECT_HANDOFF.md` status block, test class counts (21/21 passed across 6 test classes), PR table statuses, roadmap, supply plan header (`Step 65b`), null DLC manifest URLs, and added Scene Classifier caveat section.
