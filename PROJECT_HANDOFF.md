@@ -5,12 +5,12 @@
 > Rules for this file: every fact must come from the repo, a test run or a device/emulator check. Unknown = **NOT VERIFIED**. No secrets, tokens, keystores, PINs or personal data.
 
 ## 0. Status block (update every step)
-- **Last updated**: 2026-11-18 15:35:00 UTC
-- **Branch / HEAD**: `dev` / `82c9b15`
-- **Last completed step**: Step 65-fix (Documentation Drift Correction)
+- **Last updated**: 2026-11-18 16:15:00 UTC
+- **Branch / HEAD**: `step-65-model-manifest` / HEAD
+- **Last completed step**: Step 65 (Model Manifest Hardening)
 - **In progress**: None
-- **Unit tests**: 21 passed, 0 skipped, 0 failed across 6 test classes (`ExampleUnitTest`: 1, `AiPlannerTest`: 5, `EditorFoundationTest`: 5, `ProjectImporterTest`: 4, `ProjectRepositoryTest`: 1, `SceneClassifierTest`: 5)
-- **Last emulator check**: `emulator-5554` (`Medium_Phone`), 2026-11-18 (Verified CameraModeCarousel auto-scroll, unlocked via PIN recipe, sharp AI badge without blur, 0 crashes); **Last physical-device (Redmi) check**: Step 62 (Camera tab top overlays & typography verification on Redmi Note 13 Pro 5G `2312DRA50I`)
+- **Unit tests**: 27 passed, 0 skipped, 0 failed across 7 test classes (`ExampleUnitTest`: 1, `AiPlannerTest`: 5, `EditorFoundationTest`: 5, `ProjectImporterTest`: 4, `ProjectRepositoryTest`: 1, `SceneClassifierTest`: 5, `ManifestParserTest`: 6)
+- **Last emulator check**: `emulator-5554` (`Medium_Phone`), 2026-11-18 (Verified Settings screen displaying "Model Unavailable" for missing unhosted DLC models, camera preview tab, 0 crashes in logcat); **Last physical-device (Redmi) check**: Step 62 (Camera tab top overlays & typography verification on Redmi Note 13 Pro 5G `2312DRA50I`)
 
 ## 1. Boot order for a new AI
 1. `GEMINI.md` (coding-agent rules & Section 10 Run/Device policy)
@@ -359,3 +359,4 @@ Lensora_Ai/
 | --- | --- | --- |
 | 2026-11-18 | Step 65b / Batch B | Fully populated all sections, repository file links, PR history, architecture, 27 mode status, neural model supply plan, and step roadmap. |
 | 2026-11-18 | Step 65-fix | Corrected handoff drift, test class counts, PR table statuses, roadmap, and supply plan header. |
+| 2026-11-18 | Step 65 | Hardened model manifest schema v2, added ManifestParser pure JVM parser with tests, ModelManager file guards, ModelDownloaderWorker url/sha256 checks, and SettingsScreen "Model Unavailable" UI. |

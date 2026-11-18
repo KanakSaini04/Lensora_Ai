@@ -1,6 +1,23 @@
 {
-  "model_name": "mobilenet_v1_1.0_224.tflite",
-  "url": "https://storage.googleapis.com/download.tensorflow.org/models/tflite/mobilenet_v1_1.0_224.zip",
-  "lama_model_name": "lama_dilated.tflite",
-  "lama_url": "https://storage.googleapis.com/download.tensorflow.org/models/tflite/lama_dilated.zip"
+  "schema_version": 2,
+  "scene_classifier": {
+    "file_name": "scene_classifier.tflite",
+    "url": null,
+    "sha256": null
+  },
+  "lama_dilated": {
+    "file_name": "lama_dilated.tflite",
+    "url": null,
+    "sha256": null
+  },
+  "real_esrgan_v2": {
+    "file_name": "real_esrgan_v2.tflite",
+    "url": null,
+    "sha256": null
+  },
+  "dehaze": {
+    "file_name": "dehaze.tflite",
+    "url": null,
+    "sha256": null
+  }
 }

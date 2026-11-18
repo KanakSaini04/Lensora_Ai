@@ -9,7 +9,6 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
 import okhttp3.OkHttpClient
 import okhttp3.Request
-import org.json.JSONObject
 import java.io.File
 import java.io.FileOutputStream
 import java.security.MessageDigest
@@ -29,22 +28,26 @@ class ModelDownloaderWorker(
         .build()
 
     override suspend fun doWork(): Result = withContext(Dispatchers.IO) {
-        // Read asset manifest.json
-        val (manifestModelName, manifestUrl) = try {
+        val targetKey = inputData.getString("TARGET_KEY") ?: "scene_classifier"
+
+        val manifestEntries = try {
             val jsonStr = context.assets.open("manifest.json").bufferedReader().use { it.readText() }
-            val json = JSONObject(jsonStr)
-            Pair(
-                json.optString("model_name", "mobilenet_v1_1.0_224.tflite"),
-                json.optString("url", "https://storage.googleapis.com/download.tensorflow.org/models/tflite/mobilenet_v1_1.0_224.zip"),
-            )
+            ManifestParser.parseManifest(jsonStr)
         } catch (e: Exception) {
-            Log.w(tag, "Failed to parse assets/manifest.json. Using defaults.", e)
-            Pair("mobilenet_v1_1.0_224.tflite", "https://storage.googleapis.com/download.tensorflow.org/models/tflite/mobilenet_v1_1.0_224.zip")
+            Log.w(tag, "Failed to read assets/manifest.json", e)
+            emptyList()
         }
 
-        val modelUrl = inputData.getString("MODEL_URL") ?: manifestUrl
-        val targetFilename = inputData.getString("TARGET_FILENAME") ?: manifestModelName
-        val expectedSha256 = inputData.getString("EXPECTED_SHA256")
+        val manifestEntry = manifestEntries.firstOrNull { it.key == targetKey }
+
+        val modelUrl = inputData.getString("MODEL_URL") ?: manifestEntry?.url
+        val targetFilename = inputData.getString("TARGET_FILENAME") ?: manifestEntry?.fileName ?: "$targetKey.tflite"
+        val expectedSha256 = inputData.getString("EXPECTED_SHA256") ?: manifestEntry?.sha256
+
+        if (modelUrl.isNullOrBlank() || modelUrl.equals("null", ignoreCase = true)) {
+            Log.w(tag, "Model URL is null or unconfigured for $targetFilename ($targetKey). Skipping network call.")
+            return@withContext Result.failure()
+        }
 
         Log.i(tag, "Starting TFLite Model Download from $modelUrl for $targetFilename")
 
@@ -79,7 +82,6 @@ class ModelDownloaderWorker(
 
             var totalBytesRead: Long = 0
 
-            // If the URL points to a ZIP file, extract the .tflite entry in memory
             if (modelUrl.endsWith(".zip", ignoreCase = true)) {
                 val zipInputStream = ZipInputStream(inputStream)
                 var entry = zipInputStream.nextEntry
@@ -119,7 +121,6 @@ class ModelDownloaderWorker(
                     return@withContext Result.failure()
                 }
             } else {
-                // Direct file stream pass
                 val buffer = ByteArray(8192)
                 var bytesRead: Int
 
@@ -139,7 +140,6 @@ class ModelDownloaderWorker(
             outputStream.flush()
             outputStream.close()
 
-            // Calculate SHA-256 Hash
             val sha256Bytes = digest.digest()
             val sha256Hex = sha256Bytes.joinToString("") { "%02x".format(it) }
 
@@ -152,9 +152,10 @@ class ModelDownloaderWorker(
                     return@withContext Result.failure()
                 }
                 Log.i(tag, "SHA-256 checksum verification PASSED!")
+            } else {
+                Log.i(tag, "SHA-256 checksum unverified (no expected sha256 in manifest)")
             }
 
-            // Rename .tmp file to final target filename
             if (finalFile.exists()) {
                 finalFile.delete()
             }

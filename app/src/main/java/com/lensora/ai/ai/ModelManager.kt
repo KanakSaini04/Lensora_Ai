@@ -15,23 +15,37 @@ class ModelManager(
     private var interpreter: Interpreter? = null
 
     fun loadModel(modelFileName: String): Interpreter? {
+        // 1. Try loading from filesDir/models/
+        val modelsDir = File(context.filesDir, "models")
+        val localFile = File(modelsDir, modelFileName)
+        if (localFile.exists() && localFile.length() > 0 && localFile.canRead()) {
+            return try {
+                Interpreter(localFile).also {
+                    interpreter = it
+                    Log.i(tag, "Successfully loaded model from local storage: ${localFile.name} (${localFile.length()} bytes)")
+                }
+            } catch (e: Exception) {
+                Log.e(tag, "Failed to instantiate TFLite Interpreter for local file ${localFile.absolutePath}", e)
+                null
+            }
+        }
+
+        // 2. Fallback: Try loading from assets/
         return try {
-            val assetFileDescriptor = context.assets.openFd(modelFileName)
-            val inputStream = FileInputStream(assetFileDescriptor.fileDescriptor)
+            val assetFd = context.assets.openFd(modelFileName)
+            val inputStream = FileInputStream(assetFd.fileDescriptor)
             val fileChannel = inputStream.channel
-            val startOffset = assetFileDescriptor.startOffset
-            val declaredLength = assetFileDescriptor.declaredLength
             val modelBuffer: ByteBuffer = fileChannel.map(
                 FileChannel.MapMode.READ_ONLY,
-                startOffset,
-                declaredLength,
+                assetFd.startOffset,
+                assetFd.declaredLength,
             )
             Interpreter(modelBuffer).also {
                 interpreter = it
                 Log.i(tag, "Successfully loaded asset model: $modelFileName")
             }
         } catch (e: Exception) {
-            Log.w(tag, "TFLite model $modelFileName not found in assets. Falling back to heuristic AI engine: ${e.localizedMessage}")
+            Log.w(tag, "TFLite model $modelFileName unavailable (missing locally and in assets): ${e.localizedMessage}. Falling back to heuristic AI engine.")
             null
         }
     }
@@ -48,13 +62,12 @@ class ModelManager(
 
         for (candidate in priorityCandidates) {
             val file = File(modelsDir, candidate)
-            if (file.exists() && file.length() > 0) {
+            if (file.exists() && file.length() > 0 && file.canRead()) {
                 Log.i(tag, "Found Image-to-Image AI Enhancement model: ${file.name} (${file.length()} bytes)")
                 return file
             }
         }
 
-        // Fallback: Check any .tflite file in models/ that is NOT MobileNet
         val otherModels = modelsDir.listFiles { _, name ->
             name.endsWith(".tflite", ignoreCase = true) && !name.contains("mobilenet", ignoreCase = true)
         }
@@ -73,7 +86,7 @@ class ModelManager(
 
         for (candidate in candidates) {
             val file = File(modelsDir, candidate)
-            if (file.exists() && file.length() > 0) {
+            if (file.exists() && file.length() > 0 && file.canRead()) {
                 Log.i(tag, "Found LaMa-Dilated Inpainting model: ${file.name} (${file.length()} bytes)")
                 return file
             }
