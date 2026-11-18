@@ -356,11 +356,11 @@
 
 ## Phase 34: Media3 Transformer Export Engine (100% COMPLETE)
 
-- [x] **Step 67: Media3 Transformer Export Engine**
-  - Created pure production `ExportPlanBuilder.kt` mapping timeline clips to `ExportPlan` with 720p HD and 1080p FHD resolution options.
+- [x] **Step 67 / 67b: Real Media3 Transformer Export Engine**
+  - Created pure production `ExportPlanBuilder.kt` and `ExportItemMapper.kt` mapping timeline clips to `ExportPlan` with 720p HD and 1080p FHD resolution options.
   - Created pure `ExportGuard` enforcing `StorageGuard` (2GB minimum) and `ThermalGuard` (< 4 safe status) preconditions.
-  - Implemented WorkManager `ExportWorker.kt` executing background composition export, reporting progress, handling user cancellation with partial file cleanup, and saving exports to MediaStore Movies directory.
-  - Created `ExportPlanBuilderTest.kt` unit test suite (4 pure JVM tests covering 1080p/720p aspect ratios, storage guard, and thermal guard thresholds).
+  - Implemented WorkManager `ExportWorker.kt` executing real Media3 1.11.1 `Transformer` composition export pass on Main Looper via `suspendCancellableCoroutine`, reporting progress polling, handling cancellation with partial output file cleanup, and saving exports to MediaStore Movies directory via `IS_PENDING` pattern.
+  - Created `ExportPlanBuilderTest.kt` unit test suite (5 pure JVM tests covering 1080p/720p aspect ratios, `ExportItemMapper`, storage guard, and thermal guard thresholds).
   - Built Export Resolution Selection Dialog & Progress UI in `EditorScreen.kt`.
   - Captured emulator screenshot `docs/screenshots/step67/editor_export.png` and verified 0 logcat runtime crashes.
   - Configured CameraModeCarousel.kt LazyRow with 32.dp horizontal content padding so edge items (AI AUTO, CINEMATIC) never touch screen glass.

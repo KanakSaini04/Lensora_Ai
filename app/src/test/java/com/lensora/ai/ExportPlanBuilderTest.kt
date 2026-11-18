@@ -4,6 +4,8 @@ import com.lensora.ai.editor.AspectRatio
 import com.lensora.ai.editor.Clip
 import com.lensora.ai.editor.ClipType
 import com.lensora.ai.editor.ExportGuard
+import com.lensora.ai.editor.ExportItem
+import com.lensora.ai.editor.ExportItemMapper
 import com.lensora.ai.editor.ExportPlanBuilder
 import com.lensora.ai.editor.Project
 import org.junit.Assert.assertEquals
@@ -52,6 +54,28 @@ class ExportPlanBuilderTest {
         assertEquals(720, plan720.targetHeight)
         assertEquals(1280, plan720.targetWidth) // (720 * 16) / 9 = 1280
         assertEquals(5000L, plan720.totalDurationMs)
+    }
+
+    @Test
+    fun exportItemMapper_toMappingParams_mapsClipPropertiesCorrectly() {
+        val item = ExportItem(
+            id = "c1",
+            sourceUri = "content://media/external/video/media/100",
+            startMs = 1000L,
+            endMs = 6000L,
+            isPhoto = false,
+            speed = 2.0f,
+        )
+
+        val params = ExportItemMapper.toMappingParams(item)
+
+        assertEquals("c1", params.id)
+        assertEquals("content://media/external/video/media/100", params.sourceUri)
+        assertEquals(1000L, params.startMs)
+        assertEquals(6000L, params.endMs)
+        assertEquals(2500L, params.effectiveDurationMs)
+        assertFalse(params.isPhoto)
+        assertEquals(2.0f, params.speed)
     }
 
     @Test

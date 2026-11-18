@@ -1,12 +1,11 @@
 # Changelog - Lensora_Ai
 
-## [Unreleased] - Step 67 (2026-11-18)
+## [Unreleased] - Step 67b (2026-11-18)
 
 ### Added
-- **Media3 Export Engine**: Implemented `ExportPlanBuilder.kt` and `ExportWorker.kt` (WorkManager) executing background video composition exports with 720p HD and 1080p FHD resolution options.
-- **Export Safety Guards**: Created `ExportGuard` enforcing `StorageGuard` (2GB minimum free space) and `ThermalGuard` (< 4 safe status) preconditions prior to video rendering.
-- **Export UI Controls**: Added Export Resolution Selection dialog, progress indicator, and cancel controls in `EditorScreen.kt`.
-- **Unit Testing**: Created `ExportPlanBuilderTest.kt` unit test suite covering 1080p/720p resolution plans, storage guard, and thermal guard thresholds (bringing total unit test suite to 44/44 passed across 9 test classes).
+- **Real Media3 Transformer Export Engine**: Updated `ExportWorker.kt` to run real `androidx.media3.transformer.Transformer` composition exports on Main Looper via `suspendCancellableCoroutine`, with `EditedMediaItemSequence`, `ClippingConfiguration`, `Presentation` height scaling, progress polling, and MediaStore `IS_PENDING` publishing pattern.
+- **Export Item Mapper**: Extracted `ExportItemMapper.toMappingParams()` pure mapping utility in `ExportPlanBuilder.kt`.
+- **Unit Testing**: Added `ExportItemMapper` mapping verification test to `ExportPlanBuilderTest.kt` (bringing total unit test suite to 45/45 passed across 9 test classes).
 
 ## [Unreleased] - Step 66 (2026-11-18)
 

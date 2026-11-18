@@ -12,6 +12,30 @@ data class ExportItem(
         get() = ((endMs - startMs).coerceAtLeast(0L) / if (speed > 0f) speed else 1.0f).toLong()
 }
 
+data class ClipMappingParams(
+    val id: String,
+    val sourceUri: String,
+    val startMs: Long,
+    val endMs: Long,
+    val effectiveDurationMs: Long,
+    val isPhoto: Boolean,
+    val speed: Float,
+)
+
+object ExportItemMapper {
+    fun toMappingParams(item: ExportItem): ClipMappingParams {
+        return ClipMappingParams(
+            id = item.id,
+            sourceUri = item.sourceUri,
+            startMs = item.startMs,
+            endMs = item.endMs,
+            effectiveDurationMs = item.durationMs,
+            isPhoto = item.isPhoto,
+            speed = item.speed,
+        )
+    }
+}
+
 data class ExportPlan(
     val projectId: String,
     val projectName: String,

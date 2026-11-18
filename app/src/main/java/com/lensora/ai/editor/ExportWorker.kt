@@ -2,21 +2,41 @@ package com.lensora.ai.editor
 
 import android.content.ContentValues
 import android.content.Context
+import android.net.Uri
+import android.os.Build
 import android.os.Environment
+import android.os.Handler
+import android.os.Looper
 import android.os.PowerManager
 import android.os.StatFs
 import android.provider.MediaStore
 import android.util.Log
+import androidx.annotation.OptIn
+import androidx.media3.common.Effect
+import androidx.media3.common.MediaItem
+import androidx.media3.common.util.UnstableApi
+import androidx.media3.effect.Presentation
+import androidx.media3.transformer.Composition
+import androidx.media3.transformer.EditedMediaItem
+import androidx.media3.transformer.EditedMediaItemSequence
+import androidx.media3.transformer.Effects
+import androidx.media3.transformer.ExportException
+import androidx.media3.transformer.ExportResult
+import androidx.media3.transformer.ProgressHolder
+import androidx.media3.transformer.Transformer
 import androidx.work.CoroutineWorker
 import androidx.work.WorkerParameters
 import androidx.work.workDataOf
 import kotlinx.coroutines.CancellationException
 import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.delay
+import kotlinx.coroutines.suspendCancellableCoroutine
 import kotlinx.coroutines.withContext
 import java.io.File
 import java.io.FileInputStream
+import kotlin.coroutines.resume
+import kotlin.coroutines.resumeWithException
 
+@OptIn(UnstableApi::class)
 class ExportWorker(
     private val context: Context,
     workerParams: WorkerParameters,
@@ -38,9 +58,9 @@ class ExportWorker(
 
         // 2. Thermal Guard Check
         val powerManager = context.getSystemService(Context.POWER_SERVICE) as? PowerManager
-        val thermalStatus = powerManager?.currentThermalStatus ?: 0
-        if (!ExportGuard.isThermalSafe(thermalStatus)) {
-            Log.e(tag, "Export aborted: severe thermal throttling (status $thermalStatus)")
+        val initialThermalStatus = powerManager?.currentThermalStatus ?: 0
+        if (!ExportGuard.isThermalSafe(initialThermalStatus)) {
+            Log.e(tag, "Export aborted: severe thermal throttling (status $initialThermalStatus)")
             return@withContext Result.failure(workDataOf("ERROR" to "Device temperature too high"))
         }
 
@@ -51,7 +71,7 @@ class ExportWorker(
         }
 
         val plan = ExportPlanBuilder.buildPlan(project, resolutionHeight)
-        Log.i(tag, "Starting Export for project ${plan.projectName} (${plan.targetWidth}x${plan.targetHeight}, ${plan.totalDurationMs}ms total)")
+        Log.i(tag, "Starting Real Media3 Transformer Export for ${plan.projectName} (${plan.targetWidth}x${plan.targetHeight})")
 
         val exportsDir = File(context.filesDir, "exports")
         if (!exportsDir.exists()) {
@@ -62,43 +82,28 @@ class ExportWorker(
         val outputFile = File(exportsDir, outputFilename)
 
         try {
-            // Simulated / Streamed composition export loop
-            val totalItems = plan.items.size
-            outputFile.createNewFile()
-
-            for (index in plan.items.indices) {
-                if (isStopped) {
-                    Log.w(tag, "Export cancelled by user")
-                    if (outputFile.exists()) outputFile.delete()
-                    throw CancellationException("Export worker cancelled")
+            // Execute Transformer pass on Main Looper
+            withContext(Dispatchers.Main) {
+                runTransformerExport(context, plan, outputFile, powerManager) { progress ->
+                    setProgressAsync(workDataOf("PROGRESS" to progress))
                 }
-
-                val item = plan.items[index]
-                val sourceFile = File(UriToPath.getPath(context, item.sourceUri) ?: item.sourceUri)
-
-                if (sourceFile.exists() && sourceFile.canRead()) {
-                    // Copy bytes / stream clip content into output mp4
-                    FileInputStream(sourceFile).use { input ->
-                        input.copyTo(outputFile.outputStream(), bufferSize = 16384)
-                    }
-                } else {
-                    // Write placeholder frames for sample export
-                    outputFile.appendText("LENSORA_CLIP_${index}_${item.durationMs}MS\n")
-                }
-
-                val progressPercent = (((index + 1) * 100) / totalItems).coerceIn(1, 100)
-                setProgress(workDataOf("PROGRESS" to progressPercent))
-                delay(200)
             }
 
-            // Expose exported file to MediaStore Environment.DIRECTORY_MOVIES
-            saveToMediaStore(outputFile, outputFilename)
+            if (!outputFile.exists() || outputFile.length() == 0L) {
+                Log.e(tag, "Transformer produced an empty or missing output file")
+                if (outputFile.exists()) outputFile.delete()
+                return@withContext Result.failure(workDataOf("ERROR" to "Export output file is empty"))
+            }
 
-            Log.i(tag, "Export completed successfully: ${outputFile.absolutePath} (${outputFile.length()} bytes)")
+            // Expose exported file to MediaStore via IS_PENDING pattern
+            val mediaStoreUri = saveToMediaStore(outputFile, outputFilename)
+
+            Log.i(tag, "Export completed successfully: ${outputFile.absolutePath} (${outputFile.length()} bytes), MediaStore URI: $mediaStoreUri")
 
             Result.success(
                 workDataOf(
                     "OUTPUT_PATH" to outputFile.absolutePath,
+                    "MEDIASTORE_URI" to (mediaStoreUri?.toString() ?: ""),
                     "DURATION_MS" to plan.totalDurationMs,
                     "FILE_SIZE" to outputFile.length(),
                 )
@@ -114,35 +119,127 @@ class ExportWorker(
         }
     }
 
-    private fun saveToMediaStore(file: File, filename: String) {
-        try {
+    private suspend fun runTransformerExport(
+        context: Context,
+        plan: ExportPlan,
+        outputFile: File,
+        powerManager: PowerManager?,
+        onProgress: (Int) -> Unit,
+    ) = suspendCancellableCoroutine<Unit> { continuation ->
+
+        val editedMediaItems = mutableListOf<EditedMediaItem>()
+
+        for (item in plan.items) {
+            val clippingConfig = MediaItem.ClippingConfiguration.Builder()
+                .setStartPositionMs(item.startMs)
+                .setEndPositionMs(item.endMs)
+                .build()
+
+            val mediaItemBuilder = MediaItem.Builder()
+                .setUri(Uri.parse(item.sourceUri))
+                .setClippingConfiguration(clippingConfig)
+
+            if (item.isPhoto) {
+                mediaItemBuilder.setImageDurationMs(item.durationMs)
+            }
+
+            val videoEffects = listOf(
+                Presentation.createForHeight(plan.targetHeight),
+            )
+
+            val editedMediaItem = EditedMediaItem.Builder(mediaItemBuilder.build())
+                .setEffects(Effects(emptyList(), videoEffects))
+                .build()
+
+            editedMediaItems.add(editedMediaItem)
+        }
+
+        val sequence = EditedMediaItemSequence.Builder(editedMediaItems).build()
+        val composition = Composition.Builder(listOf(sequence)).build()
+
+        val transformer = Transformer.Builder(context)
+            .addListener(object : Transformer.Listener {
+                override fun onCompleted(composition: Composition, exportResult: ExportResult) {
+                    if (continuation.isActive) {
+                        continuation.resume(Unit)
+                    }
+                }
+
+                override fun onError(composition: Composition, exportResult: ExportResult, exportException: ExportException) {
+                    if (continuation.isActive) {
+                        continuation.resumeWithException(exportException)
+                    }
+                }
+            })
+            .build()
+
+        val progressHolder = ProgressHolder()
+        val handler = Handler(Looper.getMainLooper())
+
+        val progressRunnable = object : Runnable {
+            override fun run() {
+                if (!continuation.isActive) return
+
+                val currentThermal = powerManager?.currentThermalStatus ?: 0
+                if (!ExportGuard.isThermalSafe(currentThermal)) {
+                    Log.e(tag, "Thermal limit reached during export ($currentThermal). Cancelling.")
+                    transformer.cancel()
+                    if (outputFile.exists()) outputFile.delete()
+                    if (continuation.isActive) {
+                        continuation.resumeWithException(IllegalStateException("Device overheating"))
+                    }
+                    return
+                }
+
+                val progressState = transformer.getProgress(progressHolder)
+                if (progressState == Transformer.PROGRESS_STATE_AVAILABLE) {
+                    onProgress(progressHolder.progress.coerceIn(0, 100))
+                }
+
+                handler.postDelayed(this, 150)
+            }
+        }
+
+        continuation.invokeOnCancellation {
+            handler.removeCallbacks(progressRunnable)
+            transformer.cancel()
+            if (outputFile.exists()) outputFile.delete()
+        }
+
+        transformer.start(composition, outputFile.absolutePath)
+        handler.post(progressRunnable)
+    }
+
+    private fun saveToMediaStore(file: File, filename: String): Uri? {
+        return try {
             val values = ContentValues().apply {
                 put(MediaStore.Video.Media.DISPLAY_NAME, filename)
                 put(MediaStore.Video.Media.MIME_TYPE, "video/mp4")
                 put(MediaStore.Video.Media.RELATIVE_PATH, "${Environment.DIRECTORY_MOVIES}/Lensora_Ai")
+                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q) {
+                    put(MediaStore.Video.Media.IS_PENDING, 1)
+                }
             }
 
             val uri = context.contentResolver.insert(MediaStore.Video.Media.EXTERNAL_CONTENT_URI, values)
-            if (uri != null) {
-                context.contentResolver.openOutputStream(uri)?.use { outStream ->
-                    FileInputStream(file).use { inStream ->
-                        inStream.copyTo(outStream)
-                    }
+                ?: return null
+
+            context.contentResolver.openOutputStream(uri)?.use { outStream ->
+                FileInputStream(file).use { inStream ->
+                    inStream.copyTo(outStream)
                 }
-                Log.i(tag, "Saved export to MediaStore: $uri")
             }
+
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q) {
+                values.clear()
+                values.put(MediaStore.Video.Media.IS_PENDING, 0)
+                context.contentResolver.update(uri, values, null, null)
+            }
+
+            Log.i(tag, "Saved export to MediaStore Movies/Lensora_Ai: $uri")
+            uri
         } catch (e: Exception) {
             Log.w(tag, "Failed to save export to MediaStore", e)
-        }
-    }
-}
-
-object UriToPath {
-    fun getPath(context: Context, uriString: String): String? {
-        return try {
-            val uri = android.net.Uri.parse(uriString)
-            if (uri.scheme == "file") uri.path else null
-        } catch (_: Exception) {
             null
         }
     }
