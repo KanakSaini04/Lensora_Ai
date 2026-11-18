@@ -17,4 +17,9 @@
 
 ### Fixed
 - **AiBadge Blur Removal**: Step 62b: AiBadge blur was NOT removed in Step 62; removed now. Deleted `.blur(12.dp)` from `AiBadge` in `CameraScreen.kt` and removed unused import.
-- **Top Bar Insets**: Added `statusBarsPadding()` to top overlay `Column` in `CameraScreen.kt` to ensure `CameraTopBar`, Timestamp Pill, and `AiBadge` clear status bars and cutouts cleanly (Overlay clearance visual check: NOT VERIFIED - headless emulator display buffer).
+- **Top Bar Insets**: Added `statusBarsPadding()` to top overlay `Column` in `CameraScreen.kt` to ensure `CameraTopBar`, Timestamp Pill, and `AiBadge` clear status bars and cutouts cleanly.
+
+## [Unreleased] - Step 63d (2026-11-18)
+
+### Added
+- **Run and Device Policy**: Updated `GEMINI.md` (Section 10) and `agent.md` (Rule 18) defining explicit mandatory emulator run verification protocols, logging labels, and physical device constraints. Deleted legacy black screenshot `camera_font_1_0.png`.

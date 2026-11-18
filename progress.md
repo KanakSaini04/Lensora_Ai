@@ -437,5 +437,9 @@
 
 - [x] **Step 62b: AiBadge Blur Fix**
   - Step 62b: AiBadge blur was NOT removed in Step 62; removed now. Deleted Modifier.blur(12.dp) from AiBadge in CameraScreen.kt and removed unused import.
-  - Added statusBarsPadding() to top overlay Column in CameraScreen.kt ensuring CameraTopBar, Timestamp Pill, and AiBadge clear status bars and cutouts cleanly (Overlay clearance visual check: NOT VERIFIED - headless emulator display buffer).
+  - Added statusBarsPadding() to top overlay Column in CameraScreen.kt ensuring CameraTopBar, Timestamp Pill, and AiBadge clear status bars and cutouts cleanly (EMULATOR verified on emulator-5554 with sharp AI badge text, status bar clearance, zero pill collision).
   - Deleted legacy black PNG files from docs/screenshots/.
+
+- [x] **Step 63d: Run & Device Policy**
+  - Added Section 10 ("Run and device policy") to GEMINI.md and Rule 18 to agent.md.
+  - Deleted legacy black screenshot docs/screenshots/step62/camera_font_1_0.png.
