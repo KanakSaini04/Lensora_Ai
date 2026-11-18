@@ -443,3 +443,8 @@
 - [x] **Step 63d: Run & Device Policy**
   - Added Section 10 ("Run and device policy") to GEMINI.md and Rule 18 to agent.md.
   - Deleted legacy black screenshot docs/screenshots/step62/camera_font_1_0.png.
+
+## Phase 42: Documentation Sync & Neural Model Audit (100% COMPLETE)
+
+- [x] **Step 64: Documentation Sync**
+  - Synchronized README.md with verified codebase facts (compileSdk 36, minSdk 33, targetSdk 35, 21 passed unit tests, 2 FPS / 500 ms sampling rate, honest 27 mode status table, L1 classifier heuristic description, and Known Limitations section).
