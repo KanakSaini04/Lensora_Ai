@@ -57,6 +57,22 @@ class ExportPlanBuilderTest {
     }
 
     @Test
+    fun buildPlan_speedAdjustedClips_calculatesSpeedAdjustedTotalDuration() {
+        val clips = listOf(
+            Clip("c1", "file://v1.mp4", ClipType.VIDEO, 10000L, 0L, 10000L, speed = 2.0f), // 10000ms / 2.0 = 5000ms
+            Clip("c2", "file://v2.mp4", ClipType.VIDEO, 6000L, 0L, 6000L, speed = 0.5f),   // 6000ms / 0.5 = 12000ms
+        )
+        val project = Project("p3", "Speed Test", AspectRatio.NINE_SIXTEEN, clips)
+
+        val plan = ExportPlanBuilder.buildPlan(project, resolutionHeight = 1080)
+
+        assertEquals(2, plan.items.size)
+        assertEquals(5000L, plan.items[0].durationMs)
+        assertEquals(12000L, plan.items[1].durationMs)
+        assertEquals(17000L, plan.totalDurationMs)
+    }
+
+    @Test
     fun exportItemMapper_toMappingParams_mapsClipPropertiesCorrectly() {
         val item = ExportItem(
             id = "c1",

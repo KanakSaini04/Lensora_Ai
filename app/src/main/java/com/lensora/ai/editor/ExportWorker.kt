@@ -14,8 +14,11 @@ import android.util.Log
 import androidx.annotation.OptIn
 import androidx.media3.common.Effect
 import androidx.media3.common.MediaItem
+import androidx.media3.common.audio.AudioProcessor
+import androidx.media3.common.audio.SonicAudioProcessor
 import androidx.media3.common.util.UnstableApi
 import androidx.media3.effect.Presentation
+import androidx.media3.effect.SpeedChangeEffect
 import androidx.media3.transformer.Composition
 import androidx.media3.transformer.EditedMediaItem
 import androidx.media3.transformer.EditedMediaItemSequence
@@ -130,28 +133,42 @@ class ExportWorker(
         val editedMediaItems = mutableListOf<EditedMediaItem>()
 
         for (item in plan.items) {
-            val clippingConfig = MediaItem.ClippingConfiguration.Builder()
-                .setStartPositionMs(item.startMs)
-                .setEndPositionMs(item.endMs)
-                .build()
+            val uri = when {
+                item.sourceUri.startsWith("content://") || item.sourceUri.startsWith("file://") -> Uri.parse(item.sourceUri)
+                else -> Uri.fromFile(File(item.sourceUri))
+            }
 
-            val mediaItemBuilder = MediaItem.Builder()
-                .setUri(Uri.parse(item.sourceUri))
-                .setClippingConfiguration(clippingConfig)
+            val mediaItemBuilder = MediaItem.Builder().setUri(uri)
 
-            if (item.isPhoto) {
+            if (!item.isPhoto) {
+                val clippingConfig = MediaItem.ClippingConfiguration.Builder()
+                    .setStartPositionMs(item.startMs)
+                    .setEndPositionMs(item.endMs)
+                    .build()
+                mediaItemBuilder.setClippingConfiguration(clippingConfig)
+            } else {
                 mediaItemBuilder.setImageDurationMs(item.durationMs)
             }
 
-            val videoEffects = listOf(
+            val videoEffects = mutableListOf<Effect>(
                 Presentation.createForHeight(plan.targetHeight),
             )
 
-            val editedMediaItem = EditedMediaItem.Builder(mediaItemBuilder.build())
-                .setEffects(Effects(emptyList(), videoEffects))
-                .build()
+            val audioProcessors = mutableListOf<AudioProcessor>()
 
-            editedMediaItems.add(editedMediaItem)
+            if (item.speed != 1.0f && item.speed > 0f) {
+                videoEffects.add(SpeedChangeEffect(item.speed))
+                audioProcessors.add(SonicAudioProcessor().apply { setSpeed(item.speed) })
+            }
+
+            val editedItemBuilder = EditedMediaItem.Builder(mediaItemBuilder.build())
+                .setEffects(Effects(audioProcessors, videoEffects))
+
+            if (item.isPhoto) {
+                editedItemBuilder.setFrameRate(30)
+            }
+
+            editedMediaItems.add(editedItemBuilder.build())
         }
 
         val sequence = EditedMediaItemSequence.Builder(editedMediaItems).build()
@@ -183,8 +200,10 @@ class ExportWorker(
                 val currentThermal = powerManager?.currentThermalStatus ?: 0
                 if (!ExportGuard.isThermalSafe(currentThermal)) {
                     Log.e(tag, "Thermal limit reached during export ($currentThermal). Cancelling.")
-                    transformer.cancel()
-                    if (outputFile.exists()) outputFile.delete()
+                    handler.post {
+                        transformer.cancel()
+                        if (outputFile.exists()) outputFile.delete()
+                    }
                     if (continuation.isActive) {
                         continuation.resumeWithException(IllegalStateException("Device overheating"))
                     }
@@ -201,9 +220,11 @@ class ExportWorker(
         }
 
         continuation.invokeOnCancellation {
-            handler.removeCallbacks(progressRunnable)
-            transformer.cancel()
-            if (outputFile.exists()) outputFile.delete()
+            handler.post {
+                handler.removeCallbacks(progressRunnable)
+                transformer.cancel()
+                if (outputFile.exists()) outputFile.delete()
+            }
         }
 
         transformer.start(composition, outputFile.absolutePath)

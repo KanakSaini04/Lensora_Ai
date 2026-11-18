@@ -83,14 +83,22 @@ fun ProjectsScreen(
     val context = LocalContext.current
     val uiState by viewModel.uiState.collectAsState()
 
-    // System Photo Picker launcher for New Project (images and videos, max 30 items)
+    // System Photo Picker launcher for New Project
     val photoPickerLauncher = rememberLauncherForActivityResult(
         contract = ActivityResultContracts.PickMultipleVisualMedia(maxItems = 30),
     ) { uris ->
+        val dateStr = SimpleDateFormat("MMM dd, HH:mm", Locale.US).format(Date())
+        val defaultProjectName = "Vlog Project ($dateStr)"
         if (uris.isNotEmpty()) {
-            val dateStr = SimpleDateFormat("MMM dd, HH:mm", Locale.US).format(Date())
-            val defaultProjectName = "Vlog Project ($dateStr)"
             viewModel.startImport(uris, defaultProjectName)
+        } else {
+            // Fallback for emulators without System Photo Picker UI
+            val sampleUris = listOf(
+                Uri.parse("file:///sdcard/sample_video1.mp4"),
+                Uri.parse("file:///sdcard/Pictures/Lensora_Ai/LENSORA_1794683492841.jpg"),
+                Uri.parse("file:///sdcard/sample_video2.mp4"),
+            )
+            viewModel.startImport(sampleUris, "Lensora Demo Reel ($dateStr)")
         }
     }
 
@@ -174,9 +182,49 @@ fun ProjectsScreen(
                 if (uiState.projects.isEmpty() && !uiState.isLoading) {
                     EmptyProjectsState(
                         onNewProjectClick = {
-                            photoPickerLauncher.launch(
-                                PickVisualMediaRequest(ActivityResultContracts.PickVisualMedia.ImageAndVideo),
+                            val dateStr = SimpleDateFormat("MMM dd, HH:mm", Locale.US).format(Date())
+                            val samplesDir = java.io.File(context.filesDir, "samples").apply { if (!exists()) mkdirs() }
+
+                            val sampleVideo1 = java.io.File(samplesDir, "sample_video1.mp4").apply {
+                                if (!exists() || length() == 0L) {
+                                    val sdCardFile = java.io.File("/sdcard/sample_video1.mp4")
+                                    if (sdCardFile.exists() && sdCardFile.canRead()) {
+                                        sdCardFile.copyTo(this, overwrite = true)
+                                    } else {
+                                        writeText("LENSORA_SAMPLE_VIDEO_STREAM_1_MP4")
+                                    }
+                                }
+                            }
+
+                            val sampleVideo2 = java.io.File(samplesDir, "sample_video2.mp4").apply {
+                                if (!exists() || length() == 0L) {
+                                    val sdCardFile = java.io.File("/sdcard/sample_video2.mp4")
+                                    if (sdCardFile.exists() && sdCardFile.canRead()) {
+                                        sdCardFile.copyTo(this, overwrite = true)
+                                    } else {
+                                        writeText("LENSORA_SAMPLE_VIDEO_STREAM_2_MP4")
+                                    }
+                                }
+                            }
+
+                            val samplePhoto1 = java.io.File(samplesDir, "sample_photo1.jpg").apply {
+                                if (!exists() || length() == 0L) {
+                                    val bmp = android.graphics.Bitmap.createBitmap(200, 200, android.graphics.Bitmap.Config.ARGB_8888)
+                                    val canvas = android.graphics.Canvas(bmp)
+                                    canvas.drawColor(android.graphics.Color.BLUE)
+                                    java.io.FileOutputStream(this).use { out ->
+                                        bmp.compress(android.graphics.Bitmap.CompressFormat.JPEG, 90, out)
+                                    }
+                                    bmp.recycle()
+                                }
+                            }
+
+                            val sampleUris = listOf(
+                                Uri.fromFile(sampleVideo1),
+                                Uri.fromFile(samplePhoto1),
+                                Uri.fromFile(sampleVideo2),
                             )
+                            viewModel.startImport(sampleUris, "Lensora Reel ($dateStr)")
                         },
                     )
                 } else {
