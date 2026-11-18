@@ -32,7 +32,7 @@ The application is tuned and hardened specifically for the **Redmi Note 13 Pro 5
 ┌────────────────────────────────────────────────────────────────────────┐
 │ L0 SAFE CORE HAL (Camera2, 100% Try-Catch Safety, Storage/Thermal Guards) │
 └───────────────────────────────────┬────────────────────────────────────┘
-                                    │ Preview Frames (224x224, 5 FPS)
+                                    │ Preview Frames (224x224, 2 FPS / 500 ms)
                                     ▼
 ┌────────────────────────────────────────────────────────────────────────┐
 │ L1 LIGHT AI DIRECTOR (YOLOv8 / MobileNet Scene Classification)         │
@@ -95,18 +95,18 @@ The UI is built with the **Obsidian Royal** color palette:
 
 | Category | Camera Mode | Status | Behavior & Tuning Specification |
 | :--- | :--- | :---: | :--- |
-| **Core Modes** | **✨ AI AUTO** | `WORKING` | Continuous auto-focus, live AI scene detection (2 FPS / 500 ms loop). |
-| | **📷 PHOTO** | `WORKING` | Standard 12.5MP still capture with atomic MediaStore `.tmp` journal. |
-| | **👤 PORTRAIT** | `WORKING` | Universal skin tone illumination EV `+0.3` boost + continuous auto-focus. |
-| | **📹 VIDEO** | `WORKING` | `TEMPLATE_RECORD` session with MediaRecorder surface binding. |
-| | **🎬 CINEMATIC** | `WORKING` | 2.39:1 pure black letterboxing + validated safe FPS target range (`Range(24, 24)` / `Range(15, 30)`). |
-| | **🎛️ PRO** | `WORKING` | Manual exposure controls (ISO 100–3200, Shutter 1/1000s–1s), RAW DNG toggle, Zebras, Focus Peaking. |
-| **Pro Tools** | **✨ ASTRO** | `WORKING` | Infinity focus lock (`0.0f`) + 30s long exposure. |
-| | **🔍 PRO MACRO** | `WORKING` | Minimum focus distance lock (`LENS_INFO_MINIMUM_FOCUS_DISTANCE`). |
-| | **📷 HIGH-RES** | `WORKING` | 12.5MP capture + Real-ESRGAN 2x AI upscale pass. |
-| | **🌙 NIGHT VISION** | `WORKING` | Exposure compensation +1.0 EV boost + multi-frame noise reduction. |
-| | **📄 SCAN** | `WORKING` | Document edge detection & multi-page PDF generation with ZXing `ErrorCorrectionLevel.H` QR codes. |
-| | **📑 DOCUMENT** | `WORKING` | High contrast black-and-white text extraction. |
+| **Core Modes** | **✨ AI AUTO** | `WORKING (Step 62c)` | Continuous auto-focus, live AI scene detection (2 FPS / 500 ms loop). |
+| | **📷 PHOTO** | `WORKING (Step 37)` | Standard 12.5MP still capture with atomic MediaStore `.tmp` journal. |
+| | **👤 PORTRAIT** | `WORKING (Step 37)` | Universal skin tone illumination EV `+0.3` boost + continuous auto-focus. |
+| | **📹 VIDEO** | `WORKING (Step 60)` | `TEMPLATE_RECORD` session with MediaRecorder surface binding. |
+| | **🎬 CINEMATIC** | `WORKING (Step 37)` | 2.39:1 pure black letterboxing + validated safe FPS target range (`Range(24, 24)` / `Range(15, 30)`). |
+| | **🎛️ PRO** | `WORKING (Step 37)` | Manual exposure controls (ISO 100–3200, Shutter 1/1000s–1s), RAW DNG toggle, Zebras, Focus Peaking. |
+| **Pro Tools** | **✨ ASTRO** | `IMPLEMENTED - NOT VERIFIED` | Infinity focus lock (`0.0f`) + 30s long exposure. |
+| | **🔍 PRO MACRO** | `IMPLEMENTED - NOT VERIFIED` | Minimum focus distance lock (`LENS_INFO_MINIMUM_FOCUS_DISTANCE`). |
+| | **📷 HIGH-RES** | `IMPLEMENTED - NOT VERIFIED` | 12.5MP capture + Real-ESRGAN 2x AI upscale pass (needs real_esrgan_v2.tflite, not in DLC manifest; see docs/MODEL_AUDIT.md). |
+| | **🌙 NIGHT VISION** | `IMPLEMENTED - NOT VERIFIED` | Exposure compensation +1.0 EV boost + multi-frame noise reduction (needs dehaze.tflite, not in DLC manifest; see docs/MODEL_AUDIT.md). |
+| | **📄 SCAN** | `IMPLEMENTED - NOT VERIFIED` | Document edge detection & multi-page PDF generation with ZXing `ErrorCorrectionLevel.H` QR codes. |
+| | **📑 DOCUMENT** | `IMPLEMENTED - NOT VERIFIED` | High contrast black-and-white text extraction. |
 | **Brand Aesthetics** | **📷 LEICA** | `VIBE-ONLY` | Leica Monochrome B&W 3D LUT color grading. |
 | | **🔵 ZEISS** | `VIBE-ONLY` | ZEISS T* anti-reflex high-contrast color tuning. |
 | | **🟠 HASSELBLAD** | `VIBE-ONLY` | Hasselblad Natural Color Solution (HNCS) golden palette. |

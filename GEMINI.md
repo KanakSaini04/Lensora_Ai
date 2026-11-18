@@ -78,4 +78,5 @@ Examples of each rule: `Neccessary/GEMINI_EXAMPLES.md`.
 - Use the physical device ONLY when a prompt says `DEVICE REQUIRED: yes`, else STOP.
 - Camera2 hardware behavior cannot be verified on the emulator; mark it **NOT VERIFIED** on device.
 - Never start or restart the emulator yourself.
+- The emulator may be locked: wake and unlock it with the PIN given in the prompt (never store the PIN in the repo).
 
