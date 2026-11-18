@@ -71,3 +71,11 @@ Examples of each rule: `Neccessary/GEMINI_EXAMPLES.md`.
 - A decision is needed, or the task touches a locked item (section 0).
 - The device is locked/off, or evidence cannot be produced honestly.
 - Tests fail and the fix is outside the task scope.
+
+## 10. Run and device policy
+- After EVERY change: build, install, launch on the emulator, open the affected screen, paste `adb logcat -d -s AndroidRuntime:E`; label EMULATOR or DEVICE.
+- Emulator never counts as Redmi verification.
+- Use the physical device ONLY when a prompt says `DEVICE REQUIRED: yes`, else STOP.
+- Camera2 hardware behavior cannot be verified on the emulator; mark it **NOT VERIFIED** on device.
+- Never start or restart the emulator yourself.
+
