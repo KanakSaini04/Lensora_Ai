@@ -23,3 +23,8 @@
 
 ### Added
 - **Run and Device Policy**: Updated `GEMINI.md` (Section 10) and `agent.md` (Rule 18) defining explicit mandatory emulator run verification protocols, logging labels, and physical device constraints. Deleted legacy black screenshot `camera_font_1_0.png`.
+
+## [Unreleased] - Step 64 (2026-11-18)
+
+### Changed
+- **Documentation Synchronization**: Synchronized `README.md` with verified code architecture (2 FPS / 500 ms AI sampling rate, compileSdk 36, minSdk 33, targetSdk 35, 21 passed unit tests, honest 27 Camera Modes status table, honest L1 SceneClassifier heuristic description, and Known Limitations section).
