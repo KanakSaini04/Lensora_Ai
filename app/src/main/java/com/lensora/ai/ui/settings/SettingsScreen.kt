@@ -43,6 +43,8 @@ import androidx.compose.material3.Switch
 import androidx.compose.material3.SwitchDefaults
 import androidx.compose.material3.Text
 import androidx.compose.material3.TopAppBar
+import com.lensora.ai.ai.ManifestParser
+import com.lensora.ai.ai.ModelEntry
 import androidx.compose.material3.TopAppBarDefaults
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
@@ -77,6 +79,23 @@ import java.io.File
 import java.util.Locale
 import java.util.UUID
 
+@Composable
+private fun SectionHeader(title: String) {
+    Column(
+        modifier = Modifier
+            .fillMaxWidth()
+            .padding(start = 20.dp, end = 20.dp, top = 20.dp, bottom = 8.dp),
+    ) {
+        Text(
+            text = title,
+            color = RoyalBlue,
+            fontSize = 11.sp,
+            fontWeight = FontWeight.Bold,
+            letterSpacing = 1.2.sp,
+        )
+    }
+}
+
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun SettingsScreen(
@@ -101,10 +120,20 @@ fun SettingsScreen(
     val isDownloading = workInfo?.state == WorkInfo.State.RUNNING
     val downloadProgress = workInfo?.progress?.getInt("PROGRESS", 0) ?: 0
 
-    val modelFile = remember(workInfo?.state) {
-        File(context.filesDir, "models/mobilenet_v1_1.0_224.tflite")
+    val manifestEntries = remember {
+        try {
+            val jsonStr = context.assets.open("manifest.json").bufferedReader().use { it.readText() }
+            ManifestParser.parseManifest(jsonStr)
+        } catch (e: Exception) {
+            emptyList<ModelEntry>()
+        }
     }
-    val isModelDownloaded = modelFile.exists()
+
+    val sceneEntry = remember(manifestEntries) { manifestEntries.firstOrNull { it.key == "scene_classifier" } }
+    val sceneModelFile = remember(workInfo?.state, sceneEntry) {
+        File(context.filesDir, "models/${sceneEntry?.fileName ?: "scene_classifier.tflite"}")
+    }
+    val isModelDownloaded = sceneModelFile.exists() && sceneModelFile.length() > 0
 
     // LaMa Inpainting Model Downloader WorkState
     var activeLamaWorkId by remember { mutableStateOf<UUID?>(null) }
@@ -116,8 +145,9 @@ fun SettingsScreen(
     val isLamaDownloading = lamaWorkInfo?.state == WorkInfo.State.RUNNING
     val lamaDownloadProgress = lamaWorkInfo?.progress?.getInt("PROGRESS", 0) ?: 0
 
-    val lamaModelFile = remember(lamaWorkInfo?.state) {
-        File(context.filesDir, "models/lama_dilated.tflite")
+    val lamaEntry = remember(manifestEntries) { manifestEntries.firstOrNull { it.key == "lama_dilated" } }
+    val lamaModelFile = remember(lamaWorkInfo?.state, lamaEntry) {
+        File(context.filesDir, "models/${lamaEntry?.fileName ?: "lama_dilated.tflite"}")
     }
     val isLamaModelDownloaded = lamaModelFile.exists() && lamaModelFile.length() > 0
 
@@ -409,7 +439,7 @@ fun SettingsScreen(
                                     fontSize = 14.sp,
                                 )
                                 Text(
-                                    text = if (isModelDownloaded) "MobileNet v1 1.0: Ready (${modelFile.length()} bytes)" else "MobileNet v1 1.0: Not Installed",
+                                    text = if (isModelDownloaded) "Scene Classifier: Ready (${sceneModelFile.length()} bytes)" else if (sceneEntry?.url == null) "Scene Classifier: Model Unavailable" else "Scene Classifier: Not Installed",
                                     color = if (isModelDownloaded) RoyalBlue else ColorMutedGray,
                                     fontSize = 12.sp,
                                 )
@@ -434,35 +464,43 @@ fun SettingsScreen(
                             )
                         } else {
                             Spacer(modifier = Modifier.height(12.dp))
+                            val isSceneAvailable = sceneEntry?.url != null
                             Button(
                                 onClick = {
+                                    val url = sceneEntry?.url ?: return@Button
                                     val downloadRequest = OneTimeWorkRequestBuilder<ModelDownloaderWorker>()
                                         .setInputData(
                                             workDataOf(
-                                                "MODEL_URL" to "https://storage.googleapis.com/download.tensorflow.org/models/tflite/mobilenet_v1_1.0_224.zip",
-                                                "TARGET_FILENAME" to "mobilenet_v1_1.0_224.tflite",
+                                                "TARGET_KEY" to "scene_classifier",
+                                                "MODEL_URL" to url,
+                                                "TARGET_FILENAME" to sceneEntry.fileName,
                                             ),
                                         )
                                         .build()
 
                                     activeWorkId = downloadRequest.id
                                     workManager.enqueue(downloadRequest)
-                                    Toast.makeText(context, "Started MobileNet Model Download", Toast.LENGTH_SHORT).show()
+                                    Toast.makeText(context, "Started Scene Classifier Model Download", Toast.LENGTH_SHORT).show()
                                 },
-                                colors = ButtonDefaults.buttonColors(containerColor = RoyalBlue),
+                                enabled = isSceneAvailable,
+                                colors = ButtonDefaults.buttonColors(
+                                    containerColor = RoyalBlue,
+                                    disabledContainerColor = CharcoalSurface,
+                                    disabledContentColor = ColorMutedGray,
+                                ),
                                 shape = RoundedCornerShape(8.dp),
                                 modifier = Modifier.fillMaxWidth(),
                             ) {
                                 Icon(
                                     imageVector = Icons.Outlined.Download,
                                     contentDescription = null,
-                                    tint = ColorWhite,
+                                    tint = if (isSceneAvailable) ColorWhite else ColorMutedGray,
                                     modifier = Modifier.size(16.dp),
                                 )
                                 Spacer(modifier = Modifier.width(6.dp))
                                 Text(
-                                    text = if (isModelDownloaded) "Re-download MobileNet Model" else "Download MobileNet Model",
-                                    color = ColorWhite,
+                                    text = if (isModelDownloaded) "Re-download Model" else if (!isSceneAvailable) "Model Unavailable" else "Download Model",
+                                    color = if (isSceneAvailable) ColorWhite else ColorMutedGray,
                                     fontWeight = FontWeight.Bold,
                                     fontSize = 12.sp,
                                 )
@@ -498,7 +536,7 @@ fun SettingsScreen(
                                     fontSize = 14.sp,
                                 )
                                 Text(
-                                    text = if (isLamaModelDownloaded) "LaMa Dilated: Ready (${lamaModelFile.length()} bytes)" else "LaMa Dilated: Not Installed",
+                                    text = if (isLamaModelDownloaded) "LaMa Dilated: Ready (${lamaModelFile.length()} bytes)" else if (lamaEntry?.url == null) "LaMa Dilated: Model Unavailable" else "LaMa Dilated: Not Installed",
                                     color = if (isLamaModelDownloaded) AccentCyan else ColorMutedGray,
                                     fontSize = 12.sp,
                                 )
@@ -523,13 +561,16 @@ fun SettingsScreen(
                             )
                         } else {
                             Spacer(modifier = Modifier.height(12.dp))
+                            val isLamaAvailable = lamaEntry?.url != null
                             Button(
                                 onClick = {
+                                    val url = lamaEntry?.url ?: return@Button
                                     val request = OneTimeWorkRequestBuilder<ModelDownloaderWorker>()
                                         .setInputData(
                                             workDataOf(
-                                                "MODEL_URL" to "https://storage.googleapis.com/download.tensorflow.org/models/tflite/mobilenet_v1_1.0_224.zip",
-                                                "TARGET_FILENAME" to "lama_dilated.tflite",
+                                                "TARGET_KEY" to "lama_dilated",
+                                                "MODEL_URL" to url,
+                                                "TARGET_FILENAME" to lamaEntry.fileName,
                                             ),
                                         )
                                         .build()
@@ -538,28 +579,33 @@ fun SettingsScreen(
                                     workManager.enqueue(request)
                                     Toast.makeText(context, "Started LaMa Model Download", Toast.LENGTH_SHORT).show()
                                 },
-                                colors = ButtonDefaults.buttonColors(containerColor = AccentCyan),
+                                enabled = isLamaAvailable,
+                                colors = ButtonDefaults.buttonColors(
+                                    containerColor = AccentCyan,
+                                    disabledContainerColor = CharcoalSurface,
+                                    disabledContentColor = ColorMutedGray,
+                                ),
                                 shape = RoundedCornerShape(8.dp),
                                 modifier = Modifier.fillMaxWidth(),
                             ) {
                                 Icon(
                                     imageVector = Icons.Outlined.Download,
                                     contentDescription = null,
-                                    tint = PitchBlackBackground,
+                                    tint = if (isLamaAvailable) ColorWhite else ColorMutedGray,
                                     modifier = Modifier.size(16.dp),
                                 )
                                 Spacer(modifier = Modifier.width(6.dp))
                                 Text(
-                                    text = if (isLamaModelDownloaded) "Re-download LaMa Model" else "Download LaMa Model",
-                                    color = PitchBlackBackground,
-                                    fontSize = 12.sp,
+                                    text = if (isLamaModelDownloaded) "Re-download LaMa Model" else if (!isLamaAvailable) "Model Unavailable" else "Download LaMa Model",
+                                    color = if (isLamaAvailable) ColorWhite else ColorMutedGray,
                                     fontWeight = FontWeight.Bold,
+                                    fontSize = 12.sp,
                                 )
                             }
                         }
                     }
                 }
-                }
+            }
             }
 
             // Section 3: Storage & Cache
@@ -791,22 +837,5 @@ fun SettingsScreen(
                 Spacer(modifier = Modifier.height(24.dp))
             }
         }
-    }
-}
-
-@Composable
-private fun SectionHeader(title: String) {
-    Column(
-        modifier = Modifier
-            .fillMaxWidth()
-            .padding(start = 20.dp, end = 20.dp, top = 20.dp, bottom = 8.dp),
-    ) {
-        Text(
-            text = title,
-            color = RoyalBlue,
-            fontSize = 11.sp,
-            fontWeight = FontWeight.Bold,
-            letterSpacing = 1.2.sp,
-        )
     }
 }

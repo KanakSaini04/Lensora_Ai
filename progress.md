@@ -319,6 +319,18 @@
   - Eliminated all component collisions on physical devices and emulators.
   - Verified 0 runtime crashes (adb logcat -d -s AndroidRuntime:E).
 
+## Phase 31: Model Manifest Hardening & Utility Extraction (100% COMPLETE)
+
+- [x] **Step 65 / 65c: Model Manifest Hardening & Utility Extraction**
+  - Refactored `app/src/main/assets/manifest.json` schema v2 with keys `scene_classifier`, `lama_dilated`, `real_esrgan_v2`, `dehaze` (`url: null`, `sha256: null`).
+  - Extracted pure production utilities `ModelFileGuard` (`isUsable(file)`) and `Sha256Util` (`hex(file)`, `matches(file, expected)`).
+  - Implemented pure Kotlin `ManifestParser.kt` and `ModelEntry` with safe JSON extraction, expanded edge case support (`?a=1&b=2` URLs, escaped quotes, unknown keys/objects, duplicate keys).
+  - Updated `ModelManager.kt` and `ModelDownloaderWorker.kt` to use `ModelFileGuard` and `Sha256Util`.
+  - Updated `SceneClassifier.kt` to gracefully fall back to color-brightness heuristics when model file is unavailable.
+  - Updated `SettingsScreen.kt` to reflect manifest-driven DLC model entries and display "Model Unavailable" UI for unhosted models.
+  - Created `ManifestParserTest.kt` unit test suite covering parser edge cases, `ModelFileGuard`, and `Sha256Util`.
+  - Verified clean unit tests passed and 0 logcat runtime crashes on emulator.
+
 ## Phase 31: Hardware Audit Protocol & System Diagnostics (100% COMPLETE)
 
 - [x] **Step 51: Hardware Audit Protocol & System Diagnostics Dashboard**

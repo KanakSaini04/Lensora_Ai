@@ -44,13 +44,18 @@ class SceneClassifier(
     override suspend fun initialize(): Boolean = withContext(Dispatchers.Default) {
         try {
             modelManager = ModelManager(context)
-            modelManager?.loadModel("scene_classifier.tflite")
+            val interpreter = modelManager?.loadModel("scene_classifier.tflite")
             isInitialized = true
-            Log.i(tag, "SceneClassifier initialized successfully")
+            if (interpreter != null) {
+                Log.i(tag, "SceneClassifier TFLite model loaded successfully")
+            } else {
+                Log.i(tag, "SceneClassifier TFLite model unavailable. Falling back to color-brightness heuristic engine.")
+            }
             true
         } catch (e: Exception) {
             Log.e(tag, "Failed to initialize SceneClassifier", e)
-            false
+            isInitialized = true
+            true
         }
     }
 

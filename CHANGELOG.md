@@ -1,5 +1,16 @@
 # Changelog - Lensora_Ai
 
+## [Unreleased] - Step 65 / 65c (2026-11-18)
+
+### Changed
+- **Model Manifest Hardening (v2)**: Updated `app/src/main/assets/manifest.json` schema v2 with keys `scene_classifier`, `lama_dilated`, `real_esrgan_v2`, `dehaze` (`url: null`, `sha256: null`).
+- **Pure JVM Utilities**: Extracted `ModelFileGuard` (`isUsable()`) and `Sha256Util` (`hex()`, `matches()`) pure Kotlin production utilities for file validation and streaming SHA-256 calculation.
+- **Pure JVM Manifest Parser**: Implemented pure Kotlin `ManifestParser.kt` and `ModelEntry` supporting complex query URLs, escaped strings, duplicate keys, and unknown keys/objects.
+- **Model Manager & Downloader**: Updated `ModelManager.loadModel()` and `ModelDownloaderWorker.kt` to use `ModelFileGuard` and `Sha256Util`.
+- **Scene Classifier Fallback**: Updated `SceneClassifier.kt` to fall back gracefully to color-brightness heuristics when model file is unavailable.
+- **Model Unavailable UI**: Updated `SettingsScreen.kt` to reflect manifest entries and display "Model Unavailable" disabled button state when models are unhosted and missing locally.
+- **Unit Testing**: Created `ManifestParserTest.kt` unit test suite covering parser edge cases, `ModelFileGuard`, and `Sha256Util`.
+
 ## [Unreleased] - Step 62 (2026-11-17)
 
 ### Fixed
