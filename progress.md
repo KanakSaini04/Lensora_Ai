@@ -382,3 +382,78 @@
   - Deleted Canvas cyan bounding box overlay in CameraScreen.kt and hid coaching hint text when detectedBoundingBox is null.
   - Wired real LaMa inpainting model in ObjectEraser.kt loading filesDir/models/lama_dilated.tflite with Interpreter and GpuDelegate, throwing explicit error on missing model instead of simulated delay.
   - Verified 0 runtime crashes (adb logcat -d -s AndroidRuntime:E).
+
+## Phase 38: Camera Mode Audit & Honest UI (100% COMPLETE)
+
+- [x] **Step 58: Camera Mode Audit**
+  - Conducted line-by-line audit of all 27 camera modes across CameraController.kt, CameraScreen.kt, MoreModesSheet.kt, ImageEditor.kt, and VibeState.kt.
+  - Documented exact file and line references, Camera2 request key changes, 3D LUT matrices, and status classification (REAL / VIBE-ONLY / NOTICE-ONLY / NOTHING) in docs/MODE_AUDIT.md.
+  - Verified 0 runtime crashes on connected target hardware (adb logcat -d -s AndroidRuntime:E).
+
+- [x] **Step 59: Honest Modes & SOON Badges**
+  - Refactored MoreModesSheet.kt to display the 10 planned modes (Panorama, Tele-Cine, Time-Lapse, 3D Spatial, 360 Sphere, Stop Motion, Sony G, Samsung, Apple, Pixel) as disabled with a small Royal Blue outlined "SOON" badge and muted gray styling (#9CA3AF). Tapping them does nothing.
+  - Refactored CameraController.kt setAdvancedMode removing fake toast fallbacks for the 10 planned modes.
+  - Updated docs/Document/SRS.md section 3.2 and docs/MODE_AUDIT.md section 4.
+
+## Phase 39: VN-Style Video Editor Foundation & Media Import (100% COMPLETE)
+
+- [x] **Step 60: Editor Foundation**
+  - Added Media3 1.11.1 dependencies (exoplayer, transformer, effect, common) and kotlinx.serialization in gradle/libs.versions.toml and app/build.gradle.kts. Updated compileSdk to 36.
+  - Created com.lensora.ai.editor serializable data models (Project, Clip, MusicTrack, Template, TemplateSlot, AspectRatio, ClipType, TransitionType) with validate() rules.
+  - Implemented ProjectRepository managing JSON project files in filesDir/projects/ with atomic .tmp journal saves.
+  - Implemented TemplateLoader and added assets/templates/sample_vlog.json (9:16 aspect ratio, 4 slots).
+
+- [x] **Step 61: Editor Media Import & Read-Only View**
+  - Implemented StudioScreen.kt PHOTO | VIDEO segmented top toggle. PHOTO mode renders existing Studio UI with zero behavior changes; VIDEO mode renders ProjectsScreen.
+  - Implemented ProjectImporter.kt in com.lensora.ai.editor.import running on Dispatchers.IO with StatFs 2GB Storage Guard, atomic .tmp file copying, cancellation cleanup, and MediaMetadataRetriever duration extraction.
+  - Implemented ProjectViewModel.kt using Hilt @HiltViewModel and StateFlow UI state with process death resilience.
+  - Implemented ProjectsScreen.kt with project cards, "+ New Project" button launching system Photo Picker (ActivityResultContracts.PickMultipleVisualMedia max 30 items), import progress dialog, and read-only project detail view with Coil clip thumbnails (max 256px).
+  - Added ProjectImporterTest.kt unit test suite testing StorageGuard evaluation, clip building/fallbacks, and .tmp file cleanup.
+  - Verified 0 runtime crashes on Redmi Note 13 Pro 5G (adb logcat -d -s AndroidRuntime:E).
+
+- [x] **Step 61b: Importer Hardening**
+  - Updated ProjectImporter.kt extension logic deriving extension from picked file's MIME type via MimeTypeMap against safe whitelist (jpg, jpeg, png, webp, heic, heif, mp4, mov, webm, 3gp, mkv) with .jpg/.mp4 fallbacks and MIME-only video checks.
+  - Implemented sweepOrphanProjects() in ProjectRepository.kt deleting orphan project folders and stale .tmp files older than 30 minutes with pure clock injection. Called in ProjectViewModel init on Dispatchers.IO.
+  - Added skippedCount to ImportState.Success with UI alert on ProjectsScreen.kt.
+  - Enforced CancellationException rethrow hygiene across ProjectImporter.kt streams and moved repository calls to Dispatchers.IO.
+  - Added unit test suite covering ExtensionHelper whitelist, StorageGuard, and ProjectRepositoryTest orphan sweep (11/11 unit tests passed).
+
+## Phase 40: Camera Overlay Fix & Typography Perfection (100% COMPLETE)
+
+- [x] **Step 62: Camera Overlay Fix**
+  - Removed Modifier.blur() from AI badge and overlay pills in CameraScreen.kt, replacing with sharp, translucent dark glass styling (Color(0xFF131313).copy(alpha = 0.65f) and 1.dp border ColorWhite.copy(alpha = 0.15f)).
+  - Restructured top overlays into a single top-aligned Column (TopBar -> Timestamp Pill -> AI Badge) guaranteeing zero collision or overlap at 1.0x and 1.3x font scales.
+  - Implemented pure CoachingHintHelper.coachingHintFor(box: RectF?) helper in SceneClassifier.kt returning null when no subject box is detected and hiding pill UI completely.
+  - Added SceneClassifierTest.kt unit test suite testing coachingHintFor null, centered, small, left, and right box mappings (21/21 total unit tests passed).
+  - Verified 0 runtime crashes on physical Redmi Note 13 Pro 5G (adb logcat -d -s AndroidRuntime:E).
+
+## Phase 41: Claude Review Folder Tooling (100% COMPLETE)
+
+- [x] **Step 63: Claude Review Folder System**
+  - Implemented scripts/prepare_claude_review.ps1 in PowerShell 5.1+ supporting -Step, -Base, and -Extra arguments with path safety checks, atomic folder wipe/rebuild, 00_README_FIRST.md generation, git metadata, doc copies, changed source copies, test outputs/summaries, build logs, adb device info, System.Drawing screenshot validation (black/white/duplicate detection), secrets scanning, and Claude_review.zip archive creation.
+  - Updated .gitignore to ignore transient Claude/ and Claude_review.zip.
+  - Updated agent.md adding Rule 17 for mandatory review package generation.
+  - Updated README.md with short "Review Workflow" section and CHANGELOG.md.
+
+- [x] **Step 62b: AiBadge Blur Fix**
+  - Step 62b: AiBadge blur was NOT removed in Step 62; removed now. Deleted Modifier.blur(12.dp) from AiBadge in CameraScreen.kt and removed unused import.
+  - Added statusBarsPadding() to top overlay Column in CameraScreen.kt ensuring CameraTopBar, Timestamp Pill, and AiBadge clear status bars and cutouts cleanly (EMULATOR verified on emulator-5554 with sharp AI badge text, status bar clearance, zero pill collision).
+  - Deleted legacy black PNG files from docs/screenshots/.
+
+- [x] **Step 63d: Run & Device Policy**
+  - Added Section 10 ("Run and device policy") to GEMINI.md and Rule 18 to agent.md.
+  - Deleted legacy black screenshot docs/screenshots/step62/camera_font_1_0.png.
+
+## Phase 42: Documentation Sync & Neural Model Audit (100% COMPLETE)
+
+- [x] **Step 64: Documentation Sync**
+  - Synchronized README.md with verified codebase facts (compileSdk 36, minSdk 33, targetSdk 35, 21 passed unit tests, 2 FPS / 500 ms sampling rate, honest 27 mode status table, L1 classifier heuristic description, and Known Limitations section).
+
+- [x] **Step 64a: Neural Model Audit**
+  - Conducted read-only audit of offline neural AI models in docs/MODEL_AUDIT.md mapping asset presence, DLC manifest definitions, code ingestion configurations, and tensor dimension specs.
+
+- [x] **Step 65b: Neural Model Supply Chain Plan**
+  - Mapped complete DLC model supply chain in docs/MODEL_SUPPLY_PLAN.md listing manifest endpoints, WorkManager download paths, loader expectations, and exact file-by-file remediation edits needed.
+
+- [x] **Step 65-fix: Documentation Drift Correction**
+  - Corrected handoff drift across PROJECT_HANDOFF.md, docs/MODEL_SUPPLY_PLAN.md header (Step 65b), test class counts (21 passed across 6 test classes), PR table statuses, roadmap, null DLC manifest URLs, and ImageNet MobileNet scene classifier caveat.

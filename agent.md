@@ -21,6 +21,8 @@
 
 ## MANDATORY STEP EXECUTION
 16. Every step MUST include: documentation update, testing, code check, git commit, git push, and PR creation.
+17. Before every review request, run scripts/prepare_claude_review.ps1 -Step <name> and hand over Claude_review.zip. Never say a step is done without it.
+18. Gemini must read GEMINI.md and agent.md at the start of every task and use the GEMINI.md section 8 report format.
 
 ## STYLE
 14. Short, clear answers. No long theory.

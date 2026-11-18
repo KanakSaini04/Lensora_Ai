@@ -32,7 +32,7 @@ The application is tuned and hardened specifically for the **Redmi Note 13 Pro 5
 ┌────────────────────────────────────────────────────────────────────────┐
 │ L0 SAFE CORE HAL (Camera2, 100% Try-Catch Safety, Storage/Thermal Guards) │
 └───────────────────────────────────┬────────────────────────────────────┘
-                                    │ Preview Frames (224x224, 5 FPS)
+                                    │ Preview Frames (224x224, 2 FPS / 500 ms)
                                     ▼
 ┌────────────────────────────────────────────────────────────────────────┐
 │ L1 LIGHT AI DIRECTOR (YOLOv8 / MobileNet Scene Classification)         │
@@ -59,8 +59,9 @@ The application is tuned and hardened specifically for the **Redmi Note 13 Pro 5
    - Atomic `.tmp` capture journal (`cacheDir/LENSORA_TIMESTAMP.jpg.tmp` $\rightarrow$ MediaStore `Pictures/Lensora_Ai` $\rightarrow$ `IS_PENDING = 0`).
    - Thermal Guard (`PowerManager.OnThermalStatusChangedListener`) and 2GB Storage Guard (`StatFs`).
 2. **L1 Light AI Director**:
-   - 5 FPS preview frame sampling on `Dispatchers.Default` analyzing brightness, color histograms, and subject contrast.
-   - Computes real normalized subject bounding boxes and composition coaching prompts (*"✨ Step Closer"*, *"✨ Move Right"*, *"✨ Perfect Composition"*).
+   - 2 FPS / 500 ms preview frame sampling loop (`delay(500)`) on `Dispatchers.Default`.
+   - `SceneClassifier.kt` initializes `ModelManager` loading `scene_classifier.tflite` while executing a 224x224 downsampled color-brightness pixel heuristic sampling pass to select scene labels ("✨ AI: Night", "✨ AI: Landscape", "✨ AI: Portrait", "✨ AI: Sky", "✨ AI: Auto"). Real TFLite tensor array inference pass is planned.
+   - `CoachingHintHelper.coachingHintFor(box)` computes real normalized subject bounding boxes and returns composition coaching prompts (*"✨ Step Closer"*, *"✨ Move Right"*, *"✨ Perfect Composition"*) only when a valid subject box is calculated (hiding the UI pill completely when `box == null`).
 3. **L2 AI Planner**:
    - Rule-based orchestrator converting classified scenes into processing plans.
 4. **L3 Heavy AI Pipeline**:
@@ -82,7 +83,7 @@ The UI is built with the **Obsidian Royal** color palette:
 
 | Tab | Key Functionality & Highlights |
 | :--- | :--- |
-| 📷 **Camera** | Pure edge-to-edge TextureView viewfinder, Frosted Glass `blur(12.dp)` status pills, Multi-Ring Tactile Shutter Button ($82\text{dp}$ outer ring, $70\text{dp}$ core, spring scale `0.88f`), Zoom Pills (`0.6x`, `1x`, `2x`, `3x`), Pro HUD (Zebras, Focus Peaking, ISO, Shutter), 2.39:1 Cinematic Letterboxing. |
+| 📷 **Camera** | Pure edge-to-edge TextureView viewfinder, translucent glass status pills, Multi-Ring Tactile Shutter Button ($82\text{dp}$ outer ring, $70\text{dp}$ core, spring scale `0.88f`), Zoom Pills (`0.6x`, `1x`, `2x`, `3x`), Pro HUD (Zebras, Focus Peaking, ISO, Shutter), 2.39:1 Cinematic Letterboxing. |
 | 🎨 **Studio** | Real-time Exposure (-2.0 to +2.0 EV) & Contrast (-50 to +50) GPU processing, **LaMa GPU Object Eraser** with interactive brush mask Canvas, VN-Style Vintage Timestamp overlay, 512x512 tiled high-res export. |
 | 🖼️ **Gallery** | Pinterest-style Masonry Grid layout displaying local photos, single-tap Quick View swipable viewer with haptic feedback. |
 | 🎞️ **Vibes** | 3D LUT Color Science presets (Cinematic Teal & Orange, Leica B&W, Royal Gold, Vintage Film), AGSL film grain shaders, VN aesthetic template cards. |
@@ -92,35 +93,45 @@ The UI is built with the **Obsidian Royal** color palette:
 
 ## 🎥 The 27 Camera Modes
 
-| Category | Camera Mode | Behavior & Tuning Specification |
-| :--- | :--- | :--- |
-| **Core Modes** | **✨ AI AUTO** | Continuous auto-focus, live AI scene detection. |
-| | **📷 PHOTO** | Standard 12.5MP still capture with atomic MediaStore `.tmp` journal. |
-| | **👤 PORTRAIT** | Universal skin tone illumination EV `+0.3` boost + continuous auto-focus. |
-| | **📹 VIDEO** | `TEMPLATE_RECORD` session with MediaRecorder surface binding. |
-| | **🎬 CINEMATIC** | 2.39:1 pure black letterboxing + validated safe FPS target range (`Range(24, 24)` / `Range(15, 30)`). |
-| | **🎛️ PRO** | Manual exposure controls (ISO 100–3200, Shutter 1/1000s–1s), RAW DNG toggle, Zebras, Focus Peaking. |
-| **Pro Tools** | **✨ ASTRO** | Infinity focus lock (`0.0f`) + 30s long exposure. |
-| | **🔍 PRO MACRO** | Minimum focus distance lock (`LENS_INFO_MINIMUM_FOCUS_DISTANCE`). |
-| **Brand Aesthetics** | **📷 LEICA** | Leica Monochrome B&W 3D LUT color grading. |
-| | **🔵 ZEISS** | ZEISS T* anti-reflex high-contrast color tuning. |
-| | **🟠 HASSELBLAD** | Hasselblad Natural Color Solution (HNCS) golden palette. |
-| | **✨ XMAGE** | XMAGE Vivid saturated color science. |
-| | **🎬 HARCOURT** | Studio Harcourt Paris dramatic portrait black & white. |
-| **Utility Modes** | **🌐 PANORAMA** | 360 sweep capture pipeline. |
-| | **📄 SCAN** | Document edge detection & multi-page PDF generation with ZXing `ErrorCorrectionLevel.H` QR codes. |
-| | **📷 HIGH-RES** | 12.5MP capture + Real-ESRGAN 2x AI upscale pass. |
-| | **🌙 NIGHT VISION** | Exposure compensation +1.0 EV boost + multi-frame noise reduction. |
-| | **🍔 FOOD** | Warm color temperature boost & macro center focus. |
-| | **📑 DOCUMENT** | High contrast black-and-white text extraction. |
-| | **⏱️ SLOW-MOTION** | High frame rate recording pass. |
-| | **⏳ TIME-LAPSE** | Interval frame capture pass. |
-| | **📱 DUAL-VIDEO** | Simultaneous front and rear camera recording session. |
-| | **✨ BEAUTY** | Real-time skin smoothing ColorMatrix pass. |
-| | **🌌 DEEP SKY** | Multi-frame astrophotography stacking pass. |
-| | **🔬 ULTRA MACRO** | Digital crop + sharpening macro pass. |
-| | **🏷️ WATERMARK** | VN-style vintage timestamp watermark overlay. |
-| | **🎞️ RAW DNG** | `DngCreator` uncompressed RAW sensor capture (`Pictures/Lensora_Ai/RAW`). |
+| Category | Camera Mode | Status | Behavior & Tuning Specification |
+| :--- | :--- | :---: | :--- |
+| **Core Modes** | **✨ AI AUTO** | `WORKING (Step 62c)` | Continuous auto-focus, live AI scene detection (2 FPS / 500 ms loop). |
+| | **📷 PHOTO** | `WORKING (Step 37)` | Standard 12.5MP still capture with atomic MediaStore `.tmp` journal. |
+| | **👤 PORTRAIT** | `WORKING (Step 37)` | Universal skin tone illumination EV `+0.3` boost + continuous auto-focus. |
+| | **📹 VIDEO** | `WORKING (Step 60)` | `TEMPLATE_RECORD` session with MediaRecorder surface binding. |
+| | **🎬 CINEMATIC** | `WORKING (Step 37)` | 2.39:1 pure black letterboxing + validated safe FPS target range (`Range(24, 24)` / `Range(15, 30)`). |
+| | **🎛️ PRO** | `WORKING (Step 37)` | Manual exposure controls (ISO 100–3200, Shutter 1/1000s–1s), RAW DNG toggle, Zebras, Focus Peaking. |
+| **Pro Tools** | **✨ ASTRO** | `IMPLEMENTED - NOT VERIFIED` | Infinity focus lock (`0.0f`) + 30s long exposure. |
+| | **🔍 PRO MACRO** | `IMPLEMENTED - NOT VERIFIED` | Minimum focus distance lock (`LENS_INFO_MINIMUM_FOCUS_DISTANCE`). |
+| | **📷 HIGH-RES** | `IMPLEMENTED - NOT VERIFIED` | 12.5MP capture + Real-ESRGAN 2x AI upscale pass (needs real_esrgan_v2.tflite, not in DLC manifest; see docs/MODEL_AUDIT.md). |
+| | **🌙 NIGHT VISION** | `IMPLEMENTED - NOT VERIFIED` | Exposure compensation +1.0 EV boost + multi-frame noise reduction (needs dehaze.tflite, not in DLC manifest; see docs/MODEL_AUDIT.md). |
+| | **📄 SCAN** | `IMPLEMENTED - NOT VERIFIED` | Document edge detection & multi-page PDF generation with ZXing `ErrorCorrectionLevel.H` QR codes. |
+| | **📑 DOCUMENT** | `IMPLEMENTED - NOT VERIFIED` | High contrast black-and-white text extraction. |
+| **Brand Aesthetics** | **📷 LEICA** | `VIBE-ONLY` | Leica Monochrome B&W 3D LUT color grading. |
+| | **🔵 ZEISS** | `VIBE-ONLY` | ZEISS T* anti-reflex high-contrast color tuning. |
+| | **🟠 HASSELBLAD** | `VIBE-ONLY` | Hasselblad Natural Color Solution (HNCS) golden palette. |
+| | **✨ XMAGE** | `VIBE-ONLY` | XMAGE Vivid saturated color science. |
+| | **🎬 HARCOURT** | `VIBE-ONLY` | Studio Harcourt Paris dramatic portrait black & white. |
+| **Utility Modes** | **🌐 PANORAMA** | `SOON` | 360 sweep capture pipeline. |
+| | **🍔 FOOD** | `SOON` | Warm color temperature boost & macro center focus. |
+| | **⏱️ SLOW-MOTION** | `SOON` | High frame rate recording pass. |
+| | **⏳ TIME-LAPSE** | `SOON` | Interval frame capture pass. |
+| | **📱 DUAL-VIDEO** | `SOON` | Simultaneous front and rear camera recording session. |
+| | **✨ BEAUTY** | `SOON` | Real-time skin smoothing ColorMatrix pass. |
+| | **🌌 DEEP SKY** | `SOON` | Multi-frame astrophotography stacking pass. |
+| | **🔬 ULTRA MACRO** | `SOON` | Digital crop + sharpening macro pass. |
+| | **🏷️ WATERMARK** | `SOON` | VN-style vintage timestamp watermark overlay. |
+| | **🎞️ RAW DNG** | `SOON` | `DngCreator` uncompressed RAW sensor capture (`Pictures/Lensora_Ai/RAW`). |
+
+---
+
+## 🛠️ Automated Review Workflow
+
+Before submitting review packages or pull requests, run the review preparation script to package all git metadata, test results, build logs, and validated screenshots into `Claude_review.zip`:
+
+```powershell
+.\scripts\prepare_claude_review.ps1 -Step "Step 63" -Base dev
+```
 
 ---
 
@@ -154,12 +165,22 @@ All models execute locally on the device GPU via `GpuDelegate()` with CPU XNNPAC
 
 ---
 
+## ⚠️ Known Limitations
+
+- **Android Emulator Camera2 HAL**: Preview frame buffers on Android Emulator instances render virtual test scenes / color bars. Physical hardware camera validation requires physical Android device execution.
+- **Redmi Note 13 Pro 5G Sensor Binning**: 200MP raw streams are binned to 12.5MP (`4080x3060`) output maps by standard Camera2 HAL characteristics. High-res capture uses 12.5MP capture + Real-ESRGAN 2x AI upscale.
+- **TFLite Neural Inference**: `SceneClassifier.kt` uses color-brightness heuristics for live scene labels while loading `scene_classifier.tflite`. Direct tensor array inference is planned.
+- **Video Editor Non-Destructive Export**: Non-destructive timeline project imports use Media3 1.11.1 stream ingestion; multi-track composition rendering is currently under active integration.
+
+---
+
 ## 🛠️ Building & Installation
 
 ### Prerequisites
-- **Android Studio**: Ladybug (2024.2.1) or newer
+- **Android Studio**: NOT VERIFIED (Environment patch variable unexposed)
 - **JDK**: Java 17
-- **Android SDK**: Compile SDK 35, Min SDK 33, Target SDK 35
+- **Android SDK**: Compile SDK 36, Min SDK 33, Target SDK 35
+- **Unit Test Suite**: 21 passed unit tests (`21/21 pass`)
 
 ### Build Commands
 ```bash
@@ -167,7 +188,7 @@ All models execute locally on the device GPU via `GpuDelegate()` with CPU XNNPAC
 git clone https://github.com/KanakSaini04/Lensora_Ai.git
 cd Lensora_Ai
 
-# Run unit tests (6/6 pass)
+# Run unit tests (21/21 pass)
 ./gradlew testDebugUnitTest
 
 # Assemble Debug APK

@@ -83,3 +83,12 @@ Lensora_Ai uses three Android system storage mechanisms:
 | `cacheDir/LENSORA_<timestamp>.jpg.tmp` | Atomic L0 capture journal | Temporary during capture pass | Deleted immediately after MediaStore stream read completion. |
 | `cacheDir/RAW_<timestamp>.dng.tmp` | Atomic RAW DNG capture journal | Temporary during DngCreator pass | Deleted immediately after MediaStore serialization. |
 | `cacheDir/LENSORA_VIDEO_<timestamp>.mp4.tmp` | Atomic video recorder journal | Temporary during recording pass | Deleted immediately after MediaStore video finalization. |
+
+### 4.3 Editor Project & Media Directory (`context.filesDir/projects/`)
+
+| File / Folder Pattern | Expected Format | Journaling Strategy | Description |
+| :--- | :--- | :--- | :--- |
+| `filesDir/projects/<id>.json` | JSON string (`Project` model) | Atomic `.tmp` journal rename | Serialized project metadata storing clips, trims, speed, volume, and music tracks. |
+| `filesDir/projects/<id>.json.tmp` | JSON string (`Project.serializer()`) | Temporary write buffer | Written atomically during `saveProject()`. Renamed to `<id>.json` upon write completion. |
+| `filesDir/projects/<id>/media/<clipId>.<ext>` | Image (JPEG/PNG/HEIC/WebP) / Video (MP4/MOV/WebM/MKV) | Atomic `.tmp` journal rename | Local project media file copied by `ProjectImporter`. Extension derived via `MimeTypeMap` against safe whitelist (`jpg`, `jpeg`, `png`, `webp`, `heic`, `heif`, `mp4`, `mov`, `webm`, `3gp`, `mkv`). |
+| `filesDir/projects/<id>/media/<clipId>.<ext>.tmp` | Binary byte stream | Temporary write buffer | Streamed atomically during media import pass. Renamed to `<clipId>.<ext>` upon byte copy completion. Cleaned up by `sweepOrphanProjects()` if older than 30 minutes. |
