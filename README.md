@@ -124,6 +124,16 @@ The UI is built with the **Obsidian Royal** color palette:
 
 ---
 
+## 🛠️ Automated Review Workflow
+
+Before submitting review packages or pull requests, run the review preparation script to package all git metadata, test results, build logs, and validated screenshots into `Claude_review.zip`:
+
+```powershell
+.\scripts\prepare_claude_review.ps1 -Step "Step 63" -Base dev
+```
+
+---
+
 ## 🤖 Neural AI Models (100% Offline GPU Execution)
 
 All models execute locally on the device GPU via `GpuDelegate()` with CPU XNNPACK 4-thread fallback:
