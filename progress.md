@@ -434,3 +434,8 @@
   - Updated .gitignore to ignore transient Claude/ and Claude_review.zip.
   - Updated agent.md adding Rule 17 for mandatory review package generation.
   - Updated README.md with short "Review Workflow" section and CHANGELOG.md.
+
+- [x] **Step 62b: AiBadge Blur Fix**
+  - Step 62b: AiBadge blur was NOT removed in Step 62; removed now. Deleted Modifier.blur(12.dp) from AiBadge in CameraScreen.kt and removed unused import.
+  - Added statusBarsPadding() to top overlay Column in CameraScreen.kt ensuring CameraTopBar, Timestamp Pill, and AiBadge clear status bars and cutouts cleanly.
+  - Deleted legacy black PNG files from docs/screenshots/.

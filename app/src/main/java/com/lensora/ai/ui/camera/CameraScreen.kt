@@ -26,7 +26,6 @@ import androidx.compose.foundation.Canvas
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
-import androidx.compose.ui.draw.blur
 import androidx.compose.foundation.gestures.detectTapGestures
 import androidx.compose.foundation.gestures.detectTransformGestures
 import androidx.compose.foundation.layout.Arrangement
@@ -404,10 +403,11 @@ fun CameraScreen(
                     },
             )
 
-            // Top Overlays Column: Top Bar -> Timestamp Pill -> AI Badge (Stacked cleanly to eliminate overlap at all font scales)
+            // Top Overlays Column: Top Bar -> Timestamp Pill -> AI Badge (Stacked cleanly to clear status bar / cutout and eliminate overlap at all font scales)
             Column(
                 modifier = Modifier
                     .align(Alignment.TopCenter)
+                    .statusBarsPadding()
                     .fillMaxWidth(),
                 horizontalAlignment = Alignment.CenterHorizontally,
             ) {
@@ -924,9 +924,8 @@ private fun AiBadge(
     Box(
         modifier = modifier
             .clip(CircleShape)
-            .blur(12.dp)
-            .background(CharcoalSurface.copy(alpha = 0.55f))
-            .border(width = 1.dp, color = ColorWhite.copy(alpha = 0.3f), shape = CircleShape)
+            .background(CharcoalSurface.copy(alpha = 0.65f))
+            .border(width = 1.dp, color = ColorWhite.copy(alpha = 0.25f), shape = CircleShape)
             .padding(horizontal = 16.dp, vertical = 7.dp),
         contentAlignment = Alignment.Center,
     ) {
