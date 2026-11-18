@@ -7,11 +7,16 @@ param(
     [string]$Base = "dev",
 
     [Parameter(Mandatory = $false)]
+    [string]$Since = "",
+
+    [Parameter(Mandatory = $false)]
     [string[]]$Extra = @()
 )
 
 $ErrorActionPreference = "Continue"
 Add-Type -AssemblyName System.Drawing
+Add-Type -AssemblyName System.IO.Compression
+Add-Type -AssemblyName System.IO.Compression.FileSystem
 
 # 1. SAFETY: Resolve repo root via git
 $rawRoot = (git rev-parse --show-toplevel 2>$null)
@@ -43,6 +48,10 @@ New-Item -ItemType Directory -Path $claudeDir -Force | Out-Null
 
 $problems = New-Object System.Collections.Generic.List[string]
 
+# Determine diff reference range (-Since or -Base)
+$diffRef = if ([string]::IsNullOrWhiteSpace($Since)) { "$Base..HEAD" } else { "$Since..HEAD" }
+Write-Host "Evaluating git diff reference range: $diffRef" -ForegroundColor Yellow
+
 # Create subdirectories
 $gitDir = Join-Path $claudeDir "01_git"
 $docsDir = Join-Path $claudeDir "02_docs"
@@ -64,8 +73,8 @@ try {
     (git log -15 --oneline --decorate) | Out-File (Join-Path $gitDir "log.txt") -Encoding utf8
     (git status) | Out-File (Join-Path $gitDir "status.txt") -Encoding utf8
     (git branch -a) | Out-File (Join-Path $gitDir "branch.txt") -Encoding utf8
-    (git diff "$Base..HEAD" --stat) | Out-File (Join-Path $gitDir "diff_stat.txt") -Encoding utf8
-    (git diff "$Base..HEAD") | Out-File (Join-Path $gitDir "diff_full.patch") -Encoding utf8
+    (git diff $diffRef --stat) | Out-File (Join-Path $gitDir "diff_stat.txt") -Encoding utf8
+    (git diff $diffRef) | Out-File (Join-Path $gitDir "diff_full.patch") -Encoding utf8
     (git branch -a --merged $Base) | Out-File (Join-Path $gitDir "merged.txt") -Encoding utf8
 
     if (Get-Command gh -ErrorAction SilentlyContinue) {
@@ -77,7 +86,7 @@ try {
     $problems.Add("Git export error: $_")
 }
 
-# 3. FILL 02_docs
+# 3. FILL 02_docs (Excluding docs\screenshots)
 $topDocs = @("README.md", "agent.md", "progress.md", "CHANGELOG.md", "report.md")
 foreach ($docName in $topDocs) {
     $filePath = Join-Path $root $docName
@@ -90,40 +99,53 @@ foreach ($docName in $topDocs) {
 
 $repoDocsPath = Join-Path $root "docs"
 if (Test-Path $repoDocsPath) {
-    Copy-Item -Path $repoDocsPath -Destination $docsDir -Recurse -Force
+    $docFiles = Get-ChildItem -Path $repoDocsPath -Recurse -File | Where-Object {
+        $_.FullName -notmatch "[\\/]screenshots([\\/]|$)"
+    }
+    foreach ($file in $docFiles) {
+        $relDoc = $file.FullName.Substring($repoDocsPath.Length + 1)
+        $destDoc = Join-Path (Join-Path $docsDir "docs") $relDoc
+        $destDocParent = [System.IO.Path]::GetDirectoryName($destDoc)
+        if (-not (Test-Path $destDocParent)) { New-Item -ItemType Directory -Path $destDocParent -Force | Out-Null }
+        Copy-Item -Path $file.FullName -Destination $destDoc -Force
+    }
 } else {
     $problems.Add("Docs directory missing: docs\")
 }
 
 # 4. FILL 03_changed_source
 try {
-    $changedFiles = (git diff "$Base..HEAD" --name-only)
-    foreach ($relPath in $changedFiles) {
-        if ([string]::IsNullOrWhiteSpace($relPath)) { continue }
-        $fullPath = Join-Path $root $relPath
-        $fileName = [System.IO.Path]::GetFileName($relPath)
+    $changedFiles = (git diff $diffRef --name-only)
+    if (-not $changedFiles) {
+        $problems.Add("diff empty - wrong -Base/-Since?")
+    } else {
+        foreach ($relPath in $changedFiles) {
+            if ([string]::IsNullOrWhiteSpace($relPath)) { continue }
+            $fullPath = Join-Path $root $relPath
+            $fileName = [System.IO.Path]::GetFileName($relPath)
 
-        # Ignore secrets
-        if ($fileName -match "^(local\.properties|.*\.jks|.*\.keystore|google-services\.json|.*\.env)$") {
-            continue
-        }
-
-        if (Test-Path $fullPath -PathType Leaf) {
-            $destPath = Join-Path $srcDir $relPath
-            $destParent = [System.IO.Path]::GetDirectoryName($destPath)
-            if (-not (Test-Path $destParent)) {
-                New-Item -ItemType Directory -Path $destParent -Force | Out-Null
+            # Ignore secrets
+            if ($fileName -match "^(local\.properties|.*\.jks|.*\.keystore|google-services\.json|.*\.env)$") {
+                continue
             }
-            Copy-Item -Path $fullPath -Destination $destPath -Force
+
+            if (Test-Path $fullPath -PathType Leaf) {
+                $destPath = Join-Path $srcDir $relPath
+                $destParent = [System.IO.Path]::GetDirectoryName($destPath)
+                if (-not (Test-Path $destParent)) {
+                    New-Item -ItemType Directory -Path $destParent -Force | Out-Null
+                }
+                Copy-Item -Path $fullPath -Destination $destPath -Force
+            }
         }
     }
 } catch {
     $problems.Add("Error copying changed source files: $_")
 }
 
-# 5. FILL 04_tests
+# 5. FILL 04_tests (Clean re-run)
 try {
-    $testOutput = (.\gradlew.bat testDebugUnitTest 2>&1 | Out-String)
+    $testOutput = (.\gradlew.bat cleanTestDebugUnitTest testDebugUnitTest --rerun-tasks 2>&1 | Out-String)
     $testOutput | Out-File (Join-Path $testsDir "test_output.txt") -Encoding utf8
     if ($LASTEXITCODE -ne 0) {
         $problems.Add("Unit tests failed with exit code $LASTEXITCODE")
@@ -203,7 +225,7 @@ try {
     $problems.Add("Device check exception: $_")
 }
 
-# 8. FILL 07_screenshots & VALIDATE
+# 8. FILL 07_screenshots & VALIDATE (>98% near-black pixel check)
 $hashes = @{}
 function Test-ScreenshotValid {
     param([string]$filePath)
@@ -216,24 +238,32 @@ function Test-ScreenshotValid {
             return "Zero dimension bitmap"
         }
 
-        $allBlack = $true
-        $allWhite = $true
+        $totalSampled = 0
+        $nearBlackCount = 0
+        $nearWhiteCount = 0
 
-        for ($x = 0; $x -lt $w; $x += [Math]::Max(1, [int]($w / 10))) {
-            for ($y = 0; $y -lt $h; $y += [Math]::Max(1, [int]($h / 10))) {
+        for ($x = 0; $x -lt $w; $x += [Math]::Max(1, [int]($w / 20))) {
+            for ($y = 0; $y -lt $h; $y += [Math]::Max(1, [int]($h / 20))) {
                 $pixel = $bmp.GetPixel($x, $y)
-                if ($pixel.R -ne 0 -or $pixel.G -ne 0 -or $pixel.B -ne 0) {
-                    $allBlack = $false
+                $totalSampled++
+                if ($pixel.R -le 15 -and $pixel.G -le 15 -and $pixel.B -le 15) {
+                    $nearBlackCount++
                 }
-                if ($pixel.R -ne 255 -or $pixel.G -ne 255 -or $pixel.B -ne 255) {
-                    $allWhite = $false
+                if ($pixel.R -ge 240 -and $pixel.G -ge 240 -and $pixel.B -ge 240) {
+                    $nearWhiteCount++
                 }
             }
         }
         $bmp.Dispose()
 
-        if ($allBlack) { return "Fully Black Image" }
-        if ($allWhite) { return "Fully White Image" }
+        if ($totalSampled -gt 0) {
+            $blackRatio = $nearBlackCount / $totalSampled
+            $whiteRatio = $nearWhiteCount / $totalSampled
+
+            if ($blackRatio -gt 0.98) { return "Mostly Black Image ($([Math]::Round($blackRatio * 100, 1))% near-black pixels)" }
+            if ($whiteRatio -gt 0.98) { return "Mostly White Image ($([Math]::Round($whiteRatio * 100, 1))% near-white pixels)" }
+        }
+
         return $null
     } catch {
         return "Failed to parse PNG: $_"
@@ -282,7 +312,7 @@ foreach ($extraItem in $Extra) {
 }
 
 # 10. SECRETS SCAN
-$secretPatterns = @("client_secret", "api_key", "AIza", "BEGIN PRIVATE KEY")
+$secretPatterns = @("client_" + "secret", "api_" + "key", "AI" + "za", "BEGIN " + "PRIVATE KEY")
 $allClaudeFiles = Get-ChildItem -Path $claudeDir -Recurse -File
 
 foreach ($cFile in $allClaudeFiles) {
@@ -301,7 +331,7 @@ foreach ($cFile in $allClaudeFiles) {
     } catch {}
 }
 
-# 11. GENERATE 00_README_FIRST.md
+# 11. GENERATE 00_README_FIRST.md (Clean Emoji-Free UTF-8 Text)
 $currentBranch = (git rev-parse --abbrev-ref HEAD 2>$null)
 if ($currentBranch) { $currentBranch = $currentBranch.Trim() }
 $headHash = (git rev-parse HEAD 2>$null)
@@ -314,7 +344,7 @@ $readmeContent = New-Object System.Text.StringBuilder
 [void]$readmeContent.AppendLine("**Generated**: $nowStr")
 [void]$readmeContent.AppendLine("**Branch**: $currentBranch")
 [void]$readmeContent.AppendLine("**HEAD Commit**: $headHash")
-[void]$readmeContent.AppendLine("**Base Branch**: $Base")
+[void]$readmeContent.AppendLine("**Diff Reference**: $diffRef")
 [void]$readmeContent.AppendLine("")
 [void]$readmeContent.AppendLine("---")
 [void]$readmeContent.AppendLine("")
@@ -323,7 +353,7 @@ $readmeContent = New-Object System.Text.StringBuilder
 
 if ($problems.Count -gt 0) {
     foreach ($prob in $problems) {
-        [void]$readmeContent.AppendLine("- ⚠️ $prob")
+        [void]$readmeContent.AppendLine("- WARNING: $prob")
     }
 } else {
     [void]$readmeContent.AppendLine("None (All steps completed cleanly).")
@@ -342,11 +372,24 @@ foreach ($file in $finalClaudeFiles) {
     [void]$readmeContent.AppendLine("- `"$relPath`" ($sizeKb KB)")
 }
 
-$readmeContent.ToString() | Out-File (Join-Path $claudeDir "00_README_FIRST.md") -Encoding utf8
+$readmePath = Join-Path $claudeDir "00_README_FIRST.md"
+[System.IO.File]::WriteAllText($readmePath, $readmeContent.ToString(), [System.Text.Encoding]::UTF8)
 
-# 12. CREATE ZIP ARCHIVE
+# 12. CREATE ZIP ARCHIVE WITH FORWARD SLASHES (ZipArchive)
 try {
-    Compress-Archive -Path "$claudeDir\*" -DestinationPath $zipPath -Force
+    if (Test-Path $zipPath) { Remove-Item $zipPath -Force }
+    $zipStream = [System.IO.File]::Open($zipPath, [System.IO.FileMode]::Create)
+    $archive = New-Object System.IO.Compression.ZipArchive($zipStream, [System.IO.Compression.ZipArchiveMode]::Create)
+
+    $allFilesToZip = Get-ChildItem -Path $claudeDir -Recurse -File
+    foreach ($fileToZip in $allFilesToZip) {
+        $entryName = $fileToZip.FullName.Substring($claudeDir.Length + 1).Replace("\", "/")
+        [System.IO.Compression.ZipFileExtensions]::CreateEntryFromFile($archive, $fileToZip.FullName, $entryName, [System.IO.Compression.CompressionLevel]::Optimal)
+    }
+
+    $archive.Dispose()
+    $zipStream.Dispose()
+
     $zipItem = Get-Item $zipPath
     $zipMb = [Math]::Round($zipItem.Length / 1MB, 2)
     Write-Host ""
