@@ -451,3 +451,6 @@
 
 - [x] **Step 64a: Neural Model Audit**
   - Conducted read-only audit of offline neural AI models in docs/MODEL_AUDIT.md mapping asset presence, DLC manifest definitions, code ingestion configurations, and tensor dimension specs.
+
+- [x] **Step 65b: Neural Model Supply Chain Plan**
+  - Mapped complete DLC model supply chain in docs/MODEL_SUPPLY_PLAN.md listing manifest endpoints, WorkManager download paths, loader expectations, and exact file-by-file remediation edits needed.
