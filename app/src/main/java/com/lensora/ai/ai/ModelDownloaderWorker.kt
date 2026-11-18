@@ -140,14 +140,12 @@ class ModelDownloaderWorker(
             outputStream.flush()
             outputStream.close()
 
-            val sha256Bytes = digest.digest()
-            val sha256Hex = sha256Bytes.joinToString("") { "%02x".format(it) }
-
-            Log.i(tag, "Extracted & downloaded $targetFilename successfully ($totalBytesRead bytes). SHA-256: $sha256Hex")
+            val actualSha256Hex = Sha256Util.hex(tmpFile)
+            Log.i(tag, "Extracted & downloaded $targetFilename successfully ($totalBytesRead bytes). SHA-256: $actualSha256Hex")
 
             if (!expectedSha256.isNullOrBlank()) {
-                if (!sha256Hex.equals(expectedSha256, ignoreCase = true)) {
-                    Log.e(tag, "SHA-256 mismatch! Expected: $expectedSha256, Got: $sha256Hex")
+                if (!Sha256Util.matches(tmpFile, expectedSha256)) {
+                    Log.e(tag, "SHA-256 mismatch! Expected: $expectedSha256, Computed: $actualSha256Hex")
                     tmpFile.delete()
                     return@withContext Result.failure()
                 }
@@ -170,7 +168,7 @@ class ModelDownloaderWorker(
             Result.success(
                 workDataOf(
                     "FILE_PATH" to finalFile.absolutePath,
-                    "SHA256" to sha256Hex,
+                    "SHA256" to actualSha256Hex,
                 ),
             )
         } catch (e: Exception) {

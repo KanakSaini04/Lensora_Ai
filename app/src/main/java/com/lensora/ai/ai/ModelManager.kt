@@ -15,10 +15,9 @@ class ModelManager(
     private var interpreter: Interpreter? = null
 
     fun loadModel(modelFileName: String): Interpreter? {
-        // 1. Try loading from filesDir/models/
         val modelsDir = File(context.filesDir, "models")
         val localFile = File(modelsDir, modelFileName)
-        if (localFile.exists() && localFile.length() > 0 && localFile.canRead()) {
+        if (ModelFileGuard.isUsable(localFile)) {
             return try {
                 Interpreter(localFile).also {
                     interpreter = it
@@ -30,7 +29,6 @@ class ModelManager(
             }
         }
 
-        // 2. Fallback: Try loading from assets/
         return try {
             val assetFd = context.assets.openFd(modelFileName)
             val inputStream = FileInputStream(assetFd.fileDescriptor)
@@ -62,7 +60,7 @@ class ModelManager(
 
         for (candidate in priorityCandidates) {
             val file = File(modelsDir, candidate)
-            if (file.exists() && file.length() > 0 && file.canRead()) {
+            if (ModelFileGuard.isUsable(file)) {
                 Log.i(tag, "Found Image-to-Image AI Enhancement model: ${file.name} (${file.length()} bytes)")
                 return file
             }
@@ -71,7 +69,7 @@ class ModelManager(
         val otherModels = modelsDir.listFiles { _, name ->
             name.endsWith(".tflite", ignoreCase = true) && !name.contains("mobilenet", ignoreCase = true)
         }
-        return otherModels?.firstOrNull()
+        return otherModels?.firstOrNull { ModelFileGuard.isUsable(it) }
     }
 
     fun getLamaModelFile(): File? {
@@ -86,7 +84,7 @@ class ModelManager(
 
         for (candidate in candidates) {
             val file = File(modelsDir, candidate)
-            if (file.exists() && file.length() > 0 && file.canRead()) {
+            if (ModelFileGuard.isUsable(file)) {
                 Log.i(tag, "Found LaMa-Dilated Inpainting model: ${file.name} (${file.length()} bytes)")
                 return file
             }

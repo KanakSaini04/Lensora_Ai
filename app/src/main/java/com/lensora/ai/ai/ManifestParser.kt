@@ -13,7 +13,7 @@ object ManifestParser {
         if (jsonString.isBlank()) return emptyList()
 
         return try {
-            val entries = mutableListOf<ModelEntry>()
+            val entriesMap = mutableMapOf<String, ModelEntry>()
             val trimmed = jsonString.trim()
             if (!trimmed.startsWith("{") || !trimmed.endsWith("}")) {
                 return emptyList()
@@ -24,6 +24,13 @@ object ManifestParser {
 
             for ((key, content) in blocks) {
                 if (key == "schema_version") continue
+                val trimmedContent = content.trim()
+                if (!trimmedContent.startsWith("{")) continue
+
+                val inner = trimmedContent.substring(1, trimmedContent.length - 1)
+                if (inner.contains('{') || inner.contains('[')) {
+                    continue
+                }
 
                 val fileName = extractJsonValue(content, "file_name")
                     ?: extractJsonValue(content, "model_name")
@@ -32,16 +39,14 @@ object ManifestParser {
                 val url = extractJsonValue(content, "url")
                 val sha256 = extractJsonValue(content, "sha256")
 
-                entries.add(
-                    ModelEntry(
-                        key = key,
-                        fileName = fileName,
-                        url = url,
-                        sha256 = sha256,
-                    ),
+                entriesMap[key] = ModelEntry(
+                    key = key,
+                    fileName = fileName,
+                    url = url,
+                    sha256 = sha256,
                 )
             }
-            entries
+            entriesMap.values.toList()
         } catch (e: Exception) {
             emptyList()
         }
@@ -55,10 +60,10 @@ object ManifestParser {
         while (i < len) {
             val keyStart = body.indexOf('"', i)
             if (keyStart == -1) break
-            val keyEnd = body.indexOf('"', keyStart + 1)
+            val keyEnd = findClosingQuote(body, keyStart)
             if (keyEnd == -1) break
 
-            val key = body.substring(keyStart + 1, keyEnd)
+            val key = unescapeString(body.substring(keyStart + 1, keyEnd))
             val colonIdx = body.indexOf(':', keyEnd + 1)
             if (colonIdx == -1) break
 
@@ -70,17 +75,44 @@ object ManifestParser {
             if (valueStart < len && body[valueStart] == '{') {
                 var depth = 1
                 var valueEnd = valueStart + 1
+                var inString = false
+                var escaped = false
+
                 while (valueEnd < len && depth > 0) {
-                    if (body[valueEnd] == '{') depth++
-                    if (body[valueEnd] == '}') depth--
+                    val c = body[valueEnd]
+                    if (escaped) {
+                        escaped = false
+                    } else if (c == '\\') {
+                        escaped = true
+                    } else if (c == '"') {
+                        inString = !inString
+                    } else if (!inString) {
+                        if (c == '{') depth++
+                        if (c == '}') depth--
+                    }
                     valueEnd++
                 }
                 val content = body.substring(valueStart, valueEnd)
                 list.add(Pair(key, content))
                 i = valueEnd
             } else {
-                var valueEnd = body.indexOf(',', valueStart)
-                if (valueEnd == -1) valueEnd = len
+                var valueEnd = valueStart
+                var inString = false
+                var escaped = false
+
+                while (valueEnd < len) {
+                    val c = body[valueEnd]
+                    if (escaped) {
+                        escaped = false
+                    } else if (c == '\\') {
+                        escaped = true
+                    } else if (c == '"') {
+                        inString = !inString
+                    } else if (!inString && (c == ',' || c == '}')) {
+                        break
+                    }
+                    valueEnd++
+                }
                 val content = body.substring(valueStart, valueEnd)
                 list.add(Pair(key, content))
                 i = valueEnd + 1
@@ -89,21 +121,84 @@ object ManifestParser {
         return list
     }
 
-    private fun extractJsonValue(jsonBlock: String, key: String): String? {
-        val keyPattern = "\"$key\"\\s*:\\s*"
-        val regex = Regex(keyPattern + "(?:\"([^\"]*)\"|(null)|([^,\\}\\s]+))")
-        val match = regex.find(jsonBlock) ?: return null
+    private fun findClosingQuote(str: String, startQuoteIdx: Int): Int {
+        var i = startQuoteIdx + 1
+        val len = str.length
+        var escaped = false
 
-        val (quotedVal, nullVal, unquotedVal) = match.destructured
-        if (nullVal.isNotEmpty() && nullVal.equals("null", ignoreCase = true)) {
+        while (i < len) {
+            val c = str[i]
+            if (escaped) {
+                escaped = false
+            } else if (c == '\\') {
+                escaped = true
+            } else if (c == '"') {
+                return i
+            }
+            i++
+        }
+        return -1
+    }
+
+    private fun extractJsonValue(jsonBlock: String, key: String): String? {
+        val keyPattern = Regex("\"$key\"\\s*:\\s*")
+        val match = keyPattern.find(jsonBlock) ?: return null
+        var idx = match.range.last + 1
+        val len = jsonBlock.length
+
+        while (idx < len && jsonBlock[idx].isWhitespace()) {
+            idx++
+        }
+        if (idx >= len) return null
+
+        if (jsonBlock.startsWith("null", idx, ignoreCase = true)) {
             return null
         }
-        if (quotedVal.isNotEmpty()) {
-            return if (quotedVal.equals("null", ignoreCase = true)) null else quotedVal
+
+        if (jsonBlock[idx] == '"') {
+            val closingIdx = findClosingQuote(jsonBlock, idx)
+            if (closingIdx == -1) return null
+            val rawQuoted = jsonBlock.substring(idx + 1, closingIdx)
+            val result = unescapeString(rawQuoted)
+            return if (result.equals("null", ignoreCase = true)) null else result
         }
-        if (unquotedVal.isNotEmpty()) {
-            return if (unquotedVal.equals("null", ignoreCase = true)) null else unquotedVal
+
+        var end = idx
+        while (end < len && jsonBlock[end] != ',' && jsonBlock[end] != '}' && !jsonBlock[end].isWhitespace()) {
+            end++
         }
-        return null
+        val unquoted = jsonBlock.substring(idx, end).trim()
+        return if (unquoted.isEmpty() || unquoted.equals("null", ignoreCase = true)) null else unquoted
+    }
+
+    private fun unescapeString(str: String): String {
+        val sb = StringBuilder()
+        var i = 0
+        val len = str.length
+        var escaped = false
+
+        while (i < len) {
+            val c = str[i]
+            if (escaped) {
+                when (c) {
+                    '"' -> sb.append('"')
+                    '\\' -> sb.append('\\')
+                    '/' -> sb.append('/')
+                    'b' -> sb.append('\b')
+                    'f' -> sb.append('\u000C')
+                    'n' -> sb.append('\n')
+                    'r' -> sb.append('\r')
+                    't' -> sb.append('\t')
+                    else -> sb.append(c)
+                }
+                escaped = false
+            } else if (c == '\\') {
+                escaped = true
+            } else {
+                sb.append(c)
+            }
+            i++
+        }
+        return sb.toString()
     }
 }
