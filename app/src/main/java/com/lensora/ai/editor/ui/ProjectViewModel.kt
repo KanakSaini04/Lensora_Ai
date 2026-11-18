@@ -4,8 +4,13 @@ import android.content.Context
 import android.net.Uri
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import androidx.work.OneTimeWorkRequestBuilder
+import androidx.work.WorkInfo
+import androidx.work.WorkManager
+import androidx.work.workDataOf
 import com.lensora.ai.editor.AspectRatio
 import com.lensora.ai.editor.Clip
+import com.lensora.ai.editor.ExportWorker
 import com.lensora.ai.editor.Project
 import com.lensora.ai.editor.ProjectRepository
 import com.lensora.ai.editor.TimelineEditEngine
@@ -21,6 +26,7 @@ import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
+import java.util.UUID
 import javax.inject.Inject
 
 data class ProjectsUiState(
@@ -31,6 +37,10 @@ data class ProjectsUiState(
     val selectedClipId: String? = null,
     val canUndo: Boolean = false,
     val canRedo: Boolean = false,
+    val isExporting: Boolean = false,
+    val exportProgress: Int = 0,
+    val exportWorkId: UUID? = null,
+    val exportError: String? = null,
 )
 
 @HiltViewModel
@@ -101,6 +111,10 @@ class ProjectViewModel @Inject constructor(
                 selectedClipId = firstClipId,
                 canUndo = false,
                 canRedo = false,
+                isExporting = false,
+                exportProgress = 0,
+                exportWorkId = null,
+                exportError = null,
             )
         }
     }
@@ -221,6 +235,66 @@ class ProjectViewModel @Inject constructor(
             repository.saveProject(updatedProj)
             loadProjectsInternal()
         }
+    }
+
+    fun startExport(projectId: String, resolutionHeight: Int = 1080) {
+        val workManager = WorkManager.getInstance(context)
+        val exportRequest = OneTimeWorkRequestBuilder<ExportWorker>()
+            .setInputData(
+                workDataOf(
+                    "PROJECT_ID" to projectId,
+                    "RESOLUTION_HEIGHT" to resolutionHeight,
+                )
+            )
+            .build()
+
+        _uiState.update {
+            it.copy(
+                isExporting = true,
+                exportProgress = 0,
+                exportWorkId = exportRequest.id,
+                exportError = null,
+            )
+        }
+
+        workManager.enqueue(exportRequest)
+
+        viewModelScope.launch(Dispatchers.IO) {
+            workManager.getWorkInfoByIdFlow(exportRequest.id).collect { info ->
+                if (info != null) {
+                    val progress = info.progress.getInt("PROGRESS", 0)
+                    val isRunning = info.state == WorkInfo.State.RUNNING
+
+                    _uiState.update {
+                        it.copy(
+                            exportProgress = progress,
+                            isExporting = isRunning,
+                            exportError = if (info.state == WorkInfo.State.FAILED) {
+                                info.outputData.getString("ERROR") ?: "Export failed"
+                            } else null,
+                        )
+                    }
+                }
+            }
+        }
+    }
+
+    fun cancelExport() {
+        val workId = _uiState.value.exportWorkId
+        if (workId != null) {
+            WorkManager.getInstance(context).cancelWorkById(workId)
+        }
+        _uiState.update {
+            it.copy(
+                isExporting = false,
+                exportProgress = 0,
+                exportWorkId = null,
+            )
+        }
+    }
+
+    fun dismissExportError() {
+        _uiState.update { it.copy(exportError = null) }
     }
 
     fun deleteProject(projectId: String) {

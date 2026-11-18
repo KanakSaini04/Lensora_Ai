@@ -1,5 +1,12 @@
 # Changelog - Lensora_Ai
 
+## [Unreleased] - Step 67b (2026-11-18)
+
+### Added
+- **Real Media3 Transformer Export Engine**: Updated `ExportWorker.kt` to run real `androidx.media3.transformer.Transformer` composition exports on Main Looper via `suspendCancellableCoroutine`, with `EditedMediaItemSequence`, `ClippingConfiguration`, `Presentation` height scaling, progress polling, and MediaStore `IS_PENDING` publishing pattern.
+- **Export Item Mapper**: Extracted `ExportItemMapper.toMappingParams()` pure mapping utility in `ExportPlanBuilder.kt`.
+- **Unit Testing**: Added `ExportItemMapper` mapping verification test to `ExportPlanBuilderTest.kt` (bringing total unit test suite to 45/45 passed across 9 test classes).
+
 ## [Unreleased] - Step 66 (2026-11-18)
 
 ### Added

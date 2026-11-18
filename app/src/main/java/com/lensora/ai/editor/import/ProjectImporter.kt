@@ -20,6 +20,7 @@ import kotlinx.coroutines.flow.flowOn
 import kotlinx.coroutines.isActive
 import kotlinx.coroutines.withContext
 import java.io.File
+import java.io.FileInputStream
 import java.io.FileOutputStream
 import java.io.InputStream
 import java.util.Locale
@@ -65,10 +66,10 @@ object ExtensionHelper {
 }
 
 object StorageGuard {
-    private const val TWO_GB_BYTES = 2L * 1024 * 1024 * 1024 // 2 GB Guard Limit
+    private const val FIVE_HUNDRED_MB_BYTES = 500L * 1024 * 1024 // 500 MB Guard Limit
 
     fun calculateRequiredBytes(totalPickedBytes: Long): Long {
-        return maxOf(TWO_GB_BYTES, totalPickedBytes + TWO_GB_BYTES)
+        return totalPickedBytes + FIVE_HUNDRED_MB_BYTES
     }
 
     fun evaluateStorageGuard(availableBytes: Long, totalPickedBytes: Long): Boolean {
@@ -180,7 +181,13 @@ class ProjectImporter(
                 // Atomic copy: Stream to .tmp file first
                 var copySuccess = false
                 try {
-                    val inputStream: InputStream? = context.contentResolver.openInputStream(uri)
+                    val inputStream: InputStream? = if (uri.scheme == "file") {
+                        val filePath = uri.path ?: ""
+                        val f = File(filePath)
+                        if (f.exists() && f.canRead()) FileInputStream(f) else null
+                    } else {
+                        context.contentResolver.openInputStream(uri)
+                    }
                     if (inputStream != null) {
                         inputStream.use { input ->
                             FileOutputStream(tmpFile).use { output ->
