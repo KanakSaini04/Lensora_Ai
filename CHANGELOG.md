@@ -33,3 +33,8 @@
 
 ### Added
 - **Neural Model Audit**: Created `docs/MODEL_AUDIT.md` performing a read-only audit of offline neural models (`scene_classifier.tflite`, `lama_dilated.tflite`, `real_esrgan_v2.tflite`, `dehaze.tflite`), mapping asset presence, DLC manifest definitions, tile input tensor dimensions, and super-resolution output expansion notes.
+
+## [Unreleased] - Step 65b (2026-11-18)
+
+### Added
+- **Model Supply Chain Plan**: Created `docs/MODEL_SUPPLY_PLAN.md` mapping DLC manifest endpoints, WorkManager download destinations, and exact runtime loader file expectation mismatches across `SceneClassifier.kt`, `ModelManager.kt`, and `SettingsScreen.kt`.
