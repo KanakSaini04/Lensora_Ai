@@ -1,5 +1,13 @@
 # Changelog - Lensora_Ai
 
+## [Unreleased] - Step 67 (2026-11-18)
+
+### Added
+- **Media3 Export Engine**: Implemented `ExportPlanBuilder.kt` and `ExportWorker.kt` (WorkManager) executing background video composition exports with 720p HD and 1080p FHD resolution options.
+- **Export Safety Guards**: Created `ExportGuard` enforcing `StorageGuard` (2GB minimum free space) and `ThermalGuard` (< 4 safe status) preconditions prior to video rendering.
+- **Export UI Controls**: Added Export Resolution Selection dialog, progress indicator, and cancel controls in `EditorScreen.kt`.
+- **Unit Testing**: Created `ExportPlanBuilderTest.kt` unit test suite covering 1080p/720p resolution plans, storage guard, and thermal guard thresholds (bringing total unit test suite to 44/44 passed across 9 test classes).
+
 ## [Unreleased] - Step 66 (2026-11-18)
 
 ### Added

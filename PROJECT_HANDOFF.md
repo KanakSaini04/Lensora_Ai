@@ -5,11 +5,11 @@
 > Rules for this file: every fact must come from the repo, a test run or a device/emulator check. Unknown = **NOT VERIFIED**. No secrets, tokens, keystores, PINs or personal data.
 
 ## 0. Status block (update every step)
-- **Last updated**: 2026-11-18 18:40:00 UTC
-- **Branch / HEAD**: `step-66-timeline-trim` / HEAD
-- **Last completed step**: Step 66 (Timeline UI + Trim/Split/Reorder/Delete)
-- **In progress**: PR #100 open, awaiting user merge
-- **Unit tests**: 40 passed, 0 skipped, 0 failed across 8 test classes (`ExampleUnitTest`: 1, `AiPlannerTest`: 5, `EditorFoundationTest`: 5, `ProjectImporterTest`: 4, `ProjectRepositoryTest`: 1, `SceneClassifierTest`: 5, `ManifestParserTest`: 10, `TimelineEditEngineTest`: 9)
+- **Last updated**: 2026-11-18 18:55:00 UTC
+- **Branch / HEAD**: `step-67-export` / HEAD
+- **Last completed step**: Step 67 (Media3 Transformer Export Engine)
+- **In progress**: PR #101 open (stacked on #100), awaiting user merge
+- **Unit tests**: 44 passed, 0 skipped, 0 failed across 9 test classes (`ExampleUnitTest`: 1, `AiPlannerTest`: 5, `EditorFoundationTest`: 5, `ProjectImporterTest`: 4, `ProjectRepositoryTest`: 1, `SceneClassifierTest`: 5, `ManifestParserTest`: 10, `TimelineEditEngineTest`: 9, `ExportPlanBuilderTest`: 4)
 - **Last emulator check**: `emulator-5554` (`Medium_Phone`), 2026-11-18 (Verified Settings screen displaying "Model Unavailable" for missing unhosted DLC models, camera preview tab, 0 crashes in logcat); **Last physical-device (Redmi) check**: Step 62 (Camera tab top overlays & typography verification on Redmi Note 13 Pro 5G `2312DRA50I`)
 
 ## 1. Boot order for a new AI
@@ -58,6 +58,7 @@
 ### Recent Pull Requests History (Last 15)
 | PR ID | Title | Branch | Status |
 | :--- | :--- | :--- | :---: |
+| **#101** | feat(editor): Step 67 - Media3 Transformer Export Engine | `step-67-export` | OPEN |
 | **#100** | feat(editor): Step 66 - Timeline UI & Trim/Split/Reorder/Delete | `step-66-timeline-trim` | OPEN |
 | **#99** | fix(ai): Step 65 - model manifest hardening | `step-65-model-manifest` | MERGED |
 | **#98** | Dev | `dev` | MERGED |

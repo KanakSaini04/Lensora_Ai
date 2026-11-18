@@ -169,6 +169,8 @@ fun EditorScreen(
                     }
                 },
                 actions = {
+                    var showResolutionDialog by remember { mutableStateOf(false) }
+
                     IconButton(
                         onClick = { viewModel.undoEdit() },
                         enabled = uiState.canUndo,
@@ -188,6 +190,62 @@ fun EditorScreen(
                             contentDescription = "Redo",
                             tint = if (uiState.canRedo) ColorWhite else ColorMutedGray,
                         )
+                    }
+                    androidx.compose.material3.Button(
+                        onClick = { showResolutionDialog = true },
+                        colors = androidx.compose.material3.ButtonDefaults.buttonColors(containerColor = RoyalBlue),
+                        shape = RoundedCornerShape(8.dp),
+                        contentPadding = androidx.compose.foundation.layout.PaddingValues(horizontal = 10.dp, vertical = 4.dp),
+                    ) {
+                        Text("Export", color = ColorWhite, fontSize = 12.sp, fontWeight = FontWeight.Bold)
+                    }
+
+                    if (showResolutionDialog) {
+                        androidx.compose.ui.window.Dialog(onDismissRequest = { showResolutionDialog = false }) {
+                            Card(
+                                colors = CardDefaults.cardColors(containerColor = CharcoalSurface),
+                                shape = RoundedCornerShape(14.dp),
+                                modifier = Modifier.fillMaxWidth().padding(16.dp),
+                            ) {
+                                Column(
+                                    modifier = Modifier.padding(20.dp),
+                                    horizontalAlignment = Alignment.CenterHorizontally,
+                                ) {
+                                    Text("EXPORT VIDEO", color = RoyalBlue, fontSize = 12.sp, fontWeight = FontWeight.Bold)
+                                    Spacer(modifier = Modifier.height(12.dp))
+                                    Text("Select Resolution", color = ColorWhite, fontSize = 16.sp, fontWeight = FontWeight.Bold)
+                                    Spacer(modifier = Modifier.height(16.dp))
+
+                                    Row(
+                                        horizontalArrangement = Arrangement.spacedBy(12.dp),
+                                        modifier = Modifier.fillMaxWidth(),
+                                    ) {
+                                        androidx.compose.material3.OutlinedButton(
+                                            onClick = {
+                                                showResolutionDialog = false
+                                                viewModel.startExport(project.id, 720)
+                                            },
+                                            shape = RoundedCornerShape(8.dp),
+                                            modifier = Modifier.weight(1f),
+                                        ) {
+                                            Text("720p HD", color = ColorWhite, fontWeight = FontWeight.Bold)
+                                        }
+
+                                        androidx.compose.material3.Button(
+                                            onClick = {
+                                                showResolutionDialog = false
+                                                viewModel.startExport(project.id, 1080)
+                                            },
+                                            colors = androidx.compose.material3.ButtonDefaults.buttonColors(containerColor = RoyalBlue),
+                                            shape = RoundedCornerShape(8.dp),
+                                            modifier = Modifier.weight(1f),
+                                        ) {
+                                            Text("1080p FHD", color = ColorWhite, fontWeight = FontWeight.Bold)
+                                        }
+                                    }
+                                }
+                            }
+                        }
                     }
                 },
                 colors = TopAppBarDefaults.topAppBarColors(containerColor = CharcoalSurface),
@@ -366,6 +424,72 @@ fun EditorScreen(
                         Toast.makeText(context, "Clip Removed", Toast.LENGTH_SHORT).show()
                     },
                 )
+            }
+        }
+
+        // Export Progress & Error Dialogs
+        if (uiState.isExporting) {
+            androidx.compose.ui.window.Dialog(onDismissRequest = { viewModel.cancelExport() }) {
+                Card(
+                    colors = CardDefaults.cardColors(containerColor = CharcoalSurface),
+                    shape = RoundedCornerShape(14.dp),
+                    modifier = Modifier.fillMaxWidth().padding(16.dp),
+                ) {
+                    Column(
+                        modifier = Modifier.padding(20.dp),
+                        horizontalAlignment = Alignment.CenterHorizontally,
+                    ) {
+                        Text("EXPORTING VIDEO", color = RoyalBlue, fontSize = 12.sp, fontWeight = FontWeight.Bold)
+                        Spacer(modifier = Modifier.height(12.dp))
+                        Text("Rendering ${project.name}...", color = ColorWhite, fontSize = 15.sp, fontWeight = FontWeight.Bold)
+                        Spacer(modifier = Modifier.height(16.dp))
+
+                        val progress = uiState.exportProgress / 100f
+                        androidx.compose.material3.LinearProgressIndicator(
+                            progress = { progress },
+                            color = RoyalBlue,
+                            trackColor = PitchBlackBackground,
+                            modifier = Modifier.fillMaxWidth(),
+                        )
+                        Spacer(modifier = Modifier.height(8.dp))
+                        Text("${uiState.exportProgress}%", color = ColorMutedGray, fontSize = 12.sp)
+
+                        Spacer(modifier = Modifier.height(20.dp))
+                        androidx.compose.material3.OutlinedButton(
+                            onClick = { viewModel.cancelExport() },
+                            shape = RoundedCornerShape(8.dp),
+                        ) {
+                            Text("Cancel Export", color = Color(0xFFEF4444), fontWeight = FontWeight.Bold)
+                        }
+                    }
+                }
+            }
+        }
+
+        if (uiState.exportError != null) {
+            androidx.compose.ui.window.Dialog(onDismissRequest = { viewModel.dismissExportError() }) {
+                Card(
+                    colors = CardDefaults.cardColors(containerColor = CharcoalSurface),
+                    shape = RoundedCornerShape(14.dp),
+                    modifier = Modifier.fillMaxWidth().padding(16.dp),
+                ) {
+                    Column(
+                        modifier = Modifier.padding(20.dp),
+                        horizontalAlignment = Alignment.CenterHorizontally,
+                    ) {
+                        Text("EXPORT FAILED", color = Color(0xFFEF4444), fontSize = 12.sp, fontWeight = FontWeight.Bold)
+                        Spacer(modifier = Modifier.height(12.dp))
+                        Text(uiState.exportError!!, color = ColorWhite, fontSize = 14.sp)
+                        Spacer(modifier = Modifier.height(20.dp))
+                        androidx.compose.material3.Button(
+                            onClick = { viewModel.dismissExportError() },
+                            colors = androidx.compose.material3.ButtonDefaults.buttonColors(containerColor = RoyalBlue),
+                            shape = RoundedCornerShape(8.dp),
+                        ) {
+                            Text("OK", color = ColorWhite, fontWeight = FontWeight.Bold)
+                        }
+                    }
+                }
             }
         }
     }
