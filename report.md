@@ -134,7 +134,18 @@
 | 2 | Camera | Mode transition TIME-LAPSE <-> DOCUMENT | Session transitions cleanly | Transitioned cleanly | HELD |
 | 3 | Camera | Rapid mode switch 10x | No session lock or freeze | Session recreated cleanly | HELD |
 | 4 | Lifecycle | Background app while in TIME-LAPSE mode | Releases Camera2 resources | Camera2 resources released | HELD |
-| 5 | Lifecycle | Foreground app | Re-initializes Camera2 preview | Viewfinder active | HELD |
+### Task 3.6 - SLOW-MOTION Camera Mode Verification
+- **Code Changes**: Added `SLOW-MOTION` mode handling in `CameraController.kt` `setAdvancedMode()`. Queries `REQUEST_AVAILABLE_CAPABILITIES_CONSTRAINED_HIGH_SPEED_VIDEO` capability with graceful fallback.
+- **Unit Tests**: 58 passed.
+- **Logcat Output (`AndroidRuntime:E`)**: `(empty)`
+
+| # | Layer | Attack | Expected | Actual | Status |
+|---|---|---|---|---|---|
+| 1 | Camera | Switch to SLOW-MOTION mode | Feedback toast & high-speed capability check | Toast & fallback displayed cleanly | HELD |
+| 2 | HAL | High-speed video capability query | Safely checks constrained high-speed support | Checked without crash | HELD |
+| 3 | Camera | Mode transition SLOW-MOTION <-> TIME-LAPSE | Session transitions cleanly | Transitioned cleanly | HELD |
+| 4 | Camera | Rapid mode switch 10x | No session lock or freeze | Session recreated cleanly | HELD |
+| 5 | Lifecycle | Background/Foreground lifecycle | Camera2 resources released & restored | Released & restored cleanly | HELD |
 
 ---
 

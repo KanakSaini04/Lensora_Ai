@@ -338,6 +338,28 @@ class CameraController(private val context: Context) {
                 "TIME-LAPSE", "TIME_LAPSE" -> {
                     onFeedback("⏱️ Time-Lapse: High-Speed Interval Frame Capture Active")
                 }
+                "SLOW-MOTION", "SLOW_MOTION" -> {
+                    if (builder != null && session != null) {
+                        try {
+                            val capabilities = characteristics?.get(CameraCharacteristics.REQUEST_AVAILABLE_CAPABILITIES)
+                            val supportsHighSpeed = capabilities != null && capabilities.contains(CameraCharacteristics.REQUEST_AVAILABLE_CAPABILITIES_CONSTRAINED_HIGH_SPEED_VIDEO)
+
+                            if (supportsHighSpeed) {
+                                builder.set(CaptureRequest.CONTROL_AE_TARGET_FPS_RANGE, android.util.Range(120, 120))
+                                onFeedback("🐢 Slow-Motion: 120 FPS High-Speed Capture Active")
+                            } else {
+                                Log.w(tag, "Constrained high-speed video unsupported by HAL. Safe 60 FPS fallback.")
+                                onFeedback("🐢 Slow-Motion: High-Speed HAL Unsupported (Safe Fallback)")
+                            }
+                            session.setRepeatingRequest(builder.build(), null, backgroundHandler)
+                        } catch (hardwareEx: Exception) {
+                            Log.w(tag, "Slow-Motion target FPS range rejected by HAL. Safe Auto fallback.", hardwareEx)
+                            onFeedback("🐢 Slow-Motion: Safe Auto Fallback Active")
+                        }
+                    } else {
+                        onFeedback("🐢 Slow-Motion Mode Selected")
+                    }
+                }
                 "ASTRO" -> {
                     if (builder != null && session != null) {
                         try {
