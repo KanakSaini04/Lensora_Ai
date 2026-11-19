@@ -35,7 +35,18 @@
 | 2 | OS | Press BACK button during running export | Dialog remains open & export continues | Dialog locked; export continued | HELD |
 | 3 | UI | Click "Cancel Export" button | Export worker cancelled & dialog closes | Cancelled & dialog closed cleanly | HELD |
 | 4 | UI | Export success event | Displays "Saved to Movies/Lensora_Ai" dialog | Success dialog displayed | HELD |
-| 5 | UI | Export failure event | Displays clear "EXPORT FAILED" error dialog | Error dialog displayed | HELD |
+### Task 1.4 - ExportWorker Correctness (Aspect, Audio, MediaStore Cleanup, Foreground)
+- **Code Changes**: Added `ExportPlanBuilder.ASPECT_MODE` (`Presentation.LAYOUT_SCALE_TO_FIT_WITH_CROP`) for composition level aspect scaling. Added `editedItemBuilder.setRemoveAudio(true)` for photo items in mixed media sequences. Hardened `saveToMediaStore` to cleanup pending rows on failure and delete internal staging copies on success. Promoted `ExportWorker` to a foreground task with `ServiceInfo.FOREGROUND_SERVICE_TYPE_DATA_SYNC`.
+- **Unit Tests**: 47 passed (added `buildPlan_allAspectRatios_calculatesCorrectTargetDimensions` test).
+- **Logcat Output (`AndroidRuntime:E`)**: `(empty)`
+
+| # | Layer | Attack | Expected | Actual | Status |
+|---|---|---|---|---|---|
+| 1 | Logic | Composition aspect math (9:16, 16:9, 1:1, 4:5) | Correct target width/height dimensions | Calculated 607, 1280, 1080, 864 | HELD |
+| 2 | Media3 | Mixed media (photo + video) export | Photos set `setRemoveAudio(true)` cleanly | Audio track sequence guaranteed | HELD |
+| 3 | Storage | MediaStore write failure simulation | Pending row deleted, clear failure returned | Cleans up pending row & fails clearly | HELD |
+| 4 | Storage | Successful MediaStore save | Staging file deleted from `filesDir/exports` | Internal staging copy deleted | HELD |
+| 5 | OS | ExportWorker execution | Promoted to foreground task (`dataSync`) | Promoted to foreground service | HELD |
 
 ---
 

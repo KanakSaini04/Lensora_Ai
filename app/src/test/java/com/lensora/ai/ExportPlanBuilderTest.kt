@@ -57,6 +57,21 @@ class ExportPlanBuilderTest {
     }
 
     @Test
+    fun buildPlan_allAspectRatios_calculatesCorrectTargetDimensions() {
+        val clip = listOf(Clip("c1", "file://v.mp4", ClipType.VIDEO, 5000L, 0L, 5000L))
+
+        val pSquare = Project("p1", "Square", AspectRatio.ONE_ONE, clip)
+        val planSquare = ExportPlanBuilder.buildPlan(pSquare, 1080)
+        assertEquals(1080, planSquare.targetWidth)
+        assertEquals(1080, planSquare.targetHeight)
+
+        val pFourFive = Project("p2", "Portrait", AspectRatio.FOUR_FIVE, clip)
+        val planFourFive = ExportPlanBuilder.buildPlan(pFourFive, 1080)
+        assertEquals(864, planFourFive.targetWidth) // (1080 * 4) / 5 = 864
+        assertEquals(1080, planFourFive.targetHeight)
+    }
+
+    @Test
     fun buildPlan_speedAdjustedClips_calculatesSpeedAdjustedTotalDuration() {
         val clips = listOf(
             Clip("c1", "file://v1.mp4", ClipType.VIDEO, 10000L, 0L, 10000L, speed = 2.0f), // 10000ms / 2.0 = 5000ms

@@ -1,5 +1,9 @@
 package com.lensora.ai.editor
 
+import androidx.annotation.OptIn
+import androidx.media3.common.util.UnstableApi
+import androidx.media3.effect.Presentation
+
 data class ExportItem(
     val id: String,
     val sourceUri: String,
@@ -58,7 +62,9 @@ object ExportGuard {
     }
 }
 
+@OptIn(UnstableApi::class)
 object ExportPlanBuilder {
+    const val ASPECT_MODE: Int = Presentation.LAYOUT_SCALE_TO_FIT_WITH_CROP
 
     fun buildPlan(project: Project, resolutionHeight: Int = 1080): ExportPlan {
         val targetHeight = if (resolutionHeight == 720) 720 else 1080

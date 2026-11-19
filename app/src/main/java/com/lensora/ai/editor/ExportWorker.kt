@@ -1,7 +1,10 @@
 package com.lensora.ai.editor
 
+import android.app.NotificationChannel
+import android.app.NotificationManager
 import android.content.ContentValues
 import android.content.Context
+import android.content.pm.ServiceInfo
 import android.net.Uri
 import android.os.Build
 import android.os.Environment
@@ -12,6 +15,7 @@ import android.os.StatFs
 import android.provider.MediaStore
 import android.util.Log
 import androidx.annotation.OptIn
+import androidx.core.app.NotificationCompat
 import androidx.media3.common.Effect
 import androidx.media3.common.MediaItem
 import androidx.media3.common.audio.AudioProcessor
@@ -28,6 +32,7 @@ import androidx.media3.transformer.ExportResult
 import androidx.media3.transformer.ProgressHolder
 import androidx.media3.transformer.Transformer
 import androidx.work.CoroutineWorker
+import androidx.work.ForegroundInfo
 import androidx.work.WorkerParameters
 import androidx.work.workDataOf
 import kotlinx.coroutines.CancellationException
@@ -46,6 +51,11 @@ class ExportWorker(
 ) : CoroutineWorker(context, workerParams) {
 
     private val tag = "ExportWorker"
+
+    companion object {
+        private const val NOTIFICATION_CHANNEL_ID = "lensora_export_channel"
+        private const val NOTIFICATION_ID = 1001
+    }
 
     override suspend fun doWork(): Result = withContext(Dispatchers.IO) {
         val projectId = inputData.getString("PROJECT_ID") ?: return@withContext Result.failure()
@@ -71,6 +81,13 @@ class ExportWorker(
         val project = repository.loadProject(projectId) ?: run {
             Log.e(tag, "Project $projectId not found")
             return@withContext Result.failure(workDataOf("ERROR" to "Project not found"))
+        }
+
+        // 3. Promote to Foreground Task with dataSync Service Type
+        try {
+            setForeground(createForegroundInfo(project.name))
+        } catch (e: Exception) {
+            Log.w(tag, "Could not set foreground service info for export worker", e)
         }
 
         val plan = ExportPlanBuilder.buildPlan(project, resolutionHeight)
@@ -101,14 +118,23 @@ class ExportWorker(
             // Expose exported file to MediaStore via IS_PENDING pattern
             val mediaStoreUri = saveToMediaStore(outputFile, outputFilename)
 
-            Log.i(tag, "Export completed successfully: ${outputFile.absolutePath} (${outputFile.length()} bytes), MediaStore URI: $mediaStoreUri")
+            if (mediaStoreUri == null) {
+                Log.e(tag, "MediaStore save failed for $outputFilename. Keeping internal copy.")
+                return@withContext Result.failure(workDataOf("ERROR" to "Failed to save export to MediaStore"))
+            }
+
+            // Delete internal staging copy after successful MediaStore save
+            if (outputFile.exists()) {
+                outputFile.delete()
+                Log.i(tag, "Internal staging copy deleted after successful MediaStore save")
+            }
+
+            Log.i(tag, "Export completed successfully: MediaStore URI $mediaStoreUri")
 
             Result.success(
                 workDataOf(
-                    "OUTPUT_PATH" to outputFile.absolutePath,
-                    "MEDIASTORE_URI" to (mediaStoreUri?.toString() ?: ""),
+                    "MEDIASTORE_URI" to mediaStoreUri.toString(),
                     "DURATION_MS" to plan.totalDurationMs,
-                    "FILE_SIZE" to outputFile.length(),
                 )
             )
         } catch (e: CancellationException) {
@@ -151,7 +177,11 @@ class ExportWorker(
             }
 
             val videoEffects = mutableListOf<Effect>(
-                Presentation.createForHeight(plan.targetHeight),
+                Presentation.createForWidthAndHeight(
+                    plan.targetWidth,
+                    plan.targetHeight,
+                    ExportPlanBuilder.ASPECT_MODE,
+                ),
             )
 
             val audioProcessors = mutableListOf<AudioProcessor>()
@@ -166,6 +196,7 @@ class ExportWorker(
 
             if (item.isPhoto) {
                 editedItemBuilder.setFrameRate(30)
+                editedItemBuilder.setRemoveAudio(true)
             }
 
             editedMediaItems.add(editedItemBuilder.build())
@@ -232,6 +263,7 @@ class ExportWorker(
     }
 
     private fun saveToMediaStore(file: File, filename: String): Uri? {
+        var uri: Uri? = null
         return try {
             val values = ContentValues().apply {
                 put(MediaStore.Video.Media.DISPLAY_NAME, filename)
@@ -242,14 +274,14 @@ class ExportWorker(
                 }
             }
 
-            val uri = context.contentResolver.insert(MediaStore.Video.Media.EXTERNAL_CONTENT_URI, values)
+            uri = context.contentResolver.insert(MediaStore.Video.Media.EXTERNAL_CONTENT_URI, values)
                 ?: return null
 
             context.contentResolver.openOutputStream(uri)?.use { outStream ->
                 FileInputStream(file).use { inStream ->
                     inStream.copyTo(outStream)
                 }
-            }
+            } ?: throw IllegalStateException("Failed to open MediaStore output stream")
 
             if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q) {
                 values.clear()
@@ -260,8 +292,43 @@ class ExportWorker(
             Log.i(tag, "Saved export to MediaStore Movies/Lensora_Ai: $uri")
             uri
         } catch (e: Exception) {
-            Log.w(tag, "Failed to save export to MediaStore", e)
+            Log.e(tag, "Failed to save export to MediaStore", e)
+            if (uri != null) {
+                try {
+                    context.contentResolver.delete(uri, null, null)
+                } catch (cleanupEx: Exception) {
+                    Log.w(tag, "Failed to cleanup pending MediaStore row", cleanupEx)
+                }
+            }
             null
+        }
+    }
+
+    private fun createForegroundInfo(projectName: String): ForegroundInfo {
+        val notificationManager = context.getSystemService(Context.NOTIFICATION_SERVICE) as NotificationManager
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+            val channel = NotificationChannel(
+                NOTIFICATION_CHANNEL_ID,
+                "Video Export",
+                NotificationManager.IMPORTANCE_LOW,
+            ).apply {
+                description = "Notification shown while exporting Lensora video projects"
+            }
+            notificationManager.createNotificationChannel(channel)
+        }
+
+        val notification = NotificationCompat.Builder(context, NOTIFICATION_CHANNEL_ID)
+            .setContentTitle("Exporting Video")
+            .setContentText("Rendering $projectName...")
+            .setSmallIcon(android.R.drawable.ic_menu_save)
+            .setOngoing(true)
+            .setOnlyAlertOnce(true)
+            .build()
+
+        return if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q) {
+            ForegroundInfo(NOTIFICATION_ID, notification, ServiceInfo.FOREGROUND_SERVICE_TYPE_DATA_SYNC)
+        } else {
+            ForegroundInfo(NOTIFICATION_ID, notification)
         }
     }
 }

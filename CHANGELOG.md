@@ -6,6 +6,7 @@
 - **Task 1.1**: Removed fake sample generator logic and text video files in `ProjectsScreen.kt`; EmptyProjectsState "Create New Project" button now triggers System PhotoPicker.
 - **Task 1.2**: Unified Editor view headers so Projects TopAppBar renders only in list view, and added Delete Project icon button to `EditorScreen.kt` header.
 - **Task 1.3**: Configured `DialogProperties(dismissOnClickOutside=false, dismissOnBackPress=false)` for running export dialogs, and added explicit export success/failure alert dialogs.
+- **Task 1.4**: Updated `ExportWorker.kt` with composition-level CROP_TO_FILL aspect scaling, photo audio removal, MediaStore error handling & staging cleanup, and WorkManager dataSync foreground service promotion.
 
 ## [Unreleased] - Step 67b (2026-11-18)
 

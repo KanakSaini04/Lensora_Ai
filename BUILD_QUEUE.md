@@ -12,8 +12,8 @@
 | P0 | Master build setup baseline | None | DONE | 0db3844 | 46 tests pass, assembleDebug 89.57MB | Initial merge & preflight pass |
 | 1.1 | Remove fake sample generator in ProjectsScreen.kt | None | DONE | 45514e9 | grep 0 matches, screenshots in docs/screenshots/1.1/ | PhotoPicker replaces fake sample gen |
 | 1.2 | Single editor header in Editor view | None | DONE | 3c300e4 | Single TopAppBar in EditorScreen, screenshots in docs/screenshots/1.2/ | Back & delete project work |
-| 1.3 | Export dialog dismiss lock | None | DONE | b0f6700 | DialogProperties lock active, success & failure dialogs verified | dismissOnClickOutside/BackPress false |
-| 1.4 | ExportWorker correctness (aspect, audio, MediaStore cleanup, foreground) | None | TODO | - | - | Composition aspect CROP_TO_FILL, foreground service |
+| 1.3 | Export dialog dismiss lock | None | DONE | 0bdd39c | DialogProperties lock active, success & failure dialogs verified | dismissOnClickOutside/BackPress false |
+| 1.4 | ExportWorker correctness (aspect, audio, MediaStore cleanup, foreground) | None | DONE | e190f84 | 47 tests pass, composition CROP_TO_FILL, foreground service active | Composition aspect CROP_TO_FILL, foreground service |
 | 1.5 | Test media generation & real timeline verification | ffmpeg / test media | TODO | - | - | Real thumbnails, trim/split/reorder/delete, 720p/1080p export |
 | 1.6 | Editor state safety & lifecycle persistence | None | TODO | - | - | Clip selection validity, rotation & process restart |
 | 2.1 | SceneInference TFLite integration | model / labels | TODO | - | - | 224x224 preview frame, off-main thread |
