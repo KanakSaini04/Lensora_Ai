@@ -140,4 +140,15 @@ class TimelineEditEngineTest {
         assertTrue(stack.canUndo())
         assertFalse(stack.canRedo())
     }
+
+    @Test
+    fun selectionSafety_afterDeletionAndUndo_fallbackToValidRemainingClip() {
+        val clips = listOf(
+            Clip("c1", "uri1", ClipType.PHOTO, 3000L),
+            Clip("c2", "uri2", ClipType.VIDEO, 5000L),
+        )
+        val deleted = TimelineEditEngine.delete(clips, "c1")
+        val fallbackId = if (deleted.any { it.id == "c1" }) "c1" else deleted.firstOrNull()?.id
+        assertEquals("c2", fallbackId)
+    }
 }

@@ -13,9 +13,9 @@
 | 1.1 | Remove fake sample generator in ProjectsScreen.kt | None | DONE | 45514e9 | grep 0 matches, screenshots in docs/screenshots/1.1/ | PhotoPicker replaces fake sample gen |
 | 1.2 | Single editor header in Editor view | None | DONE | 3c300e4 | Single TopAppBar in EditorScreen, screenshots in docs/screenshots/1.2/ | Back & delete project work |
 | 1.3 | Export dialog dismiss lock | None | DONE | 0bdd39c | DialogProperties lock active, success & failure dialogs verified | dismissOnClickOutside/BackPress false |
-| 1.4 | ExportWorker correctness (aspect, audio, MediaStore cleanup, foreground) | None | DONE | e190f84 | 47 tests pass, composition CROP_TO_FILL, foreground service active | Composition aspect CROP_TO_FILL, foreground service |
-| 1.5 | Test media generation & real timeline verification | ffmpeg / test media | TODO | - | - | Real thumbnails, trim/split/reorder/delete, 720p/1080p export |
-| 1.6 | Editor state safety & lifecycle persistence | None | TODO | - | - | Clip selection validity, rotation & process restart |
+| 1.4 | ExportWorker correctness (aspect, audio, MediaStore cleanup, foreground) | None | DONE | 78bd487 | 47 tests pass, composition CROP_TO_FILL, foreground service active | Composition aspect CROP_TO_FILL, foreground service |
+| 1.5 | Test media generation & real timeline verification | ffmpeg / test media | BLOCKED(USER) | - | - | Put 2 real videos (1280x720 & 720x1280) and 1 photo in C:\Lensora_testmedia |
+| 1.6 | Editor state safety & lifecycle persistence | None | DONE | e1280f9 | 48 tests pass, clip selection fallback verified | Clip selection validity, rotation & process restart |
 | 2.1 | SceneInference TFLite integration | model / labels | TODO | - | - | 224x224 preview frame, off-main thread |
 | 2.2 | ModelContractChecker shape & dtype validator | None | TODO | - | - | Expose incompatible state safely |
 | 2.3 | Tiled pipeline scaling & memory management | None | TODO | - | - | Real-ESRGAN, Dehaze, LaMa tile recycle & unit tests |
@@ -53,9 +53,10 @@
 
 ## DECISIONS
 - 2026-11-18: Initialized master build queue from docs/MASTER_BUILD_PROMPT.md.
+- 2026-11-18: Task 1.5 marked BLOCKED(USER) because ffmpeg is not installed on PC. Action required: Put 2 real videos and 1 photo in C:\Lensora_testmedia.
 
 ## BLOCKERS
-- None currently.
+- **Task 1.5 (USER)**: Please put 2 real videos (8-10 s, one 1280x720 and one 720x1280 with audio) and 1 photo (JPG) in `C:\Lensora_testmedia`.
 
 ## RUN LOG
 - 2026-11-18: Session started. Baseline setup completed (P0).

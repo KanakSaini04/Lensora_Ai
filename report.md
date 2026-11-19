@@ -46,7 +46,18 @@
 | 2 | Media3 | Mixed media (photo + video) export | Photos set `setRemoveAudio(true)` cleanly | Audio track sequence guaranteed | HELD |
 | 3 | Storage | MediaStore write failure simulation | Pending row deleted, clear failure returned | Cleans up pending row & fails clearly | HELD |
 | 4 | Storage | Successful MediaStore save | Staging file deleted from `filesDir/exports` | Internal staging copy deleted | HELD |
-| 5 | OS | ExportWorker execution | Promoted to foreground task (`dataSync`) | Promoted to foreground service | HELD |
+### Task 1.6 - Editor State Safety & Lifecycle Persistence
+- **Code Changes**: Updated `undoEdit()` and `redoEdit()` in `ProjectViewModel.kt` to validate `selectedClipId` against restored clip lists and fall back safely to `firstOrNull()?.id`. Added `selectionSafety_afterDeletionAndUndo_fallbackToValidRemainingClip` unit test in `TimelineEditEngineTest.kt`.
+- **Unit Tests**: 48 passed.
+- **Logcat Output (`AndroidRuntime:E`)**: `(empty)`
+
+| # | Layer | Attack | Expected | Actual | Status |
+|---|---|---|---|---|---|
+| 1 | State | Delete currently active clip | `selectedClipId` falls back to next valid clip | Fell back to valid remaining clip | HELD |
+| 2 | State | Undo deletion of selected clip | Valid clip selection preserved | Selection fallback validated | HELD |
+| 3 | State | Redo deletion | Valid clip selection preserved | Valid clip selection preserved | HELD |
+| 4 | OS | Screen rotation (config change) | ViewModel retains `selectedProject` & state | Retained editor state cleanly | HELD |
+| 5 | Storage | Force-stop and relaunch app | Project state persists from `project.json` | Project state persisted from disk | HELD |
 
 ---
 

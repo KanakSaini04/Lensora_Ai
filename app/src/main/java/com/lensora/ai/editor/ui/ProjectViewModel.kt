@@ -201,9 +201,16 @@ class ProjectViewModel @Inject constructor(
             updatedAt = System.currentTimeMillis(),
         )
 
+        val validSelectedId = if (previousClips.any { it.id == _uiState.value.selectedClipId }) {
+            _uiState.value.selectedClipId
+        } else {
+            previousClips.firstOrNull()?.id
+        }
+
         _uiState.update {
             it.copy(
                 selectedProject = updatedProj,
+                selectedClipId = validSelectedId,
                 canUndo = undoRedoStack.canUndo(),
                 canRedo = undoRedoStack.canRedo(),
             )
@@ -224,9 +231,16 @@ class ProjectViewModel @Inject constructor(
             updatedAt = System.currentTimeMillis(),
         )
 
+        val validSelectedId = if (nextClips.any { it.id == _uiState.value.selectedClipId }) {
+            _uiState.value.selectedClipId
+        } else {
+            nextClips.firstOrNull()?.id
+        }
+
         _uiState.update {
             it.copy(
                 selectedProject = updatedProj,
+                selectedClipId = validSelectedId,
                 canUndo = undoRedoStack.canUndo(),
                 canRedo = undoRedoStack.canRedo(),
             )
