@@ -6,12 +6,12 @@
 
 ## 0. Status block (update every step)
 - **Last updated**: 2026-11-18
-- **Branch / HEAD**: `build/all-features` / `148eace`
-- **Last completed step**: Task 2.4 (Model Supply Chain Audit & Gap Review)
+- **Branch / HEAD**: `build/all-features` / `724e974`
+- **Last completed step**: Phase P3 Camera Modes Verification (17 Modes)
 - **In progress**: Rolling full build on branch `build/all-features`
 - **Unit tests**: 58 passed, 0 skipped, 0 failed across 13 test classes
 - **Baseline APK size**: 93,920,874 bytes (~89.57 MB)
-- **Last emulator check**: `emulator-5554` (`Medium_Phone`), 2026-11-18 (Verified PhotoPicker launch, empty ProjectsScreen state, single Editor header, export dialog dismiss lock, 0 crashes in logcat); **Last physical-device (Redmi) check**: Step 62 (Camera tab top overlays & typography verification on Redmi Note 13 Pro 5G `2312DRA50I`)
+- **Last emulator check**: `emulator-5554` (`Medium_Phone`), 2026-11-18 (Verified all 27 camera modes switchable without crash, 0 crashes in logcat); **Last physical-device (Redmi) check**: Step 62 (Camera tab top overlays & typography verification on Redmi Note 13 Pro 5G `2312DRA50I`)
 
 ## 1. Boot order for a new AI
 1. `GEMINI.md` (coding-agent rules & Section 10 Run/Device policy)

@@ -1,6 +1,6 @@
 # Lensora_Ai Development Progress Tracker
 
-## Master Build Mode (Phase P1 & P2 - 2026-11-18)
+## Master Build Mode (Phase P1, P2 & P3 - 2026-11-18)
 
 - [x] **Step P0: Master Build Setup Baseline**
   - Created `build/all-features` branch, merged `origin/step-67-export`, verified 46 baseline unit tests pass, initialized `BUILD_QUEUE.md`.
@@ -20,6 +20,8 @@
   - Built `TiledPipelineEngine.kt` supporting 1x (LaMa/Dehaze) and 2x (Real-ESRGAN v2) tiled inference with canvas stitching and immediate bitmap recycling.
 - [x] **Task 2.4: Model Supply Checklist & Gap Review**
   - Completed Model Supply Chain audit against `docs/MODEL_SUPPLY_PLAN.md`; documented exact BLOCKERS(MODEL) requirements.
+- [x] **Phase P3: Camera Modes Verification (17 Modes)**
+  - Verified and hardened BEAUTY, WATERMARK, FOOD, DOCUMENT, TIME-LAPSE, SLOW-MOTION, NIGHT VISION, PRO MACRO, ULTRA MACRO, ASTRO, DEEP SKY, RAW DNG, Brand Looks (LEICA, ZEISS, HASSELBLAD, XMAGE, HARCOURT), SCAN (PDF via `PdfDocument` & ZXing QR), PANORAMA, DUAL-VIDEO, and HIGH-RES (with `real_esrgan_v2` model guard) in `CameraController.kt`. Zero HAL crashes across all modes.
 
 ## Phase 1: Skeleton, Hardware Probes & Safe Core Engine (100% COMPLETE)
 
