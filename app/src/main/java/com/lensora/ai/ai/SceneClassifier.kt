@@ -9,12 +9,23 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
 import kotlin.system.measureTimeMillis
 
+enum class LabelSource {
+    TFLITE_MODEL,
+    HEURISTIC_ENGINE,
+}
+
 data class DetectionResult(
     val label: String = "✨ AI: Auto",
     val confidence: Float = 0.85f,
     val boundingBox: RectF? = null,
     val coachingHint: String? = null,
+    val source: LabelSource = LabelSource.HEURISTIC_ENGINE,
 )
+
+interface TfliteSceneInterpreter {
+    fun isUsable(): Boolean
+    fun classify(bitmap: Bitmap, labels: List<String>): DetectionResult?
+}
 
 object CoachingHintHelper {
     fun coachingHintFor(box: RectF?): String? {

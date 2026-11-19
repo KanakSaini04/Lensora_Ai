@@ -17,6 +17,8 @@ import com.lensora.ai.editor.TimelineEditEngine
 import com.lensora.ai.editor.TimelineUndoRedoStack
 import com.lensora.ai.editor.import.ImportState
 import com.lensora.ai.editor.import.ProjectImporter
+import com.lensora.ai.editor.Template
+import com.lensora.ai.editor.TemplateLoader
 import dagger.hilt.android.lifecycle.HiltViewModel
 import dagger.hilt.android.qualifiers.ApplicationContext
 import kotlinx.coroutines.Dispatchers
@@ -31,6 +33,7 @@ import javax.inject.Inject
 
 data class ProjectsUiState(
     val projects: List<Project> = emptyList(),
+    val availableTemplates: List<Template> = emptyList(),
     val isLoading: Boolean = false,
     val importState: ImportState = ImportState.Idle,
     val selectedProject: Project? = null,
@@ -61,12 +64,14 @@ class ProjectViewModel @Inject constructor(
         viewModelScope.launch(Dispatchers.IO) {
             repository.sweepOrphanProjects()
             loadProjectsInternal()
+            loadTemplatesInternal()
         }
     }
 
     fun loadProjects() {
         viewModelScope.launch(Dispatchers.IO) {
             loadProjectsInternal()
+            loadTemplatesInternal()
         }
     }
 
@@ -74,6 +79,23 @@ class ProjectViewModel @Inject constructor(
         _uiState.update { it.copy(isLoading = true) }
         val list = repository.listProjects()
         _uiState.update { it.copy(projects = list, isLoading = false) }
+    }
+
+    private suspend fun loadTemplatesInternal() {
+        val templates = TemplateLoader.loadAllTemplatesFromAssets(context)
+        _uiState.update { it.copy(availableTemplates = templates) }
+    }
+
+    fun createProjectFromTemplate(template: Template, pickedUris: List<Uri>) {
+        viewModelScope.launch(Dispatchers.IO) {
+            val project = TemplateLoader.createProjectFromTemplate(
+                template = template,
+                pickedUris = pickedUris.map { it.toString() },
+            )
+            repository.saveProject(project)
+            loadProjectsInternal()
+            selectProject(project)
+        }
     }
 
     fun startImport(
@@ -152,6 +174,31 @@ class ProjectViewModel @Inject constructor(
         val target = proj.clips.firstOrNull { it.id == clipId } ?: return
         val trimmed = TimelineEditEngine.trim(target, inMs, outMs)
         val updatedClips = proj.clips.map { if (it.id == clipId) trimmed else it }
+        applyClipsChange(updatedClips)
+    }
+
+    fun setClipSpeed(clipId: String, speed: Float) {
+        val proj = _uiState.value.selectedProject ?: return
+        val target = proj.clips.firstOrNull { it.id == clipId } ?: return
+        val updated = TimelineEditEngine.setSpeed(target, speed)
+        val updatedClips = proj.clips.map { if (it.id == clipId) updated else it }
+        applyClipsChange(updatedClips)
+    }
+
+    fun setClipTextOverlay(clipId: String, text: String?) {
+        val proj = _uiState.value.selectedProject ?: return
+        val target = proj.clips.firstOrNull { it.id == clipId } ?: return
+        val updated = target.copy(textOverlay = text?.ifBlank { null })
+        val updatedClips = proj.clips.map { if (it.id == clipId) updated else it }
+        applyClipsChange(updatedClips)
+    }
+
+    fun setClipVolume(clipId: String, volume: Float) {
+        val proj = _uiState.value.selectedProject ?: return
+        val target = proj.clips.firstOrNull { it.id == clipId } ?: return
+        val safeVol = volume.coerceIn(0.0f, 1.0f)
+        val updated = target.copy(volume = safeVol)
+        val updatedClips = proj.clips.map { if (it.id == clipId) updated else it }
         applyClipsChange(updatedClips)
     }
 

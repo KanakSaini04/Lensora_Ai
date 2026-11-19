@@ -1,10 +1,12 @@
 package com.lensora.ai.editor.ui
 
+import android.graphics.Bitmap
 import android.graphics.SurfaceTexture
 import android.net.Uri
 import android.view.Surface
 import android.view.TextureView
 import android.widget.Toast
+import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
@@ -59,6 +61,7 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.graphics.asImageBitmap
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.text.font.FontWeight
@@ -66,6 +69,7 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.compose.ui.viewinterop.AndroidView
 import androidx.media3.common.MediaItem
+import androidx.media3.common.PlaybackParameters
 import androidx.media3.common.Player
 import androidx.media3.exoplayer.ExoPlayer
 import coil.compose.AsyncImage
@@ -137,6 +141,36 @@ fun EditorScreen(
                 isPlaying = false
             }
             delay(100)
+        }
+    }
+
+    LaunchedEffect(selectedClip?.id, selectedClip?.speed, selectedClip?.volume) {
+        if (selectedClip != null) {
+            val player = exoPlayer as Player
+            if (selectedClip.speed > 0f) {
+                player.playbackParameters = PlaybackParameters(selectedClip.speed)
+            }
+            player.volume = selectedClip.volume
+        }
+    }
+
+    DisposableEffect(exoPlayer, project.clips) {
+        val player = exoPlayer as Player
+        val listener = object : Player.Listener {
+            override fun onMediaItemTransition(mediaItem: MediaItem?, reason: Int) {
+                val idx = player.currentMediaItemIndex
+                if (idx in project.clips.indices) {
+                    val clip = project.clips[idx]
+                    if (clip.speed > 0f) {
+                        player.playbackParameters = PlaybackParameters(clip.speed)
+                    }
+                    player.volume = clip.volume
+                }
+            }
+        }
+        player.addListener(listener)
+        onDispose {
+            player.removeListener(listener)
         }
     }
 
@@ -306,6 +340,26 @@ fun EditorScreen(
                         modifier = Modifier.fillMaxSize(),
                     )
                 }
+
+                val currentText = selectedClip?.textOverlay
+                if (!currentText.isNullOrEmpty()) {
+                    Box(
+                        modifier = Modifier
+                            .align(Alignment.BottomCenter)
+                            .padding(bottom = 20.dp, start = 16.dp, end = 16.dp)
+                            .clip(RoundedCornerShape(8.dp))
+                            .background(Color.Black.copy(alpha = 0.7f))
+                            .border(1.dp, RoyalBlue, RoundedCornerShape(8.dp))
+                            .padding(horizontal = 12.dp, vertical = 6.dp),
+                    ) {
+                        Text(
+                            text = currentText,
+                            color = ColorWhite,
+                            fontSize = 14.sp,
+                            fontWeight = FontWeight.Bold,
+                        )
+                    }
+                }
             }
 
             Column(
@@ -418,6 +472,15 @@ fun EditorScreen(
                     totalClips = project.clips.size,
                     onTrimChange = { inMs, outMs ->
                         viewModel.trimClip(selectedClip.id, inMs, outMs)
+                    },
+                    onSpeedChange = { speed ->
+                        viewModel.setClipSpeed(selectedClip.id, speed)
+                    },
+                    onTextOverlayChange = { text ->
+                        viewModel.setClipTextOverlay(selectedClip.id, text)
+                    },
+                    onVolumeChange = { vol ->
+                        viewModel.setClipVolume(selectedClip.id, vol)
                     },
                     onSplit = {
                         viewModel.splitClip(selectedClip.id, currentPositionMs)
@@ -547,6 +610,15 @@ private fun TimelineClipCard(
     isSelected: Boolean,
     onClick: () -> Unit,
 ) {
+    val context = LocalContext.current
+    var videoBitmap by remember(clip.sourceUri) { mutableStateOf<Bitmap?>(null) }
+
+    if (clip.type == ClipType.VIDEO) {
+        LaunchedEffect(clip.sourceUri) {
+            videoBitmap = VideoThumbnailLoader.loadThumbnail(context, clip.sourceUri)
+        }
+    }
+
     Card(
         colors = CardDefaults.cardColors(containerColor = CharcoalSurface),
         shape = RoundedCornerShape(8.dp),
@@ -561,12 +633,21 @@ private fun TimelineClipCard(
             .clickable { onClick() },
     ) {
         Box(modifier = Modifier.fillMaxSize()) {
-            AsyncImage(
-                model = clip.sourceUri,
-                contentDescription = "Clip Thumb",
-                contentScale = ContentScale.Crop,
-                modifier = Modifier.fillMaxSize(),
-            )
+            if (clip.type == ClipType.VIDEO && videoBitmap != null) {
+                Image(
+                    bitmap = videoBitmap!!.asImageBitmap(),
+                    contentDescription = "Clip Thumb",
+                    contentScale = ContentScale.Crop,
+                    modifier = Modifier.fillMaxSize(),
+                )
+            } else {
+                AsyncImage(
+                    model = clip.sourceUri,
+                    contentDescription = "Clip Thumb",
+                    contentScale = ContentScale.Crop,
+                    modifier = Modifier.fillMaxSize(),
+                )
+            }
 
             Box(
                 modifier = Modifier
@@ -610,6 +691,9 @@ private fun ClipEditControlsPanel(
     clipIndex: Int,
     totalClips: Int,
     onTrimChange: (inMs: Long, outMs: Long) -> Unit,
+    onSpeedChange: (speed: Float) -> Unit,
+    onTextOverlayChange: (text: String?) -> Unit,
+    onVolumeChange: (volume: Float) -> Unit,
     onSplit: () -> Unit,
     onMoveLeft: () -> Unit,
     onMoveRight: () -> Unit,
@@ -715,6 +799,122 @@ private fun ClipEditControlsPanel(
                     color = ColorMutedGray,
                     fontSize = 10.sp,
                 )
+            }
+
+            Spacer(modifier = Modifier.height(8.dp))
+
+            Row(
+                modifier = Modifier.fillMaxWidth(),
+                verticalAlignment = Alignment.CenterVertically,
+                horizontalArrangement = Arrangement.SpaceBetween,
+            ) {
+                Text(
+                    text = String.format(Locale.US, "SPEED (%.2fx)", clip.speed),
+                    color = ColorWhite,
+                    fontSize = 10.sp,
+                    fontWeight = FontWeight.Bold,
+                )
+
+                val speeds = listOf(0.25f, 0.5f, 1.0f, 1.5f, 2.0f, 4.0f)
+                Row(horizontalArrangement = Arrangement.spacedBy(4.dp)) {
+                    speeds.forEach { speedVal ->
+                        val isSelected = clip.speed == speedVal
+                        Box(
+                            modifier = Modifier
+                                .clip(RoundedCornerShape(4.dp))
+                                .background(if (isSelected) RoyalBlue else CharcoalSurface)
+                                .border(
+                                    width = 1.dp,
+                                    color = if (isSelected) RoyalBlue else ColorWhite.copy(alpha = 0.2f),
+                                    shape = RoundedCornerShape(4.dp),
+                                )
+                                .clickable { onSpeedChange(speedVal) }
+                                .padding(horizontal = 6.dp, vertical = 3.dp),
+                        ) {
+                            Text(
+                                text = "${speedVal}x",
+                                color = ColorWhite,
+                                fontSize = 10.sp,
+                                fontWeight = if (isSelected) FontWeight.Bold else FontWeight.Normal,
+                            )
+                        }
+                    }
+                }
+            }
+
+            Spacer(modifier = Modifier.height(8.dp))
+
+            var overlayInput by remember(clip.id, clip.textOverlay) { mutableStateOf(clip.textOverlay ?: "") }
+
+            Row(
+                modifier = Modifier.fillMaxWidth(),
+                verticalAlignment = Alignment.CenterVertically,
+                horizontalArrangement = Arrangement.spacedBy(8.dp),
+            ) {
+                Text(
+                    text = "TEXT",
+                    color = ColorWhite,
+                    fontSize = 10.sp,
+                    fontWeight = FontWeight.Bold,
+                )
+
+                androidx.compose.material3.OutlinedTextField(
+                    value = overlayInput,
+                    onValueChange = { newText ->
+                        overlayInput = newText
+                        onTextOverlayChange(newText)
+                    },
+                    placeholder = { Text("Add text overlay...", color = ColorMutedGray, fontSize = 11.sp) },
+                    singleLine = true,
+                    colors = androidx.compose.material3.OutlinedTextFieldDefaults.colors(
+                        focusedBorderColor = RoyalBlue,
+                        unfocusedBorderColor = ColorWhite.copy(alpha = 0.2f),
+                        focusedTextColor = ColorWhite,
+                        unfocusedTextColor = ColorWhite,
+                    ),
+                    modifier = Modifier.weight(1f).height(46.dp),
+                )
+            }
+
+            Spacer(modifier = Modifier.height(8.dp))
+
+            Row(
+                modifier = Modifier.fillMaxWidth(),
+                verticalAlignment = Alignment.CenterVertically,
+                horizontalArrangement = Arrangement.SpaceBetween,
+            ) {
+                Text(
+                    text = if (clip.volume == 0f) "VOLUME (MUTED)" else String.format(Locale.US, "VOLUME (%d%%)", (clip.volume * 100).toInt()),
+                    color = ColorWhite,
+                    fontSize = 10.sp,
+                    fontWeight = FontWeight.Bold,
+                )
+
+                val volumes = listOf(0.0f to "Mute", 0.5f to "50%", 1.0f to "100%")
+                Row(horizontalArrangement = Arrangement.spacedBy(4.dp)) {
+                    volumes.forEach { (volVal, volLabel) ->
+                        val isSelected = clip.volume == volVal
+                        Box(
+                            modifier = Modifier
+                                .clip(RoundedCornerShape(4.dp))
+                                .background(if (isSelected) RoyalBlue else CharcoalSurface)
+                                .border(
+                                    width = 1.dp,
+                                    color = if (isSelected) RoyalBlue else ColorWhite.copy(alpha = 0.2f),
+                                    shape = RoundedCornerShape(4.dp),
+                                )
+                                .clickable { onVolumeChange(volVal) }
+                                .padding(horizontal = 6.dp, vertical = 3.dp),
+                        ) {
+                            Text(
+                                text = volLabel,
+                                color = ColorWhite,
+                                fontSize = 10.sp,
+                                fontWeight = if (isSelected) FontWeight.Bold else FontWeight.Normal,
+                            )
+                        }
+                    }
+                }
             }
         }
     }

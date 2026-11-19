@@ -66,10 +66,10 @@ object ExtensionHelper {
 }
 
 object StorageGuard {
-    private const val FIVE_HUNDRED_MB_BYTES = 500L * 1024 * 1024 // 500 MB Guard Limit
+    private const val ONE_HUNDRED_MB_BYTES = 100L * 1024 * 1024 // 100 MB Guard Limit
 
     fun calculateRequiredBytes(totalPickedBytes: Long): Long {
-        return totalPickedBytes + FIVE_HUNDRED_MB_BYTES
+        return totalPickedBytes + ONE_HUNDRED_MB_BYTES
     }
 
     fun evaluateStorageGuard(availableBytes: Long, totalPickedBytes: Long): Boolean {

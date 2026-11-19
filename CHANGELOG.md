@@ -1,4 +1,16 @@
-# Changelog - Lensora_Ai
+## [Unreleased] - Master Build Phase P4, P5, P6, P7 (2026-11-18)
+
+### Added
+- **Task 4.1**: Per-clip speed control in UI (0.25x - 4.0x chips), timeline duration calculation, and ExoPlayer / Media3 `PlaybackParameters` playback speed sync.
+- **Task 4.2**: Project Templates Loader from assets (`urban_vlog.json`, `cinematic_story.json`, `square_showcase.json`), template cards row in ProjectsScreen, and PhotoPicker slot auto-fill flow.
+- **Task 4.3**: Media3 `RgbFilter` (LEICA grayscale B&W) and `RgbMatrix` (CINEMATIC, VINTAGE, ROYAL_GOLD color matrices) video effect integration into `ExportWorker.kt`.
+- **Task 4.4**: Text overlay on clip (`Clip.textOverlay`), live preview badge in lower third, and Media3 `TextOverlay` / `OverlayEffect` rendering pass in `ExportWorker.kt`.
+- **Task 4.5**: Per-clip volume & mute control (Mute/50%/100% chips), ExoPlayer volume sync, and audio-aware Media3 export (`setRemoveAudio(true)` when muted).
+- **Task 5.1**: Cloud Vault Google Drive setup guide (`docs/DRIVE_SETUP.md`), `EncryptedSharedPreferences` token storage audit, `NetworkType.UNMETERED` Wi-Fi constraint verification, SHA-256 upload safety check before auto-purge, and unit test suite (`CloudVaultTest.kt`).
+- **Task 6.1**: Release hardening R8 configuration with `releaseTest` build type and ProGuard rules for Hilt, TFLite GPU Delegate, Media3, WorkManager, Compose, and Serialization.
+- **Task 6.2**: Memory leak analysis via `dumpsys meminfo` (Java Heap 20.9 MB, Native Heap 26.3 MB, Total PSS 239.6 MB, zero activity leaks across mode switches).
+- **Task 7.1**: Feature-wide Break-It test suite recorded in `report.md` (25+ attacks across Camera, Gallery, Studio, Models, Vibes).
+- **Task 7.2**: In-app Privacy Policy and Terms of Service scrollable dialogs in `SettingsScreen.kt` flagged `[DRAFT - LEGAL REVIEW NEEDED]`.
 
 ## [Unreleased] - Master Build Phase P1 (2026-11-18)
 

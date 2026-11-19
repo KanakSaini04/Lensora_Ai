@@ -63,4 +63,32 @@ object TemplateLoader {
             emptyList()
         }
     }
+
+    fun createProjectFromTemplate(
+        template: Template,
+        pickedUris: List<String>,
+        projectName: String = template.name,
+    ): Project {
+        val clips = template.slots.mapIndexed { index, slot ->
+            val uri = if (index in pickedUris.indices) pickedUris[index] else "android.resource://com.lensora.ai/drawable/sample_placeholder"
+            val type = if (uri.endsWith(".mp4") || uri.contains("video")) ClipType.VIDEO else ClipType.PHOTO
+            Clip(
+                id = "clip_slot_${index + 1}_${java.util.UUID.randomUUID().toString().take(6)}",
+                sourceUri = uri,
+                type = type,
+                durationMs = slot.durationMs,
+                trimStartMs = 0L,
+                trimEndMs = slot.durationMs,
+                vibePreset = slot.vibePreset,
+                transitionIn = slot.transitionIn,
+                textOverlay = slot.text,
+            )
+        }
+        return Project(
+            id = "proj_tmpl_${System.currentTimeMillis()}",
+            name = projectName,
+            aspect = template.aspect,
+            clips = clips,
+        )
+    }
 }

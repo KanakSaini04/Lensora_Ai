@@ -1,0 +1,20 @@
+{
+  "id": "template_square_showcase_11",
+  "name": "Square Showcase 1:1",
+  "aspect": "ONE_ONE",
+  "musicAsset": "audio/upbeat_pop.mp3",
+  "slots": [
+    {
+      "durationMs": 3000,
+      "vibePreset": "NOIR_MONO",
+      "transitionIn": "GLITCH",
+      "text": "PRODUCT DISPLAY"
+    },
+    {
+      "durationMs": 3000,
+      "vibePreset": "NEON_CYBER",
+      "transitionIn": "SLIDE",
+      "text": "FEATURES"
+    }
+  ]
+}

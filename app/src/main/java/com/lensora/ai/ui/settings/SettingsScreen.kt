@@ -4,6 +4,8 @@ import android.content.Context
 import android.widget.Toast
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
+import androidx.compose.foundation.rememberScrollState
+import androidx.compose.foundation.verticalScroll
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
@@ -109,6 +111,9 @@ fun SettingsScreen(
     var signedInEmail by remember { mutableStateOf(googleAuthManager.getSignedInEmail()) }
     var isCloudSyncEnabled by remember { mutableStateOf(prefs.getBoolean("cloud_sync_enabled", false)) }
     var isAutoPurgeEnabled by remember { mutableStateOf(prefs.getBoolean("auto_purge_enabled", true)) }
+
+    var showPrivacyDialog by remember { mutableStateOf(false) }
+    var showTermsDialog by remember { mutableStateOf(false) }
 
     // Model Downloader WorkState
     var activeWorkId by remember { mutableStateOf<UUID?>(null) }
@@ -806,7 +811,67 @@ fun SettingsScreen(
                 }
             }
 
-            // Section 5: About
+            // Section 5: Legal & Privacy
+            item {
+                SectionHeader(title = "LEGAL & PRIVACY")
+                ListItem(
+                    headlineContent = {
+                        Text(
+                            text = "Privacy Policy",
+                            color = ColorWhite,
+                            fontWeight = FontWeight.SemiBold,
+                        )
+                    },
+                    supportingContent = {
+                        Text(
+                            text = "100% On-Device Offline AI & Google Drive Sync Scope [DRAFT]",
+                            color = ColorMutedGray,
+                            fontSize = 12.sp,
+                        )
+                    },
+                    leadingContent = {
+                        Icon(
+                            imageVector = Icons.Outlined.Info,
+                            contentDescription = "Privacy Policy",
+                            tint = RoyalBlue,
+                        )
+                    },
+                    colors = ListItemDefaults.colors(containerColor = CharcoalSurface),
+                    modifier = Modifier
+                        .padding(horizontal = 16.dp, vertical = 4.dp)
+                        .clickable { showPrivacyDialog = true },
+                )
+
+                ListItem(
+                    headlineContent = {
+                        Text(
+                            text = "Terms of Service",
+                            color = ColorWhite,
+                            fontWeight = FontWeight.SemiBold,
+                        )
+                    },
+                    supportingContent = {
+                        Text(
+                            text = "End User License Agreement & Offline AI Usage Terms [DRAFT]",
+                            color = ColorMutedGray,
+                            fontSize = 12.sp,
+                        )
+                    },
+                    leadingContent = {
+                        Icon(
+                            imageVector = Icons.Outlined.Info,
+                            contentDescription = "Terms of Service",
+                            tint = AccentCyan,
+                        )
+                    },
+                    colors = ListItemDefaults.colors(containerColor = CharcoalSurface),
+                    modifier = Modifier
+                        .padding(horizontal = 16.dp, vertical = 4.dp)
+                        .clickable { showTermsDialog = true },
+                )
+            }
+
+            // Section 6: About
             item {
                 SectionHeader(title = "ABOUT")
                 ListItem(
@@ -835,6 +900,86 @@ fun SettingsScreen(
                     modifier = Modifier.padding(horizontal = 16.dp, vertical = 4.dp),
                 )
                 Spacer(modifier = Modifier.height(24.dp))
+            }
+        }
+
+        // Privacy Policy Dialog
+        if (showPrivacyDialog) {
+            androidx.compose.ui.window.Dialog(onDismissRequest = { showPrivacyDialog = false }) {
+                Card(
+                    colors = CardDefaults.cardColors(containerColor = CharcoalSurface),
+                    shape = RoundedCornerShape(14.dp),
+                    modifier = Modifier.fillMaxWidth().padding(16.dp),
+                ) {
+                    Column(
+                        modifier = Modifier
+                            .padding(20.dp)
+                            .verticalScroll(rememberScrollState()),
+                    ) {
+                        Text("[DRAFT - LEGAL REVIEW NEEDED]", color = Color(0xFFEAB308), fontSize = 11.sp, fontWeight = FontWeight.Bold)
+                        Spacer(modifier = Modifier.height(8.dp))
+                        Text("Privacy Policy", color = ColorWhite, fontSize = 18.sp, fontWeight = FontWeight.Bold)
+                        Spacer(modifier = Modifier.height(12.dp))
+                        Text(
+                            text = "Lensora_Ai operates on a strict 100% offline, privacy-first model.\n\n" +
+                                "1. On-Device Processing: All AI scene classification, image enhancement (Dehaze, Real-ESRGAN), and video editing occur entirely on your local device hardware. No photos, videos, or camera feeds are ever uploaded to any third-party AI cloud server.\n\n" +
+                                "2. Optional Google Cloud Vault Sync: If enabled by you, photos are uploaded directly to your personal Google Drive account via official Google OAuth2 APIs. Tokens are saved securely in EncryptedSharedPreferences.\n\n" +
+                                "3. Zero Telemetry & Zero Ads: Lensora_Ai contains zero analytics trackers, zero advertising SDKs, and zero behavioral telemetry.",
+                            color = ColorMutedGray,
+                            fontSize = 13.sp,
+                            lineHeight = 18.sp,
+                        )
+                        Spacer(modifier = Modifier.height(20.dp))
+                        Button(
+                            onClick = { showPrivacyDialog = false },
+                            colors = ButtonDefaults.buttonColors(containerColor = RoyalBlue),
+                            shape = RoundedCornerShape(8.dp),
+                            modifier = Modifier.align(Alignment.End),
+                        ) {
+                            Text("Close", color = ColorWhite, fontWeight = FontWeight.Bold)
+                        }
+                    }
+                }
+            }
+        }
+
+        // Terms of Service Dialog
+        if (showTermsDialog) {
+            androidx.compose.ui.window.Dialog(onDismissRequest = { showTermsDialog = false }) {
+                Card(
+                    colors = CardDefaults.cardColors(containerColor = CharcoalSurface),
+                    shape = RoundedCornerShape(14.dp),
+                    modifier = Modifier.fillMaxWidth().padding(16.dp),
+                ) {
+                    Column(
+                        modifier = Modifier
+                            .padding(20.dp)
+                            .verticalScroll(rememberScrollState()),
+                    ) {
+                        Text("[DRAFT - LEGAL REVIEW NEEDED]", color = Color(0xFFEAB308), fontSize = 11.sp, fontWeight = FontWeight.Bold)
+                        Spacer(modifier = Modifier.height(8.dp))
+                        Text("Terms of Service", color = ColorWhite, fontSize = 18.sp, fontWeight = FontWeight.Bold)
+                        Spacer(modifier = Modifier.height(12.dp))
+                        Text(
+                            text = "End User License Agreement for Lensora_Ai Application.\n\n" +
+                                "1. License Grant: Lensora_Ai grants you a personal, non-exclusive license to use computational camera, AI inference, and video editing capabilities on supported Android devices.\n\n" +
+                                "2. Hardware Responsibility: Real-time high-resolution AI processing and video export are compute-intensive operations. The application enforces thermal and storage guard checks to preserve system stability.\n\n" +
+                                "3. User Data Ownership: All captured media and exported projects remain 100% your property.",
+                            color = ColorMutedGray,
+                            fontSize = 13.sp,
+                            lineHeight = 18.sp,
+                        )
+                        Spacer(modifier = Modifier.height(20.dp))
+                        Button(
+                            onClick = { showTermsDialog = false },
+                            colors = ButtonDefaults.buttonColors(containerColor = AccentCyan),
+                            shape = RoundedCornerShape(8.dp),
+                            modifier = Modifier.align(Alignment.End),
+                        ) {
+                            Text("Close", color = ColorWhite, fontWeight = FontWeight.Bold)
+                        }
+                    }
+                }
             }
         }
     }

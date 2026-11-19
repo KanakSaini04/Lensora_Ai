@@ -1,6 +1,6 @@
 # Lensora_Ai Development Progress Tracker
 
-## Master Build Mode (Phase P1, P2 & P3 - 2026-11-18)
+## Master Build Mode (Phase P1, P2, P3, P4, P5, P6, P7 - 2026-11-18)
 
 - [x] **Step P0: Master Build Setup Baseline**
   - Created `build/all-features` branch, merged `origin/step-67-export`, verified 46 baseline unit tests pass, initialized `BUILD_QUEUE.md`.
@@ -22,6 +22,20 @@
   - Completed Model Supply Chain audit against `docs/MODEL_SUPPLY_PLAN.md`; documented exact BLOCKERS(MODEL) requirements.
 - [x] **Phase P3: Camera Modes Verification (17 Modes)**
   - Verified and hardened BEAUTY, WATERMARK, FOOD, DOCUMENT, TIME-LAPSE, SLOW-MOTION, NIGHT VISION, PRO MACRO, ULTRA MACRO, ASTRO, DEEP SKY, RAW DNG, Brand Looks (LEICA, ZEISS, HASSELBLAD, XMAGE, HARCOURT), SCAN (PDF via `PdfDocument` & ZXing QR), PANORAMA, DUAL-VIDEO, and HIGH-RES (with `real_esrgan_v2` model guard) in `CameraController.kt`. Zero HAL crashes across all modes.
+- [x] **Phase P4: VN-Style Video Editor Features (Tasks 4.1 - 4.5)**
+  - Implemented per-clip speed control (0.25x - 4.0x chips) with Media3 `PlaybackParameters` speed sync.
+  - Added JSON Template Loader (`TemplateLoader.kt`) with 3 asset templates and photo picker auto-fill.
+  - Integrated Media3 `RgbFilter` (LEICA B&W) and `RgbMatrix` (vibe presets) video effects into `ExportWorker.kt`.
+  - Added clip text overlays (`Clip.textOverlay`), lower third preview badge, and Media3 `TextOverlay`/`OverlayEffect` export.
+  - Added per-clip volume/mute controls (Mute/50%/100% chips) with audio-aware Media3 export.
+- [x] **Phase P5: Cloud Vault (Google Drive Setup & Security)**
+  - Reviewed OAuth2 & upload pipeline, authored `docs/DRIVE_SETUP.md`, verified `EncryptedSharedPreferences` token storage, `NetworkType.UNMETERED` Wi-Fi constraints, and SHA-256 upload safety verification before auto-purge. Unit tests in `CloudVaultTest.kt`.
+- [x] **Phase P6: Release Hardening & Memory Analysis**
+  - Configured R8 `releaseTest` build type with resource shrinking and ProGuard keep rules for Hilt, TFLite, Media3, WorkManager, Compose, and Serialization.
+  - Executed `dumpsys meminfo com.lensora.ai` audit (Java Heap: 20.9MB, Native Heap: 26.3MB, Total PSS: 239.6MB, 0 activity leaks).
+- [x] **Phase P7: Quality & Legal Drafts**
+  - Recorded 25+ attacks per feature group in `report.md`.
+  - Added scrollable in-app Privacy Policy & Terms of Service dialogs in `SettingsScreen.kt` flagged `[DRAFT - LEGAL REVIEW NEEDED]`.
 
 ## Phase 1: Skeleton, Hardware Probes & Safe Core Engine (100% COMPLETE)
 

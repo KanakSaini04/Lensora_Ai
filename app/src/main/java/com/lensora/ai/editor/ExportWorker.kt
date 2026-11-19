@@ -21,8 +21,12 @@ import androidx.media3.common.MediaItem
 import androidx.media3.common.audio.AudioProcessor
 import androidx.media3.common.audio.SonicAudioProcessor
 import androidx.media3.common.util.UnstableApi
+import androidx.media3.effect.OverlayEffect
 import androidx.media3.effect.Presentation
+import androidx.media3.effect.RgbFilter
+import androidx.media3.effect.RgbMatrix
 import androidx.media3.effect.SpeedChangeEffect
+import androidx.media3.effect.TextOverlay
 import androidx.media3.transformer.Composition
 import androidx.media3.transformer.EditedMediaItem
 import androidx.media3.transformer.EditedMediaItemSequence
@@ -64,9 +68,9 @@ class ExportWorker(
         // 1. Storage Guard Check
         val statFs = StatFs(context.filesDir.absolutePath)
         val availableBytes = statFs.availableBytes
-        if (!ExportGuard.isStorageSufficient(availableBytes)) {
+        if (!ExportGuard.isStorageSufficient(availableBytes, ExportGuard.MIN_REQUIRED_BYTES)) {
             Log.e(tag, "Export aborted: low storage space ($availableBytes bytes free)")
-            return@withContext Result.failure(workDataOf("ERROR" to "Low storage space (< 2GB available)"))
+            return@withContext Result.failure(workDataOf("ERROR" to "Low storage space (< 200MB available)"))
         }
 
         // 2. Thermal Guard Check
@@ -174,6 +178,7 @@ class ExportWorker(
                 mediaItemBuilder.setClippingConfiguration(clippingConfig)
             } else {
                 mediaItemBuilder.setImageDurationMs(item.durationMs)
+                mediaItemBuilder.setMimeType(androidx.media3.common.MimeTypes.IMAGE_JPEG)
             }
 
             val videoEffects = mutableListOf<Effect>(
@@ -191,11 +196,23 @@ class ExportWorker(
                 audioProcessors.add(SonicAudioProcessor().apply { setSpeed(item.speed) })
             }
 
+            val vibeEffect = createVibeEffect(item.vibePreset)
+            if (vibeEffect != null) {
+                videoEffects.add(vibeEffect)
+            }
+
+            val textEffect = createTextOverlayEffect(item.textOverlay)
+            if (textEffect != null) {
+                videoEffects.add(textEffect)
+            }
+
             val editedItemBuilder = EditedMediaItem.Builder(mediaItemBuilder.build())
                 .setEffects(Effects(audioProcessors, videoEffects))
 
             if (item.isPhoto) {
                 editedItemBuilder.setFrameRate(30)
+                editedItemBuilder.setRemoveAudio(true)
+            } else if (item.volume <= 0f) {
                 editedItemBuilder.setRemoveAudio(true)
             }
 
@@ -260,6 +277,57 @@ class ExportWorker(
 
         transformer.start(composition, outputFile.absolutePath)
         handler.post(progressRunnable)
+    }
+
+    private fun createVibeEffect(vibeName: String?): Effect? {
+        if (vibeName.isNullOrBlank() || vibeName.equals("NONE", ignoreCase = true)) return null
+        return when (vibeName.uppercase(java.util.Locale.US)) {
+            "LEICA", "MONO", "NOIR_MONO" -> RgbFilter.createGrayscaleFilter()
+            else -> {
+                val vibeEnum = try {
+                    com.lensora.ai.ui.vibes.VibePreset.valueOf(vibeName.uppercase(java.util.Locale.US))
+                } catch (e: Exception) {
+                    null
+                }
+                if (vibeEnum != null && vibeEnum != com.lensora.ai.ui.vibes.VibePreset.NONE) {
+                    val matrix = com.lensora.ai.ui.studio.ImageEditor.createVibeAndroidColorMatrix(vibeEnum)
+                    val r = matrix.array
+                    RgbMatrix { presentationTimeUs, useHdr ->
+                        floatArrayOf(
+                            r[0], r[1], r[2], r[3],
+                            r[5], r[6], r[7], r[8],
+                            r[10], r[11], r[12], r[13],
+                            0f, 0f, 0f, 1f,
+                        )
+                    }
+                } else null
+            }
+        }
+    }
+
+    private fun createTextOverlayEffect(text: String?): Effect? {
+        if (text.isNullOrBlank()) return null
+        return try {
+            val spannable = android.text.SpannableString(text).apply {
+                setSpan(
+                    android.text.style.ForegroundColorSpan(android.graphics.Color.WHITE),
+                    0,
+                    length,
+                    android.text.Spanned.SPAN_EXCLUSIVE_EXCLUSIVE,
+                )
+                setSpan(
+                    android.text.style.StyleSpan(android.graphics.Typeface.BOLD),
+                    0,
+                    length,
+                    android.text.Spanned.SPAN_EXCLUSIVE_EXCLUSIVE,
+                )
+            }
+            val textOverlay = TextOverlay.createStaticTextOverlay(spannable)
+            OverlayEffect(listOf(textOverlay))
+        } catch (e: Exception) {
+            Log.w(tag, "Failed to create Media3 TextOverlay for text '$text'", e)
+            null
+        }
     }
 
     private fun saveToMediaStore(file: File, filename: String): Uri? {

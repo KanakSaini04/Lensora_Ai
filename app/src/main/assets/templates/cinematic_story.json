@@ -1,0 +1,20 @@
+{
+  "id": "template_cinematic_story_169",
+  "name": "Cinematic Story 16:9",
+  "aspect": "SIXTEEN_NINE",
+  "musicAsset": "audio/cinematic_ambient.mp3",
+  "slots": [
+    {
+      "durationMs": 4000,
+      "vibePreset": "VINTAGE_FILM",
+      "transitionIn": "NONE",
+      "text": "SCENE ONE"
+    },
+    {
+      "durationMs": 3500,
+      "vibePreset": "TEAL_ORANGE",
+      "transitionIn": "FADE",
+      "text": "SCENE TWO"
+    }
+  ]
+}

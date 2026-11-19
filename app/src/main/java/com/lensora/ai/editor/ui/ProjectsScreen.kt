@@ -49,7 +49,9 @@ import androidx.compose.material3.TopAppBarDefaults
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
@@ -65,6 +67,7 @@ import coil.compose.AsyncImage
 import com.lensora.ai.editor.Clip
 import com.lensora.ai.editor.ClipType
 import com.lensora.ai.editor.Project
+import com.lensora.ai.editor.Template
 import com.lensora.ai.editor.import.ImportState
 import com.lensora.ai.ui.theme.CharcoalSurface
 import com.lensora.ai.ui.theme.ColorMutedGray
@@ -82,6 +85,18 @@ fun ProjectsScreen(
 ) {
     val context = LocalContext.current
     val uiState by viewModel.uiState.collectAsState()
+
+    var activeTemplateForPicker by androidx.compose.runtime.remember { androidx.compose.runtime.mutableStateOf<Template?>(null) }
+
+    val templatePhotoPickerLauncher = rememberLauncherForActivityResult(
+        contract = ActivityResultContracts.PickMultipleVisualMedia(maxItems = 10),
+    ) { uris ->
+        val tmpl = activeTemplateForPicker
+        if (tmpl != null && uris.isNotEmpty()) {
+            viewModel.createProjectFromTemplate(tmpl, uris)
+        }
+        activeTemplateForPicker = null
+    }
 
     // System Photo Picker launcher for New Project
     val photoPickerLauncher = rememberLauncherForActivityResult(
@@ -162,6 +177,20 @@ fun ProjectsScreen(
                         verticalArrangement = Arrangement.spacedBy(12.dp),
                         modifier = Modifier.fillMaxSize(),
                     ) {
+                        if (uiState.availableTemplates.isNotEmpty()) {
+                            item {
+                                TemplatesSection(
+                                    templates = uiState.availableTemplates,
+                                    onSelectTemplate = { tmpl ->
+                                        activeTemplateForPicker = tmpl
+                                        templatePhotoPickerLauncher.launch(
+                                            PickVisualMediaRequest(ActivityResultContracts.PickVisualMedia.ImageAndVideo),
+                                        )
+                                    },
+                                )
+                            }
+                        }
+
                         items(uiState.projects, key = { it.id }) { project ->
                             ProjectCard(
                                 project = project,
@@ -529,6 +558,67 @@ private fun ImportProgressDialog(
                     }
 
                     else -> {}
+                }
+            }
+        }
+    }
+}
+
+@Composable
+private fun TemplatesSection(
+    templates: List<Template>,
+    onSelectTemplate: (Template) -> Unit,
+) {
+    Column(modifier = Modifier.fillMaxWidth().padding(bottom = 8.dp)) {
+        Text(
+            text = "CREATIVE TEMPLATES",
+            color = RoyalBlue,
+            fontSize = 11.sp,
+            fontWeight = FontWeight.Bold,
+            letterSpacing = 1.sp,
+            modifier = Modifier.padding(bottom = 8.dp),
+        )
+        LazyRow(
+            horizontalArrangement = Arrangement.spacedBy(10.dp),
+            contentPadding = PaddingValues(horizontal = 0.dp),
+        ) {
+            items(templates, key = { it.id }) { template ->
+                Card(
+                    colors = CardDefaults.cardColors(containerColor = CharcoalSurface),
+                    shape = RoundedCornerShape(10.dp),
+                    modifier = Modifier
+                        .width(160.dp)
+                        .border(1.dp, ColorWhite.copy(alpha = 0.15f), RoundedCornerShape(10.dp))
+                        .clickable { onSelectTemplate(template) },
+                ) {
+                    Column(modifier = Modifier.padding(12.dp)) {
+                        Box(
+                            modifier = Modifier
+                                .clip(RoundedCornerShape(4.dp))
+                                .background(RoyalBlue)
+                                .padding(horizontal = 6.dp, vertical = 2.dp),
+                        ) {
+                            Text(
+                                text = template.aspect.name.replace("_", ":"),
+                                color = ColorWhite,
+                                fontSize = 9.sp,
+                                fontWeight = FontWeight.Bold,
+                            )
+                        }
+                        Spacer(modifier = Modifier.height(8.dp))
+                        Text(
+                            text = template.name,
+                            color = ColorWhite,
+                            fontSize = 13.sp,
+                            fontWeight = FontWeight.Bold,
+                        )
+                        Spacer(modifier = Modifier.height(4.dp))
+                        Text(
+                            text = "${template.slots.size} Media Slots",
+                            color = ColorMutedGray,
+                            fontSize = 11.sp,
+                        )
+                    }
                 }
             }
         }

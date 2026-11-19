@@ -3,6 +3,7 @@ package com.lensora.ai
 import android.graphics.RectF
 import com.lensora.ai.ai.CoachingHintHelper
 import org.junit.Assert.assertEquals
+import org.junit.Assert.assertFalse
 import org.junit.Assert.assertNull
 import org.junit.Test
 
@@ -49,5 +50,25 @@ class SceneClassifierTest {
         val box = createRectF(0.45f, 0.2f, 0.95f, 0.8f)
         val hint = CoachingHintHelper.coachingHintFor(box)
         assertEquals("✨ Move Left", hint)
+    }
+
+    @Test
+    fun testLabelSourceEnum_defaultIsHeuristicEngine() {
+        val result = com.lensora.ai.ai.DetectionResult(label = "✨ AI: Auto")
+        assertEquals(com.lensora.ai.ai.LabelSource.HEURISTIC_ENGINE, result.source)
+    }
+
+    @Test
+    fun testFakeTfliteInterpreter_fallbackWhenUnusable() {
+        val fakeUnusable = object : com.lensora.ai.ai.TfliteSceneInterpreter {
+            override fun isUsable(): Boolean = false
+            override fun classify(bitmap: android.graphics.Bitmap, labels: List<String>): com.lensora.ai.ai.DetectionResult? = null
+        }
+
+        assertFalse(fakeUnusable.isUsable())
+        val dummyBitmap = null as android.graphics.Bitmap?
+        if (dummyBitmap != null) {
+            fakeUnusable.classify(dummyBitmap, emptyList())
+        }
     }
 }

@@ -37,6 +37,11 @@ object TimelineEditEngine {
         )
     }
 
+    fun setSpeed(clip: Clip, speed: Float): Clip {
+        val safeSpeed = speed.coerceIn(0.25f, 4.0f)
+        return clip.copy(speed = safeSpeed)
+    }
+
     fun split(clip: Clip, atMs: Long): Pair<Clip, Clip> {
         val start = clip.trimStartMs
         val end = clip.trimEndMs

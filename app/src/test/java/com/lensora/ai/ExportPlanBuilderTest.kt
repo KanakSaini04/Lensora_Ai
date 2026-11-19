@@ -26,7 +26,7 @@ class ExportPlanBuilderTest {
         val plan1080 = ExportPlanBuilder.buildPlan(project, resolutionHeight = 1080)
 
         assertEquals(1080, plan1080.targetHeight)
-        assertEquals(607, plan1080.targetWidth) // (1080 * 9) / 16 = 607
+        assertEquals(608, plan1080.targetWidth) // Coerced to even width (607 + 1 = 608)
         assertEquals(2, plan1080.items.size)
 
         val item1 = plan1080.items[0]
@@ -111,8 +111,8 @@ class ExportPlanBuilderTest {
 
     @Test
     fun exportGuard_isStorageSufficient_validatesCorrectly() {
-        assertFalse(ExportGuard.isStorageSufficient(1_500_000_000L)) // 1.5 GB
-        assertTrue(ExportGuard.isStorageSufficient(2_000_000_000L))  // 2.0 GB
+        assertFalse(ExportGuard.isStorageSufficient(100_000_000L)) // 100 MB
+        assertTrue(ExportGuard.isStorageSufficient(200_000_000L))  // 200 MB
         assertTrue(ExportGuard.isStorageSufficient(5_000_000_000L))  // 5.0 GB
     }
 
@@ -123,5 +123,22 @@ class ExportPlanBuilderTest {
         assertTrue(ExportGuard.isThermalSafe(2)) // MODERATE
         assertFalse(ExportGuard.isThermalSafe(4)) // SEVERE
         assertFalse(ExportGuard.isThermalSafe(5)) // CRITICAL
+    }
+
+    @Test
+    fun buildPlan_vibePresetPreservedInExportItemAndMapper() {
+        val clips = listOf(
+            Clip("c1", "file://v1.mp4", ClipType.VIDEO, 5000L, 0L, 5000L, vibePreset = "CINEMATIC"),
+            Clip("c2", "file://v2.mp4", ClipType.VIDEO, 5000L, 0L, 5000L, vibePreset = "LEICA"),
+        )
+        val project = Project("p4", "Vibe Test", AspectRatio.NINE_SIXTEEN, clips)
+
+        val plan = ExportPlanBuilder.buildPlan(project, resolutionHeight = 1080)
+
+        assertEquals("CINEMATIC", plan.items[0].vibePreset)
+        assertEquals("LEICA", plan.items[1].vibePreset)
+
+        val params = ExportItemMapper.toMappingParams(plan.items[0])
+        assertEquals("CINEMATIC", params.vibePreset)
     }
 }

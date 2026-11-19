@@ -151,4 +151,22 @@ class TimelineEditEngineTest {
         val fallbackId = if (deleted.any { it.id == "c1" }) "c1" else deleted.firstOrNull()?.id
         assertEquals("c2", fallbackId)
     }
+
+    @Test
+    fun setSpeed_coercesAndUpdatesClipSpeedAndEffectiveDuration() {
+        val clip = Clip("c1", "uri1", ClipType.VIDEO, 10000L, 0L, 10000L, speed = 1.0f)
+        assertEquals(10000L, TimelineEditEngine.effectiveDurationMs(clip))
+
+        val halfSpeed = TimelineEditEngine.setSpeed(clip, 0.5f)
+        assertEquals(0.5f, halfSpeed.speed, 0.01f)
+        assertEquals(20000L, TimelineEditEngine.effectiveDurationMs(halfSpeed))
+
+        val doubleSpeed = TimelineEditEngine.setSpeed(clip, 2.0f)
+        assertEquals(2.0f, doubleSpeed.speed, 0.01f)
+        assertEquals(5000L, TimelineEditEngine.effectiveDurationMs(doubleSpeed))
+
+        val overflowSpeed = TimelineEditEngine.setSpeed(clip, 10.0f)
+        assertEquals(4.0f, overflowSpeed.speed, 0.01f) // Coerced to max 4.0
+        assertEquals(2500L, TimelineEditEngine.effectiveDurationMs(overflowSpeed))
+    }
 }
