@@ -41,6 +41,7 @@ data class ProjectsUiState(
     val exportProgress: Int = 0,
     val exportWorkId: UUID? = null,
     val exportError: String? = null,
+    val exportSuccessMessage: String? = null,
 )
 
 @HiltViewModel
@@ -254,6 +255,7 @@ class ProjectViewModel @Inject constructor(
                 exportProgress = 0,
                 exportWorkId = exportRequest.id,
                 exportError = null,
+                exportSuccessMessage = null,
             )
         }
 
@@ -263,15 +265,23 @@ class ProjectViewModel @Inject constructor(
             workManager.getWorkInfoByIdFlow(exportRequest.id).collect { info ->
                 if (info != null) {
                     val progress = info.progress.getInt("PROGRESS", 0)
-                    val isRunning = info.state == WorkInfo.State.RUNNING
+                    val isRunning = info.state == WorkInfo.State.RUNNING || info.state == WorkInfo.State.ENQUEUED
+
+                    val successMsg = if (info.state == WorkInfo.State.SUCCEEDED) {
+                        val uriStr = info.outputData.getString("MEDIASTORE_URI")
+                        if (!uriStr.isNullOrEmpty()) "Saved to Movies/Lensora_Ai" else "Saved to internal storage"
+                    } else null
+
+                    val errorMsg = if (info.state == WorkInfo.State.FAILED) {
+                        info.outputData.getString("ERROR") ?: "Export failed"
+                    } else null
 
                     _uiState.update {
                         it.copy(
                             exportProgress = progress,
                             isExporting = isRunning,
-                            exportError = if (info.state == WorkInfo.State.FAILED) {
-                                info.outputData.getString("ERROR") ?: "Export failed"
-                            } else null,
+                            exportError = errorMsg,
+                            exportSuccessMessage = successMsg,
                         )
                     }
                 }
@@ -295,6 +305,10 @@ class ProjectViewModel @Inject constructor(
 
     fun dismissExportError() {
         _uiState.update { it.copy(exportError = null) }
+    }
+
+    fun dismissExportSuccess() {
+        _uiState.update { it.copy(exportSuccessMessage = null) }
     }
 
     fun deleteProject(projectId: String) {

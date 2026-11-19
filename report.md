@@ -25,7 +25,17 @@
 | 2 | UI | Tap Back button in Editor header | Navigates back to Projects list | Returned to projects list cleanly | HELD |
 | 3 | UI | Tap Delete button in Editor header | Deletes project & returns to list | Project deleted and returned to list | HELD |
 | 4 | State | Rotate screen during editor view | Retains single header layout | Single header layout retained | HELD |
-| 5 | UI | Return to Projects list view | Projects TopAppBar displays ("VIDEO PROJECTS") | Projects TopAppBar displayed | HELD |
+### Task 1.3 - Export Dialog Dismiss Lock & Messages
+- **Code Changes**: Configured `DialogProperties(dismissOnClickOutside=false, dismissOnBackPress=false)` in `EditorScreen.kt` for running exports. Added `exportSuccessMessage` state in `ProjectViewModel.kt` to show explicit success ("Saved to Movies/Lensora_Ai") and failure message dialogs.
+- **Logcat Output (`AndroidRuntime:E`)**: `(empty)`
+
+| # | Layer | Attack | Expected | Actual | Status |
+|---|---|---|---|---|---|
+| 1 | UI | Tap outside running Export Progress Dialog | Dialog remains open & export continues | Dialog locked; export continued | HELD |
+| 2 | OS | Press BACK button during running export | Dialog remains open & export continues | Dialog locked; export continued | HELD |
+| 3 | UI | Click "Cancel Export" button | Export worker cancelled & dialog closes | Cancelled & dialog closed cleanly | HELD |
+| 4 | UI | Export success event | Displays "Saved to Movies/Lensora_Ai" dialog | Success dialog displayed | HELD |
+| 5 | UI | Export failure event | Displays clear "EXPORT FAILED" error dialog | Error dialog displayed | HELD |
 
 ---
 

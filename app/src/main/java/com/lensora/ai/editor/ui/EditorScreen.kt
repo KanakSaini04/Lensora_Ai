@@ -440,9 +440,15 @@ fun EditorScreen(
             }
         }
 
-        // Export Progress & Error Dialogs
+        // Export Progress, Success & Error Dialogs
         if (uiState.isExporting) {
-            androidx.compose.ui.window.Dialog(onDismissRequest = { viewModel.cancelExport() }) {
+            androidx.compose.ui.window.Dialog(
+                onDismissRequest = {},
+                properties = androidx.compose.ui.window.DialogProperties(
+                    dismissOnClickOutside = false,
+                    dismissOnBackPress = false,
+                ),
+            ) {
                 Card(
                     colors = CardDefaults.cardColors(containerColor = CharcoalSurface),
                     shape = RoundedCornerShape(14.dp),
@@ -479,6 +485,33 @@ fun EditorScreen(
             }
         }
 
+        if (uiState.exportSuccessMessage != null) {
+            androidx.compose.ui.window.Dialog(onDismissRequest = { viewModel.dismissExportSuccess() }) {
+                Card(
+                    colors = CardDefaults.cardColors(containerColor = CharcoalSurface),
+                    shape = RoundedCornerShape(14.dp),
+                    modifier = Modifier.fillMaxWidth().padding(16.dp),
+                ) {
+                    Column(
+                        modifier = Modifier.padding(20.dp),
+                        horizontalAlignment = Alignment.CenterHorizontally,
+                    ) {
+                        Text("EXPORT SUCCESSFUL", color = RoyalBlue, fontSize = 12.sp, fontWeight = FontWeight.Bold)
+                        Spacer(modifier = Modifier.height(12.dp))
+                        Text(uiState.exportSuccessMessage!!, color = ColorWhite, fontSize = 15.sp, fontWeight = FontWeight.Bold)
+                        Spacer(modifier = Modifier.height(20.dp))
+                        androidx.compose.material3.Button(
+                            onClick = { viewModel.dismissExportSuccess() },
+                            colors = androidx.compose.material3.ButtonDefaults.buttonColors(containerColor = RoyalBlue),
+                            shape = RoundedCornerShape(8.dp),
+                        ) {
+                            Text("OK", color = ColorWhite, fontWeight = FontWeight.Bold)
+                        }
+                    }
+                }
+            }
+        }
+
         if (uiState.exportError != null) {
             androidx.compose.ui.window.Dialog(onDismissRequest = { viewModel.dismissExportError() }) {
                 Card(
@@ -499,7 +532,7 @@ fun EditorScreen(
                             colors = androidx.compose.material3.ButtonDefaults.buttonColors(containerColor = RoyalBlue),
                             shape = RoundedCornerShape(8.dp),
                         ) {
-                            Text("OK", color = ColorWhite, fontWeight = FontWeight.Bold)
+                            Text("Close", color = ColorWhite, fontWeight = FontWeight.Bold)
                         }
                     }
                 }
