@@ -307,6 +307,22 @@ class CameraController(private val context: Context) {
                 "WATERMARK" -> {
                     onFeedback("🏷️ Watermark: Lensora Computational Stamp Active")
                 }
+                "FOOD" -> {
+                    if (builder != null && session != null) {
+                        try {
+                            val sceneModes = characteristics?.get(CameraCharacteristics.CONTROL_AVAILABLE_SCENE_MODES)
+                            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.P && sceneModes != null && sceneModes.contains(16)) {
+                                builder.set(CaptureRequest.CONTROL_MODE, CaptureRequest.CONTROL_MODE_USE_SCENE_MODE)
+                                builder.set(CaptureRequest.CONTROL_SCENE_MODE, 16)
+                            }
+                            session.setRepeatingRequest(builder.build(), null, backgroundHandler)
+                        } catch (hardwareEx: Exception) {
+                            Log.w(tag, "Food scene mode rejected by HAL. Safe Auto fallback.", hardwareEx)
+                        }
+                    }
+                    VibeState.selectedVibe = VibePreset.ROYAL_GOLD
+                    onFeedback("🍱 Food: Warm Saturation & Micro-Contrast Active")
+                }
                 "ASTRO" -> {
                     if (builder != null && session != null) {
                         try {

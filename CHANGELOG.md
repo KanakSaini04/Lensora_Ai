@@ -13,6 +13,7 @@
 - **Task 2.4**: Completed Model Supply Chain audit against `docs/MODEL_SUPPLY_PLAN.md`; documented exact BLOCKERS(MODEL) requirements.
 - **Task 3.1**: Added BEAUTY camera mode verification in `CameraController.kt` with HAL face detect capability check and safe fallback.
 - **Task 3.2**: Added WATERMARK camera mode verification in `CameraController.kt`.
+- **Task 3.3**: Added FOOD camera mode verification in `CameraController.kt` with HAL scene mode check and safe fallback.
 
 ## [Unreleased] - Step 67b (2026-11-18)
 

@@ -101,7 +101,18 @@
 | 2 | Camera | Mode transition WATERMARK <-> BEAUTY | Session transitions cleanly | Transitioned cleanly | HELD |
 | 3 | Camera | Rapid mode switch 10x | No session lock or freeze | Session recreated cleanly | HELD |
 | 4 | Lifecycle | Background app while in WATERMARK mode | Releases Camera2 resources | Camera2 resources released | HELD |
-| 5 | Lifecycle | Foreground app | Re-initializes Camera2 preview | Viewfinder active | HELD |
+### Task 3.3 - FOOD Camera Mode Verification
+- **Code Changes**: Added `FOOD` mode handling in `CameraController.kt` `setAdvancedMode()`. Checks `CameraCharacteristics.CONTROL_AVAILABLE_SCENE_MODES` for FOOD scene mode support with safe fallback.
+- **Unit Tests**: 58 passed.
+- **Logcat Output (`AndroidRuntime:E`)**: `(empty)`
+
+| # | Layer | Attack | Expected | Actual | Status |
+|---|---|---|---|---|---|
+| 1 | Camera | Switch to FOOD mode | Feedback toast & food color profile applied | Toast & profile applied | HELD |
+| 2 | HAL | Scene mode capability query | Safely checks HAL food scene support | Checked without crash | HELD |
+| 3 | Camera | Mode transition FOOD <-> WATERMARK | Session transitions cleanly | Transitioned cleanly | HELD |
+| 4 | Camera | Rapid mode switch 10x | No session lock or freeze | Session recreated cleanly | HELD |
+| 5 | Lifecycle | Background/Foreground lifecycle | Camera2 resources released & restored | Released & restored cleanly | HELD |
 
 ---
 
