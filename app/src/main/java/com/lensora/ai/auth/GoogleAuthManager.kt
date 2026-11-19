@@ -5,6 +5,7 @@ import android.content.SharedPreferences
 import android.util.Log
 import androidx.security.crypto.EncryptedSharedPreferences
 import androidx.security.crypto.MasterKeys
+import com.lensora.ai.BuildConfig
 import okhttp3.FormBody
 import okhttp3.OkHttpClient
 import okhttp3.Request
@@ -16,9 +17,8 @@ class GoogleAuthManager(
     private val tag = "GoogleAuthManager"
     private val client = OkHttpClient()
 
-    companion object {
-        const val CLIENT_ID: String = "995311552607-8m80t248j7871pcaa4pf625glhpc7377.apps.googleusercontent.com"
-    }
+    val clientId: String
+        get() = BuildConfig.GOOGLE_CLIENT_ID
 
     private val prefs: SharedPreferences by lazy {
         try {
@@ -78,9 +78,15 @@ class GoogleAuthManager(
     }
 
     private fun refreshAccessToken(refreshToken: String): String? {
+        val activeClientId = clientId
+        if (activeClientId.isBlank()) {
+            Log.w(tag, "Google OAuth Client ID is blank. Skipping token refresh.")
+            return null
+        }
+
         return try {
             val formBody = FormBody.Builder()
-                .add("client_id", CLIENT_ID)
+                .add("client_id", activeClientId)
                 .add("grant_type", "refresh_token")
                 .add("refresh_token", refreshToken)
                 .build()
