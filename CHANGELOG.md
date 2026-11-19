@@ -20,6 +20,7 @@
 - **Task 3.7**: Added NIGHT VISION camera mode verification in `CameraController.kt` with low-light scene mode HAL check and safe fallback.
 - **Task 3.9**: Added ULTRA MACRO camera mode verification in `CameraController.kt` combining 2x crop zoom and minimum focus distance.
 - **Task 3.11**: Added DEEP SKY camera mode verification in `CameraController.kt` with max ISO sensitivity and infinity focus.
+- **Task 3.12**: Added RAW DNG camera mode verification in `CameraController.kt` with RAW_SENSOR capability HAL check and safe fallback.
 
 ## [Unreleased] - Step 67b (2026-11-18)
 

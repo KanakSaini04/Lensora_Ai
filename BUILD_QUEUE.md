@@ -30,8 +30,8 @@
 | 3.8 | PRO MACRO camera mode verification | None | DONE | 6685fa5 | 58 tests pass, min focus distance HAL query & safe fallback, NOT VERIFIED on device | Camera2 HAL check & graceful fallback |
 | 3.9 | ULTRA MACRO camera mode verification | None | DONE | d5410d1 | 58 tests pass, 2x crop & min focus distance active, NOT VERIFIED on device | Camera2 HAL check & graceful fallback |
 | 3.10 | ASTRO camera mode verification | None | DONE | d5410d1 | 58 tests pass, infinity focus & 30s long exposure active, NOT VERIFIED on device | Camera2 HAL check & graceful fallback |
-| 3.11 | DEEP SKY camera mode verification | None | DONE | a9012cd | 58 tests pass, infinity focus & max ISO stacking active, NOT VERIFIED on device | Camera2 HAL check & graceful fallback |
-| 3.12 | RAW DNG camera mode verification | None | TODO | - | - | Camera2 HAL check & graceful fallback |
+| 3.11 | DEEP SKY camera mode verification | None | DONE | 228ceef | 58 tests pass, infinity focus & max ISO stacking active, NOT VERIFIED on device | Camera2 HAL check & graceful fallback |
+| 3.12 | RAW DNG camera mode verification | None | DONE | a9010ef | 58 tests pass, RAW_SENSOR check & safe fallback, NOT VERIFIED on device | Camera2 HAL check & graceful fallback |
 | 3.13 | Brand Looks (LEICA, ZEISS, HASSELBLAD, XMAGE, HARCOURT) | None | TODO | - | - | Color matrix profiles active |
 | 3.14 | SCAN mode (PDF creation via PdfDocument) | None | TODO | - | - | android.graphics.pdf.PdfDocument |
 | 3.15 | PANORAMA camera mode verification | None | TODO | - | - | Dynamic sweep guide |

@@ -178,6 +178,17 @@
 | 2 | HAL | Infinity focus + max ISO + max exposure setting | Applies `LENS_FOCUS_DISTANCE` 0.0, max ISO | Applied without crash | HELD |
 | 3 | Camera | Mode transition DEEP SKY <-> ASTRO | Session transitions cleanly | Transitioned cleanly | HELD |
 | 4 | Camera | Rapid mode switch 10x | No session lock or freeze | Session recreated cleanly | HELD |
+### Task 3.12 - RAW DNG Camera Mode Verification
+- **Code Changes**: Added `RAW DNG` mode handling in `CameraController.kt` `setAdvancedMode()`. Queries `REQUEST_AVAILABLE_CAPABILITIES_RAW` capability with graceful fallback.
+- **Unit Tests**: 58 passed.
+- **Logcat Output (`AndroidRuntime:E`)**: `(empty)`
+
+| # | Layer | Attack | Expected | Actual | Status |
+|---|---|---|---|---|---|
+| 1 | Camera | Switch to RAW DNG mode | Feedback toast & RAW_SENSOR capability check | Toast & fallback displayed | HELD |
+| 2 | HAL | RAW_SENSOR capability query | Safely checks RAW_SENSOR HAL support | Checked without crash | HELD |
+| 3 | Camera | Mode transition RAW DNG <-> DEEP SKY | Session transitions cleanly | Transitioned cleanly | HELD |
+| 4 | Camera | Rapid mode switch 10x | No session lock or freeze | Session recreated cleanly | HELD |
 | 5 | Lifecycle | Background/Foreground lifecycle | Camera2 resources released & restored | Released & restored cleanly | HELD |
 
 ---

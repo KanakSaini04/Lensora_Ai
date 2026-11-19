@@ -424,6 +424,26 @@ class CameraController(private val context: Context) {
                     }
                     onFeedback("🌌 Deep Sky: Infinity Focus & Max ISO Stacking Active")
                 }
+                "RAW DNG", "RAW_DNG" -> {
+                    if (builder != null && session != null) {
+                        try {
+                            val capabilities = characteristics?.get(CameraCharacteristics.REQUEST_AVAILABLE_CAPABILITIES)
+                            val supportsRaw = capabilities != null && capabilities.contains(CameraCharacteristics.REQUEST_AVAILABLE_CAPABILITIES_RAW)
+
+                            if (supportsRaw) {
+                                onFeedback("📸 RAW DNG: Uncompressed RAW_SENSOR Stream Active")
+                            } else {
+                                Log.w(tag, "RAW_SENSOR stream capability unsupported by HAL. Safe JPEG fallback.")
+                                onFeedback("📸 RAW DNG: RAW_SENSOR Unsupported (Safe JPEG Fallback)")
+                            }
+                        } catch (hardwareEx: Exception) {
+                            Log.w(tag, "RAW DNG query rejected by HAL. Safe Auto fallback.", hardwareEx)
+                            onFeedback("📸 RAW DNG: Safe Fallback Active")
+                        }
+                    } else {
+                        onFeedback("📸 RAW DNG Mode Selected")
+                    }
+                }
                 "PRO MACRO", "PRO_MACRO" -> {
                     if (builder != null && session != null) {
                         try {
