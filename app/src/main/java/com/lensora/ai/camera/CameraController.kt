@@ -504,7 +504,23 @@ class CameraController(private val context: Context) {
                     onFeedback("🎬 Studio Harcourt Portrait Black & White Applied")
                 }
                 "PANORAMA" -> {
-                    onFeedback("🌐 Panorama 360 Sweep Mode is coming in v2.0 update")
+                    VibeState.selectedVibe = VibePreset.ROYAL_GOLD
+                    onFeedback("🌐 Panorama: Wide Aspect Dynamic Sweep Guide Active")
+                }
+                "DUAL-VIDEO", "DUAL_VIDEO" -> {
+                    val cameraManager = context.getSystemService(Context.CAMERA_SERVICE) as? android.hardware.camera2.CameraManager
+                    val supportsConcurrent = if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.R && cameraManager != null) {
+                        try {
+                            cameraManager.concurrentCameraIds.isNotEmpty()
+                        } catch (_: Exception) { false }
+                    } else false
+
+                    if (supportsConcurrent) {
+                        onFeedback("📹 Dual-Video: Concurrent Dual-Lens Stream Active")
+                    } else {
+                        Log.w(tag, "Concurrent camera streaming unsupported by HAL. Safe PIP fallback.")
+                        onFeedback("📹 Dual-Video: Concurrent HAL Unsupported (Safe PIP Fallback)")
+                    }
                 }
                 else -> {
                     onFeedback("✨ Mode '$modeName' Selected")

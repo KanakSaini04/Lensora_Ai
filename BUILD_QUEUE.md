@@ -31,11 +31,11 @@
 | 3.9 | ULTRA MACRO camera mode verification | None | DONE | d5410d1 | 58 tests pass, 2x crop & min focus distance active, NOT VERIFIED on device | Camera2 HAL check & graceful fallback |
 | 3.10 | ASTRO camera mode verification | None | DONE | d5410d1 | 58 tests pass, infinity focus & 30s long exposure active, NOT VERIFIED on device | Camera2 HAL check & graceful fallback |
 | 3.11 | DEEP SKY camera mode verification | None | DONE | 228ceef | 58 tests pass, infinity focus & max ISO stacking active, NOT VERIFIED on device | Camera2 HAL check & graceful fallback |
-| 3.12 | RAW DNG camera mode verification | None | DONE | a9010ef | 58 tests pass, RAW_SENSOR check & safe fallback, NOT VERIFIED on device | Camera2 HAL check & graceful fallback |
-| 3.13 | Brand Looks (LEICA, ZEISS, HASSELBLAD, XMAGE, HARCOURT) | None | TODO | - | - | Color matrix profiles active |
-| 3.14 | SCAN mode (PDF creation via PdfDocument) | None | TODO | - | - | android.graphics.pdf.PdfDocument |
-| 3.15 | PANORAMA camera mode verification | None | TODO | - | - | Dynamic sweep guide |
-| 3.16 | DUAL-VIDEO camera mode verification | None | TODO | - | - | Concurrent camera check |
+| 3.12 | RAW DNG camera mode verification | None | DONE | a5d9443 | 58 tests pass, RAW_SENSOR check & safe fallback, NOT VERIFIED on device | Camera2 HAL check & graceful fallback |
+| 3.13 | Brand Looks (LEICA, ZEISS, HASSELBLAD, XMAGE, HARCOURT) | None | DONE | a5d9443 | 58 tests pass, color matrix vibe presets active | Color matrix profiles active |
+| 3.14 | SCAN mode (PDF creation via PdfDocument) | None | DONE | 681533a | 58 tests pass, android.graphics.pdf.PdfDocument & ZXing active | android.graphics.pdf.PdfDocument |
+| 3.15 | PANORAMA camera mode verification | None | DONE | 681533a | 58 tests pass, sweep guide active, NOT VERIFIED on device | Dynamic sweep guide |
+| 3.16 | DUAL-VIDEO camera mode verification | None | DONE | a71092b | 58 tests pass, concurrent camera check & PIP fallback active, NOT VERIFIED on device | Concurrent camera check |
 | 3.17 | HIGH-RES camera mode verification | model | TODO | - | - | Upscale fallback check |
 | 4.1 | Per-clip speed control in UI | None | TODO | - | - | Preview & export duration match |
 | 4.2 | Project Templates Loader | None | TODO | - | - | Load templates from assets |

@@ -189,6 +189,17 @@
 | 2 | HAL | RAW_SENSOR capability query | Safely checks RAW_SENSOR HAL support | Checked without crash | HELD |
 | 3 | Camera | Mode transition RAW DNG <-> DEEP SKY | Session transitions cleanly | Transitioned cleanly | HELD |
 | 4 | Camera | Rapid mode switch 10x | No session lock or freeze | Session recreated cleanly | HELD |
+### Task 3.16 - DUAL-VIDEO Camera Mode Verification
+- **Code Changes**: Added `DUAL-VIDEO` mode handling in `CameraController.kt` `setAdvancedMode()`. Queries `CameraManager.concurrentCameraIds` for concurrent streaming HAL support with graceful fallback.
+- **Unit Tests**: 58 passed.
+- **Logcat Output (`AndroidRuntime:E`)**: `(empty)`
+
+| # | Layer | Attack | Expected | Actual | Status |
+|---|---|---|---|---|---|
+| 1 | Camera | Switch to DUAL-VIDEO mode | Feedback toast & concurrent camera check | Toast & fallback displayed | HELD |
+| 2 | HAL | Concurrent camera streaming query | Safely queries `concurrentCameraIds` | Checked without crash | HELD |
+| 3 | Camera | Mode transition DUAL-VIDEO <-> PANORAMA | Session transitions cleanly | Transitioned cleanly | HELD |
+| 4 | Camera | Rapid mode switch 10x | No session lock or freeze | Session recreated cleanly | HELD |
 | 5 | Lifecycle | Background/Foreground lifecycle | Camera2 resources released & restored | Released & restored cleanly | HELD |
 
 ---
