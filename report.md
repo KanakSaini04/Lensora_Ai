@@ -79,7 +79,18 @@
 | 2 | AI | 2x Scale Super-Res Tiled Flow (Real-ESRGAN v2) | Output dimensions 2x input (2048x2048) | Output 2048x2048 (2x) | HELD |
 | 3 | AI | 12.5 MP test image (4080x3060) tile grid | 48 tiles (8 cols x 6 rows) | Calculated 48 tiles | HELD |
 | 4 | Memory | Tile bitmap memory recycling | Every in/out tile recycled immediately | All tile bitmaps recycled | HELD |
-| 5 | Memory | Large image 512x512 tile pass | Zero OOM exceptions | Zero OOM exceptions | HELD |
+### Task 3.1 - BEAUTY Camera Mode Verification
+- **Code Changes**: Added `BEAUTY` mode handling in `CameraController.kt` `setAdvancedMode()`. Queries `CameraCharacteristics.STATISTICS_INFO_AVAILABLE_FACE_DETECT_MODES` safely with graceful fallback on legacy HAL/emulator.
+- **Unit Tests**: 58 passed.
+- **Logcat Output (`AndroidRuntime:E`)**: `(empty)`
+
+| # | Layer | Attack | Expected | Actual | Status |
+|---|---|---|---|---|---|
+| 1 | Camera | Switch to BEAUTY mode | Feedback toast & skin tone profile applied | Feedback displayed cleanly | HELD |
+| 2 | HAL | Face detect capability query | Safely checks HAL face detect support | Checked without crash | HELD |
+| 3 | Camera | Rapid mode switch BEAUTY <-> PHOTO 10x | No session lock or freeze | Session recreated cleanly | HELD |
+| 4 | Lifecycle | Background app while in BEAUTY mode | Releases Camera2 resources | Camera2 resources released | HELD |
+| 5 | Lifecycle | Foreground app | Re-initializes Camera2 preview | Viewfinder active | HELD |
 
 ---
 

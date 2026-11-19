@@ -289,6 +289,21 @@ class CameraController(private val context: Context) {
 
         try {
             when (modeName.uppercase(Locale.US)) {
+                "BEAUTY" -> {
+                    if (builder != null && session != null) {
+                        try {
+                            val faceModes = characteristics?.get(CameraCharacteristics.STATISTICS_INFO_AVAILABLE_FACE_DETECT_MODES)
+                            if (faceModes != null && faceModes.contains(CameraCharacteristics.STATISTICS_FACE_DETECT_MODE_SIMPLE)) {
+                                builder.set(CaptureRequest.STATISTICS_FACE_DETECT_MODE, CaptureRequest.STATISTICS_FACE_DETECT_MODE_SIMPLE)
+                            }
+                            session.setRepeatingRequest(builder.build(), null, backgroundHandler)
+                        } catch (hardwareEx: Exception) {
+                            Log.w(tag, "Beauty face detection rejected by HAL. Safe Auto fallback.", hardwareEx)
+                        }
+                    }
+                    VibeState.selectedVibe = VibePreset.ROYAL_GOLD
+                    onFeedback("💄 Beauty: Soft Skin & Warm Tone Active")
+                }
                 "ASTRO" -> {
                     if (builder != null && session != null) {
                         try {

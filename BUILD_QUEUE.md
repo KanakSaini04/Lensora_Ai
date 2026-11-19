@@ -19,8 +19,8 @@
 | 2.1 | SceneInference TFLite integration | model / labels | BLOCKED(MODEL) | - | - | labels.txt and scene_classifier.tflite model file needed |
 | 2.2 | ModelContractChecker shape & dtype validator | None | DONE | 0510392 | 55 tests pass, 5 contract tests, real-model proof BLOCKED(MODEL) | Expose incompatible state safely |
 | 2.3 | Tiled pipeline scaling & memory management | None | DONE | 100fb02 | 58 tests pass, tile scaling & 12.5MP grid math verified | Real-ESRGAN, Dehaze, LaMa tile recycle & unit tests |
-| 2.4 | Model supply checklist & gap review | None | DONE | 8421a1b | MODEL_SUPPLY_PLAN.md synced, exact BLOCKERS(MODEL) listed | Verify MODEL_SUPPLY_PLAN.md |
-| 3.1 | BEAUTY camera mode verification | None | TODO | - | - | Camera2 HAL check & graceful fallback |
+| 2.4 | Model supply checklist & gap review | None | DONE | 148eace | MODEL_SUPPLY_PLAN.md synced, exact BLOCKERS(MODEL) listed | Verify MODEL_SUPPLY_PLAN.md |
+| 3.1 | BEAUTY camera mode verification | None | DONE | 74a910f | 58 tests pass, HAL face detect check & safe fallback, NOT VERIFIED on device | Camera2 HAL check & graceful fallback |
 | 3.2 | WATERMARK camera mode verification | None | TODO | - | - | Camera2 HAL check & graceful fallback |
 | 3.3 | FOOD camera mode verification | None | TODO | - | - | Camera2 HAL check & graceful fallback |
 | 3.4 | DOCUMENT camera mode verification | None | TODO | - | - | Camera2 HAL check & graceful fallback |

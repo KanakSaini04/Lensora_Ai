@@ -11,6 +11,7 @@
 - **Task 2.2**: Implemented `ModelContractChecker.kt` to validate input/output tensor shapes and dtypes against expected model contracts (512x512, 2x super-res) and safely expose Incompatible state.
 - **Task 2.3**: Built `TiledPipelineEngine.kt` supporting 1x (LaMa/Dehaze) and 2x (Real-ESRGAN v2) tiled inference with canvas stitching and immediate bitmap recycling.
 - **Task 2.4**: Completed Model Supply Chain audit against `docs/MODEL_SUPPLY_PLAN.md`; documented exact BLOCKERS(MODEL) requirements.
+- **Task 3.1**: Added BEAUTY camera mode verification in `CameraController.kt` with HAL face detect capability check and safe fallback.
 
 ## [Unreleased] - Step 67b (2026-11-18)
 
