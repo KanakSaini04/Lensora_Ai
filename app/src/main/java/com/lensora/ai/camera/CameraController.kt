@@ -335,6 +335,9 @@ class CameraController(private val context: Context) {
                     VibeState.selectedVibe = VibePreset.LEICA
                     onFeedback("📄 Document: High-Contrast Text Edge Enhancement Active")
                 }
+                "TIME-LAPSE", "TIME_LAPSE" -> {
+                    onFeedback("⏱️ Time-Lapse: High-Speed Interval Frame Capture Active")
+                }
                 "ASTRO" -> {
                     if (builder != null && session != null) {
                         try {

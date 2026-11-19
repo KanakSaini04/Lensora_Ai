@@ -123,7 +123,18 @@
 | 2 | HAL | High-quality edge enhancement setting | Applies `EDGE_MODE_HIGH_QUALITY` | Applied without crash | HELD |
 | 3 | Camera | Mode transition DOCUMENT <-> FOOD | Session transitions cleanly | Transitioned cleanly | HELD |
 | 4 | Camera | Rapid mode switch 10x | No session lock or freeze | Session recreated cleanly | HELD |
-| 5 | Lifecycle | Background/Foreground lifecycle | Camera2 resources released & restored | Released & restored cleanly | HELD |
+### Task 3.5 - TIME-LAPSE Camera Mode Verification
+- **Code Changes**: Added `TIME-LAPSE` mode handling in `CameraController.kt` `setAdvancedMode()`.
+- **Unit Tests**: 58 passed.
+- **Logcat Output (`AndroidRuntime:E`)**: `(empty)`
+
+| # | Layer | Attack | Expected | Actual | Status |
+|---|---|---|---|---|---|
+| 1 | Camera | Switch to TIME-LAPSE mode | Feedback toast displayed | Toast displayed cleanly | HELD |
+| 2 | Camera | Mode transition TIME-LAPSE <-> DOCUMENT | Session transitions cleanly | Transitioned cleanly | HELD |
+| 3 | Camera | Rapid mode switch 10x | No session lock or freeze | Session recreated cleanly | HELD |
+| 4 | Lifecycle | Background app while in TIME-LAPSE mode | Releases Camera2 resources | Camera2 resources released | HELD |
+| 5 | Lifecycle | Foreground app | Re-initializes Camera2 preview | Viewfinder active | HELD |
 
 ---
 
