@@ -17,8 +17,8 @@
 | 1.5 | Test media generation & real timeline verification | ffmpeg / test media | BLOCKED(USER) | - | - | Put 2 real videos (1280x720 & 720x1280) and 1 photo in C:\Lensora_testmedia |
 | 1.6 | Editor state safety & lifecycle persistence | None | DONE | 3955f4c | 48 tests pass, clip selection fallback verified | Clip selection validity, rotation & process restart |
 | 2.1 | SceneInference TFLite integration | model / labels | BLOCKED(MODEL) | - | - | labels.txt and scene_classifier.tflite model file needed |
-| 2.2 | ModelContractChecker shape & dtype validator | None | DONE | e1052fa | 55 tests pass, 5 contract tests, real-model proof BLOCKED(MODEL) | Expose incompatible state safely |
-| 2.3 | Tiled pipeline scaling & memory management | None | TODO | - | - | Real-ESRGAN, Dehaze, LaMa tile recycle & unit tests |
+| 2.2 | ModelContractChecker shape & dtype validator | None | DONE | 0510392 | 55 tests pass, 5 contract tests, real-model proof BLOCKED(MODEL) | Expose incompatible state safely |
+| 2.3 | Tiled pipeline scaling & memory management | None | DONE | 7bf812c | 58 tests pass, tile scaling & 12.5MP grid math verified | Real-ESRGAN, Dehaze, LaMa tile recycle & unit tests |
 | 2.4 | Model supply checklist & gap review | None | TODO | - | - | Verify MODEL_SUPPLY_PLAN.md |
 | 3.1 | BEAUTY camera mode verification | None | TODO | - | - | Camera2 HAL check & graceful fallback |
 | 3.2 | WATERMARK camera mode verification | None | TODO | - | - | Camera2 HAL check & graceful fallback |

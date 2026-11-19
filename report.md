@@ -68,7 +68,18 @@
 | 2 | AI | Validate Real-ESRGAN v2 2x super-res contract (512x512x3 -> 1024x1024x3) | `ModelContractStatus.Valid` | `Valid` returned | HELD |
 | 3 | AI | Input shape mismatch (256x256 vs 512x512) | `ModelContractStatus.Incompatible` | `Incompatible` returned cleanly | HELD |
 | 4 | AI | Output dtype mismatch (UINT8 vs FLOAT32) | `ModelContractStatus.Incompatible` | `Incompatible` returned cleanly | HELD |
-| 5 | AI | Missing model file | `ModelContractStatus.Missing` | `Missing` returned cleanly | HELD |
+### Task 2.3 - Tiled Pipeline Scaling & Memory Management
+- **Code Changes**: Created `TiledPipelineEngine.kt` supporting 1x (LaMa/Dehaze) and 2x (Real-ESRGAN v2) tiled inference with tile recycling. Added `TiledPipelineEngineTest.kt` unit test suite.
+- **Unit Tests**: 58 passed.
+- **Logcat Output (`AndroidRuntime:E`)**: `(empty)`
+
+| # | Layer | Attack | Expected | Actual | Status |
+|---|---|---|---|---|---|
+| 1 | AI | 1x Scale Tiled Flow (Dehaze / LaMa) | Output dimensions match input (1024x1024) | Output 1024x1024 | HELD |
+| 2 | AI | 2x Scale Super-Res Tiled Flow (Real-ESRGAN v2) | Output dimensions 2x input (2048x2048) | Output 2048x2048 (2x) | HELD |
+| 3 | AI | 12.5 MP test image (4080x3060) tile grid | 48 tiles (8 cols x 6 rows) | Calculated 48 tiles | HELD |
+| 4 | Memory | Tile bitmap memory recycling | Every in/out tile recycled immediately | All tile bitmaps recycled | HELD |
+| 5 | Memory | Large image 512x512 tile pass | Zero OOM exceptions | Zero OOM exceptions | HELD |
 
 ---
 

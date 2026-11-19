@@ -9,6 +9,7 @@
 - **Task 1.4**: Updated `ExportWorker.kt` with composition-level CROP_TO_FILL aspect scaling, photo audio removal, MediaStore error handling & staging cleanup, and WorkManager dataSync foreground service promotion.
 - **Task 1.6**: Ensured editor selection safety after clip delete/undo/redo with safe fallbacks, and verified project JSON persistence.
 - **Task 2.2**: Implemented `ModelContractChecker.kt` to validate input/output tensor shapes and dtypes against expected model contracts (512x512, 2x super-res) and safely expose Incompatible state.
+- **Task 2.3**: Built `TiledPipelineEngine.kt` supporting 1x (LaMa/Dehaze) and 2x (Real-ESRGAN v2) tiled inference with canvas stitching and immediate bitmap recycling.
 
 ## [Unreleased] - Step 67b (2026-11-18)
 
