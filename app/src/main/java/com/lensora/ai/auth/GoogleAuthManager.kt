@@ -16,6 +16,10 @@ class GoogleAuthManager(
     private val tag = "GoogleAuthManager"
     private val client = OkHttpClient()
 
+    companion object {
+        const val CLIENT_ID: String = "995311552607-8m80t248j7871pcaa4pf625glhpc7377.apps.googleusercontent.com"
+    }
+
     private val prefs: SharedPreferences by lazy {
         try {
             val masterKeyAlias = MasterKeys.getOrCreate(MasterKeys.AES256_GCM_SPEC)
@@ -76,7 +80,7 @@ class GoogleAuthManager(
     private fun refreshAccessToken(refreshToken: String): String? {
         return try {
             val formBody = FormBody.Builder()
-                .add("client_id", "lensora-drive-client-id.apps.googleusercontent.com")
+                .add("client_id", CLIENT_ID)
                 .add("grant_type", "refresh_token")
                 .add("refresh_token", refreshToken)
                 .build()
