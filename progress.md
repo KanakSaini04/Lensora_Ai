@@ -343,6 +343,26 @@
 
 - [x] **Step 52: Final Camera UI Perfection & Edge-to-Edge Cleanup**
   - Removed thin 1.dp white aesthetic border overlay from CameraScreen.kt.
+
+## Phase 33: Timeline UI & Edit Operations Engine (100% COMPLETE)
+
+- [x] **Step 66: Timeline UI + Trim/Split/Reorder/Delete Engine**
+  - Implemented pure JVM `TimelineEditEngine.kt` supporting `trim()`, `split()`, `reorder()`, `delete()`, and `totalDurationMs()` with boundary validation.
+  - Implemented in-memory `TimelineUndoRedoStack` managing up to 50 timeline states.
+  - Built `EditorScreen.kt` with ExoPlayer preview player (Media3), scrubber bar, interactive horizontal clip timeline, and clip edit controls panel.
+  - Updated `ProjectViewModel.kt` for atomic clip edit state persistence via `ProjectRepository` on `Dispatchers.IO`.
+  - Created `TimelineEditEngineTest.kt` unit test suite (9 pure JVM tests covering trim bounds, zero-length, split at edges, reorder bounds, delete missing id, and undo/redo stack).
+  - Captured emulator screenshot `docs/screenshots/step66/editor_timeline.png` and verified 0 logcat runtime crashes.
+
+## Phase 34: Media3 Transformer Export Engine (100% COMPLETE)
+
+- [x] **Step 67 / 67b: Real Media3 Transformer Export Engine**
+  - Created pure production `ExportPlanBuilder.kt` and `ExportItemMapper.kt` mapping timeline clips to `ExportPlan` with 720p HD and 1080p FHD resolution options.
+  - Created pure `ExportGuard` enforcing `StorageGuard` (2GB minimum) and `ThermalGuard` (< 4 safe status) preconditions.
+  - Implemented WorkManager `ExportWorker.kt` executing real Media3 1.11.1 `Transformer` composition export pass on Main Looper via `suspendCancellableCoroutine`, reporting progress polling, handling cancellation with partial output file cleanup, and saving exports to MediaStore Movies directory via `IS_PENDING` pattern.
+  - Created `ExportPlanBuilderTest.kt` unit test suite (5 pure JVM tests covering 1080p/720p aspect ratios, `ExportItemMapper`, storage guard, and thermal guard thresholds).
+  - Built Export Resolution Selection Dialog & Progress UI in `EditorScreen.kt`.
+  - Captured emulator screenshot `docs/screenshots/step67/editor_export.png` and verified 0 logcat runtime crashes.
   - Configured CameraModeCarousel.kt LazyRow with 32.dp horizontal content padding so edge items (AI AUTO, CINEMATIC) never touch screen glass.
   - Anchored AiBadge in CameraScreen.kt cleanly to TopCenter with 80.dp statusBarsPadding().
   - Verified 100% edge-to-edge TextureView viewfinder without aspect ratio clipping or black bars.
