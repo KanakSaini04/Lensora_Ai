@@ -1,5 +1,26 @@
 # Lensora_Ai Development Progress Tracker
 
+## Master Build Mode (Phase P1 & P2 - 2026-11-18)
+
+- [x] **Step P0: Master Build Setup Baseline**
+  - Created `build/all-features` branch, merged `origin/step-67-export`, verified 46 baseline unit tests pass, initialized `BUILD_QUEUE.md`.
+- [x] **Task 1.1: Remove Fake Sample Generator**
+  - Removed sample file generation logic and text video files in `ProjectsScreen.kt`; `EmptyProjectsState` button triggers System PhotoPicker. `grep -rn "LENSORA_SAMPLE"` returns 0 code occurrences.
+- [x] **Task 1.2: Single Editor Header**
+  - Unified TopAppBar in `ProjectsScreen.kt` (list view only) and `EditorScreen.kt` (editor header with Back, Title, Subtitle, Undo, Redo, Delete, Export).
+- [x] **Task 1.3: Export Dialog Dismiss Lock**
+  - Applied `DialogProperties(dismissOnClickOutside=false, dismissOnBackPress=false)` for running export progress dialogs, and added explicit export success/failure alert dialogs.
+- [x] **Task 1.4: ExportWorker Correctness**
+  - Updated `ExportWorker.kt` with composition-level CROP_TO_FILL aspect scaling, photo audio removal, MediaStore error handling & staging cleanup, and WorkManager `dataSync` foreground service promotion.
+- [x] **Task 1.6: Editor State Safety & Lifecycle Persistence**
+  - Ensured clip selection safety after delete/undo/redo with safe fallbacks to valid clips, and verified project JSON persistence.
+- [x] **Task 2.2: ModelContractChecker Tensor Validation**
+  - Implemented `ModelContractChecker.kt` to validate input/output tensor shapes and dtypes against expected model contracts (512x512, 2x super-res) and safely expose Incompatible state.
+- [x] **Task 2.3: Tiled Pipeline Scaling & Memory Management**
+  - Built `TiledPipelineEngine.kt` supporting 1x (LaMa/Dehaze) and 2x (Real-ESRGAN v2) tiled inference with canvas stitching and immediate bitmap recycling.
+- [x] **Task 2.4: Model Supply Checklist & Gap Review**
+  - Completed Model Supply Chain audit against `docs/MODEL_SUPPLY_PLAN.md`; documented exact BLOCKERS(MODEL) requirements.
+
 ## Phase 1: Skeleton, Hardware Probes & Safe Core Engine (100% COMPLETE)
 
 - [x] **Step 1: Project Skeleton & Obsidian Royal UI**
