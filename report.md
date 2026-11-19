@@ -112,6 +112,17 @@
 | 2 | HAL | Scene mode capability query | Safely checks HAL food scene support | Checked without crash | HELD |
 | 3 | Camera | Mode transition FOOD <-> WATERMARK | Session transitions cleanly | Transitioned cleanly | HELD |
 | 4 | Camera | Rapid mode switch 10x | No session lock or freeze | Session recreated cleanly | HELD |
+### Task 3.4 - DOCUMENT Camera Mode Verification
+- **Code Changes**: Added `DOCUMENT` mode handling in `CameraController.kt` `setAdvancedMode()`. Applies `EDGE_MODE_HIGH_QUALITY` edge enhancement with B&W text contrast profile.
+- **Unit Tests**: 58 passed.
+- **Logcat Output (`AndroidRuntime:E`)**: `(empty)`
+
+| # | Layer | Attack | Expected | Actual | Status |
+|---|---|---|---|---|---|
+| 1 | Camera | Switch to DOCUMENT mode | Feedback toast & high-contrast profile applied | Toast & profile applied | HELD |
+| 2 | HAL | High-quality edge enhancement setting | Applies `EDGE_MODE_HIGH_QUALITY` | Applied without crash | HELD |
+| 3 | Camera | Mode transition DOCUMENT <-> FOOD | Session transitions cleanly | Transitioned cleanly | HELD |
+| 4 | Camera | Rapid mode switch 10x | No session lock or freeze | Session recreated cleanly | HELD |
 | 5 | Lifecycle | Background/Foreground lifecycle | Camera2 resources released & restored | Released & restored cleanly | HELD |
 
 ---

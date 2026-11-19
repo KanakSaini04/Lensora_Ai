@@ -22,8 +22,8 @@
 | 2.4 | Model supply checklist & gap review | None | DONE | 148eace | MODEL_SUPPLY_PLAN.md synced, exact BLOCKERS(MODEL) listed | Verify MODEL_SUPPLY_PLAN.md |
 | 3.1 | BEAUTY camera mode verification | None | DONE | e9b7d4b | 58 tests pass, HAL face detect check & safe fallback, NOT VERIFIED on device | Camera2 HAL check & graceful fallback |
 | 3.2 | WATERMARK camera mode verification | None | DONE | 5c11c92 | 58 tests pass, watermark stamp feedback active, NOT VERIFIED on device | Camera2 HAL check & graceful fallback |
-| 3.3 | FOOD camera mode verification | None | DONE | 8c9102b | 58 tests pass, food scene mode check & safe fallback, NOT VERIFIED on device | Camera2 HAL check & graceful fallback |
-| 3.4 | DOCUMENT camera mode verification | None | TODO | - | - | Camera2 HAL check & graceful fallback |
+| 3.3 | FOOD camera mode verification | None | DONE | cc04e4e | 58 tests pass, food scene mode check & safe fallback, NOT VERIFIED on device | Camera2 HAL check & graceful fallback |
+| 3.4 | DOCUMENT camera mode verification | None | DONE | f8029ab | 58 tests pass, edge mode high quality & text contrast profile active, NOT VERIFIED on device | Camera2 HAL check & graceful fallback |
 | 3.5 | TIME-LAPSE camera mode verification | None | TODO | - | - | Camera2 HAL check & graceful fallback |
 | 3.6 | SLOW-MOTION camera mode verification | None | TODO | - | - | Camera2 HAL check & graceful fallback |
 | 3.7 | NIGHT VISION camera mode verification | None | TODO | - | - | Camera2 HAL check & graceful fallback |

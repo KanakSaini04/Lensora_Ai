@@ -323,6 +323,18 @@ class CameraController(private val context: Context) {
                     VibeState.selectedVibe = VibePreset.ROYAL_GOLD
                     onFeedback("🍱 Food: Warm Saturation & Micro-Contrast Active")
                 }
+                "DOCUMENT" -> {
+                    if (builder != null && session != null) {
+                        try {
+                            builder.set(CaptureRequest.EDGE_MODE, CaptureRequest.EDGE_MODE_HIGH_QUALITY)
+                            session.setRepeatingRequest(builder.build(), null, backgroundHandler)
+                        } catch (hardwareEx: Exception) {
+                            Log.w(tag, "Document edge enhancement rejected by HAL. Safe Auto fallback.", hardwareEx)
+                        }
+                    }
+                    VibeState.selectedVibe = VibePreset.LEICA
+                    onFeedback("📄 Document: High-Contrast Text Edge Enhancement Active")
+                }
                 "ASTRO" -> {
                     if (builder != null && session != null) {
                         try {
