@@ -28,9 +28,9 @@
 | 3.6 | SLOW-MOTION camera mode verification | None | DONE | e96a0f1 | 58 tests pass, constrained high-speed check & safe fallback, NOT VERIFIED on device | Camera2 HAL check & graceful fallback |
 | 3.7 | NIGHT VISION camera mode verification | None | DONE | 6685fa5 | 58 tests pass, night scene mode check & safe fallback, NOT VERIFIED on device | Camera2 HAL check & graceful fallback |
 | 3.8 | PRO MACRO camera mode verification | None | DONE | 6685fa5 | 58 tests pass, min focus distance HAL query & safe fallback, NOT VERIFIED on device | Camera2 HAL check & graceful fallback |
-| 3.9 | ULTRA MACRO camera mode verification | None | DONE | b1082fc | 58 tests pass, 2x crop & min focus distance active, NOT VERIFIED on device | Camera2 HAL check & graceful fallback |
-| 3.10 | ASTRO camera mode verification | None | TODO | - | - | Camera2 HAL check & graceful fallback |
-| 3.11 | DEEP SKY camera mode verification | None | TODO | - | - | Camera2 HAL check & graceful fallback |
+| 3.9 | ULTRA MACRO camera mode verification | None | DONE | d5410d1 | 58 tests pass, 2x crop & min focus distance active, NOT VERIFIED on device | Camera2 HAL check & graceful fallback |
+| 3.10 | ASTRO camera mode verification | None | DONE | d5410d1 | 58 tests pass, infinity focus & 30s long exposure active, NOT VERIFIED on device | Camera2 HAL check & graceful fallback |
+| 3.11 | DEEP SKY camera mode verification | None | DONE | a9012cd | 58 tests pass, infinity focus & max ISO stacking active, NOT VERIFIED on device | Camera2 HAL check & graceful fallback |
 | 3.12 | RAW DNG camera mode verification | None | TODO | - | - | Camera2 HAL check & graceful fallback |
 | 3.13 | Brand Looks (LEICA, ZEISS, HASSELBLAD, XMAGE, HARCOURT) | None | TODO | - | - | Color matrix profiles active |
 | 3.14 | SCAN mode (PDF creation via PdfDocument) | None | TODO | - | - | android.graphics.pdf.PdfDocument |

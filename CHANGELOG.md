@@ -19,6 +19,7 @@
 - **Task 3.6**: Added SLOW-MOTION camera mode verification in `CameraController.kt` with constrained high-speed video HAL check and safe fallback.
 - **Task 3.7**: Added NIGHT VISION camera mode verification in `CameraController.kt` with low-light scene mode HAL check and safe fallback.
 - **Task 3.9**: Added ULTRA MACRO camera mode verification in `CameraController.kt` combining 2x crop zoom and minimum focus distance.
+- **Task 3.11**: Added DEEP SKY camera mode verification in `CameraController.kt` with max ISO sensitivity and infinity focus.
 
 ## [Unreleased] - Step 67b (2026-11-18)
 

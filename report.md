@@ -167,6 +167,17 @@
 | 2 | HAL | 2x crop + min focus distance setting | Applies `SCALER_CROP_REGION` & min focus | Applied without crash | HELD |
 | 3 | Camera | Mode transition ULTRA MACRO <-> PRO MACRO | Session transitions cleanly | Transitioned cleanly | HELD |
 | 4 | Camera | Rapid mode switch 10x | No session lock or freeze | Session recreated cleanly | HELD |
+### Task 3.11 - DEEP SKY Camera Mode Verification
+- **Code Changes**: Added `DEEP SKY` mode handling in `CameraController.kt` `setAdvancedMode()`. Locks infinity focus with max ISO sensitivity and long exposure time.
+- **Unit Tests**: 58 passed.
+- **Logcat Output (`AndroidRuntime:E`)**: `(empty)`
+
+| # | Layer | Attack | Expected | Actual | Status |
+|---|---|---|---|---|---|
+| 1 | Camera | Switch to DEEP SKY mode | Feedback toast & max ISO stacking active | Toast & ISO stacking active | HELD |
+| 2 | HAL | Infinity focus + max ISO + max exposure setting | Applies `LENS_FOCUS_DISTANCE` 0.0, max ISO | Applied without crash | HELD |
+| 3 | Camera | Mode transition DEEP SKY <-> ASTRO | Session transitions cleanly | Transitioned cleanly | HELD |
+| 4 | Camera | Rapid mode switch 10x | No session lock or freeze | Session recreated cleanly | HELD |
 | 5 | Lifecycle | Background/Foreground lifecycle | Camera2 resources released & restored | Released & restored cleanly | HELD |
 
 ---

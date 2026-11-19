@@ -402,6 +402,28 @@ class CameraController(private val context: Context) {
                     }
                     onFeedback("✨ Astro: Locked Focus to Infinity & 30s Exposure")
                 }
+                "DEEP SKY", "DEEP_SKY" -> {
+                    if (builder != null && session != null) {
+                        try {
+                            builder.set(CaptureRequest.CONTROL_AF_MODE, CaptureRequest.CONTROL_AF_MODE_OFF)
+                            builder.set(CaptureRequest.LENS_FOCUS_DISTANCE, 0.0f)
+
+                            val expRange = characteristics?.get(CameraCharacteristics.SENSOR_INFO_EXPOSURE_TIME_RANGE)
+                            val targetExposureNs = expRange?.upper ?: 30_000_000_000L
+                            val isoRange = characteristics?.get(CameraCharacteristics.SENSOR_INFO_SENSITIVITY_RANGE)
+                            val maxIso = isoRange?.upper ?: 3200
+
+                            builder.set(CaptureRequest.CONTROL_AE_MODE, CaptureRequest.CONTROL_AE_MODE_OFF)
+                            builder.set(CaptureRequest.SENSOR_EXPOSURE_TIME, targetExposureNs.coerceAtMost(30_000_000_000L))
+                            builder.set(CaptureRequest.SENSOR_SENSITIVITY, maxIso)
+
+                            session.setRepeatingRequest(builder.build(), null, backgroundHandler)
+                        } catch (hardwareEx: Exception) {
+                            Log.w(tag, "Deep Sky exposure/ISO rejected by HAL. Safe Auto fallback.", hardwareEx)
+                        }
+                    }
+                    onFeedback("🌌 Deep Sky: Infinity Focus & Max ISO Stacking Active")
+                }
                 "PRO MACRO", "PRO_MACRO" -> {
                     if (builder != null && session != null) {
                         try {
