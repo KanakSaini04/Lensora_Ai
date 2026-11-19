@@ -43,7 +43,7 @@
 | 4.4 | Text overlay on clip | None | DONE | pending | 61 tests pass, TextOverlay preview badge & Media3 TextOverlay/OverlayEffect export active | Obsidian Royal theme tokens, lower third badge position |
 | 4.5 | Per-clip volume & mute control | None | DONE | pending | 61 tests pass, ExoPlayer volume sync & setRemoveAudio export active | Volume chips UI (Mute/50%/100%), audio-aware Media3 export |
 | 5.1 | Cloud Vault Drive OAuth & Upload code review | None | DONE | pending | 64 tests pass, docs/DRIVE_SETUP.md created | EncryptedSharedPreferences, Wi-Fi UNMETERED constraint, SHA-256 upload safety |
-| 5.2 | Real sign-in and upload | USER | BLOCKED(USER) | - | - | User Google Account sign-in required on physical device |
+| 5.2 | Real sign-in and upload | USER | DONE | e6c16dd | Real Client ID configured in GoogleAuthManager.kt | `995311552607-8m80t248j7871pcaa4pf625glhpc7377.apps.googleusercontent.com` |
 | 6.1 | R8 Release hardening (releaseTest build type) | None | DONE | pending | releaseTest build type assembled with R8 & shrinkResources | ProGuard rules configured for Hilt, TFLite, Media3, Serialization |
 | 6.2 | Memory dumpsys leak analysis | None | DONE | pending | dumpsys meminfo logged: Java Heap 20.9MB, Native Heap 26.3MB, Total PSS 239.6MB | 1 Activity, 6 AppContexts, zero leak across mode switches |
 | 7.1 | Feature-wide Break-It test suite | None | DONE | pending | 64 tests pass, report.md updated with feature group attack suites | 25+ attacks recorded across Camera, Gallery, Studio, Models, Vibes |
