@@ -18,8 +18,8 @@
 | 1.6 | Editor state safety & lifecycle persistence | None | DONE | 3955f4c | 48 tests pass, clip selection fallback verified | Clip selection validity, rotation & process restart |
 | 2.1 | SceneInference TFLite integration | model / labels | BLOCKED(MODEL) | - | - | labels.txt and scene_classifier.tflite model file needed |
 | 2.2 | ModelContractChecker shape & dtype validator | None | DONE | 0510392 | 55 tests pass, 5 contract tests, real-model proof BLOCKED(MODEL) | Expose incompatible state safely |
-| 2.3 | Tiled pipeline scaling & memory management | None | DONE | 7bf812c | 58 tests pass, tile scaling & 12.5MP grid math verified | Real-ESRGAN, Dehaze, LaMa tile recycle & unit tests |
-| 2.4 | Model supply checklist & gap review | None | TODO | - | - | Verify MODEL_SUPPLY_PLAN.md |
+| 2.3 | Tiled pipeline scaling & memory management | None | DONE | 100fb02 | 58 tests pass, tile scaling & 12.5MP grid math verified | Real-ESRGAN, Dehaze, LaMa tile recycle & unit tests |
+| 2.4 | Model supply checklist & gap review | None | DONE | 8421a1b | MODEL_SUPPLY_PLAN.md synced, exact BLOCKERS(MODEL) listed | Verify MODEL_SUPPLY_PLAN.md |
 | 3.1 | BEAUTY camera mode verification | None | TODO | - | - | Camera2 HAL check & graceful fallback |
 | 3.2 | WATERMARK camera mode verification | None | TODO | - | - | Camera2 HAL check & graceful fallback |
 | 3.3 | FOOD camera mode verification | None | TODO | - | - | Camera2 HAL check & graceful fallback |
@@ -54,11 +54,15 @@
 ## DECISIONS
 - 2026-11-18: Initialized master build queue from docs/MASTER_BUILD_PROMPT.md.
 - 2026-11-18: Task 1.5 marked BLOCKED(USER) because ffmpeg is not installed on PC. Action required: Put 2 real videos and 1 photo in C:\Lensora_testmedia.
-- 2026-11-18: Task 2.1 marked BLOCKED(MODEL) because scene_classifier.tflite and labels.txt files are not hosted.
+- 2026-11-18: Task 2.1 & 2.4 model requirements listed in BLOCKERS(MODEL). All code-level guards, contracts, fallbacks, and UI handles missing models safely.
 
 ## BLOCKERS
 - **Task 1.5 (USER)**: Please put 2 real videos (8-10 s, one 1280x720 and one 720x1280 with audio) and 1 photo (JPG) in `C:\Lensora_testmedia`.
-- **Task 2.1 (MODEL)**: Provide `scene_classifier.tflite` model file and corresponding `labels.txt` file.
+- **Tasks 2.1-2.4 (MODEL)**: Provide model files or hosting URLs + SHA-256 hashes for:
+  1. `scene_classifier.tflite` (with `labels.txt`)
+  2. `lama_dilated.tflite`
+  3. `real_esrgan_v2.tflite`
+  4. `dehaze.tflite`
 
 ## RUN LOG
 - 2026-11-18: Session started. Baseline setup completed (P0).
