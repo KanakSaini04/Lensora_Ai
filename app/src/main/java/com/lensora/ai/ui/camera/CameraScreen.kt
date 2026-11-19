@@ -190,6 +190,7 @@ fun CameraScreen(
         // Pro Mode Manual Exposure State
         var proIsoValue by remember { mutableIntStateOf(400) }
         var proShutterNs by remember { mutableStateOf(4_000_000L) } // 1/250s
+        var proEvValue by remember { mutableFloatStateOf(0.0f) }
         var isRawEnabled by remember { mutableStateOf(cameraPrefs.getBoolean("raw_dng_enabled", false)) }
         var isZebrasEnabled by remember { mutableStateOf(false) }
         var isPeakingEnabled by remember { mutableStateOf(false) }
@@ -534,6 +535,7 @@ fun CameraScreen(
                     ProModeControls(
                         isoValue = proIsoValue,
                         shutterSpeedNs = proShutterNs,
+                        evValue = proEvValue,
                         isRawEnabled = isRawEnabled,
                         isZebrasEnabled = isZebrasEnabled,
                         isPeakingEnabled = isPeakingEnabled,
@@ -544,6 +546,10 @@ fun CameraScreen(
                         onShutterSpeedChanged = { shutterNs ->
                             proShutterNs = shutterNs
                             cameraController.setManualExposure(proIsoValue, shutterNs)
+                        },
+                        onEvChanged = { ev ->
+                            proEvValue = ev
+                            cameraController.setExposureCompensation(ev)
                         },
                         onRawToggled = { raw ->
                             isRawEnabled = raw

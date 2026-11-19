@@ -281,6 +281,26 @@ class CameraController(private val context: Context) {
         }
     }
 
+    fun setExposureCompensation(ev: Float) {
+        val session = captureSession ?: return
+        val builder = previewRequestBuilder ?: return
+        val characteristics = cameraCharacteristics ?: return
+
+        try {
+            val range = characteristics.get(CameraCharacteristics.CONTROL_AE_COMPENSATION_RANGE) ?: return
+            val step = characteristics.get(CameraCharacteristics.CONTROL_AE_COMPENSATION_STEP) ?: android.util.Rational(1, 1)
+
+            val stepVal = if (step.denominator != 0) step.numerator.toFloat() / step.denominator.toFloat() else 1.0f
+            val index = (ev / stepVal).let { Math.round(it) }.coerceIn(range.lower, range.upper)
+
+            builder.set(CaptureRequest.CONTROL_AE_EXPOSURE_COMPENSATION, index)
+            session.setRepeatingRequest(builder.build(), null, backgroundHandler)
+            Log.i(tag, "Set AE exposure compensation EV $ev (index $index)")
+        } catch (e: Exception) {
+            Log.w(tag, "Failed to set exposure compensation", e)
+        }
+    }
+
     fun setAdvancedMode(modeName: String, onFeedback: (String) -> Unit = {}) {
         Log.i(tag, "Applying Advanced Camera Mode: $modeName")
         val builder = previewRequestBuilder

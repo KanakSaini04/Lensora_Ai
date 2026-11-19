@@ -1,0 +1,26 @@
+{
+  "id": "template_retro_film_169",
+  "name": "Retro Film Vlog 16:9",
+  "aspect": "SIXTEEN_NINE",
+  "musicAsset": "audio/retro_lofi.mp3",
+  "slots": [
+    {
+      "durationMs": 3500,
+      "vibePreset": "VINTAGE",
+      "transitionIn": "FADE",
+      "text": "GOLDEN MEMORIES"
+    },
+    {
+      "durationMs": 3000,
+      "vibePreset": "VINTAGE",
+      "transitionIn": "NONE",
+      "text": "SUMMER DAYS"
+    },
+    {
+      "durationMs": 4000,
+      "vibePreset": "ROYAL_GOLD",
+      "transitionIn": "FADE",
+      "text": "SUNSET CHRONICLES"
+    }
+  ]
+}

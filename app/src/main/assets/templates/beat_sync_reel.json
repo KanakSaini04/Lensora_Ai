@@ -1,0 +1,32 @@
+{
+  "id": "template_beat_sync_reel_916",
+  "name": "Beat Sync Reel 9:16",
+  "aspect": "NINE_SIXTEEN",
+  "musicAsset": "audio/fast_beat.mp3",
+  "slots": [
+    {
+      "durationMs": 1500,
+      "vibePreset": "CINEMATIC",
+      "transitionIn": "GLITCH",
+      "text": "DROP THE BEAT"
+    },
+    {
+      "durationMs": 1200,
+      "vibePreset": "ROYAL_GOLD",
+      "transitionIn": "SLIDE",
+      "text": "BOOM"
+    },
+    {
+      "durationMs": 1500,
+      "vibePreset": "LEICA",
+      "transitionIn": "ZOOM",
+      "text": "FAST CUTS"
+    },
+    {
+      "durationMs": 2000,
+      "vibePreset": "CYAN_PULSE",
+      "transitionIn": "FADE",
+      "text": "FINALE"
+    }
+  ]
+}

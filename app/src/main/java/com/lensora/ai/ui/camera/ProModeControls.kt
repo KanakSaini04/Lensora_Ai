@@ -19,6 +19,7 @@ import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
@@ -34,9 +35,11 @@ import kotlin.math.roundToInt
 fun ProModeControls(
     isoValue: Int,
     shutterSpeedNs: Long,
+    evValue: Float = 0.0f,
     isRawEnabled: Boolean,
     onIsoChanged: (Int) -> Unit,
     onShutterSpeedChanged: (Long) -> Unit,
+    onEvChanged: (Float) -> Unit = {},
     onRawToggled: (Boolean) -> Unit,
     modifier: Modifier = Modifier,
     isZebrasEnabled: Boolean = false,
@@ -70,7 +73,43 @@ fun ProModeControls(
 
             Spacer(modifier = Modifier.height(8.dp))
 
-            // 1. ISO Slider (100 to 3200)
+            // 1. EV Compensation Slider (-2.0 EV to +2.0 EV)
+            Row(
+                verticalAlignment = Alignment.CenterVertically,
+                modifier = Modifier.fillMaxWidth(),
+            ) {
+                Text(
+                    text = "EV COMP",
+                    color = ColorWhite,
+                    fontWeight = FontWeight.Bold,
+                    fontSize = 12.sp,
+                    modifier = Modifier.weight(0.35f),
+                )
+                Text(
+                    text = String.format(Locale.US, "%+.1f EV", evValue),
+                    color = Color(0xFF00E5FF),
+                    fontWeight = FontWeight.Bold,
+                    fontSize = 12.sp,
+                    modifier = Modifier.weight(0.65f),
+                )
+            }
+
+            Slider(
+                value = evValue,
+                onValueChange = onEvChanged,
+                valueRange = -2.0f..2.0f,
+                steps = 15,
+                colors = SliderDefaults.colors(
+                    thumbColor = Color(0xFF00E5FF),
+                    activeTrackColor = Color(0xFF00E5FF),
+                    inactiveTrackColor = PitchBlackBackground,
+                ),
+                modifier = Modifier.fillMaxWidth(),
+            )
+
+            Spacer(modifier = Modifier.height(4.dp))
+
+            // 2. ISO Slider (100 to 3200)
             Row(
                 verticalAlignment = Alignment.CenterVertically,
                 modifier = Modifier.fillMaxWidth(),
@@ -106,9 +145,9 @@ fun ProModeControls(
 
             Spacer(modifier = Modifier.height(4.dp))
 
-            // 2. Shutter Speed Slider (1/1000s to 1/30s -> 1,000,000 ns to 33,333,333 ns)
-            val minShutterNs = 1_000_000L // 1/1000s
-            val maxShutterNs = 33_333_333L // 1/30s
+            // 3. Shutter Speed Slider (1/1000s to 1/30s)
+            val minShutterNs = 1_000_000L
+            val maxShutterNs = 33_333_333L
             val shutterFraction = (shutterSpeedNs - minShutterNs).toFloat() / (maxShutterNs - minShutterNs).toFloat()
 
             Row(
@@ -148,7 +187,7 @@ fun ProModeControls(
 
             Spacer(modifier = Modifier.height(4.dp))
 
-            // 3. Save RAW (DNG) Switch Toggle
+            // 4. Save RAW (DNG) Switch Toggle
             Row(
                 verticalAlignment = Alignment.CenterVertically,
                 horizontalArrangement = Arrangement.SpaceBetween,
@@ -172,7 +211,7 @@ fun ProModeControls(
                 )
             }
 
-            // 4. Zebras Shader Overlay Toggle
+            // 5. Zebras Shader Overlay Toggle
             Row(
                 verticalAlignment = Alignment.CenterVertically,
                 horizontalArrangement = Arrangement.SpaceBetween,
@@ -196,7 +235,7 @@ fun ProModeControls(
                 )
             }
 
-            // 5. Focus Peaking Shader Overlay Toggle
+            // 6. Focus Peaking Shader Overlay Toggle
             Row(
                 verticalAlignment = Alignment.CenterVertically,
                 horizontalArrangement = Arrangement.SpaceBetween,
