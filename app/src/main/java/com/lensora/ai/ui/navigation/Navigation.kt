@@ -72,10 +72,20 @@ fun AppNavigation(
 
     val isTopLevelRoute = NavScreen.items.any { it.route == currentRoute }
 
-    // Predictive back handler for nested screens
+    // Predictive back handler for nested screens & secondary tabs
     if (!isTopLevelRoute && currentRoute != null) {
         BackHandler {
             navController.popBackStack()
+        }
+    } else if (isTopLevelRoute && currentRoute != NavScreen.Camera.route) {
+        BackHandler {
+            navController.navigate(NavScreen.Camera.route) {
+                popUpTo(navController.graph.findStartDestination().id) {
+                    saveState = true
+                }
+                launchSingleTop = true
+                restoreState = true
+            }
         }
     }
 

@@ -2,6 +2,7 @@ package com.lensora.ai.editor.ui
 
 import android.net.Uri
 import android.widget.Toast
+import androidx.activity.compose.BackHandler
 import androidx.activity.compose.rememberLauncherForActivityResult
 import androidx.activity.result.PickVisualMediaRequest
 import androidx.activity.result.contract.ActivityResultContracts
@@ -106,6 +107,12 @@ fun ProjectsScreen(
         val defaultProjectName = "Vlog Project ($dateStr)"
         if (uris.isNotEmpty()) {
             viewModel.startImport(uris, defaultProjectName)
+        }
+    }
+
+    if (uiState.selectedProject != null) {
+        BackHandler {
+            viewModel.selectProject(null)
         }
     }
 
