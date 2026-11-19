@@ -145,6 +145,17 @@
 | 2 | HAL | High-speed video capability query | Safely checks constrained high-speed support | Checked without crash | HELD |
 | 3 | Camera | Mode transition SLOW-MOTION <-> TIME-LAPSE | Session transitions cleanly | Transitioned cleanly | HELD |
 | 4 | Camera | Rapid mode switch 10x | No session lock or freeze | Session recreated cleanly | HELD |
+### Task 3.7 - NIGHT VISION Camera Mode Verification
+- **Code Changes**: Added `NIGHT VISION` mode handling in `CameraController.kt` `setAdvancedMode()`. Queries `CONTROL_SCENE_MODE_NIGHT` support with low-light exposure gain fallback.
+- **Unit Tests**: 58 passed.
+- **Logcat Output (`AndroidRuntime:E`)**: `(empty)`
+
+| # | Layer | Attack | Expected | Actual | Status |
+|---|---|---|---|---|---|
+| 1 | Camera | Switch to NIGHT VISION mode | Feedback toast & low-light sensitivity active | Toast displayed cleanly | HELD |
+| 2 | HAL | Night scene mode query | Safely checks `CONTROL_SCENE_MODE_NIGHT` | Checked without crash | HELD |
+| 3 | Camera | Mode transition NIGHT VISION <-> SLOW-MOTION | Session transitions cleanly | Transitioned cleanly | HELD |
+| 4 | Camera | Rapid mode switch 10x | No session lock or freeze | Session recreated cleanly | HELD |
 | 5 | Lifecycle | Background/Foreground lifecycle | Camera2 resources released & restored | Released & restored cleanly | HELD |
 
 ---

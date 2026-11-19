@@ -17,6 +17,7 @@
 - **Task 3.4**: Added DOCUMENT camera mode verification in `CameraController.kt` with `EDGE_MODE_HIGH_QUALITY` setting and safe fallback.
 - **Task 3.5**: Added TIME-LAPSE camera mode verification in `CameraController.kt`.
 - **Task 3.6**: Added SLOW-MOTION camera mode verification in `CameraController.kt` with constrained high-speed video HAL check and safe fallback.
+- **Task 3.7**: Added NIGHT VISION camera mode verification in `CameraController.kt` with low-light scene mode HAL check and safe fallback.
 
 ## [Unreleased] - Step 67b (2026-11-18)
 

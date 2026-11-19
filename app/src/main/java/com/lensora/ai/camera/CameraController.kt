@@ -360,6 +360,26 @@ class CameraController(private val context: Context) {
                         onFeedback("🐢 Slow-Motion Mode Selected")
                     }
                 }
+                "NIGHT VISION", "NIGHT_VISION" -> {
+                    if (builder != null && session != null) {
+                        try {
+                            val sceneModes = characteristics?.get(CameraCharacteristics.CONTROL_AVAILABLE_SCENE_MODES)
+                            if (sceneModes != null && sceneModes.contains(CaptureRequest.CONTROL_SCENE_MODE_NIGHT)) {
+                                builder.set(CaptureRequest.CONTROL_MODE, CaptureRequest.CONTROL_MODE_USE_SCENE_MODE)
+                                builder.set(CaptureRequest.CONTROL_SCENE_MODE, CaptureRequest.CONTROL_SCENE_MODE_NIGHT)
+                            } else {
+                                val expRange = characteristics?.get(CameraCharacteristics.SENSOR_INFO_EXPOSURE_TIME_RANGE)
+                                val maxExp = expRange?.upper ?: 500_000_000L
+                                builder.set(CaptureRequest.CONTROL_AE_MODE, CaptureRequest.CONTROL_AE_MODE_OFF)
+                                builder.set(CaptureRequest.SENSOR_EXPOSURE_TIME, maxExp.coerceAtMost(500_000_000L))
+                            }
+                            session.setRepeatingRequest(builder.build(), null, backgroundHandler)
+                        } catch (hardwareEx: Exception) {
+                            Log.w(tag, "Night Vision exposure settings rejected by HAL. Safe Auto fallback.", hardwareEx)
+                        }
+                    }
+                    onFeedback("🌙 Night Vision: Low-Light Sensitivity Boost Active")
+                }
                 "ASTRO" -> {
                     if (builder != null && session != null) {
                         try {

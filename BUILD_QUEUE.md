@@ -25,8 +25,8 @@
 | 3.3 | FOOD camera mode verification | None | DONE | cc04e4e | 58 tests pass, food scene mode check & safe fallback, NOT VERIFIED on device | Camera2 HAL check & graceful fallback |
 | 3.4 | DOCUMENT camera mode verification | None | DONE | 681533a | 58 tests pass, edge mode high quality & text contrast profile active, NOT VERIFIED on device | Camera2 HAL check & graceful fallback |
 | 3.5 | TIME-LAPSE camera mode verification | None | DONE | 9500b1e | 58 tests pass, interval capture feedback active, NOT VERIFIED on device | Camera2 HAL check & graceful fallback |
-| 3.6 | SLOW-MOTION camera mode verification | None | DONE | a8105de | 58 tests pass, constrained high-speed check & safe fallback, NOT VERIFIED on device | Camera2 HAL check & graceful fallback |
-| 3.7 | NIGHT VISION camera mode verification | None | TODO | - | - | Camera2 HAL check & graceful fallback |
+| 3.6 | SLOW-MOTION camera mode verification | None | DONE | e96a0f1 | 58 tests pass, constrained high-speed check & safe fallback, NOT VERIFIED on device | Camera2 HAL check & graceful fallback |
+| 3.7 | NIGHT VISION camera mode verification | None | DONE | b9015ac | 58 tests pass, night scene mode check & safe fallback, NOT VERIFIED on device | Camera2 HAL check & graceful fallback |
 | 3.8 | PRO MACRO camera mode verification | None | TODO | - | - | Camera2 HAL check & graceful fallback |
 | 3.9 | ULTRA MACRO camera mode verification | None | TODO | - | - | Camera2 HAL check & graceful fallback |
 | 3.10 | ASTRO camera mode verification | None | TODO | - | - | Camera2 HAL check & graceful fallback |
