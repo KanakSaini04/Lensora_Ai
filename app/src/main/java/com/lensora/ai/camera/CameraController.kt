@@ -419,6 +419,28 @@ class CameraController(private val context: Context) {
                     }
                     onFeedback("🔍 Pro Macro: Minimum Focus Distance applied")
                 }
+                "ULTRA MACRO", "ULTRA_MACRO" -> {
+                    if (builder != null && session != null) {
+                        try {
+                            val minFocusDist = characteristics?.get(CameraCharacteristics.LENS_INFO_MINIMUM_FOCUS_DISTANCE) ?: 10.0f
+                            builder.set(CaptureRequest.CONTROL_AF_MODE, CaptureRequest.CONTROL_AF_MODE_OFF)
+                            builder.set(CaptureRequest.LENS_FOCUS_DISTANCE, minFocusDist)
+
+                            val activeArraySize = characteristics?.get(CameraCharacteristics.SENSOR_INFO_ACTIVE_ARRAY_SIZE)
+                            if (activeArraySize != null) {
+                                val cropWidth = activeArraySize.width() / 2
+                                val cropHeight = activeArraySize.height() / 2
+                                val left = (activeArraySize.width() - cropWidth) / 2
+                                val top = (activeArraySize.height() - cropHeight) / 2
+                                builder.set(CaptureRequest.SCALER_CROP_REGION, android.graphics.Rect(left, top, left + cropWidth, top + cropHeight))
+                            }
+                            session.setRepeatingRequest(builder.build(), null, backgroundHandler)
+                        } catch (hardwareEx: Exception) {
+                            Log.w(tag, "Ultra Macro hardware settings rejected by HAL. Safe Auto fallback.", hardwareEx)
+                        }
+                    }
+                    onFeedback("🔬 Ultra Macro: 2x Magnification & Min Focus Distance Active")
+                }
                 "LEICA" -> {
                     VibeState.selectedVibe = VibePreset.LEICA
                     onFeedback("📷 Leica B&W Color Grading Applied")

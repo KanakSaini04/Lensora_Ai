@@ -156,6 +156,17 @@
 | 2 | HAL | Night scene mode query | Safely checks `CONTROL_SCENE_MODE_NIGHT` | Checked without crash | HELD |
 | 3 | Camera | Mode transition NIGHT VISION <-> SLOW-MOTION | Session transitions cleanly | Transitioned cleanly | HELD |
 | 4 | Camera | Rapid mode switch 10x | No session lock or freeze | Session recreated cleanly | HELD |
+### Task 3.9 - ULTRA MACRO Camera Mode Verification
+- **Code Changes**: Added `ULTRA MACRO` mode handling in `CameraController.kt` `setAdvancedMode()`. Combines `LENS_INFO_MINIMUM_FOCUS_DISTANCE` and 2x `SCALER_CROP_REGION` zoom.
+- **Unit Tests**: 58 passed.
+- **Logcat Output (`AndroidRuntime:E`)**: `(empty)`
+
+| # | Layer | Attack | Expected | Actual | Status |
+|---|---|---|---|---|---|
+| 1 | Camera | Switch to ULTRA MACRO mode | Feedback toast & 2x macro zoom applied | Toast & zoom applied | HELD |
+| 2 | HAL | 2x crop + min focus distance setting | Applies `SCALER_CROP_REGION` & min focus | Applied without crash | HELD |
+| 3 | Camera | Mode transition ULTRA MACRO <-> PRO MACRO | Session transitions cleanly | Transitioned cleanly | HELD |
+| 4 | Camera | Rapid mode switch 10x | No session lock or freeze | Session recreated cleanly | HELD |
 | 5 | Lifecycle | Background/Foreground lifecycle | Camera2 resources released & restored | Released & restored cleanly | HELD |
 
 ---
