@@ -90,6 +90,17 @@
 | 2 | HAL | Face detect capability query | Safely checks HAL face detect support | Checked without crash | HELD |
 | 3 | Camera | Rapid mode switch BEAUTY <-> PHOTO 10x | No session lock or freeze | Session recreated cleanly | HELD |
 | 4 | Lifecycle | Background app while in BEAUTY mode | Releases Camera2 resources | Camera2 resources released | HELD |
+### Task 3.2 - WATERMARK Camera Mode Verification
+- **Code Changes**: Added `WATERMARK` mode handling in `CameraController.kt` `setAdvancedMode()`.
+- **Unit Tests**: 58 passed.
+- **Logcat Output (`AndroidRuntime:E`)**: `(empty)`
+
+| # | Layer | Attack | Expected | Actual | Status |
+|---|---|---|---|---|---|
+| 1 | Camera | Switch to WATERMARK mode | Feedback toast displayed | Toast displayed cleanly | HELD |
+| 2 | Camera | Mode transition WATERMARK <-> BEAUTY | Session transitions cleanly | Transitioned cleanly | HELD |
+| 3 | Camera | Rapid mode switch 10x | No session lock or freeze | Session recreated cleanly | HELD |
+| 4 | Lifecycle | Background app while in WATERMARK mode | Releases Camera2 resources | Camera2 resources released | HELD |
 | 5 | Lifecycle | Foreground app | Re-initializes Camera2 preview | Viewfinder active | HELD |
 
 ---

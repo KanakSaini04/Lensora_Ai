@@ -304,6 +304,9 @@ class CameraController(private val context: Context) {
                     VibeState.selectedVibe = VibePreset.ROYAL_GOLD
                     onFeedback("💄 Beauty: Soft Skin & Warm Tone Active")
                 }
+                "WATERMARK" -> {
+                    onFeedback("🏷️ Watermark: Lensora Computational Stamp Active")
+                }
                 "ASTRO" -> {
                     if (builder != null && session != null) {
                         try {
