@@ -15,9 +15,9 @@
 | 1.3 | Export dialog dismiss lock | None | DONE | 0bdd39c | DialogProperties lock active, success & failure dialogs verified | dismissOnClickOutside/BackPress false |
 | 1.4 | ExportWorker correctness (aspect, audio, MediaStore cleanup, foreground) | None | DONE | 78bd487 | 47 tests pass, composition CROP_TO_FILL, foreground service active | Composition aspect CROP_TO_FILL, foreground service |
 | 1.5 | Test media generation & real timeline verification | ffmpeg / test media | BLOCKED(USER) | - | - | Put 2 real videos (1280x720 & 720x1280) and 1 photo in C:\Lensora_testmedia |
-| 1.6 | Editor state safety & lifecycle persistence | None | DONE | e1280f9 | 48 tests pass, clip selection fallback verified | Clip selection validity, rotation & process restart |
-| 2.1 | SceneInference TFLite integration | model / labels | TODO | - | - | 224x224 preview frame, off-main thread |
-| 2.2 | ModelContractChecker shape & dtype validator | None | TODO | - | - | Expose incompatible state safely |
+| 1.6 | Editor state safety & lifecycle persistence | None | DONE | 3955f4c | 48 tests pass, clip selection fallback verified | Clip selection validity, rotation & process restart |
+| 2.1 | SceneInference TFLite integration | model / labels | BLOCKED(MODEL) | - | - | labels.txt and scene_classifier.tflite model file needed |
+| 2.2 | ModelContractChecker shape & dtype validator | None | DONE | e1052fa | 55 tests pass, 5 contract tests, real-model proof BLOCKED(MODEL) | Expose incompatible state safely |
 | 2.3 | Tiled pipeline scaling & memory management | None | TODO | - | - | Real-ESRGAN, Dehaze, LaMa tile recycle & unit tests |
 | 2.4 | Model supply checklist & gap review | None | TODO | - | - | Verify MODEL_SUPPLY_PLAN.md |
 | 3.1 | BEAUTY camera mode verification | None | TODO | - | - | Camera2 HAL check & graceful fallback |
@@ -54,9 +54,11 @@
 ## DECISIONS
 - 2026-11-18: Initialized master build queue from docs/MASTER_BUILD_PROMPT.md.
 - 2026-11-18: Task 1.5 marked BLOCKED(USER) because ffmpeg is not installed on PC. Action required: Put 2 real videos and 1 photo in C:\Lensora_testmedia.
+- 2026-11-18: Task 2.1 marked BLOCKED(MODEL) because scene_classifier.tflite and labels.txt files are not hosted.
 
 ## BLOCKERS
 - **Task 1.5 (USER)**: Please put 2 real videos (8-10 s, one 1280x720 and one 720x1280 with audio) and 1 photo (JPG) in `C:\Lensora_testmedia`.
+- **Task 2.1 (MODEL)**: Provide `scene_classifier.tflite` model file and corresponding `labels.txt` file.
 
 ## RUN LOG
 - 2026-11-18: Session started. Baseline setup completed (P0).

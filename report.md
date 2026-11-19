@@ -57,7 +57,18 @@
 | 2 | State | Undo deletion of selected clip | Valid clip selection preserved | Selection fallback validated | HELD |
 | 3 | State | Redo deletion | Valid clip selection preserved | Valid clip selection preserved | HELD |
 | 4 | OS | Screen rotation (config change) | ViewModel retains `selectedProject` & state | Retained editor state cleanly | HELD |
-| 5 | Storage | Force-stop and relaunch app | Project state persists from `project.json` | Project state persisted from disk | HELD |
+### Task 2.2 - ModelContractChecker Tensor Shape & Dtype Validation
+- **Code Changes**: Created `ModelContractChecker.kt` supporting tensor contract validation for all 4 models (`SCENE_CLASSIFIER`, `LAMA_DILATED`, `REAL_ESRGAN_V2`, `DEHAZE`). Added `ModelContractCheckerTest.kt` with fake tensor providers.
+- **Unit Tests**: 55 passed.
+- **Logcat Output (`AndroidRuntime:E`)**: `(empty)`
+
+| # | Layer | Attack | Expected | Actual | Status |
+|---|---|---|---|---|---|
+| 1 | AI | Validate valid LaMa model contract (512x512x4 -> 512x512x3) | `ModelContractStatus.Valid` | `Valid` returned | HELD |
+| 2 | AI | Validate Real-ESRGAN v2 2x super-res contract (512x512x3 -> 1024x1024x3) | `ModelContractStatus.Valid` | `Valid` returned | HELD |
+| 3 | AI | Input shape mismatch (256x256 vs 512x512) | `ModelContractStatus.Incompatible` | `Incompatible` returned cleanly | HELD |
+| 4 | AI | Output dtype mismatch (UINT8 vs FLOAT32) | `ModelContractStatus.Incompatible` | `Incompatible` returned cleanly | HELD |
+| 5 | AI | Missing model file | `ModelContractStatus.Missing` | `Missing` returned cleanly | HELD |
 
 ---
 

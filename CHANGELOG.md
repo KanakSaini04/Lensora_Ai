@@ -8,6 +8,7 @@
 - **Task 1.3**: Configured `DialogProperties(dismissOnClickOutside=false, dismissOnBackPress=false)` for running export dialogs, and added explicit export success/failure alert dialogs.
 - **Task 1.4**: Updated `ExportWorker.kt` with composition-level CROP_TO_FILL aspect scaling, photo audio removal, MediaStore error handling & staging cleanup, and WorkManager dataSync foreground service promotion.
 - **Task 1.6**: Ensured editor selection safety after clip delete/undo/redo with safe fallbacks, and verified project JSON persistence.
+- **Task 2.2**: Implemented `ModelContractChecker.kt` to validate input/output tensor shapes and dtypes against expected model contracts (512x512, 2x super-res) and safely expose Incompatible state.
 
 ## [Unreleased] - Step 67b (2026-11-18)
 
