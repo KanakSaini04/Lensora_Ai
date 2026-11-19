@@ -5,12 +5,13 @@
 > Rules for this file: every fact must come from the repo, a test run or a device/emulator check. Unknown = **NOT VERIFIED**. No secrets, tokens, keystores, PINs or personal data.
 
 ## 0. Status block (update every step)
-- **Last updated**: 2026-11-18 19:15:00 UTC
-- **Branch / HEAD**: `step-67-export` / HEAD
-- **Last completed step**: Step 67b (Real Media3 Transformer Export Engine)
-- **In progress**: PR #101 open (stacked on #100), awaiting user merge
-- **Unit tests**: 45 passed, 0 skipped, 0 failed across 9 test classes (`ExampleUnitTest`: 1, `AiPlannerTest`: 5, `EditorFoundationTest`: 5, `ProjectImporterTest`: 4, `ProjectRepositoryTest`: 1, `SceneClassifierTest`: 5, `ManifestParserTest`: 10, `TimelineEditEngineTest`: 9, `ExportPlanBuilderTest`: 5)
-- **Last emulator check**: `emulator-5554` (`Medium_Phone`), 2026-11-18 (Verified Settings screen displaying "Model Unavailable" for missing unhosted DLC models, camera preview tab, 0 crashes in logcat); **Last physical-device (Redmi) check**: Step 62 (Camera tab top overlays & typography verification on Redmi Note 13 Pro 5G `2312DRA50I`)
+- **Last updated**: 2026-11-18 Baseline Setup
+- **Branch / HEAD**: `build/all-features` / `0db3844`
+- **Last completed step**: Step P0 (Master Build Setup Baseline)
+- **In progress**: Rolling full build on branch `build/all-features`
+- **Unit tests**: 46 passed, 0 skipped, 0 failed across 10 test classes
+- **Baseline APK size**: 93,920,874 bytes (~89.57 MB)
+- **Last emulator check**: `emulator-5554` (`Medium_Phone`), 2026-11-18 (Verified NexusLauncher active, awake, ready); **Last physical-device (Redmi) check**: Step 62 (Camera tab top overlays & typography verification on Redmi Note 13 Pro 5G `2312DRA50I`)
 
 ## 1. Boot order for a new AI
 1. `GEMINI.md` (coding-agent rules & Section 10 Run/Device policy)
