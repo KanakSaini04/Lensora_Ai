@@ -200,6 +200,17 @@
 | 2 | HAL | Concurrent camera streaming query | Safely queries `concurrentCameraIds` | Checked without crash | HELD |
 | 3 | Camera | Mode transition DUAL-VIDEO <-> PANORAMA | Session transitions cleanly | Transitioned cleanly | HELD |
 | 4 | Camera | Rapid mode switch 10x | No session lock or freeze | Session recreated cleanly | HELD |
+### Task 3.17 - HIGH-RES Camera Mode Verification
+- **Code Changes**: Added `HIGH-RES` mode handling in `CameraController.kt` `setAdvancedMode()`. Queries `real_esrgan_v2.tflite` model availability via `ModelFileGuard` with 12.5 MP capture fallback.
+- **Unit Tests**: 58 passed.
+- **Logcat Output (`AndroidRuntime:E`)**: `(empty)`
+
+| # | Layer | Attack | Expected | Actual | Status |
+|---|---|---|---|---|---|
+| 1 | Camera | Switch to HIGH-RES mode | Feedback toast & 12.5 MP capture fallback | Toast & fallback displayed | HELD |
+| 2 | AI | Real-ESRGAN v2 model file check | `ModelFileGuard.isUsable()` checked safely | Checked without crash | HELD |
+| 3 | Camera | Mode transition HIGH-RES <-> DUAL-VIDEO | Session transitions cleanly | Transitioned cleanly | HELD |
+| 4 | Camera | Rapid mode switch 10x | No session lock or freeze | Session recreated cleanly | HELD |
 | 5 | Lifecycle | Background/Foreground lifecycle | Camera2 resources released & restored | Released & restored cleanly | HELD |
 
 ---

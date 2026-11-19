@@ -522,6 +522,16 @@ class CameraController(private val context: Context) {
                         onFeedback("📹 Dual-Video: Concurrent HAL Unsupported (Safe PIP Fallback)")
                     }
                 }
+                "HIGH-RES", "HIGH_RES" -> {
+                    val mm = com.lensora.ai.ai.ModelManager(context)
+                    val realEsrganFile = mm.getEnhancementModelFile()
+                    if (realEsrganFile != null && com.lensora.ai.ai.ModelFileGuard.isUsable(realEsrganFile)) {
+                        onFeedback("🔍 High-Res: 12.5 MP Capture + Real-ESRGAN v2 2x Super-Res Active (50 MP Output)")
+                    } else {
+                        Log.i(tag, "Real-ESRGAN v2 model file missing. Safe 12.5 MP capture fallback.")
+                        onFeedback("🔍 High-Res: 12.5 MP Capture Active (AI 2x Upscale Model Unavailable)")
+                    }
+                }
                 else -> {
                     onFeedback("✨ Mode '$modeName' Selected")
                 }

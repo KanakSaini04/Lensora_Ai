@@ -22,6 +22,7 @@
 - **Task 3.11**: Added DEEP SKY camera mode verification in `CameraController.kt` with max ISO sensitivity and infinity focus.
 - **Task 3.12**: Added RAW DNG camera mode verification in `CameraController.kt` with RAW_SENSOR capability HAL check and safe fallback.
 - **Task 3.16**: Added DUAL-VIDEO camera mode verification in `CameraController.kt` with concurrent camera HAL check and safe fallback.
+- **Task 3.17**: Added HIGH-RES camera mode verification in `CameraController.kt` with ModelFileGuard real_esrgan_v2 check and safe 12.5 MP capture fallback.
 
 ## [Unreleased] - Step 67b (2026-11-18)
 

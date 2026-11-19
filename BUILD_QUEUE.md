@@ -35,8 +35,8 @@
 | 3.13 | Brand Looks (LEICA, ZEISS, HASSELBLAD, XMAGE, HARCOURT) | None | DONE | a5d9443 | 58 tests pass, color matrix vibe presets active | Color matrix profiles active |
 | 3.14 | SCAN mode (PDF creation via PdfDocument) | None | DONE | 681533a | 58 tests pass, android.graphics.pdf.PdfDocument & ZXing active | android.graphics.pdf.PdfDocument |
 | 3.15 | PANORAMA camera mode verification | None | DONE | 681533a | 58 tests pass, sweep guide active, NOT VERIFIED on device | Dynamic sweep guide |
-| 3.16 | DUAL-VIDEO camera mode verification | None | DONE | a71092b | 58 tests pass, concurrent camera check & PIP fallback active, NOT VERIFIED on device | Concurrent camera check |
-| 3.17 | HIGH-RES camera mode verification | model | TODO | - | - | Upscale fallback check |
+| 3.16 | DUAL-VIDEO camera mode verification | None | DONE | fa74000 | 58 tests pass, concurrent camera check & PIP fallback active, NOT VERIFIED on device | Concurrent camera check |
+| 3.17 | HIGH-RES camera mode verification | model | BLOCKED(MODEL) | c7014ab | 58 tests pass, 12.5 MP capture fallback active, BLOCKED(MODEL) until real_esrgan_v2.tflite | Upscale fallback active, real_esrgan_v2.tflite model file needed |
 | 4.1 | Per-clip speed control in UI | None | TODO | - | - | Preview & export duration match |
 | 4.2 | Project Templates Loader | None | TODO | - | - | Load templates from assets |
 | 4.3 | Vibes look presets applied on export | None | TODO | - | - | Media3 video effects |
