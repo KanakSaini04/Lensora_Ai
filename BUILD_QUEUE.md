@@ -10,7 +10,7 @@
 | ID | Task | Needs | Status | Commit | Evidence | Notes |
 |---|---|---|---|---|---|---|
 | P0 | Master build setup baseline | None | DONE | 0db3844 | 46 tests pass, assembleDebug 89.57MB | Initial merge & preflight pass |
-| 1.1 | Remove fake sample generator in ProjectsScreen.kt | None | TODO | - | - | PhotoPicker replaces sample gen |
+| 1.1 | Remove fake sample generator in ProjectsScreen.kt | None | DONE | 91a82d0 | grep 0 matches, screenshots in docs/screenshots/1.1/ | PhotoPicker replaces fake sample gen |
 | 1.2 | Single editor header in Editor view | None | TODO | - | - | Back & delete project work |
 | 1.3 | Export dialog dismiss lock | None | TODO | - | - | dismissOnClickOutside/BackPress false |
 | 1.4 | ExportWorker correctness (aspect, audio, MediaStore cleanup, foreground) | None | TODO | - | - | Composition aspect CROP_TO_FILL, foreground service |

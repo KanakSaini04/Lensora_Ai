@@ -1,5 +1,10 @@
 # Changelog - Lensora_Ai
 
+## [Unreleased] - Master Build Phase P1 (2026-11-18)
+
+### Changed
+- **Task 1.1**: Removed fake sample generator logic and text video files in `ProjectsScreen.kt`; EmptyProjectsState "Create New Project" button now triggers System PhotoPicker.
+
 ## [Unreleased] - Step 67b (2026-11-18)
 
 ### Added

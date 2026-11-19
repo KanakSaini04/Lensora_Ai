@@ -1,4 +1,24 @@
-# Step 61b Verification Report
+# Lensora_Ai Master Build Report
+
+## Master Build Phase P1 - Editor and Export Correctness
+
+### Task 1.1 - Remove Fake Sample Generator
+- **Code Changes**: Removed sample file generation logic, fake text video files (`LENSORA_SAMPLE_VIDEO_STREAM_1_MP4`), and blue JPG fallbacks in `ProjectsScreen.kt`. Empty-state "Create New Project" button now triggers System `PhotoPickerLauncher`.
+- **Grep Verification**: `grep -rn "LENSORA_SAMPLE"` returned 0 occurrences in source code.
+- **Logcat Output (`AndroidRuntime:E`)**: `(empty)`
+- **Screenshots**: `docs/screenshots/1.1/empty_state.png`, `docs/screenshots/1.1/photopicker_opened.png`
+
+| # | Layer | Attack | Expected | Actual | Status |
+|---|---|---|---|---|---|
+| 1 | UI | Tap "Create New Project" on empty state | System PhotoPicker opens | PhotoPicker opened cleanly | HELD |
+| 2 | UI | Spam tap "Create New Project" 10x | Single picker launch, no crash | Handled gracefully without crash | HELD |
+| 3 | OS | Dismiss PhotoPicker with BACK key | Returns to empty ProjectsScreen | Returned to empty state cleanly | HELD |
+| 4 | State | Cancel picker selection (0 uris) | Projects list remains empty | Projects list remained empty | HELD |
+| 5 | Code | `grep -rn "LENSORA_SAMPLE"` | 0 matches in code | 0 matches in code | HELD |
+
+---
+
+# Archive: Step 61b Verification Report
 
 ## 1. Git Log & PR #84 Merge Status
 ```
