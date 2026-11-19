@@ -96,40 +96,17 @@ fun ProjectsScreen(
 
     Scaffold(
         topBar = {
-            TopAppBar(
-                title = {
-                    Text(
-                        text = if (uiState.selectedProject != null) uiState.selectedProject!!.name else "VIDEO PROJECTS",
-                        color = ColorWhite,
-                        fontWeight = FontWeight.Bold,
-                        fontSize = 16.sp,
-                    )
-                },
-                navigationIcon = {
-                    if (uiState.selectedProject != null) {
-                        IconButton(onClick = { viewModel.selectProject(null) }) {
-                            Icon(
-                                imageVector = Icons.AutoMirrored.Filled.ArrowBack,
-                                contentDescription = "Back to Projects",
-                                tint = ColorWhite,
-                            )
-                        }
-                    }
-                },
-                actions = {
-                    if (uiState.selectedProject != null) {
-                        IconButton(onClick = {
-                            val idToDelete = uiState.selectedProject!!.id
-                            viewModel.deleteProject(idToDelete)
-                            Toast.makeText(context, "Deleted Project", Toast.LENGTH_SHORT).show()
-                        }) {
-                            Icon(
-                                imageVector = Icons.Outlined.Delete,
-                                contentDescription = "Delete Project",
-                                tint = Color(0xFFEF4444),
-                            )
-                        }
-                    } else {
+            if (uiState.selectedProject == null) {
+                TopAppBar(
+                    title = {
+                        Text(
+                            text = "VIDEO PROJECTS",
+                            color = ColorWhite,
+                            fontWeight = FontWeight.Bold,
+                            fontSize = 16.sp,
+                        )
+                    },
+                    actions = {
                         Button(
                             onClick = {
                                 photoPickerLauncher.launch(
@@ -149,10 +126,10 @@ fun ProjectsScreen(
                             Spacer(modifier = Modifier.width(4.dp))
                             Text("New Project", color = ColorWhite, fontSize = 12.sp, fontWeight = FontWeight.Bold)
                         }
-                    }
-                },
-                colors = TopAppBarDefaults.topAppBarColors(containerColor = CharcoalSurface),
-            )
+                    },
+                    colors = TopAppBarDefaults.topAppBarColors(containerColor = CharcoalSurface),
+                )
+            }
         },
         containerColor = PitchBlackBackground,
     ) { innerPadding ->

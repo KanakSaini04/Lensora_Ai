@@ -191,6 +191,19 @@ fun EditorScreen(
                             tint = if (uiState.canRedo) ColorWhite else ColorMutedGray,
                         )
                     }
+                    IconButton(
+                        onClick = {
+                            viewModel.deleteProject(project.id)
+                            Toast.makeText(context, "Deleted Project", Toast.LENGTH_SHORT).show()
+                            onBackClick()
+                        },
+                    ) {
+                        Icon(
+                            imageVector = Icons.Outlined.Delete,
+                            contentDescription = "Delete Project",
+                            tint = Color(0xFFEF4444),
+                        )
+                    }
                     androidx.compose.material3.Button(
                         onClick = { showResolutionDialog = true },
                         colors = androidx.compose.material3.ButtonDefaults.buttonColors(containerColor = RoyalBlue),

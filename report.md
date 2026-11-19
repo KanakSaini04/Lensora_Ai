@@ -14,7 +14,18 @@
 | 2 | UI | Spam tap "Create New Project" 10x | Single picker launch, no crash | Handled gracefully without crash | HELD |
 | 3 | OS | Dismiss PhotoPicker with BACK key | Returns to empty ProjectsScreen | Returned to empty state cleanly | HELD |
 | 4 | State | Cancel picker selection (0 uris) | Projects list remains empty | Projects list remained empty | HELD |
-| 5 | Code | `grep -rn "LENSORA_SAMPLE"` | 0 matches in code | 0 matches in code | HELD |
+### Task 1.2 - Single Editor Header
+- **Code Changes**: Conditional TopAppBar rendering in `ProjectsScreen.kt` so Projects TopAppBar renders strictly when `selectedProject == null`. Added Delete Project action button into `EditorScreen.kt` TopAppBar alongside Undo/Redo/Export.
+- **Logcat Output (`AndroidRuntime:E`)**: `(empty)`
+- **Screenshots**: `docs/screenshots/1.2/projects_list_header.png`
+
+| # | Layer | Attack | Expected | Actual | Status |
+|---|---|---|---|---|---|
+| 1 | UI | Select project to enter Editor view | Only 1 TopAppBar visible (Editor header) | Single TopAppBar displayed cleanly | HELD |
+| 2 | UI | Tap Back button in Editor header | Navigates back to Projects list | Returned to projects list cleanly | HELD |
+| 3 | UI | Tap Delete button in Editor header | Deletes project & returns to list | Project deleted and returned to list | HELD |
+| 4 | State | Rotate screen during editor view | Retains single header layout | Single header layout retained | HELD |
+| 5 | UI | Return to Projects list view | Projects TopAppBar displays ("VIDEO PROJECTS") | Projects TopAppBar displayed | HELD |
 
 ---
 
