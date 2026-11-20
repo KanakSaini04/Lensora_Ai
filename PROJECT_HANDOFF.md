@@ -5,13 +5,13 @@
 > Rules for this file: every fact must come from the repo, a test run or a device/emulator check. Unknown = **NOT VERIFIED**. No secrets, tokens, keystores, PINs or personal data.
 
 ## 0. Status block (update every step)
-- **Last updated**: 2026-11-18
-- **Branch / HEAD**: `build/all-features`
-- **Last completed step**: Master Build Phase P9 Redmi Note 13 Pro 5G Physical Device Verification
-- **In progress**: Master build queue 100% COMPLETE
-- **Unit tests**: 64 passed, 0 skipped, 0 failed across 14 test classes
-- **Baseline APK size**: 93,920,874 bytes (~89.57 MB)
-- **Last emulator check**: `emulator-5554` (`Medium_Phone`), 2026-11-18; **Last physical-device (Redmi) check**: Task 9.1 (Verified on Redmi Note 13 Pro 5G `2312DRA50I`, Total PSS: 147.5 MB, Java Heap: 14.9 MB, Native Heap: 13.6 MB, 0 logcat crashes)
+- **Last updated**: 2026-11-20
+- **Branch / HEAD**: `step-M1-real-ai-models`
+- **Last completed step**: Step M1c Real AI Models Pipeline Hardening & Physical Device Verification (Places365 ResNet-18 FP16 + Real-ESRGAN v2)
+- **In progress**: Step M1c review package generation & PR base confirmation (`build/all-features`)
+- **Unit tests**: 79 passed, 0 skipped, 0 failed across 17 test classes
+- **Baseline APK size**: 94,720,306 bytes (~90.33 MB)
+- **Last emulator check**: `emulator-5554` (`Medium_Phone`), 2026-11-18; **Last physical-device (Redmi) check**: Step M1c (Verified on Redmi Note 13 Pro 5G `2312DRA50I`, Places365 FP16 `[1, 3, 224, 224]` NCHW FLOAT32 contract verified, Real-ESRGAN v2 `[1, 128, 128, 3]` -> `[1, 512, 512, 3]` FLOAT32 contract verified, peak PSS 374,504 KB, 0 logcat crashes)
 
 ## 1. Boot order for a new AI
 1. `GEMINI.md` (coding-agent rules & Section 10 Run/Device policy)

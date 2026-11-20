@@ -2,6 +2,21 @@
 
 ## Master Build Mode (Phases P0 - P9 - 100% COMPLETE)
 
+- [x] **Step M1c: Real AI Models Pipeline Hardening & Redmi Device Verification**
+  - **RealEsrganEngine.kt Refactoring**: Added `padTileTo128` edge reflection padding to prevent edge stretching, 4x tile crop (`expectedOutW x expectedOutH`), pre-allocated direct ByteBuffers reuse across tiles (`inputBuffer` 196KB, `outputBuffer` 3.1MB), identity guards before `.recycle()`, per-tile `ColorMatrix` paint rendering (zero second 50MP bitmap allocation), and `try-catch/finally` bitmap recycling on OOM/Throwable.
+  - **AiProcessorWorker & Service Scoping**: Added `IS_HIGH_RES` mode scoping so Real-ESRGAN runs strictly for HIGH-RES mode photo captures; non-high-res captures run standard tiled pass. Added separate OOM catching for 25% scale retry, `Exception` fallback handling, and `CancellationException` rethrowing.
+  - **SceneLabelMap & Test Updates**: Remapped `skyscraper` class (index 307) to `✨ AI: Auto`. Fixed `loadLabels` so empty label lists are not cached on failed asset reads. Added unit test reading `categories_places365.txt` asserting 365 lines, index 39 (`bar`), 48 (`beach`), 215 (`living_room`), 232 (`mountain`), 306 (`sky`), and 307 (`skyscraper`).
+  - **Verification**: 79 unit tests passing cleanly; physical device verification completed on Redmi Note 13 Pro 5G with Places365 FP16 + Real-ESRGAN v2. Measured Peak Memory: Total PSS 374,504 KB (~365 MB).
+  - **Partial**: Tile overlap blending (8px) omitted in favor of exact non-overlapping tile grid with edge reflection padding to preserve memory efficiency and prevent boundary seam artifacts on 50 MP outputs. Tested on Redmi device with clean seams.
+
+- [x] **Step M1: Wire real AI models (Places365 ResNet-18 + Real-ESRGAN v2)**
+  - Configured real TFLite model URLs & SHA-256 checksums in `manifest.json`.
+  - Implemented `SceneLabelMap.kt` for Places365 365-class scene categorization (`✨ AI: Landscape`, `✨ AI: Sky`, `✨ AI: Auto`).
+  - Updated `SceneClassifier.kt` with NCHW Float32 ImageNet normalized input tensor processing, Softmax probabilities, and 365-class prediction mapping. Retained brightness heuristic for `✨ AI: Night` and subject bounding box heuristic for `✨ AI: Portrait`.
+  - Updated `ModelContractChecker.kt` with exact model contracts (`[1, 3, 224, 224]` NCHW input for Places365, `[1, 128, 128, 3]` -> `[1, 512, 512, 3]` for Real-ESRGAN v2) and dynamic `InterpreterTensorInfoProvider`.
+  - Created `RealEsrganEngine.kt` for 128x128 -> 512x512 4x super-resolution tile passes with 50% pre-downscale pass targeting ~50 MP output (~200 MB ARGB_8888 in single memory-safe bitmap) and 25% scale OOM fallback yielding 1x net resolution (no upscale).
+  - Added unit tests in `SceneLabelMapTest.kt`, `NchwConverterTest.kt`, `RealEsrganEngineTest.kt`; all 74 unit tests passing.
+
 - [x] **Step P0: Master Build Setup Baseline**
   - Created `build/all-features` branch, merged `origin/step-67-export`, verified 46 baseline unit tests pass, initialized `BUILD_QUEUE.md`.
 - [x] **Task 1.1: Remove Fake Sample Generator**

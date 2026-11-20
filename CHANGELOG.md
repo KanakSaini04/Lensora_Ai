@@ -1,3 +1,21 @@
+## [Unreleased] - Step M1c Real AI Models Hardening (2026-11-20)
+
+### Added
+- **Step M1c Real AI Models Hardening**:
+  - `RealEsrganEngine.kt`: Added edge tile reflection padding (`padTileTo128`), `(tileW*4) x (tileH*4)` output tile cropping, pre-allocated ByteBuffer reuse across all tiles (`inputBuffer` 196KB, `outputBuffer` 3.1MB), recycling guards (`inTile != scaledSource`), per-tile `ColorMatrix` paint rendering without second 50MP bitmap allocation, and `try-catch/finally` bitmap recycling on OOM/Throwable.
+  - `AiProcessorWorker` & `AiProcessorService`: Added `IS_HIGH_RES` input key scoping for Real-ESRGAN, separate `OutOfMemoryError` handling for 25% scale fallback, `Exception` handling for safe standard pass fallback, and `CancellationException` rethrowing.
+  - `SceneLabelMap`: Remapped `skyscraper` class (index 307) to `✨ AI: Auto`. Fixed `loadLabels` cache logic for failed asset reads. Added unit tests reading `categories_places365.txt` asserting 365 lines and index label mappings.
+  - Physical device verification on Redmi Note 13 Pro 5G: Verified Places365 FP16 + Real-ESRGAN v2 contracts and captured peak memory stats (`dumpsys meminfo`: Total PSS 374,504 KB).
+
+## [Unreleased] - Step M1 Real AI Models (2026-11-19)
+
+### Added
+- **Step M1 Real AI Models**: Wired real TFLite models (`scene_classifier.tflite` Places365 ResNet-18 FP16 and `real_esrgan_v2.tflite` Real-ESRGAN general x4v3 float32) via DLC manifest.
+- **Places365 Scene Classifier**: Integrated NCHW Float32 ImageNet normalized input tensor processing, Softmax probability calculation, and 365-class index label mapping (`✨ AI: Landscape`, `✨ AI: Sky`, `✨ AI: Auto`).
+- **Real-ESRGAN v2 Super-Resolution**: Built `RealEsrganEngine.kt` for 128x128 -> 512x512 4x tile super-resolution passes with 50% pre-downscale pass targeting ~50 MP output (~200 MB ARGB_8888 in single memory-safe bitmap) and 25% scale OOM fallback yielding 1x net resolution (no upscale).
+- **Model Contract Validation**: Updated `ModelContracts` in `ModelContractChecker.kt` (`[1, 3, 224, 224]` NCHW input for Places365, `[1, 128, 128, 3]` -> `[1, 512, 512, 3]` for Real-ESRGAN v2) and dynamic `InterpreterTensorInfoProvider`.
+- **SHA-256 Downloader Guard**: `ModelDownloaderWorker` validates expected SHA-256 checksums and automatically deletes corrupted/mismatched temporary model files.
+
 ## [Unreleased] - Master Build Phase P4, P5, P6, P7 (2026-11-18)
 
 ### Added
