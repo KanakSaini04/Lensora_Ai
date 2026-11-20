@@ -1,12 +1,22 @@
 # Lensora_Ai Master Build Report
 
+## Step M1h - Real-ESRGAN GPU Delegate Acceleration & CPU Fallback (Speed)
+- **Code Changes**:
+  - `RealEsrganEngine.kt`: Added `EsrganInterpreter(val interpreter: Interpreter, val gpuDelegate: GpuDelegate?, val usingGpu: Boolean)` data class with `.close()`. Added `createInterpreter(modelFile: File)` helper that attempts `GpuDelegate()` via `CompatibilityList().isDelegateSupportedOnThisDevice` with a non-zero test buffer warm-up inference pass and output validation (`NaN`/`Inf` check, range `[0,1]`, and mean absolute difference $\le 0.02$ vs CPU), safely closing `CompatibilityList`. On unsupported devices or validation failure, falls back cleanly to multi-threaded CPU `Interpreter(modelFile, Options().setNumThreads(4))`.
+  - Added tile timing telemetry in `RealEsrganEngine.kt` logging per 20 tiles and on final tile: `Tile $tileIndex/${grid.totalTiles} [fill: ${avgFill}ms, inf: ${avgInf}ms, convert: ${avgConv}ms, draw: ${avgDraw}ms, avgTotal: ${avgTotal}ms]`. Added automatic CPU fallback if `interpreter.run` fails during tile processing.
+  - `AiProcessorService.kt` & `AiProcessorWorker.kt`: Updated `real_esrgan_v2.tflite` loading to call `RealEsrganEngine.createInterpreter(file)` ONLY when `isHighRes` is true, logging backend mode (`GPU` vs `CPU`), and closing `EsrganInterpreter` in `finally` blocks. Fixed `AiProcessorWorker.kt` to safely close `candidateObj` if `checkContract` throws an exception.
+- **Unit Tests**: 80 passed (`RealEsrganEngineTest`, `CameraControllerModeTest`, `SceneLabelMapTest`, `NchwConverterTest`, `ModelContractCheckerTest`).
+- **Status & Device Verification Note**: GPU delegate is implemented and unit-tested with CPU fallback, but **NOT device-verified yet** (expected speed gain is unmeasured).
+- **Known Issues**:
+  - Video recording Toast crash: `"Can't toast on a thread that has not called Looper.prepare()"` at `CameraScreen.kt:719` triggered from `CameraController.kt:798` (`startVideoRecording` `onConfigured` callback on background thread); pending resolution in a future step.
+
 ## Step M1g - Real-ESRGAN Tile Overlap (8px Context to Eliminate Seams)
 - **Code Changes**:
   - `RealEsrganEngine.kt`: Added `TILE_PAD = 8`, `TILE_CORE = 112`, `CROP_OFFSET = 32`, `PaddedSize`, `calculatePaddedSize`, `buildEdgePaddedSource`, and `processTileWithContext`.
   - Updated `calculateTileGrid`, `calculateTileBounds`, and `calculateDestCoordinates` to use `TILE_CORE` ($112$).
   - Updated `runSuperResolutionPipeline` to construct `buildEdgePaddedSource` and extract $128 \times 128$ overlapping input windows ($112 \times 112$ core + 8px context on each side) and crop $448 \times 448$ core tiles from $512 \times 512$ model outputs at `CROP_OFFSET = 32`.
 - **Unit Tests**: 80 passed (`RealEsrganEngineTest` verified $1024 \times 768 \rightarrow 70$ tiles, $1530 \times 2040 \rightarrow 266$ tiles, padded source $1584 \times 2144$, partial edge tile bounds at $col=13, row=18 \rightarrow 74 \times 24$, crop dims $296 \times 96$, and dest coords $5824, 8064$).
-- **Performance & Overlap Note**: 266-tile pass for $1530 \times 2040$ input is expected to take $\sim 38-40\%$ longer ($\sim 10.5$ mins on CPU multi-threading). Speed optimization is a separate pending task. NOT device-verified yet (user will verify on Redmi device after build).
+- **Performance & Measured Time**: Real-world CPU execution time on Redmi Note 13 Pro 5G measured **18 minutes (1,080,052 ms)** for 266 tiles (build `c35bd2f`).
 
 | # | Layer | Attack | Expected | Actual | Environment | Verdict |
 |---|---|---|---|---|---|---|
@@ -19,7 +29,7 @@
 - **Physical Device Run (Redmi Note 13 Pro 5G `2312DRA50I`)**:
   - **Pipeline Execution**: Source photo $3060 \times 4080$ $\rightarrow$ halved to $1530 \times 2040$ $\rightarrow$ split into 192 tiles ($128 \times 128 \rightarrow 512 \times 512$) $\rightarrow$ $6120 \times 8160$ output JPEG (6,486,777 bytes). Net upscale vs source is $2\times$ scale ($4\times$ tile scale on 50% pre-downscaled input).
   - **Execution Duration**: `AiProcessorService` completed in 459,633 ms (~7 min 40 s) with zero `AndroidRuntime` errors. Logcat: `RealEsrganEngine: Completed Real-ESRGAN super-resolution pass: 3060x4080 -> 6120x8160` and `AiProcessorService: ... finished in 459633ms (Model: real_esrgan_v2.tflite, Vibe: None, Dimensions: 6120x8160)`.
-  - **100% Crop Boundary Analysis ($x=2048, y=2048$)**: Content is continuous (no stretching or misalignment), but local gradient at boundary rows/columns is $\sim 4\times$ background value (4.9 vs 1.25 and 3.3 vs 0.8 gray levels) $\rightarrow$ tile seams are **faint but measurable** (visible only at 100% zoom).
+  - **100% Crop Seam Analysis**: User screenshots on build `1f38313` showed obvious seams at 128px tile borders. On build `c35bd2f` (8px tile overlap with 112px core), no hard seams were visible across 5 zoomed crops of a dark scene (inconclusive until bright scene re-verification).
   - **Bottom-Right Corner Analysis**: Mean brightness 16.5/255 with amplified red/purple color noise, plus slight extra streaking in last $\sim 24\text{ px}$ right edge and $\sim 20\text{ px}$ bottom edge.
   - **Places365 Classifier Predictions on Redmi**:
     - Indoor: #63 `bow_window/indoor` 0.3176, #45 `bathroom` 0.1048, #303 `shower` 0.0447, #240 `nursery` 0.0356, #343 `utility_room` 0.0265.
@@ -29,7 +39,7 @@
 
 ## Step M1c / M1e - Real AI Models Pipeline Hardening
 - **Code Changes**:
-  - Added `HighResModeHelper.kt` and `AdvancedModeState.kt` pure classes to prevent sticky mode execution when switching main carousel modes.
+  - Added `AdvancedModeState.kt` pure class to prevent sticky mode execution when switching main carousel modes.
   - `RealEsrganEngine.kt`: Added `padTileTo128` edge pixel replication padding, output tile cropping to `(tileW*4) x (tileH*4)`, pre-allocated ByteBuffer reuse across all 192 tiles (`inputBuffer` 196KB, `outputBuffer` 3.1MB), identity recycling guards (`inTile != scaledSource`), per-tile `ColorMatrix` paint rendering without second 50MP bitmap allocation, and `try-catch/finally` bitmap recycling on OOM/Throwable.
   - `AiProcessorWorker.kt` & `AiProcessorService.kt`: Added `IS_HIGH_RES` input key scoping for Real-ESRGAN, separate `OutOfMemoryError` catching for 25% scale fallback, `Exception` fallback handling, and `CancellationException` rethrowing.
 - **Unit Tests**: 80 passed, 0 skipped, 0 failed across 17 test classes.
