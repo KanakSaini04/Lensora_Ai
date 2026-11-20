@@ -9,9 +9,9 @@
 - **Branch / HEAD**: `step-M1h-gpu-delegate`
 - **Last completed step**: Step M1h Google Drive Auth Sign-In Fix & Real-ESRGAN GPU Delegate Acceleration
 - **In progress**: Step M1h review package generation & PR base confirmation (`build/all-features`)
-- **Unit tests**: 82 passed, 0 skipped, 0 failed across 18 test classes
+- **Unit tests**: 83 passed, 0 skipped, 0 failed across 18 test classes
 - **Baseline APK size**: 94,720,306 bytes (~90.33 MB)
-- **Last emulator check**: `emulator-5554` (`Medium_Phone`), 2026-11-20 (App launches cleanly, Google Drive Sign-In dialog functioning, 82 unit tests passing); **Last physical-device (Redmi) check**: Step M1f (Verified on Redmi Note 13 Pro 5G `2312DRA50I`, High-Res UI tile selectable, $6120 \times 8160$ ~50 MP JPEG output saved, 82 unit tests passing)
+- **Last emulator check**: `emulator-5554` (`Medium_Phone`), 2026-11-20 (App launches cleanly, Google Drive Sign-In dialog functioning, 83 unit tests passing); **Last physical-device (Redmi) check**: Step M1f (Verified on Redmi Note 13 Pro 5G `2312DRA50I`, High-Res UI tile selectable, $6120 \times 8160$ ~50 MP JPEG output saved, 83 unit tests passing)
 - **Known Issue**: Video recording Toast crash (`"Can't toast on a thread that has not called Looper.prepare()"`) at `CameraScreen.kt:719` from `CameraController.kt:798` (`startVideoRecording` `onConfigured` callback on background thread); pending resolution in a future step.
 
 ## 1. Boot order for a new AI
