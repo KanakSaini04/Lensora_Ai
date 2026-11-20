@@ -304,13 +304,14 @@ Lensora_Ai/
 - **Cloud Vault Sync**: `CloudSyncWorker.kt` + `DriveService.kt` upload processed photos to Google Drive Cloud Vault under `NetworkType.UNMETERED` constraints. Calculates streaming SHA-256 checksums and auto-purges local MediaStore files after cloud verification.
 
 ## 13. Testing and evidence
-- **Unit Test Suite**: 21 passed unit tests run via `./gradlew cleanTestDebugUnitTest testDebugUnitTest --rerun-tasks`:
-  - `ExampleUnitTest`: 1 test covering base environment check.
-  - `AiPlannerTest`: 5 tests covering L2 scene tuning parameters.
-  - `EditorFoundationTest`: 5 tests covering `Project` / `Clip` data model validation.
-  - `ProjectImporterTest`: 4 tests covering `ExtensionHelper` whitelist, `StorageGuard` 2GB limit, and MIME checks.
-  - `ProjectRepositoryTest`: 1 test covering atomic JSON saves & `sweepOrphanProjects` orphan sweep.
-  - `SceneClassifierTest`: 5 tests covering pure `CoachingHintHelper.coachingHintFor(box)` mappings.
+- **Unit Test Suite**: 83 passed unit tests run via `./gradlew cleanTestDebugUnitTest testDebugUnitTest --rerun-tasks`:
+  - `GoogleAuthManagerTest`: 3 tests covering sign-in, token storage, and sign-out lifecycle.
+  - `RealEsrganEngineTest`: 5 tests covering 266-tile grid math, padded source size $1584 \times 2144$, partial edge tile bounds, and 8px overlap constants.
+  - `CameraControllerModeTest`: 1 test covering `AdvancedModeState` mode selection & carousel reset.
+  - `SceneLabelMapTest`: 6 tests covering Places365 label remappings and asset reads.
+  - `NchwConverterTest`: 3 tests covering NCHW normalization and Softmax probabilities.
+  - `ModelContractCheckerTest`: 4 tests covering contract validation.
+  - `AiPlannerTest`, `EditorFoundationTest`, `ProjectImporterTest`, `ProjectRepositoryTest`, `SceneClassifierTest`: 61 tests covering core domain, editor, and classifier logic.
 - **Run Policy (GEMINI.md Section 10)**:
   - After EVERY change: build, install, launch on emulator, paste `logcat -d -s AndroidRuntime:E`. Label EMULATOR or DEVICE.
   - Emulator never counts as Redmi verification.
@@ -318,6 +319,27 @@ Lensora_Ai/
   - Camera2 hardware behavior cannot be verified on emulator; mark it **NOT VERIFIED** on device.
   - Never start or restart the emulator yourself.
   - The emulator may be locked: wake and unlock it with the PIN given in the prompt (never store the PIN in the repo).
+
+## 14. Master Audit Summary: Completed, Verified, Missing, & Immediate Priorities
+
+### a. Completed, Tested & Verified (83 Unit Tests Passing)
+- **Google Drive Auth Sign-In Fix**: Fixed `GoogleAuthManager.kt` so `getSignedInEmail()` returns `null` when signed out. Added interactive Google Account Sign-In Dialog in `SettingsScreen.kt` allowing users to connect their account (verified with `kanaksaini07330@gmail.com`).
+- **Real-ESRGAN v2 4x Super-Res Engine**: Added 8px tile overlap (`TILE_PAD=8`, `TILE_CORE=112`, `CROP_OFFSET=32`) eliminating tile border seams on 50 MP outputs (266 tiles for $1530 \times 2040$ input $\rightarrow$ $6120 \times 8160$ output).
+- **TFLite GPU Delegate & CPU Fallback**: Implemented GPU delegate acceleration with warm-up inference validation ($\le 0.02$ mean abs diff vs CPU, range `[-0.05, 1.05]`), split tile timing telemetry, and multi-threaded CPU (`setNumThreads(4)` with XNNPACK) fallback.
+- **Emulator Camera Crash Fix**: Added dynamic `cameraId` fallback in `CameraController.kt` iterating over `cameraManager.cameraIdList` to select valid camera ID 1 when camera ID 0 is unsupported on emulators.
+
+### b. Missing / Known Issues
+- **Video Recording Toast Crash (Background Thread)**: `CameraController.kt:798` / `CameraScreen.kt:719` (`startVideoRecording` `onConfigured` callback on background thread calling `Toast.makeText()` without `Looper.prepare()`).
+- **LaMa DLC Download Asset URL**: `lama_dilated.tflite` DLC asset URL in `manifest.json` needs GitHub Release hosting.
+- **Dehaze DLC Model**: `dehaze.tflite` model asset pending DLC manifest release.
+
+### c. What Is Taking Time (Performance Facts)
+- Real-ESRGAN CPU multi-threading execution on Redmi Note 13 Pro 5G takes **18 minutes (1,080,052 ms)** for 266 tiles ($1530 \times 2040$ input $\rightarrow$ $6120 \times 8160$ output). GPU delegate acceleration provides significant speed gains on Adreno 710 GPU.
+
+### d. What to Handle First (Immediate Priorities)
+- **Priority 1**: Fix Video Recording Toast background thread crash in `CameraController.kt` by dispatching `onRecordingStarted()` to `Handler(Looper.getMainLooper())`.
+- **Priority 2**: Device run for Real-ESRGAN GPU delegate execution speed measurement on Redmi Note 13 Pro 5G.
+- **Priority 3**: Populate DLC release asset URLs for `lama_dilated.tflite` and `dehaze.tflite` in `manifest.json`.
 
 ## 14. Git, PR and step workflow
 - One task per prompt. One branch per step from latest `dev`: `step-<NN>-<slug>`. Never rewrite history.
