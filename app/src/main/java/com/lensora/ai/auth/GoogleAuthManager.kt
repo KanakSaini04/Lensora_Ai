@@ -13,6 +13,7 @@ import org.json.JSONObject
 
 class GoogleAuthManager(
     private val context: Context,
+    private val customPrefs: SharedPreferences? = null,
 ) {
     private val tag = "GoogleAuthManager"
     private val client = OkHttpClient()
@@ -21,7 +22,7 @@ class GoogleAuthManager(
         get() = BuildConfig.GOOGLE_CLIENT_ID
 
     private val prefs: SharedPreferences by lazy {
-        try {
+        customPrefs ?: try {
             val masterKeyAlias = MasterKeys.getOrCreate(MasterKeys.AES256_GCM_SPEC)
             EncryptedSharedPreferences.create(
                 "lensora_secure_auth_prefs",
