@@ -18,7 +18,7 @@ The application is tuned and hardened specifically for the **Redmi Note 13 Pro 5
 
 | Parameter | Device Specification | Architectural Impact & Strategy |
 | :--- | :--- | :--- |
-| **SoC** | Qualcomm Snapdragon 7s Gen 2 | Multi-threaded TFLite execution with `GpuDelegate` acceleration and CPU XNNPACK 4-thread fallback. |
+| **SoC** | Qualcomm Snapdragon 7s Gen 2 | Multi-threaded TFLite execution on CPU (4 threads with XNNPACK) for Real-ESRGAN super-resolution, and `GpuDelegate` acceleration for LaMa inpainting. |
 | **RAM** | 8 GB LPDDR4X | **Memory Shield Engine**: $512 \times 512$ px tiled region processing (`BitmapRegionDecoder`) preventing Out-Of-Memory (OOM) crashes on 12.5MP images. |
 | **OS** | Android 16 / Xiaomi HyperOS 3.0 | **HyperOS Kill Protection**: `AiProcessorService` runs as a persistent Foreground Service (`FOREGROUND_SERVICE_DATA_SYNC`). |
 | **Camera Sensor** | 200 MP ISOCELL HP3 (Main ID 0) | **Probe Audit Finding**: 200MP raw stream map is unexposed to 3rd-party apps via standard Camera2 characteristics. Binned to **12.5 MP (4080x3060)** + Real-ESRGAN AI upscale. |
@@ -103,7 +103,7 @@ The UI is built with the **Obsidian Royal** color palette:
 | | **🎛️ PRO** | `WORKING (Step 37)` | Manual exposure controls (ISO 100–3200, Shutter 1/1000s–1s), RAW DNG toggle, Zebras, Focus Peaking. |
 | **Pro Tools** | **✨ ASTRO** | `IMPLEMENTED - NOT VERIFIED` | Infinity focus lock (`0.0f`) + 30s long exposure. |
 | | **🔍 PRO MACRO** | `IMPLEMENTED - NOT VERIFIED` | Minimum focus distance lock (`LENS_INFO_MINIMUM_FOCUS_DISTANCE`). |
-| | **📷 HIGH-RES** | `IMPLEMENTED - NOT VERIFIED` | 12.5MP capture + Real-ESRGAN 4x AI super-resolution pass (128x128 -> 512x512 tiles, 50% pre-downscale pass targeting ~50MP output in single memory-safe bitmap). |
+| | **📷 HIGH-RES** | `IMPLEMENTED - PARTIALLY VERIFIED` | 12.5MP capture + Real-ESRGAN 4x AI super-resolution pass (128x128 -> 512x512 tiles, 50% pre-downscale pass, verified on Redmi Note 13 Pro 5G: 6120x8160 ~50MP output in 7 min 40 s). |
 | | **🌙 NIGHT VISION** | `IMPLEMENTED - NOT VERIFIED` | Exposure compensation +1.0 EV boost + multi-frame noise reduction (needs dehaze.tflite, not in DLC manifest; see docs/MODEL_AUDIT.md). |
 | | **📄 SCAN** | `IMPLEMENTED - NOT VERIFIED` | Document edge detection & multi-page PDF generation with ZXing `ErrorCorrectionLevel.H` QR codes. |
 | | **📑 DOCUMENT** | `IMPLEMENTED - NOT VERIFIED` | High contrast black-and-white text extraction. |

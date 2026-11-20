@@ -2,12 +2,14 @@
 
 ## Master Build Mode (Phases P0 - P9 - 100% COMPLETE)
 
-- [x] **Step M1c: Real AI Models Pipeline Hardening & Redmi Device Verification**
-  - **RealEsrganEngine.kt Refactoring**: Added `padTileTo128` edge reflection padding to prevent edge stretching, 4x tile crop (`expectedOutW x expectedOutH`), pre-allocated direct ByteBuffers reuse across tiles (`inputBuffer` 196KB, `outputBuffer` 3.1MB), identity guards before `.recycle()`, per-tile `ColorMatrix` paint rendering (zero second 50MP bitmap allocation), and `try-catch/finally` bitmap recycling on OOM/Throwable.
+- [x] **Step M1f: Real AI Models Pipeline Hardening & Device Verification**
+  - **MoreModesSheet & UI Activation**: Added non-SOON `"High-Res"` tile (`Icons.Outlined.HighQuality`) under Pro Tools. Selecting High-Res activates `"✨ Mode: High-Res"` top pill and highlights carousel mode card in Royal Blue.
+  - **Sticky Mode Fix & Pure Helpers**: Added `AdvancedModeState.kt` pure class and `HighResModeHelper.kt` to prevent sticky mode execution when switching carousel modes. Added pure calculation helpers (`calculateTileGrid`, `calculateTileBounds`, `calculateOutputCropDimensions`, `calculateDestCoordinates`) to `RealEsrganEngine.kt`.
+  - **RealEsrganEngine.kt Refactoring**: Added `padTileTo128` edge pixel replication padding to prevent edge stretching, output tile cropping to `(tileW*4) x (tileH*4)`, pre-allocated direct ByteBuffer reuse across 192 tiles (`inputBuffer` 196KB, `outputBuffer` 3.1MB), identity guards before `.recycle()`, per-tile `ColorMatrix` paint rendering (zero second 50MP bitmap allocation), and `try-catch/finally` bitmap recycling on OOM/Throwable.
   - **AiProcessorWorker & Service Scoping**: Added `IS_HIGH_RES` mode scoping so Real-ESRGAN runs strictly for HIGH-RES mode photo captures; non-high-res captures run standard tiled pass. Added separate OOM catching for 25% scale retry, `Exception` fallback handling, and `CancellationException` rethrowing.
-  - **SceneLabelMap & Test Updates**: Remapped `skyscraper` class (index 307) to `✨ AI: Auto`. Fixed `loadLabels` so empty label lists are not cached on failed asset reads. Added unit test reading `categories_places365.txt` asserting 365 lines, index 39 (`bar`), 48 (`beach`), 215 (`living_room`), 232 (`mountain`), 306 (`sky`), and 307 (`skyscraper`).
-  - **Verification**: 79 unit tests passing cleanly; physical device verification completed on Redmi Note 13 Pro 5G with Places365 FP16 + Real-ESRGAN v2. Measured Peak Memory: Total PSS 374,504 KB (~365 MB).
-  - **Partial**: Tile overlap blending (8px) omitted in favor of exact non-overlapping tile grid with edge reflection padding to preserve memory efficiency and prevent boundary seam artifacts on 50 MP outputs. Tested on Redmi device with clean seams.
+  - **SceneLabelMap & Test Updates**: Remapped `skyscraper` class (index 307) to `✨ AI: Auto`. Fixed `loadLabels` so empty label lists are not cached on failed asset reads. Added unit tests testing pure state and tile calculation functions; 80 unit tests passing cleanly.
+  - **Device Verification (user-run, adb logcat, 2026-11-20)**: User-run photo capture on Redmi Note 13 Pro 5G yielded 6,486,777 byte saved JPEG of $6120 \times 8160$ resolution ($2\times$ net upscale vs source, 192 tiles), finishing in 459,633 ms (~7 min 40 s) with zero `AndroidRuntime` errors.
+  - **Partial**: Tile overlap blending (8px) omitted in favor of exact non-overlapping tile grid with edge pixel replication padding to preserve memory efficiency. Measured result on Redmi device shows faint, measurable seams visible only at 100% zoom (gradient at boundary rows/cols $\sim 4\times$ local background value).
 
 - [x] **Step M1: Wire real AI models (Places365 ResNet-18 + Real-ESRGAN v2)**
   - Configured real TFLite model URLs & SHA-256 checksums in `manifest.json`.

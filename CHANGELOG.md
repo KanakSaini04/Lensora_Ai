@@ -1,11 +1,13 @@
-## [Unreleased] - Step M1c Real AI Models Hardening (2026-11-20)
+## [Unreleased] - Step M1f Real AI Models UI Wiring & Device Verification (2026-11-20)
 
 ### Added
-- **Step M1c Real AI Models Hardening**:
-  - `RealEsrganEngine.kt`: Added edge tile reflection padding (`padTileTo128`), `(tileW*4) x (tileH*4)` output tile cropping, pre-allocated ByteBuffer reuse across all tiles (`inputBuffer` 196KB, `outputBuffer` 3.1MB), recycling guards (`inTile != scaledSource`), per-tile `ColorMatrix` paint rendering without second 50MP bitmap allocation, and `try-catch/finally` bitmap recycling on OOM/Throwable.
+- **Step M1f Real AI Models UI Wiring & Hardening**:
+  - `MoreModesSheet.kt`: Added non-SOON `"High-Res"` tile (`Icons.Outlined.HighQuality`) under Pro Tools. Selecting High-Res activates `"✨ Mode: High-Res"` top pill and highlights carousel mode card in Royal Blue.
+  - `AdvancedModeState.kt`: Created pure class delegating mode state and carousel mode reset to prevent sticky mode execution on normal photo captures.
+  - `RealEsrganEngine.kt`: Added `padTileTo128` edge pixel replication padding, output tile cropping to `(tileW*4) x (tileH*4)`, pre-allocated ByteBuffer reuse across all 192 tiles (`inputBuffer` 196KB, `outputBuffer` 3.1MB), identity recycling guards (`inTile != scaledSource`), per-tile `ColorMatrix` paint rendering without second 50MP bitmap allocation, pure tile grid math helpers (`calculateTileGrid`, `calculateTileBounds`, `calculateOutputCropDimensions`, `calculateDestCoordinates`), and `try-catch/finally` bitmap recycling on OOM/Throwable.
   - `AiProcessorWorker` & `AiProcessorService`: Added `IS_HIGH_RES` input key scoping for Real-ESRGAN, separate `OutOfMemoryError` handling for 25% scale fallback, `Exception` handling for safe standard pass fallback, and `CancellationException` rethrowing.
-  - `SceneLabelMap`: Remapped `skyscraper` class (index 307) to `✨ AI: Auto`. Fixed `loadLabels` cache logic for failed asset reads. Added unit tests reading `categories_places365.txt` asserting 365 lines and index label mappings.
-  - Physical device verification on Redmi Note 13 Pro 5G: Verified Places365 FP16 + Real-ESRGAN v2 contracts and captured peak memory stats (`dumpsys meminfo`: Total PSS 374,504 KB).
+  - `SceneLabelMap`: Remapped `skyscraper` class (index 307) to `✨ AI: Auto`. Fixed `loadLabels` cache logic for failed asset reads. Added unit tests reading `categories_places365.txt` asserting 365 lines and index label mappings; 80 unit tests passing.
+  - Physical device verification on Redmi Note 13 Pro 5G (user-run, adb logcat, 2026-11-20): High-Res mode capture yielded 6,486,777 byte saved JPEG of $6120 \times 8160$ resolution ($2\times$ net upscale vs source, 192 tiles), finishing in 459,633 ms (~7 min 40 s) with zero `AndroidRuntime` errors.
 
 ## [Unreleased] - Step M1 Real AI Models (2026-11-19)
 

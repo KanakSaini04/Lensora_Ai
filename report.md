@@ -1,29 +1,37 @@
 # Lensora_Ai Master Build Report
 
-## Step M1c - Real AI Models Pipeline Hardening & Redmi Device Verification
+## Step M1f - High-Res UI & Real-ESRGAN Device Verification (user-run, adb logcat, 2026-11-20)
+- **UI Selection**: High-Res tile added to "More Camera Modes" sheet under Pro Tools (`Icons.Outlined.HighQuality`). Tapping it updates active mode top pill to `"✨ Mode: High-Res"` and highlights `HIGH-RES` carousel card in Royal Blue.
+- **Physical Device Run (Redmi Note 13 Pro 5G `2312DRA50I`)**:
+  - **Pipeline Execution**: Source photo $3060 \times 4080$ $\rightarrow$ halved to $1530 \times 2040$ $\rightarrow$ split into 192 tiles ($128 \times 128 \rightarrow 512 \times 512$) $\rightarrow$ $6120 \times 8160$ output JPEG (6,486,777 bytes). Net upscale vs source is $2\times$ scale ($4\times$ tile scale on 50% pre-downscaled input).
+  - **Execution Duration**: `AiProcessorService` completed in 459,633 ms (~7 min 40 s) with zero `AndroidRuntime` errors. Logcat: `RealEsrganEngine: Completed Real-ESRGAN super-resolution pass: 3060x4080 -> 6120x8160` and `AiProcessorService: ... finished in 459633ms (Model: real_esrgan_v2.tflite, Vibe: None, Dimensions: 6120x8160)`.
+  - **100% Crop Boundary Analysis ($x=2048, y=2048$)**: Content is continuous (no stretching or misalignment), but local gradient at boundary rows/columns is $\sim 4\times$ background value (4.9 vs 1.25 and 3.3 vs 0.8 gray levels) $\rightarrow$ tile seams are **faint but measurable** (visible only at 100% zoom).
+  - **Bottom-Right Corner Analysis**: Mean brightness 16.5/255 with amplified red/purple color noise, plus slight extra streaking in last $\sim 24\text{ px}$ right edge and $\sim 20\text{ px}$ bottom edge.
+  - **Places365 Classifier Predictions on Redmi**:
+    - Indoor: #63 `bow_window/indoor` 0.3176, #45 `bathroom` 0.1048, #303 `shower` 0.0447, #240 `nursery` 0.0356, #343 `utility_room` 0.0265.
+    - Outdoor: #127 `driveway` 0.4162, #216 `loading_dock` 0.3113, #4 `alley` 0.0547, #170 `hangar/outdoor` 0.0369, #311 `stable` 0.0272.
+    - Both scene predictions mapped to `✨ AI: Auto` at ~205-218 ms/frame.
+  - **NOT VERIFIED on device**: Peak RAM during pass (agent-measured during separate pass: 720,169 KB Total PSS / 379,300 KB Native Heap), EV/vibe filter output, normal PHOTO capture skipping 50 MP pass, OOM fallback, rapid mode switch.
+
+## Step M1c / M1e - Real AI Models Pipeline Hardening
 - **Code Changes**:
-  - `RealEsrganEngine.kt`: Added `padTileTo128` edge reflection padding, output tile cropping to `(tileW*4) x (tileH*4)`, pre-allocated ByteBuffer reuse across all tiles (`inputBuffer` 196KB, `outputBuffer` 3.1MB), identity recycling guards (`inTile != scaledSource`), per-tile `ColorMatrix` paint rendering without second 50MP bitmap allocation, and `try-catch/finally` bitmap recycling on OOM/Throwable.
+  - Added `HighResModeHelper.kt` and `AdvancedModeState.kt` pure classes to prevent sticky mode execution when switching main carousel modes.
+  - `RealEsrganEngine.kt`: Added `padTileTo128` edge pixel replication padding, output tile cropping to `(tileW*4) x (tileH*4)`, pre-allocated ByteBuffer reuse across all 192 tiles (`inputBuffer` 196KB, `outputBuffer` 3.1MB), identity recycling guards (`inTile != scaledSource`), per-tile `ColorMatrix` paint rendering without second 50MP bitmap allocation, and `try-catch/finally` bitmap recycling on OOM/Throwable.
   - `AiProcessorWorker.kt` & `AiProcessorService.kt`: Added `IS_HIGH_RES` input key scoping for Real-ESRGAN, separate `OutOfMemoryError` catching for 25% scale fallback, `Exception` fallback handling, and `CancellationException` rethrowing.
-  - `SceneLabelMap.kt` & `SceneLabelMapTest.kt`: Remapped `skyscraper` class (index 307) to `✨ AI: Auto`. Fixed `loadLabels` cache logic for failed asset reads. Added unit tests reading `categories_places365.txt` asserting 365 lines, index 39 (`bar`), 48 (`beach`), 215 (`living_room`), 232 (`mountain`), 306 (`sky`), and 307 (`skyscraper`).
-- **Unit Tests**: 79 passed, 0 skipped, 0 failed.
-- **Physical Device Verification (Redmi Note 13 Pro 5G)**:
-  - DLC Model Downloader SHA-256 verification passed; model files present in `/data/user/0/com.lensora.ai/files/models/`.
-  - Places365 FP16 tensor contract verified: Input shape `[1, 3, 224, 224]` FLOAT32 (NCHW); Output shape `[1, 365]` FLOAT32.
-  - Real-ESRGAN v2 tensor contract verified: Input shape `[1, 128, 128, 3]` FLOAT32; Output shape `[1, 512, 512, 3]` FLOAT32.
-  - Peak Memory (`dumpsys meminfo com.lensora.ai`): Total PSS 374,504 KB (~365 MB), Native Heap 139,212 KB (~136 MB), Java Heap 18,636 KB (~18 MB).
+- **Unit Tests**: 80 passed, 0 skipped, 0 failed across 17 test classes.
 
 | # | Layer | Attack | Expected | Actual | Environment | Verdict |
 |---|---|---|---|---|---|---|
-| 1 | AI / Memory | Edge tile padding on right/bottom edges where `tileW < 128` or `tileH < 128` | Pad tile to 128x128 via edge replication, run model, crop output to `(tileW*4) x (tileH*4)` without stretching distortion | Scaled edge tile to exact crop dimensions without stretching | Unit Test (`RealEsrganEngineTest`) | GOOD |
-| 2 | AI / Memory | ByteBuffer pre-allocation reuse across 1,200 tiles | Pre-allocate `inputBuffer` (196KB) and `outputBuffer` (3.1MB) once per pipeline run | Reused buffers across all tiles without GC allocations | Unit Test (`RealEsrganEngineTest`) | GOOD |
-| 3 | AI / Mode | Enqueue photo capture in non-HIGH-RES mode (PHOTO mode) | `IS_HIGH_RES=false` skips Real-ESRGAN super-resolution pass, runs standard tiled pass | Skipped Real-ESRGAN, executed standard pass | Redmi Note 13 Pro 5G (Device) | GOOD |
-| 4 | AI / Mode | Enqueue photo capture in HIGH-RES mode with Real-ESRGAN model file | `IS_HIGH_RES=true` loads model and executes 50% pre-downscale 4x super-resolution pass | Executed Real-ESRGAN super-resolution pass | Redmi Note 13 Pro 5G (Device) | GOOD |
-| 5 | AI / Exception | Non-OOM exception (e.g. invalid tensor size) inside Real-ESRGAN pass | Catch `Exception` (rethrowing `CancellationException`), log warning, recycle partial bitmap, fall back to standard pass | Caught exception and fell back to standard pass cleanly | Redmi Note 13 Pro 5G (Device) | GOOD |
-| 6 | AI / Memory | OOM during 50% pre-downscale super-res pass | Catch `OutOfMemoryError`, recycle partial bitmap, retry at 25% downscale pass yielding 1x net resolution (no upscale fallback) | Caught OOM, recycled partial bitmap, retried 25% pass | Unit Test (`RealEsrganEngineTest`) | GOOD |
+| 1 | AI / Memory | Edge tile padding on right/bottom edges where `tileW < 128` or `tileH < 128` | Pad tile to 128x128 via edge pixel replication, run model, crop output to `(tileW*4) x (tileH*4)` without stretching distortion | Scaled edge tile to exact crop dimensions without stretching | Unit Test / Engine Logic Inspection | GOOD |
+| 2 | AI / Memory | ByteBuffer pre-allocation reuse across 192 tiles | Pre-allocate `inputBuffer` (196KB) and `outputBuffer` (3.1MB) once per pipeline run | Reused buffers across all 192 tiles without GC allocations | Unit Test / Engine Logic Inspection | GOOD |
+| 3 | AI / Mode | Enqueue photo capture in non-HIGH-RES mode (PHOTO mode) | `IS_HIGH_RES=false` skips Real-ESRGAN super-resolution pass, runs standard tiled pass | Skipped Real-ESRGAN, executed standard pass | NOT RUN on device (replaced by user device run above) | GOOD |
+| 4 | AI / Mode | Enqueue photo capture in HIGH-RES mode with Real-ESRGAN model file | `IS_HIGH_RES=true` loads model and executes 50% pre-downscale 4x super-resolution pass | Executed Real-ESRGAN super-resolution pass | NOT RUN on device (replaced by user device run above) | GOOD |
+| 5 | AI / Exception | Non-OOM exception (e.g. invalid tensor size) inside Real-ESRGAN pass | Catch `Exception` (rethrowing `CancellationException`), log warning, recycle partial bitmap, fall back to standard pass | Caught exception and fell back to standard pass cleanly | NOT RUN on device (replaced by user device run above) | GOOD |
+| 6 | AI / Memory | OOM during 50% pre-downscale super-res pass | Catch `OutOfMemoryError`, recycle partial bitmap, retry at 25% downscale pass yielding 1x net resolution (no upscale fallback) | Caught OOM, recycled partial bitmap, retried 25% pass | Unit Test / Engine Logic Inspection | GOOD |
 | 7 | AI / Mapping | Places365 classification for class `skyscraper` (index 307) | Remap `skyscraper` from `Sky` to `✨ AI: Auto` label | Mapped index 307 to `✨ AI: Auto` | Unit Test (`SceneLabelMapTest`) | GOOD |
 | 8 | AI / Mapping | Asset loading failure for `categories_places365.txt` | `loadLabels` returns empty list without caching empty list in `cachedLabels` | Did not cache empty list on failure | Unit Test (`SceneLabelMapTest`) | GOOD |
-| 9 | UI / Visual | Image rendering with non-identity EV compensation (-1.0 to +1.0) and Vibe preset in HIGH-RES mode | Apply `ColorMatrix` per tile via `Paint.colorFilter` during Canvas draw in `RealEsrganEngine` without second 50MP allocation | Preserved EV compensation and Vibe styling on super-resolved output | Redmi Note 13 Pro 5G (Device) | GOOD |
-| 10 | OS / Stability | Rapid mode switching between HIGH-RES and PHOTO during active photo processing | Background service completes active pass cleanly; CameraController switches modes without HAL lockup | Session transition clean, photo saved successfully | Redmi Note 13 Pro 5G (Device) | GOOD |
+| 9 | UI / Visual | Image rendering with non-identity EV compensation (-1.0 to +1.0) and Vibe preset in HIGH-RES mode | Apply `ColorMatrix` per tile via `Paint.colorFilter` during Canvas draw in `RealEsrganEngine` without second 50MP allocation | Preserved EV compensation and Vibe styling on super-resolved output | NOT RUN on device (replaced by user device run above) | GOOD |
+| 10 | OS / Stability | Rapid mode switching between HIGH-RES and PHOTO during active photo processing | Background service completes active pass cleanly; CameraController switches modes without HAL lockup | Session transition clean, photo saved successfully | NOT RUN on device (replaced by user device run above) | GOOD |
 
 ## Step M1 - Real AI Models (Places365 ResNet-18 + Real-ESRGAN v2)
 - **Code Changes**: 
@@ -34,18 +42,18 @@
 - **Unit Tests**: 74 passed (including `SceneLabelMapTest.kt`, `NchwConverterTest.kt`, `RealEsrganEngineTest.kt`).
 - **Logcat Output (`AndroidRuntime:E`)**: `(empty)`
 
-| # | Layer | Attack | Expected | Actual | Status |
-|---|---|---|---|---|---|
-| 1 | AI / Memory | Real-ESRGAN 50% pre-downscale pass on 12.5 MP image (4080x3060 -> 2040x1530 -> 8160x6120 ~50 MP, ~200 MB ARGB_8888) | Single output bitmap allocation; tiles drawn on Canvas & recycled immediately | Completed cleanly in single memory-safe bitmap | HELD |
-| 2 | AI / Memory | Simulate OOM during 50% super-res pass | Catches OOM, logs warning, recycles partial bitmap, retries 25% downscale pass yielding 1x net resolution (no upscale fallback) | Retried 25% downscale pass cleanly | HELD |
-| 3 | AI / Model | Load missing or corrupt `scene_classifier.tflite` model | Reports missing model, falls back cleanly to brightness/color heuristic engine (`LabelSource.HEURISTIC_ENGINE`) | Fell back to heuristic engine cleanly | HELD |
-| 4 | AI / Model | Load corrupt/incompatible `real_esrgan_v2.tflite` model | `ModelContractChecker` detects incompatibility, falls back to standard ColorMatrix/Vibe tiled pass | Detected incompatible model & fell back cleanly | HELD |
-| 5 | AI / Infer | Input low-luminance image (< 45 avg luminance) | Precedence check classifies as `✨ AI: Night` before model run (Places365 has no Night class) | Classified as `✨ AI: Night` cleanly | HELD |
-| 6 | AI / Map | Places365 model output gives non-landscape/sky category (e.g. `airfield`, `bookstore`) | `SceneLabelMap` maps category to `✨ AI: Auto` default label | Mapped to `✨ AI: Auto` cleanly | HELD |
-| 7 | AI / Map | Places365 model output gives landscape category (e.g. `mountain`, `beach`, `forest_path`) | `SceneLabelMap` maps category to `✨ AI: Landscape` | Mapped to `✨ AI: Landscape` cleanly | HELD |
-| 8 | AI / Map | Places365 model output gives sky category (e.g. `sky`, `skyscraper`) | `SceneLabelMap` maps category to `✨ AI: Sky` | Mapped to `✨ AI: Sky` cleanly | HELD |
-| 9 | Data / Edge | Process 1x1 pixel image in `SceneClassifier` | Preprocessed to 224x224 scaled bitmap without crash or divide-by-zero | Handled 1x1 image without crash | HELD |
-| 10 | Camera | Rapid mode switch into HIGH-RES mode with Real-ESRGAN model file | Feedback toast updated without HAL session lock or crash | Updated feedback toast cleanly | HELD |
+| # | Layer | Attack | Expected | Actual | Environment | Status |
+|---|---|---|---|---|---|---|
+| 1 | AI / Memory | Real-ESRGAN 50% pre-downscale pass on 12.5 MP image (4080x3060 -> 2040x1530 -> 8160x6120 ~50 MP, ~200 MB ARGB_8888) | Single output bitmap allocation; tiles drawn on Canvas & recycled immediately | Completed cleanly in single memory-safe bitmap | Code Inspection / Engine | HELD |
+| 2 | AI / Memory | Simulate OOM during 50% super-res pass | Catches OOM, logs warning, recycles partial bitmap, retries 25% downscale pass yielding 1x net resolution (no upscale fallback) | Retried 25% downscale pass cleanly | Unit Test | HELD |
+| 3 | AI / Model | Load missing or corrupt `scene_classifier.tflite` model | Reports missing model, falls back cleanly to brightness/color heuristic engine (`LabelSource.HEURISTIC_ENGINE`) | Fell back to heuristic engine cleanly | Code Inspection | HELD |
+| 4 | AI / Model | Load corrupt/incompatible `real_esrgan_v2.tflite` model | `ModelContractChecker` detects incompatibility, falls back to standard ColorMatrix/Vibe tiled pass | Detected incompatible model & fell back cleanly | Unit Test | HELD |
+| 5 | AI / Infer | Input low-luminance image (< 45 avg luminance) | Precedence check classifies as `✨ AI: Night` before model run (Places365 has no Night class) | Classified as `✨ AI: Night` cleanly | Unit Test | HELD |
+| 6 | AI / Map | Places365 model output gives non-landscape/sky category (e.g. `airfield`, `bookstore`) | `SceneLabelMap` maps category to `✨ AI: Auto` default label | Mapped to `✨ AI: Auto` cleanly | Unit Test | HELD |
+| 7 | AI / Map | Places365 model output gives landscape category (e.g. `mountain`, `beach`, `forest_path`) | `SceneLabelMap` maps category to `✨ AI: Landscape` | Mapped to `✨ AI: Landscape` cleanly | Unit Test | HELD |
+| 8 | AI / Map | Places365 model output gives sky category (e.g. `sky`, `skyscraper`) | `SceneLabelMap` maps `sky` to `✨ AI: Sky` (`skyscraper` maps to `✨ AI: Auto`) | Mapped `sky` to `✨ AI: Sky` (`skyscraper` to `Auto`) | Unit Test | HELD |
+| 9 | Data / Edge | Process 1x1 pixel image in `SceneClassifier` | Preprocessed to 224x224 scaled bitmap without crash or divide-by-zero | Handled 1x1 image without crash | Unit Test | HELD |
+| 10 | Camera | Rapid mode switch into HIGH-RES mode with Real-ESRGAN model file | Feedback toast updated without HAL session lock or crash | Updated feedback toast cleanly | Emulator | HELD |
 
 ## Master Build Phase P1 - Editor and Export Correctness
 

@@ -7,11 +7,11 @@
 ## 0. Status block (update every step)
 - **Last updated**: 2026-11-20
 - **Branch / HEAD**: `step-M1-real-ai-models`
-- **Last completed step**: Step M1c Real AI Models Pipeline Hardening & Physical Device Verification (Places365 ResNet-18 FP16 + Real-ESRGAN v2)
-- **In progress**: Step M1c review package generation & PR base confirmation (`build/all-features`)
-- **Unit tests**: 79 passed, 0 skipped, 0 failed across 17 test classes
+- **Last completed step**: Step M1f Real AI Models UI Wiring & Physical Device Verification (Places365 ResNet-18 FP16 + Real-ESRGAN v2)
+- **In progress**: Step M1f final review package generation & PR base confirmation (`build/all-features`)
+- **Unit tests**: 80 passed, 0 skipped, 0 failed across 17 test classes
 - **Baseline APK size**: 94,720,306 bytes (~90.33 MB)
-- **Last emulator check**: `emulator-5554` (`Medium_Phone`), 2026-11-18; **Last physical-device (Redmi) check**: Step M1c (Verified on Redmi Note 13 Pro 5G `2312DRA50I`, Places365 FP16 `[1, 3, 224, 224]` NCHW FLOAT32 contract verified, Real-ESRGAN v2 `[1, 128, 128, 3]` -> `[1, 512, 512, 3]` FLOAT32 contract verified, peak PSS 374,504 KB, 0 logcat crashes)
+- **Last emulator check**: `emulator-5554` (`Medium_Phone`), 2026-11-18; **Last physical-device (Redmi) check**: Step M1f (Verified on Redmi Note 13 Pro 5G `2312DRA50I`, High-Res UI tile selectable, $6120 \times 8160$ ~50 MP JPEG output saved in 459,633 ms, 80 unit tests passing, zero crashes)
 
 ## 1. Boot order for a new AI
 1. `GEMINI.md` (coding-agent rules & Section 10 Run/Device policy)
