@@ -129,7 +129,7 @@ class AiProcessorService : Service() {
         val startTime = System.currentTimeMillis()
         var processedBitmap: Bitmap? = null
 
-        var interpreter: Interpreter? = null
+        var esrganInterpreterObj: com.lensora.ai.ai.EsrganInterpreter? = null
         var usedImageToImageModel = false
 
         try {
@@ -155,14 +155,17 @@ class AiProcessorService : Service() {
             val imgHeight = decoder.height
 
             // 2. Select Real Image-to-Image AI Enhancement Model (Dehaze / Real-ESRGAN, NOT MobileNet classifier)
+            var esrganInterpreterObj: com.lensora.ai.ai.EsrganInterpreter? = null
+            var usedImageToImageModel = false
+
             val enhancementModelFile = modelManager.getEnhancementModelFile()
 
             if (enhancementModelFile != null && enhancementModelFile.exists()) {
                 try {
-                    val interpreterOptions = Interpreter.Options().apply { setNumThreads(4) }
-                    interpreter = Interpreter(enhancementModelFile, interpreterOptions)
+                    val candidateObj = com.lensora.ai.ai.RealEsrganEngine.createInterpreter(enhancementModelFile)
+                    esrganInterpreterObj = candidateObj
                     usedImageToImageModel = true
-                    Log.i(tag, "Loaded Image-to-Image AI Model: ${enhancementModelFile.name} (${enhancementModelFile.length()} bytes)")
+                    Log.i(tag, "Loaded Image-to-Image AI Model: ${enhancementModelFile.name} (${enhancementModelFile.length()} bytes) [Backend: ${if (candidateObj.usingGpu) "GPU" else "CPU"}]")
                 } catch (e: Exception) {
                     Log.w(tag, "Failed to initialize TFLite Interpreter for ${enhancementModelFile.name}. Falling back to ColorMatrix engine.", e)
                 }
@@ -178,18 +181,18 @@ class AiProcessorService : Service() {
                 Log.i(tag, "Applied Vibe Preset ColorMatrix pass: ${vibePreset.displayName}")
             }
 
-            val activeInterpreter = interpreter
-            if (isHighRes && usedImageToImageModel && activeInterpreter != null) {
+            val activeEsrganObj = esrganInterpreterObj
+            if (isHighRes && usedImageToImageModel && activeEsrganObj != null) {
                 val fullSourceBitmap = resolver.openInputStream(inputUri)?.use { inputStream ->
                     BitmapFactory.decodeStream(inputStream)
                 }
                 if (fullSourceBitmap != null) {
                     try {
-                        Log.i(tag, "Executing 50% pre-downscale Real-ESRGAN 4x super-resolution pass in Service (~50 MP output target)")
+                        Log.i(tag, "Executing 50% pre-downscale Real-ESRGAN super-resolution pass in Service (~50 MP target) [Backend: ${if (activeEsrganObj.usingGpu) "GPU" else "CPU"}]")
                         processedBitmap = com.lensora.ai.ai.RealEsrganEngine.runSuperResolutionPipeline(
                             sourceBitmap = fullSourceBitmap,
                             downscaleFactor = 0.5f,
-                            interpreter = activeInterpreter,
+                            interpreter = activeEsrganObj.interpreter,
                             validator = validator,
                             colorMatrix = colorMatrix,
                         )
@@ -201,7 +204,7 @@ class AiProcessorService : Service() {
                             processedBitmap = com.lensora.ai.ai.RealEsrganEngine.runSuperResolutionPipeline(
                                 sourceBitmap = fullSourceBitmap,
                                 downscaleFactor = 0.25f,
-                                interpreter = activeInterpreter,
+                                interpreter = activeEsrganObj.interpreter,
                                 validator = validator,
                                 colorMatrix = colorMatrix,
                             )
@@ -293,7 +296,7 @@ class AiProcessorService : Service() {
                 resolver.update(newUri, contentValues, null, null)
 
                 val executionTime = System.currentTimeMillis() - startTime
-                Log.i(tag, "L3 Service Real Image-to-Image AI Processing finished in ${executionTime}ms (Model: ${enhancementModelFile?.name ?: "ColorMatrix"}, Vibe: ${vibePreset.displayName}, Dimensions: ${processedBitmap?.width}x${processedBitmap?.height}). Saved $fileName to MediaStore at $newUri")
+                Log.i(tag, "L3 Service Real Image-to-Image AI Processing finished in ${executionTime}ms (Model: ${enhancementModelFile?.name ?: "ColorMatrix"}, Backend: ${if (esrganInterpreterObj?.usingGpu == true) "GPU" else "CPU"}, Vibe: ${vibePreset.displayName}, Dimensions: ${processedBitmap?.width}x${processedBitmap?.height}). Saved $fileName to MediaStore at $newUri")
 
                 // 6. Enqueue CloudSyncWorker if Cloud Sync toggle is ON in Settings
                 val prefs = getSharedPreferences("lensora_prefs", MODE_PRIVATE)
@@ -318,7 +321,7 @@ class AiProcessorService : Service() {
         } finally {
             // Resource Cleanup: Close TFLite Interpreter to free memory
             try {
-                interpreter?.close()
+                esrganInterpreterObj?.close()
                 modelManager.close()
                 Log.i(tag, "TFLite Interpreter resources safely closed")
             } catch (cleanupEx: Exception) {

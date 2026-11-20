@@ -79,7 +79,7 @@ class AiProcessorWorker(
             }
 
             // 2. Check for Real-ESRGAN v2 TFLite Model availability & Contract verification for HIGH-RES mode
-            var esrganInterpreter: Interpreter? = null
+            var esrganInterpreterObj: EsrganInterpreter? = null
             var esrganValid = false
 
             if (isHighRes) {
@@ -88,18 +88,17 @@ class AiProcessorWorker(
 
                 if (esrganFile != null && ModelFileGuard.isUsable(esrganFile)) {
                     try {
-                        val interpreterOptions = Interpreter.Options().apply { setNumThreads(4) }
-                        val candidateInterpreter = Interpreter(esrganFile, interpreterOptions)
-                        val provider = InterpreterTensorInfoProvider(candidateInterpreter)
+                        val candidateObj = RealEsrganEngine.createInterpreter(esrganFile)
+                        val provider = InterpreterTensorInfoProvider(candidateObj.interpreter)
                         val contractStatus = ModelContractChecker.checkContract(esrganFile, ModelContracts.REAL_ESRGAN_V2, provider)
 
                         if (contractStatus is ModelContractStatus.Valid) {
-                            esrganInterpreter = candidateInterpreter
+                            esrganInterpreterObj = candidateObj
                             esrganValid = true
-                            Log.i(tag, "Real-ESRGAN v2 model validated and loaded: ${esrganFile.name}")
+                            Log.i(tag, "Real-ESRGAN v2 model validated and loaded: ${esrganFile.name} [Backend: ${if (candidateObj.usingGpu) "GPU" else "CPU"}]")
                         } else {
                             Log.w(tag, "Real-ESRGAN v2 model contract check failed: $contractStatus. Falling back to standard pipeline.")
-                            candidateInterpreter.close()
+                            candidateObj.close()
                         }
                     } catch (e: Exception) {
                         Log.w(tag, "Failed to instantiate Real-ESRGAN Interpreter: ${e.localizedMessage}")
@@ -114,19 +113,19 @@ class AiProcessorWorker(
 
             if (fullSourceBitmap == null) {
                 Log.w(tag, "Failed to decode bitmap from $photoUriStr")
-                esrganInterpreter?.close()
+                esrganInterpreterObj?.close()
                 return@withContext Result.failure()
             }
 
-            val activeEsrganInterpreter = esrganInterpreter
-            if (isHighRes && esrganValid && activeEsrganInterpreter != null) {
+            val activeEsrganObj = esrganInterpreterObj
+            if (isHighRes && esrganValid && activeEsrganObj != null) {
                 // 3. Attempt 50% pre-downscale pass (50% input -> 4x tile SR -> ~50 MP output)
                 try {
-                    Log.i(tag, "Executing 50% pre-downscale Real-ESRGAN 4x super-resolution pass (~50 MP output target)")
+                    Log.i(tag, "Executing 50% pre-downscale Real-ESRGAN 4x super-resolution pass (~50 MP target) [Backend: ${if (activeEsrganObj.usingGpu) "GPU" else "CPU"}]")
                     processedBitmap = RealEsrganEngine.runSuperResolutionPipeline(
                         sourceBitmap = fullSourceBitmap,
                         downscaleFactor = 0.5f,
-                        interpreter = activeEsrganInterpreter,
+                        interpreter = activeEsrganObj.interpreter,
                         validator = validator,
                         colorMatrix = colorMatrix,
                         onProgress = { percent ->
@@ -143,7 +142,7 @@ class AiProcessorWorker(
                         processedBitmap = RealEsrganEngine.runSuperResolutionPipeline(
                             sourceBitmap = fullSourceBitmap,
                             downscaleFactor = 0.25f,
-                            interpreter = activeEsrganInterpreter,
+                            interpreter = activeEsrganObj.interpreter,
                             validator = validator,
                             colorMatrix = colorMatrix,
                             onProgress = { percent ->
@@ -166,7 +165,7 @@ class AiProcessorWorker(
                     processedBitmap?.recycle()
                     processedBitmap = null
                 } finally {
-                    activeEsrganInterpreter.close()
+                    activeEsrganObj.close()
                 }
             }
 

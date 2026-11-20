@@ -7,8 +7,12 @@ import android.graphics.ColorMatrix
 import android.graphics.ColorMatrixColorFilter
 import android.graphics.Paint
 import android.graphics.Rect
+import android.os.SystemClock
 import android.util.Log
 import org.tensorflow.lite.Interpreter
+import org.tensorflow.lite.gpu.CompatibilityList
+import org.tensorflow.lite.gpu.GpuDelegate
+import java.io.File
 import java.nio.ByteBuffer
 import java.nio.ByteOrder
 
@@ -17,6 +21,17 @@ data class TileBounds(val left: Int, val top: Int, val right: Int, val bottom: I
 data class TileCropDimensions(val cropWidth: Int, val cropHeight: Int)
 data class DestCoordinates(val destLeft: Float, val destTop: Float)
 data class PaddedSize(val width: Int, val height: Int)
+
+data class EsrganInterpreter(
+    val interpreter: Interpreter,
+    val gpuDelegate: GpuDelegate?,
+    val usingGpu: Boolean,
+) {
+    fun close() {
+        try { interpreter.close() } catch (_: Throwable) {}
+        try { gpuDelegate?.close() } catch (_: Throwable) {}
+    }
+}
 
 object RealEsrganEngine {
     private const val TAG = "RealEsrganEngine"
@@ -27,6 +42,100 @@ object RealEsrganEngine {
     const val TILE_PAD = 8
     const val TILE_CORE = TILE_IN_SIZE - 2 * TILE_PAD   // 112
     const val CROP_OFFSET = TILE_PAD * SCALE_FACTOR      // 32
+
+    private fun validateGpuOutput(gpuOutput: ByteBuffer, cpuOutput: ByteBuffer): Boolean {
+        gpuOutput.rewind()
+        cpuOutput.rewind()
+        val numFloats = TILE_OUT_SIZE * TILE_OUT_SIZE * 3
+        val gpuBuf = gpuOutput.asFloatBuffer()
+        val cpuBuf = cpuOutput.asFloatBuffer()
+
+        var sumAbsDiff = 0.0
+
+        for (i in 0 until numFloats) {
+            val g = gpuBuf.get(i)
+            val c = cpuBuf.get(i)
+
+            if (g.isNaN() || g.isInfinite()) {
+                Log.w(TAG, "GPU output validation fail: NaN or Infinite value detected at index $i")
+                return false
+            }
+            if (g < 0.0f || g > 1.0f) {
+                Log.w(TAG, "GPU output validation fail: Out of bounds value $g at index $i")
+                return false
+            }
+
+            sumAbsDiff += Math.abs((g - c).toDouble())
+        }
+
+        val meanAbsDiff = sumAbsDiff / numFloats
+        if (meanAbsDiff > 0.02) {
+            Log.w(TAG, "GPU output validation fail: Mean abs diff $meanAbsDiff > 0.02 vs CPU")
+            return false
+        }
+
+        return true
+    }
+
+    fun createInterpreter(modelFile: File): EsrganInterpreter {
+        val testInput = createInputBuffer()
+        val numPixels = TILE_IN_SIZE * TILE_IN_SIZE
+        for (i in 0 until numPixels) {
+            val r = (i % 256) / 255.0f
+            val g = ((i * 2) % 256) / 255.0f
+            val b = ((i * 3) % 256) / 255.0f
+            testInput.putFloat(r)
+            testInput.putFloat(g)
+            testInput.putFloat(b)
+        }
+        testInput.rewind()
+
+        val cpuOutput = createOutputBuffer()
+        val cpuOptions = Interpreter.Options().apply { setNumThreads(4) }
+        val cpuInterpreter = Interpreter(modelFile, cpuOptions)
+
+        testInput.rewind()
+        cpuInterpreter.run(testInput, cpuOutput)
+
+        val compat = CompatibilityList()
+        var isGpuSupported = false
+        try {
+            isGpuSupported = compat.isDelegateSupportedOnThisDevice
+        } catch (_: Throwable) {
+        } finally {
+            try { compat.close() } catch (_: Throwable) {}
+        }
+
+        if (isGpuSupported) {
+            var delegate: GpuDelegate? = null
+            var gpuInterpreter: Interpreter? = null
+            try {
+                delegate = GpuDelegate()
+                val options = Interpreter.Options().addDelegate(delegate)
+                gpuInterpreter = Interpreter(modelFile, options)
+                val gpuOutput = createOutputBuffer()
+                testInput.rewind()
+                gpuInterpreter.run(testInput, gpuOutput)
+
+                if (validateGpuOutput(gpuOutput, cpuOutput)) {
+                    cpuInterpreter.close()
+                    Log.i(TAG, "Real-ESRGAN using GPU delegate")
+                    return EsrganInterpreter(gpuInterpreter, delegate, true)
+                } else {
+                    Log.w(TAG, "GPU delegate output validation failed. Falling back to CPU.")
+                    try { gpuInterpreter.close() } catch (_: Throwable) {}
+                    try { delegate.close() } catch (_: Throwable) {}
+                }
+            } catch (t: Throwable) {
+                Log.w(TAG, "GPU delegate failed, falling back to CPU: ${t.message}")
+                try { gpuInterpreter?.close() } catch (_: Throwable) {}
+                try { delegate?.close() } catch (_: Throwable) {}
+            }
+        }
+
+        Log.i(TAG, "Real-ESRGAN using CPU (4 threads)")
+        return EsrganInterpreter(cpuInterpreter, null, false)
+    }
 
     fun calculatePaddedSize(grid: TileGrid): PaddedSize =
         PaddedSize(grid.numCols * TILE_CORE + 2 * TILE_PAD, grid.numRows * TILE_CORE + 2 * TILE_PAD)
@@ -252,8 +361,10 @@ object RealEsrganEngine {
         interpreter: Interpreter,
         validator: Validator,
         colorMatrix: ColorMatrix? = null,
+        modelFile: File? = null,
         onProgress: ((Int) -> Unit)? = null,
     ): Bitmap {
+        val pipelineStartMs = SystemClock.elapsedRealtime()
         val scaledInWidth = (sourceBitmap.width * downscaleFactor).toInt().coerceAtLeast(1)
         val scaledInHeight = (sourceBitmap.height * downscaleFactor).toInt().coerceAtLeast(1)
 
@@ -274,6 +385,13 @@ object RealEsrganEngine {
         var outBitmap: Bitmap? = null
         var padded: Bitmap? = null
 
+        var totalFillMs = 0L
+        var totalInferenceMs = 0L
+        var totalConvertMs = 0L
+        var totalDrawMs = 0L
+
+        var activeInterpreter = interpreter
+
         try {
             padded = buildEdgePaddedSource(scaledSource, grid)
             outBitmap = Bitmap.createBitmap(outWidth, outHeight, Bitmap.Config.ARGB_8888)
@@ -289,25 +407,64 @@ object RealEsrganEngine {
 
             for (row in 0 until grid.numRows) {
                 for (col in 0 until grid.numCols) {
+                    val fillStart = SystemClock.elapsedRealtime()
                     val core = calculateTileBounds(col, row, scaledInWidth, scaledInHeight)
                     val window = Bitmap.createBitmap(padded, col * TILE_CORE, row * TILE_CORE, TILE_IN_SIZE, TILE_IN_SIZE)
-                    val outTile = processTileWithContext(
-                        interpreter = interpreter,
-                        window = window,
-                        coreWidth = core.width,
-                        coreHeight = core.height,
-                        validator = validator,
-                        inputBuffer = inputBuffer,
-                        outputBuffer = outputBuffer,
-                    )
+                    fillBufferFromBitmap(window, inputBuffer)
+                    outputBuffer.rewind()
+                    val fillTime = SystemClock.elapsedRealtime() - fillStart
+                    totalFillMs += fillTime
 
+                    val infStart = SystemClock.elapsedRealtime()
+                    try {
+                        activeInterpreter.run(inputBuffer, outputBuffer)
+                    } catch (t: Throwable) {
+                        Log.w(TAG, "Tile $tileIndex inference failed on active interpreter (${t.message}). Falling back to CPU 4-thread interpreter.")
+                        if (modelFile != null && modelFile.exists()) {
+                            val cpuOptions = Interpreter.Options().apply { setNumThreads(4) }
+                            activeInterpreter = Interpreter(modelFile, cpuOptions)
+                            activeInterpreter.run(inputBuffer, outputBuffer)
+                        } else {
+                            throw t
+                        }
+                    }
+                    val infTime = SystemClock.elapsedRealtime() - infStart
+                    totalInferenceMs += infTime
+
+                    val convStart = SystemClock.elapsedRealtime()
+                    val raw = bufferToBitmap(outputBuffer, TILE_OUT_SIZE, TILE_OUT_SIZE)
+                    val dims = calculateOutputCropDimensions(core.width, core.height)
+                    var outTile = Bitmap.createBitmap(raw, CROP_OFFSET, CROP_OFFSET, dims.cropWidth, dims.cropHeight)
+                    if (outTile != raw) raw.recycle()
+                    if (!validator.isValid(outTile)) {
+                        Log.w(TAG, "L4 Validator failed on tile output. Falling back to bicubic scale tile.")
+                        outTile.recycle()
+                        val coreBitmap = Bitmap.createBitmap(window, TILE_PAD, TILE_PAD, core.width, core.height)
+                        outTile = Bitmap.createScaledBitmap(coreBitmap, dims.cropWidth, dims.cropHeight, true)
+                        if (coreBitmap != window) coreBitmap.recycle()
+                    }
+                    val convTime = SystemClock.elapsedRealtime() - convStart
+                    totalConvertMs += convTime
+
+                    val drawStart = SystemClock.elapsedRealtime()
                     val destCoords = calculateDestCoordinates(col, row)
                     canvas.drawBitmap(outTile, destCoords.destLeft, destCoords.destTop, paint)
 
                     outTile.recycle()
                     window.recycle()
+                    val drawTime = SystemClock.elapsedRealtime() - drawStart
+                    totalDrawMs += drawTime
 
                     tileIndex++
+                    if (tileIndex > 0 && (tileIndex % 20 == 0 || tileIndex == grid.totalTiles)) {
+                        val avgFill = totalFillMs / tileIndex
+                        val avgInf = totalInferenceMs / tileIndex
+                        val avgConv = totalConvertMs / tileIndex
+                        val avgDraw = totalDrawMs / tileIndex
+                        val avgTotal = (SystemClock.elapsedRealtime() - pipelineStartMs) / tileIndex
+                        Log.i(TAG, "Tile $tileIndex/${grid.totalTiles} [fill: ${avgFill}ms, inf: ${avgInf}ms, convert: ${avgConv}ms, draw: ${avgDraw}ms, avgTotal: ${avgTotal}ms]")
+                    }
+
                     val progressPercent = (tileIndex * 100) / grid.totalTiles
                     onProgress?.invoke(progressPercent)
                 }
