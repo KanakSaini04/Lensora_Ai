@@ -8,6 +8,7 @@ import android.content.Context
 import android.content.Intent
 import android.content.pm.ServiceInfo
 import android.graphics.Bitmap
+import android.graphics.BitmapFactory
 import android.graphics.BitmapRegionDecoder
 import android.graphics.Canvas
 import android.graphics.ColorMatrix
@@ -68,6 +69,9 @@ class AiProcessorService : Service() {
         val evOffset = intent.getFloatExtra("EV_OFFSET", 0.0f)
         val vibeStr = intent.getStringExtra("VIBE_PRESET") ?: "NONE"
         val vibePreset = try { VibePreset.valueOf(vibeStr) } catch (e: Exception) { VibePreset.NONE }
+        val isHighRes = intent.getBooleanExtra("IS_HIGH_RES", false)
+
+        Log.i(tag, "Service received capture intent [HighRes: $isHighRes, Scene: $sceneTypeStr, Vibe: ${vibePreset.displayName}]")
 
         if (photoUriStr.isNullOrEmpty()) {
             Log.w(tag, "Null or empty PHOTO_URI passed to AiProcessorService. Stopping service.")
@@ -102,8 +106,9 @@ class AiProcessorService : Service() {
 
         serviceScope.launch {
             try {
-                executeRealImageEnhancementPipeline(photoUriStr, sceneTypeStr, evOffset, vibePreset)
+                executeRealImageEnhancementPipeline(photoUriStr, sceneTypeStr, evOffset, vibePreset, isHighRes)
             } catch (e: Exception) {
+                if (e is kotlinx.coroutines.CancellationException) throw e
                 Log.e(tag, "Unhandled exception in AiProcessorService image enhancement pass", e)
             } finally {
                 cleanupAndStop()
@@ -118,12 +123,12 @@ class AiProcessorService : Service() {
         sceneTypeStr: String,
         evOffset: Float,
         vibePreset: VibePreset,
+        isHighRes: Boolean,
     ) {
         Log.i(tag, "Executing L3 Real Image-to-Image AI Enhancement & LUT Pipeline in Foreground Service for $photoUriStr")
         val startTime = System.currentTimeMillis()
         var processedBitmap: Bitmap? = null
 
-        var gpuDelegateObj: AutoCloseable? = null
         var interpreter: Interpreter? = null
         var usedImageToImageModel = false
 
@@ -153,24 +158,8 @@ class AiProcessorService : Service() {
             val enhancementModelFile = modelManager.getEnhancementModelFile()
 
             if (enhancementModelFile != null && enhancementModelFile.exists()) {
-                val interpreterOptions = Interpreter.Options()
                 try {
-                    val gpuDelegateClass = Class.forName("org.tensorflow.lite.gpu.GpuDelegate")
-                    val constructor = gpuDelegateClass.getConstructor()
-                    val delegateInstance = constructor.newInstance()
-                    val delegateClass = Class.forName("org.tensorflow.lite.Delegate")
-                    val addDelegateMethod = Interpreter.Options::class.java.getMethod("addDelegate", delegateClass)
-                    addDelegateMethod.invoke(interpreterOptions, delegateInstance)
-                    if (delegateInstance is AutoCloseable) {
-                        gpuDelegateObj = delegateInstance
-                    }
-                    Log.i(tag, "TfLiteGpuDelegate initialized for Image-to-Image model ${enhancementModelFile.name}")
-                } catch (gpuEx: Throwable) {
-                    Log.w(tag, "GPU Delegate init failed (${gpuEx.localizedMessage}). Falling back to CPU XNNPACK thread pool.", gpuEx)
-                    interpreterOptions.setNumThreads(4)
-                }
-
-                try {
+                    val interpreterOptions = Interpreter.Options().apply { setNumThreads(4) }
                     interpreter = Interpreter(enhancementModelFile, interpreterOptions)
                     usedImageToImageModel = true
                     Log.i(tag, "Loaded Image-to-Image AI Model: ${enhancementModelFile.name} (${enhancementModelFile.length()} bytes)")
@@ -189,67 +178,89 @@ class AiProcessorService : Service() {
                 Log.i(tag, "Applied Vibe Preset ColorMatrix pass: ${vibePreset.displayName}")
             }
 
-            processedBitmap = Bitmap.createBitmap(imgWidth, imgHeight, Bitmap.Config.ARGB_8888)
-            val canvas = Canvas(processedBitmap)
-            val paint = Paint(Paint.ANTI_ALIAS_FLAG).apply {
-                colorFilter = ColorMatrixColorFilter(colorMatrix)
-                isFilterBitmap = true
+            val activeInterpreter = interpreter
+            if (isHighRes && usedImageToImageModel && activeInterpreter != null) {
+                val fullSourceBitmap = resolver.openInputStream(inputUri)?.use { inputStream ->
+                    BitmapFactory.decodeStream(inputStream)
+                }
+                if (fullSourceBitmap != null) {
+                    try {
+                        Log.i(tag, "Executing 50% pre-downscale Real-ESRGAN 4x super-resolution pass in Service (~50 MP output target)")
+                        processedBitmap = com.lensora.ai.ai.RealEsrganEngine.runSuperResolutionPipeline(
+                            sourceBitmap = fullSourceBitmap,
+                            downscaleFactor = 0.5f,
+                            interpreter = activeInterpreter,
+                            validator = validator,
+                            colorMatrix = colorMatrix,
+                        )
+                    } catch (oom: OutOfMemoryError) {
+                        Log.w(tag, "OOM during 50% Real-ESRGAN pass in Service. Retrying at 25% scale.", oom)
+                        processedBitmap?.recycle()
+                        processedBitmap = null
+                        try {
+                            processedBitmap = com.lensora.ai.ai.RealEsrganEngine.runSuperResolutionPipeline(
+                                sourceBitmap = fullSourceBitmap,
+                                downscaleFactor = 0.25f,
+                                interpreter = activeInterpreter,
+                                validator = validator,
+                                colorMatrix = colorMatrix,
+                            )
+                        } catch (retryOom: OutOfMemoryError) {
+                            Log.e(tag, "OOM during 25% fallback pass in Service as well.", retryOom)
+                            processedBitmap?.recycle()
+                            processedBitmap = null
+                        } catch (e: Exception) {
+                            Log.w(tag, "Exception during 25% Real-ESRGAN fallback pass in Service.", e)
+                            processedBitmap?.recycle()
+                            processedBitmap = null
+                        }
+                    } catch (e: Exception) {
+                        Log.w(tag, "Exception during 50% Real-ESRGAN pass in Service. Falling back.", e)
+                        processedBitmap?.recycle()
+                        processedBitmap = null
+                    } finally {
+                        fullSourceBitmap.recycle()
+                    }
+                }
             }
 
-            val tileSize = 512
-            val numCols = (imgWidth + tileSize - 1) / tileSize
-            val numRows = (imgHeight + tileSize - 1) / tileSize
-            val totalTiles = numCols * numRows
+            if (processedBitmap == null) {
+                processedBitmap = Bitmap.createBitmap(imgWidth, imgHeight, Bitmap.Config.ARGB_8888)
+                val canvas = Canvas(processedBitmap)
+                val paint = Paint(Paint.ANTI_ALIAS_FLAG).apply {
+                    colorFilter = ColorMatrixColorFilter(colorMatrix)
+                    isFilterBitmap = true
+                }
 
-            Log.i(tag, "Processing $imgWidth x $imgHeight px in $totalTiles tiles ($tileSize x $tileSize px each) [ImageToImage AI: $usedImageToImageModel]")
+                val tileSize = 512
+                val numCols = (imgWidth + tileSize - 1) / tileSize
+                val numRows = (imgHeight + tileSize - 1) / tileSize
+                val totalTiles = numCols * numRows
 
-            var tileIndex = 0
-            for (row in 0 until numRows) {
-                for (col in 0 until numCols) {
-                    val left = col * tileSize
-                    val top = row * tileSize
-                    val right = (left + tileSize).coerceAtMost(imgWidth)
-                    val bottom = (top + tileSize).coerceAtMost(imgHeight)
-                    val rect = Rect(left, top, right, bottom)
+                Log.i(tag, "Processing $imgWidth x $imgHeight px in $totalTiles tiles ($tileSize x $tileSize px each) [ImageToImage AI: $usedImageToImageModel]")
 
-                    val rawTileBitmap = decoder.decodeRegion(rect, null)
-                    if (rawTileBitmap != null) {
-                        try {
-                            var tileToDraw = rawTileBitmap
+                var tileIndex = 0
+                for (row in 0 until numRows) {
+                    for (col in 0 until numCols) {
+                        val left = col * tileSize
+                        val top = row * tileSize
+                        val right = (left + tileSize).coerceAtMost(imgWidth)
+                        val bottom = (top + tileSize).coerceAtMost(imgHeight)
+                        val rect = Rect(left, top, right, bottom)
 
-                            // Execute Tiled Image-to-Image AI Inference if interpreter is active
-                            val activeInterpreter = interpreter
-                            if (usedImageToImageModel && activeInterpreter != null) {
-                                val enhancedTile = runTiledImageToImageInference(activeInterpreter, rawTileBitmap)
-                                if (enhancedTile != null) {
-                                    tileToDraw = enhancedTile
-                                }
+                        val rawTileBitmap = decoder.decodeRegion(rect, null)
+                        if (rawTileBitmap != null) {
+                            try {
+                                canvas.drawBitmap(rawTileBitmap, left.toFloat(), top.toFloat(), paint)
+                            } finally {
+                                rawTileBitmap.recycle()
                             }
-
-                            // L4 Tile Validation & Vibe LUT Application
-                            if (validator.isTileValid(tileToDraw)) {
-                                canvas.drawBitmap(tileToDraw, left.toFloat(), top.toFloat(), paint)
-                            } else {
-                                Log.w(tag, "L4 Anti-AI Tile check failed for tile $tileIndex. Drawing raw unenhanced pixel data.")
-                                val rawPaint = Paint(Paint.ANTI_ALIAS_FLAG)
-                                canvas.drawBitmap(rawTileBitmap, left.toFloat(), top.toFloat(), rawPaint)
-                            }
-
-                            if (tileToDraw != rawTileBitmap) {
-                                tileToDraw.recycle()
-                            }
-                        } catch (tileEx: Exception) {
-                            Log.e(tag, "Error during tiled AI inference on tile $tileIndex. Safe fallback to raw pixel data.", tileEx)
-                            val rawPaint = Paint(Paint.ANTI_ALIAS_FLAG)
-                            canvas.drawBitmap(rawTileBitmap, left.toFloat(), top.toFloat(), rawPaint)
-                        } finally {
-                            rawTileBitmap.recycle() // Memory Shield: Recycle tile immediately
                         }
-                    }
 
-                    tileIndex++
-                    val progressPercent = (tileIndex * 100) / totalTiles
-                    Log.d(tag, "Service Tile $tileIndex of $totalTiles processed ($left,$top - $right,$bottom) [$progressPercent%]")
+                        tileIndex++
+                        val progressPercent = (tileIndex * 100) / totalTiles
+                        Log.d(tag, "Service Tile $tileIndex of $totalTiles processed ($left,$top - $right,$bottom) [$progressPercent%]")
+                    }
                 }
             }
 
@@ -282,7 +293,7 @@ class AiProcessorService : Service() {
                 resolver.update(newUri, contentValues, null, null)
 
                 val executionTime = System.currentTimeMillis() - startTime
-                Log.i(tag, "L3 Service 512x512 Real Image-to-Image AI Processing finished in ${executionTime}ms (Model: ${enhancementModelFile?.name ?: "ColorMatrix"}, Vibe: ${vibePreset.displayName}, Total Tiles: $totalTiles). Saved $fileName to MediaStore at $newUri")
+                Log.i(tag, "L3 Service Real Image-to-Image AI Processing finished in ${executionTime}ms (Model: ${enhancementModelFile?.name ?: "ColorMatrix"}, Vibe: ${vibePreset.displayName}, Dimensions: ${processedBitmap?.width}x${processedBitmap?.height}). Saved $fileName to MediaStore at $newUri")
 
                 // 6. Enqueue CloudSyncWorker if Cloud Sync toggle is ON in Settings
                 val prefs = getSharedPreferences("lensora_prefs", MODE_PRIVATE)
@@ -305,12 +316,11 @@ class AiProcessorService : Service() {
         } catch (e: Exception) {
             Log.e(tag, "Error during AiProcessorService execution pass", e)
         } finally {
-            // Resource Cleanup: Close TFLite Interpreter & GpuDelegate to free GPU memory
+            // Resource Cleanup: Close TFLite Interpreter to free memory
             try {
                 interpreter?.close()
-                gpuDelegateObj?.close()
                 modelManager.close()
-                Log.i(tag, "TFLite Interpreter & GPU resources safely closed")
+                Log.i(tag, "TFLite Interpreter resources safely closed")
             } catch (cleanupEx: Exception) {
                 Log.w(tag, "Error releasing TFLite/GPU resources", cleanupEx)
             }

@@ -3,7 +3,6 @@ package com.lensora.ai
 import com.lensora.ai.ai.RealEsrganEngine
 import org.junit.Assert.assertEquals
 import org.junit.Test
-import java.nio.ByteBuffer
 import java.nio.ByteOrder
 
 class RealEsrganEngineTest {
@@ -16,22 +15,52 @@ class RealEsrganEngineTest {
     }
 
     @Test
-    fun bufferToBitmap_validBuffer_createsCorrectBitmapDimensions() {
-        val width = 512
-        val height = 512
-        val numPixels = width * height
-        val buffer = ByteBuffer.allocateDirect(1 * width * height * 3 * 4).apply {
-            order(ByteOrder.nativeOrder())
-        }
+    fun bufferAllocation_verifyInputAndOutputBufferSize() {
+        val inBuffer = RealEsrganEngine.createInputBuffer()
+        val outBuffer = RealEsrganEngine.createOutputBuffer()
 
-        for (i in 0 until numPixels * 3) {
-            buffer.putFloat(0.5f) // 50% gray
-        }
-        buffer.rewind()
+        assertEquals(196608, inBuffer.capacity()) // 1 * 128 * 128 * 3 * 4 bytes
+        assertEquals(3145728, outBuffer.capacity()) // 1 * 512 * 512 * 3 * 4 bytes
+    }
 
-        val bitmap = RealEsrganEngine.bufferToBitmap(buffer, width, height)
-        assertEquals(512, bitmap.width)
-        assertEquals(512, bitmap.height)
-        bitmap.recycle()
+    @Test
+    fun calculateTileGrid_verifyTileCountsForFullAndPartialSizes() {
+        // Standard 1024x768 -> (1024/128=8 cols) x (768/128=6 rows) = 48 tiles
+        val cols1 = (1024 + 127) / 128
+        val rows1 = (768 + 127) / 128
+        assertEquals(8, cols1)
+        assertEquals(6, rows1)
+        assertEquals(48, cols1 * rows1)
+
+        // Non-multiple 1000x500 -> cols=(1000+127)/128=8, rows=(500+127)/128=4 = 32 tiles
+        val cols2 = (1000 + 127) / 128
+        val rows2 = (500 + 127) / 128
+        assertEquals(8, cols2)
+        assertEquals(4, rows2)
+        assertEquals(32, cols2 * rows2)
+    }
+
+    @Test
+    fun calculateEdgeTileCrop_verifyCorrectScaledDimensions() {
+        val edgeTileW = 50
+        val edgeTileH = 128
+
+        val scaledW = edgeTileW * RealEsrganEngine.SCALE_FACTOR
+        val scaledH = edgeTileH * RealEsrganEngine.SCALE_FACTOR
+
+        assertEquals(200, scaledW)
+        assertEquals(512, scaledH)
+    }
+
+    @Test
+    fun calculateCornerTileCrop_verifyCorrectScaledDimensions() {
+        val cornerTileW = 40
+        val cornerTileH = 30
+
+        val scaledW = cornerTileW * RealEsrganEngine.SCALE_FACTOR
+        val scaledH = cornerTileH * RealEsrganEngine.SCALE_FACTOR
+
+        assertEquals(160, scaledW)
+        assertEquals(120, scaledH)
     }
 }

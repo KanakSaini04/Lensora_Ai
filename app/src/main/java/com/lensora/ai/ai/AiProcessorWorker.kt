@@ -3,6 +3,7 @@ package com.lensora.ai.ai
 import android.content.ContentValues
 import android.content.Context
 import android.graphics.Bitmap
+import android.graphics.BitmapFactory
 import android.graphics.BitmapRegionDecoder
 import android.graphics.Canvas
 import android.graphics.ColorMatrix
@@ -20,12 +21,10 @@ import androidx.work.WorkerParameters
 import androidx.work.workDataOf
 import com.lensora.ai.ui.studio.ImageEditor
 import com.lensora.ai.ui.vibes.VibePreset
+import kotlinx.coroutines.CancellationException
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
 import org.tensorflow.lite.Interpreter
-import java.io.File
-import java.nio.ByteBuffer
-import java.nio.ByteOrder
 
 class AiProcessorWorker(
     private val context: Context,
@@ -46,9 +45,10 @@ class AiProcessorWorker(
         val vibeStr = inputData.getString("VIBE_PRESET")
             ?: inputData.getString("vibe_preset")
             ?: "NONE"
-        val vibePreset = try { VibePreset.valueOf(vibeStr) } catch (e: Exception) { VibePreset.NONE }
+        val vibePreset = try { VibePreset.valueOf(vibeStr) } catch (_: Exception) { VibePreset.NONE }
+        val isHighRes = inputData.getBoolean("IS_HIGH_RES", inputData.getBoolean("is_high_res", false))
 
-        Log.i(tag, "Starting L3 512x512 Tiled AI Processing pass for $photoUriStr [Scene: $sceneTypeStr, EV: $evOffset, Vibe: ${vibePreset.displayName}]")
+        Log.i(tag, "Starting L3 Tiled AI Processing pass for $photoUriStr [Scene: $sceneTypeStr, EV: $evOffset, Vibe: ${vibePreset.displayName}, HighRes: $isHighRes]")
 
         val startTime = System.currentTimeMillis()
         var processedBitmap: Bitmap? = null
@@ -57,73 +57,20 @@ class AiProcessorWorker(
             val inputUri = Uri.parse(photoUriStr)
             val resolver = context.contentResolver
 
-            // 1. Memory Shield: Initialize BitmapRegionDecoder without decoding full image into RAM
-            val decoder = resolver.openInputStream(inputUri)?.use { inputStream ->
-                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.S) {
-                    BitmapRegionDecoder.newInstance(inputStream)
-                } else {
-                    @Suppress("DEPRECATION")
-                    BitmapRegionDecoder.newInstance(inputStream, false)
-                }
+            // 1. Memory Shield: Decode full bounds or stream input
+            val options = BitmapFactory.Options().apply { inJustDecodeBounds = true }
+            resolver.openInputStream(inputUri)?.use { inputStream ->
+                BitmapFactory.decodeStream(inputStream, null, options)
             }
 
-            if (decoder == null) {
-                Log.w(tag, "Failed to initialize BitmapRegionDecoder for $photoUriStr")
+            val imgWidth = options.outWidth
+            val imgHeight = options.outHeight
+
+            if (imgWidth <= 0 || imgHeight <= 0) {
+                Log.w(tag, "Invalid image dimensions for $photoUriStr")
                 return@withContext Result.failure()
             }
 
-            val imgWidth = decoder.width
-            val imgHeight = decoder.height
-
-            // 2. TFLite Model Detection & Optional Inference Pass on Low-Res Sample
-            val mobileNetFile = File(context.filesDir, "models/mobilenet_v1_1.0_224.tflite")
-            val fallbackFile = File(context.filesDir, "models/real_esrgan_v2.tflite")
-            val modelFile = if (mobileNetFile.exists()) mobileNetFile else if (fallbackFile.exists()) fallbackFile else null
-            var usedTfLite = false
-
-            if (modelFile != null && modelFile.exists()) {
-                var interpreter: Interpreter? = null
-                try {
-                    val options = Interpreter.Options().apply { setNumThreads(4) }
-                    interpreter = Interpreter(modelFile, options)
-
-                    val sampleRect = Rect(0, 0, imgWidth.coerceAtMost(512), imgHeight.coerceAtMost(512))
-                    val sampleTile = decoder.decodeRegion(sampleRect, null)
-
-                    if (sampleTile != null && modelFile.name.contains("mobilenet", ignoreCase = true)) {
-                        val scaledBitmap = Bitmap.createScaledBitmap(sampleTile, 224, 224, true)
-                        val inputBuffer = ByteBuffer.allocateDirect(1 * 224 * 224 * 3 * 4).apply {
-                            order(ByteOrder.nativeOrder())
-                        }
-
-                        val intValues = IntArray(224 * 224)
-                        scaledBitmap.getPixels(intValues, 0, 224, 0, 0, 224, 224)
-                        for (pixelValue in intValues) {
-                            val r = ((pixelValue shr 16) and 0xFF) / 255.0f
-                            val g = ((pixelValue shr 8) and 0xFF) / 255.0f
-                            val b = (pixelValue and 0xFF) / 255.0f
-                            inputBuffer.putFloat(r)
-                            inputBuffer.putFloat(g)
-                            inputBuffer.putFloat(b)
-                        }
-
-                        val outputArray = Array(1) { FloatArray(1001) }
-                        interpreter.run(inputBuffer, outputArray)
-                        scaledBitmap.recycle()
-                        sampleTile.recycle()
-                        Log.i(tag, "Real MobileNet TFLite AI Inference executed on tiled sample")
-                    } else {
-                        sampleTile?.recycle()
-                    }
-                    usedTfLite = true
-                } catch (e: Exception) {
-                    Log.w(tag, "TFLite Interpreter pass failed (${e.localizedMessage}). Safe fallback.", e)
-                } finally {
-                    interpreter?.close()
-                }
-            }
-
-            // 3. 512x512 Tiled Pipeline with ColorMatrix & Vibe LUT Integration
             val colorMatrix = createColorMatrixForPlan(sceneTypeStr, evOffset)
             if (vibePreset != VibePreset.NONE) {
                 val vibeMatrix = ImageEditor.createVibeAndroidColorMatrix(vibePreset)
@@ -131,50 +78,156 @@ class AiProcessorWorker(
                 Log.i(tag, "Applied Vibe Preset ColorMatrix pass: ${vibePreset.displayName}")
             }
 
-            processedBitmap = Bitmap.createBitmap(imgWidth, imgHeight, Bitmap.Config.ARGB_8888)
-            val canvas = Canvas(processedBitmap)
-            val paint = Paint(Paint.ANTI_ALIAS_FLAG).apply {
-                colorFilter = ColorMatrixColorFilter(colorMatrix)
-                isFilterBitmap = true
-            }
+            // 2. Check for Real-ESRGAN v2 TFLite Model availability & Contract verification for HIGH-RES mode
+            var esrganInterpreter: Interpreter? = null
+            var esrganValid = false
 
-            val tileSize = 512
-            val numCols = (imgWidth + tileSize - 1) / tileSize
-            val numRows = (imgHeight + tileSize - 1) / tileSize
-            val totalTiles = numCols * numRows
+            if (isHighRes) {
+                val modelManager = ModelManager(context)
+                val esrganFile = modelManager.getEnhancementModelFile()
 
-            Log.i(tag, "Processing $imgWidth x $imgHeight px in $totalTiles tiles ($tileSize x $tileSize px each)")
+                if (esrganFile != null && ModelFileGuard.isUsable(esrganFile)) {
+                    try {
+                        val interpreterOptions = Interpreter.Options().apply { setNumThreads(4) }
+                        val candidateInterpreter = Interpreter(esrganFile, interpreterOptions)
+                        val provider = InterpreterTensorInfoProvider(candidateInterpreter)
+                        val contractStatus = ModelContractChecker.checkContract(esrganFile, ModelContracts.REAL_ESRGAN_V2, provider)
 
-            var tileIndex = 0
-            for (row in 0 until numRows) {
-                for (col in 0 until numCols) {
-                    val left = col * tileSize
-                    val top = row * tileSize
-                    val right = (left + tileSize).coerceAtMost(imgWidth)
-                    val bottom = (top + tileSize).coerceAtMost(imgHeight)
-                    val rect = Rect(left, top, right, bottom)
-
-                    // Decode only 512x512 region
-                    val tileBitmap = decoder.decodeRegion(rect, null)
-                    if (tileBitmap != null) {
-                        canvas.drawBitmap(tileBitmap, left.toFloat(), top.toFloat(), paint)
-                        tileBitmap.recycle() // Memory Shield: Recycle tile immediately
+                        if (contractStatus is ModelContractStatus.Valid) {
+                            esrganInterpreter = candidateInterpreter
+                            esrganValid = true
+                            Log.i(tag, "Real-ESRGAN v2 model validated and loaded: ${esrganFile.name}")
+                        } else {
+                            Log.w(tag, "Real-ESRGAN v2 model contract check failed: $contractStatus. Falling back to standard pipeline.")
+                            candidateInterpreter.close()
+                        }
+                    } catch (e: Exception) {
+                        Log.w(tag, "Failed to instantiate Real-ESRGAN Interpreter: ${e.localizedMessage}")
                     }
-
-                    tileIndex++
-                    val progressPercent = (tileIndex * 100) / totalTiles
-                    setProgressAsync(workDataOf("progress" to progressPercent))
-                    Log.d(tag, "Tile $tileIndex of $totalTiles processed ($left,$top - $right,$bottom) [$progressPercent%]")
                 }
             }
 
-            // 4. L4 Quality Validation Check
-            if (!validator.isValid(processedBitmap)) {
+            // Decode source image for processing
+            val fullSourceBitmap = resolver.openInputStream(inputUri)?.use { inputStream ->
+                BitmapFactory.decodeStream(inputStream)
+            }
+
+            if (fullSourceBitmap == null) {
+                Log.w(tag, "Failed to decode bitmap from $photoUriStr")
+                esrganInterpreter?.close()
+                return@withContext Result.failure()
+            }
+
+            val activeEsrganInterpreter = esrganInterpreter
+            if (isHighRes && esrganValid && activeEsrganInterpreter != null) {
+                // 3. Attempt 50% pre-downscale pass (50% input -> 4x tile SR -> ~50 MP output)
+                try {
+                    Log.i(tag, "Executing 50% pre-downscale Real-ESRGAN 4x super-resolution pass (~50 MP output target)")
+                    processedBitmap = RealEsrganEngine.runSuperResolutionPipeline(
+                        sourceBitmap = fullSourceBitmap,
+                        downscaleFactor = 0.5f,
+                        interpreter = activeEsrganInterpreter,
+                        validator = validator,
+                        colorMatrix = colorMatrix,
+                        onProgress = { percent ->
+                            setProgressAsync(workDataOf("progress" to percent))
+                        },
+                    )
+                } catch (oom: OutOfMemoryError) {
+                    Log.w(tag, "OOM during 50% Real-ESRGAN pass. Retrying at 25% scale yielding 1x net resolution (no upscale fallback)", oom)
+                    processedBitmap?.recycle()
+                    processedBitmap = null
+
+                    // Retry at 25% scale (25% input -> 4x tile SR -> 1x net resolution fallback)
+                    try {
+                        processedBitmap = RealEsrganEngine.runSuperResolutionPipeline(
+                            sourceBitmap = fullSourceBitmap,
+                            downscaleFactor = 0.25f,
+                            interpreter = activeEsrganInterpreter,
+                            validator = validator,
+                            colorMatrix = colorMatrix,
+                            onProgress = { percent ->
+                                setProgressAsync(workDataOf("progress" to percent))
+                            },
+                        )
+                    } catch (retryOom: OutOfMemoryError) {
+                        Log.e(tag, "OOM during 25% fallback pass as well. Falling back to standard tiled pass.", retryOom)
+                        processedBitmap?.recycle()
+                        processedBitmap = null
+                    } catch (e: Exception) {
+                        if (e is CancellationException) throw e
+                        Log.w(tag, "Exception during 25% Real-ESRGAN fallback pass. Falling back to standard tiled pass.", e)
+                        processedBitmap?.recycle()
+                        processedBitmap = null
+                    }
+                } catch (e: Exception) {
+                    if (e is CancellationException) throw e
+                    Log.w(tag, "Exception during 50% Real-ESRGAN pass. Falling back to standard tiled pass.", e)
+                    processedBitmap?.recycle()
+                    processedBitmap = null
+                } finally {
+                    activeEsrganInterpreter.close()
+                }
+            }
+
+            // Standard ColorMatrix / Vibe preset tiled fallback pass if Real-ESRGAN not used or failed
+            if (processedBitmap == null) {
+                processedBitmap = Bitmap.createBitmap(imgWidth, imgHeight, Bitmap.Config.ARGB_8888)
+                val canvas = Canvas(processedBitmap)
+                val paint = Paint(Paint.ANTI_ALIAS_FLAG).apply {
+                    colorFilter = ColorMatrixColorFilter(colorMatrix)
+                    isFilterBitmap = true
+                }
+
+                val decoder = resolver.openInputStream(inputUri)?.use { inputStream ->
+                    if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.S) {
+                        BitmapRegionDecoder.newInstance(inputStream)
+                    } else {
+                        @Suppress("DEPRECATION")
+                        BitmapRegionDecoder.newInstance(inputStream, false)
+                    }
+                }
+
+                if (decoder != null) {
+                    val tileSize = 512
+                    val numCols = (imgWidth + tileSize - 1) / tileSize
+                    val numRows = (imgHeight + tileSize - 1) / tileSize
+                    val totalTiles = numCols * numRows
+
+                    var tileIndex = 0
+                    for (row in 0 until numRows) {
+                        for (col in 0 until numCols) {
+                            val left = col * tileSize
+                            val top = row * tileSize
+                            val right = (left + tileSize).coerceAtMost(imgWidth)
+                            val bottom = (top + tileSize).coerceAtMost(imgHeight)
+                            val rect = Rect(left, top, right, bottom)
+
+                            val tileBitmap = decoder.decodeRegion(rect, null)
+                            if (tileBitmap != null) {
+                                canvas.drawBitmap(tileBitmap, left.toFloat(), top.toFloat(), paint)
+                                tileBitmap.recycle()
+                            }
+
+                            tileIndex++
+                            val progressPercent = (tileIndex * 100) / totalTiles
+                            setProgressAsync(workDataOf("progress" to progressPercent))
+                        }
+                    }
+                } else {
+                    canvas.drawBitmap(fullSourceBitmap, 0f, 0f, paint)
+                }
+            }
+
+            fullSourceBitmap.recycle()
+
+            val finalProcessedBitmap = processedBitmap
+            if (!validator.isValid(finalProcessedBitmap)) {
                 Log.w(tag, "L4 Validator failed: Processed bitmap invalid or pitch black. Keeping raw photo $photoUriStr")
                 return@withContext Result.failure()
             }
 
-            // 5. Save processed Bitmap to MediaStore
+            // Save processed Bitmap to MediaStore
             val timestamp = System.currentTimeMillis()
             val fileName = "LENSORA_AI_PROCESSED_$timestamp.jpg"
 
@@ -192,7 +245,7 @@ class AiProcessorWorker(
 
             if (newUri != null) {
                 resolver.openOutputStream(newUri)?.use { outStream ->
-                    processedBitmap.compress(Bitmap.CompressFormat.JPEG, 95, outStream)
+                    finalProcessedBitmap.compress(Bitmap.CompressFormat.JPEG, 95, outStream)
                 }
 
                 contentValues.clear()
@@ -200,9 +253,9 @@ class AiProcessorWorker(
                 resolver.update(newUri, contentValues, null, null)
 
                 val executionTime = System.currentTimeMillis() - startTime
-                Log.i(tag, "L3 512x512 Tiled AI Processing finished in ${executionTime}ms (Used TFLite: $usedTfLite, Vibe: ${vibePreset.displayName}, Total Tiles: $totalTiles). Saved $fileName to MediaStore at $newUri")
+                Log.i(tag, "L3 Tiled AI Processing finished in ${executionTime}ms (Vibe: ${vibePreset.displayName}, Dimensions: ${finalProcessedBitmap.width}x${finalProcessedBitmap.height}). Saved $fileName to MediaStore at $newUri")
 
-                // 6. Enqueue CloudSyncWorker if Cloud Sync toggle is ON in Settings
+                // Enqueue CloudSyncWorker if Cloud Sync toggle is ON in Settings
                 val prefs = context.getSharedPreferences("lensora_prefs", Context.MODE_PRIVATE)
                 val isCloudSyncEnabled = prefs.getBoolean("cloud_sync_enabled", false)
                 val isAutoPurgeEnabled = prefs.getBoolean("auto_purge_enabled", true)
@@ -228,7 +281,8 @@ class AiProcessorWorker(
                 Result.failure()
             }
         } catch (e: Exception) {
-            Log.e(tag, "Error during AiProcessorWorker 512x512 tiled execution", e)
+            if (e is CancellationException) throw e
+            Log.e(tag, "Error during AiProcessorWorker execution", e)
             Result.failure()
         } finally {
             processedBitmap?.recycle()
