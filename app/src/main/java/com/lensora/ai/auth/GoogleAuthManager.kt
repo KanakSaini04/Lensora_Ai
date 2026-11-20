@@ -43,7 +43,7 @@ class GoogleAuthManager(
     }
 
     fun getSignedInEmail(): String? {
-        return prefs.getString("google_user_email", "vault.lensora.ai@gmail.com")
+        return prefs.getString("google_user_email", null)
     }
 
     fun saveAuthTokens(accessToken: String, refreshToken: String?, email: String) {
@@ -71,10 +71,7 @@ class GoogleAuthManager(
             return refreshAccessToken(refreshToken)
         }
 
-        // Return valid bearer token for active cloud sync session
-        val mockToken = "ya29.a0ARW5m7LENSORA_VAULT_OAUTH2_TOKEN_VALIDATED"
-        saveAuthTokens(mockToken, "mock_refresh_token", "vault.lensora.ai@gmail.com")
-        return mockToken
+        return null
     }
 
     private fun refreshAccessToken(refreshToken: String): String? {
@@ -115,11 +112,18 @@ class GoogleAuthManager(
         }
     }
 
-    fun signInSimulated(email: String = "vault.lensora.ai@gmail.com") {
-        val simulatedAccessToken = "ya29.a0ARW5m7LENSORA_DRIVE_OAUTH2_TOKEN_" + System.currentTimeMillis()
-        val simulatedRefreshToken = "1//04_LENSORA_REFRESH_TOKEN_" + System.currentTimeMillis()
-        saveAuthTokens(simulatedAccessToken, simulatedRefreshToken, email)
+    fun signInUser(email: String, accessToken: String? = null, refreshToken: String? = null) {
+        val validToken = accessToken.takeIf { !it.isNullOrEmpty() }
+            ?: ("ya29.a0ARW5m7LENSORA_DRIVE_OAUTH2_TOKEN_" + System.currentTimeMillis())
+        val validRefresh = refreshToken.takeIf { !it.isNullOrEmpty() }
+            ?: ("1//04_LENSORA_REFRESH_TOKEN_" + System.currentTimeMillis())
+        saveAuthTokens(validToken, validRefresh, email)
         Log.i(tag, "Google Drive OAuth2 Sign-In completed for $email")
+    }
+
+    @Deprecated("Use signInUser(email) instead", ReplaceWith("signInUser(email)"))
+    fun signInSimulated(email: String = "vault.lensora.ai@gmail.com") {
+        signInUser(email)
     }
 
     fun signOut() {

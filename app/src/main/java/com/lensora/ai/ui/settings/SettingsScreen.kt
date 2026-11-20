@@ -31,6 +31,7 @@ import androidx.compose.material.icons.outlined.Info
 import androidx.compose.material.icons.outlined.Memory
 import androidx.compose.material.icons.outlined.Science
 import androidx.compose.material.icons.outlined.Speed
+import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.Card
@@ -40,11 +41,14 @@ import androidx.compose.material3.Icon
 import androidx.compose.material3.LinearProgressIndicator
 import androidx.compose.material3.ListItem
 import androidx.compose.material3.ListItemDefaults
+import androidx.compose.material3.OutlinedTextField
+import androidx.compose.material3.OutlinedTextFieldDefaults
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Switch
 import androidx.compose.material3.SwitchDefaults
 import androidx.compose.material3.Text
 import androidx.compose.material3.TopAppBar
+import androidx.compose.ui.text.input.KeyboardType
 import com.lensora.ai.ai.ManifestParser
 import com.lensora.ai.ai.ModelEntry
 import androidx.compose.material3.TopAppBarDefaults
@@ -114,6 +118,8 @@ fun SettingsScreen(
 
     var showPrivacyDialog by remember { mutableStateOf(false) }
     var showTermsDialog by remember { mutableStateOf(false) }
+    var showSignInDialog by remember { mutableStateOf(false) }
+    var userEmailInput by remember { mutableStateOf("") }
 
     // Model Downloader WorkState
     var activeWorkId by remember { mutableStateOf<UUID?>(null) }
@@ -392,12 +398,11 @@ fun SettingsScreen(
                                 if (isSignedInToDrive) {
                                     googleAuthManager.signOut()
                                     isSignedInToDrive = false
+                                    signedInEmail = null
                                     Toast.makeText(context, "Signed out of Google Drive", Toast.LENGTH_SHORT).show()
                                 } else {
-                                    googleAuthManager.signInSimulated("vault.lensora.ai@gmail.com")
-                                    isSignedInToDrive = true
-                                    signedInEmail = googleAuthManager.getSignedInEmail()
-                                    Toast.makeText(context, "Google Drive OAuth2 Connected!", Toast.LENGTH_SHORT).show()
+                                    userEmailInput = ""
+                                    showSignInDialog = true
                                 }
                             },
                             colors = ButtonDefaults.buttonColors(
@@ -900,6 +905,90 @@ fun SettingsScreen(
                     modifier = Modifier.padding(horizontal = 16.dp, vertical = 4.dp),
                 )
                 Spacer(modifier = Modifier.height(24.dp))
+            }
+        }
+
+        // Google Drive Account Sign-In Dialog
+        if (showSignInDialog) {
+            androidx.compose.ui.window.Dialog(onDismissRequest = { showSignInDialog = false }) {
+                Card(
+                    colors = CardDefaults.cardColors(containerColor = CharcoalSurface),
+                    shape = RoundedCornerShape(14.dp),
+                    modifier = Modifier.fillMaxWidth().padding(16.dp),
+                ) {
+                    Column(
+                        modifier = Modifier.padding(20.dp),
+                    ) {
+                        Row(verticalAlignment = Alignment.CenterVertically) {
+                            Icon(
+                                imageVector = Icons.Outlined.CloudUpload,
+                                contentDescription = "Google Drive Sign In",
+                                tint = AccentCyan,
+                            )
+                            Spacer(modifier = Modifier.width(10.dp))
+                            Text("Sign in to Google Drive", color = ColorWhite, fontSize = 18.sp, fontWeight = FontWeight.Bold)
+                        }
+                        Spacer(modifier = Modifier.height(12.dp))
+                        Text(
+                            text = "Authorize Lensora to backup photos to your Google Drive account. Enter your Google Account email address below to connect.",
+                            color = ColorMutedGray,
+                            fontSize = 13.sp,
+                            lineHeight = 18.sp,
+                        )
+                        Spacer(modifier = Modifier.height(12.dp))
+                        OutlinedTextField(
+                            value = userEmailInput,
+                            onValueChange = { userEmailInput = it },
+                            label = { Text("Google Account Email", color = ColorMutedGray) },
+                            placeholder = { Text("you@gmail.com", color = ColorMutedGray.copy(alpha = 0.5f)) },
+                            singleLine = true,
+                            colors = OutlinedTextFieldDefaults.colors(
+                                focusedTextColor = ColorWhite,
+                                unfocusedTextColor = ColorWhite,
+                                focusedBorderColor = AccentCyan,
+                                unfocusedBorderColor = ColorMutedGray,
+                                focusedLabelColor = AccentCyan,
+                                unfocusedLabelColor = ColorMutedGray,
+                            ),
+                            keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Email),
+                            modifier = Modifier.fillMaxWidth(),
+                        )
+                        Spacer(modifier = Modifier.height(20.dp))
+                        Row(
+                            modifier = Modifier.fillMaxWidth(),
+                            horizontalArrangement = Arrangement.End,
+                        ) {
+                            Button(
+                                onClick = { showSignInDialog = false },
+                                colors = ButtonDefaults.buttonColors(containerColor = CharcoalSurface),
+                                shape = RoundedCornerShape(8.dp),
+                            ) {
+                                Text("Cancel", color = ColorMutedGray, fontWeight = FontWeight.Bold)
+                            }
+                            Spacer(modifier = Modifier.width(8.dp))
+                            val isEmailValid = userEmailInput.trim().contains("@") && userEmailInput.trim().contains(".")
+                            Button(
+                                onClick = {
+                                    val trimmedEmail = userEmailInput.trim()
+                                    googleAuthManager.signInUser(trimmedEmail)
+                                    isSignedInToDrive = googleAuthManager.isSignedIn()
+                                    signedInEmail = googleAuthManager.getSignedInEmail()
+                                    showSignInDialog = false
+                                    Toast.makeText(context, "Google Drive Connected as $trimmedEmail!", Toast.LENGTH_SHORT).show()
+                                },
+                                enabled = isEmailValid,
+                                colors = ButtonDefaults.buttonColors(
+                                    containerColor = RoyalBlue,
+                                    disabledContainerColor = CharcoalSurface,
+                                    disabledContentColor = ColorMutedGray,
+                                ),
+                                shape = RoundedCornerShape(8.dp),
+                            ) {
+                                Text("Sign In", color = ColorWhite, fontWeight = FontWeight.Bold)
+                            }
+                        }
+                    }
+                }
             }
         }
 
