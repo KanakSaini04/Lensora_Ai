@@ -135,9 +135,9 @@ Before submitting review packages or pull requests, run the review preparation s
 
 ---
 
-## 🤖 Neural AI Models (100% Offline GPU Execution)
+## 🤖 Neural AI Models (100% Offline Inference)
 
-All models execute locally on the device GPU via `GpuDelegate()` with CPU XNNPACK 4-thread fallback:
+LaMa Dilated object inpainting executes via `GpuDelegate()`. Real-ESRGAN v2 4x super-resolution engine executes via multi-threaded CPU (`setNumThreads(4)` with XNNPACK) with GPU delegate fallback validation:
 
 | AI Model | File Name / Location | Neural Network Architecture & Function |
 | :--- | :--- | :--- |

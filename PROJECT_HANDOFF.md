@@ -269,7 +269,7 @@ Lensora_Ai/
 | **AI Dehaze** | `dehaze.tflite` | `filesDir/models/` | ❌ No | $1 \times 512 \times 512 \times 3$ float | `ModelManager.kt:45` | Unlisted in DLC manifest |
 
 - **Memory Shield Tiling**: High-resolution images are split into $512 \times 512$ pixel tiles via `BitmapRegionDecoder` before TFLite inference, preventing OOM crashes on 12.5MP images.
-- **Hardware Acceleration**: `GpuDelegate` with CPU XNNPACK 4-thread fallback.
+- **Hardware Acceleration**: LaMa object inpainting uses `GpuDelegate()`. Real-ESRGAN v2 super-resolution uses multi-threaded CPU (`setNumThreads(4)` with XNNPACK) with GPU delegate fallback validation.
 - **L4 Validator Rules**: Evaluates average tile luminance ($2 < \text{avgLum} < 253$). Rejects corrupt or all-black/white tile artifacts.
 
 ## 10. UI

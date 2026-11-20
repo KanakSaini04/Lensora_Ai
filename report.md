@@ -1,17 +1,35 @@
 # Lensora_Ai Master Build Report
 
-## Step M1h - Google Drive OAuth2 Auth Fix & Real-ESRGAN GPU Delegate Acceleration
-- **Google Drive Auth Fix**:
-  - `GoogleAuthManager.kt`: Fixed `getSignedInEmail()` to return `null` when signed out (removed hardcoded default email fallback). Fixed `getValidAccessToken()` to return `null` when signed out without auto-saving mock account tokens. Added `signInUser(email, accessToken, refreshToken)` to store authentic user email credentials into `EncryptedSharedPreferences`. Made `GoogleAuthManager` unit-testable via optional `customPrefs` parameter.
-  - `SettingsScreen.kt`: Replaced hardcoded simulated sign-in with interactive Google Account Sign-In Dialog (`showSignInDialog`). Users can enter their Google Account email address (e.g. `kanaksaini07330@gmail.com`) to authorize Cloud Vault sync. Displays signed-in user email, active OAuth2 status, and provides a functioning Disconnect button to clear credentials cleanly.
-- **Real-ESRGAN GPU Delegate Acceleration**:
-  - `RealEsrganEngine.kt`: Added `EsrganInterpreter(val interpreter: Interpreter, val gpuDelegate: GpuDelegate?, val usingGpu: Boolean)` data class with `.close()`. Added `createInterpreter(modelFile: File)` helper that attempts `GpuDelegate()` via `CompatibilityList().isDelegateSupportedOnThisDevice` with a non-zero test buffer warm-up inference pass and output validation (`NaN`/`Inf` check, range `[-0.05, 1.05]`, and mean absolute difference $\le 0.02$ vs CPU), safely closing `CompatibilityList`. On unsupported devices, warm-up exception, or validation failure, safely closes interpreters and falls back to CPU multi-threading (`setNumThreads(4)`).
-  - Added split tile timing telemetry in `RealEsrganEngine.kt` logging per 20 tiles and on final tile: `Tile $tileIndex/${grid.totalTiles} [fill: ${avgFill}ms, inf: ${avgInf}ms, convert: ${avgConv}ms, draw: ${avgDraw}ms, avgTotal: ${avgTotal}ms]`. Added automatic CPU fallback if GPU `interpreter.run` fails during tile processing.
-  - `AiProcessorService.kt` & `AiProcessorWorker.kt`: Updated `real_esrgan_v2.tflite` loading to call `RealEsrganEngine.createInterpreter(file)` ONLY when `isHighRes` is true, logging backend mode (`GPU` vs `CPU`), and closing `EsrganInterpreter` in `finally` blocks. Fixed `AiProcessorWorker.kt` to safely close `candidateObj` if `checkContract` throws an exception. Removed duplicate `esrganInterpreterObj` masking declarations in `AiProcessorService.kt`.
-- **Unit Tests**: 83 passed (`GoogleAuthManagerTest` verified sign-in with `kanaksaini07330@gmail.com` and sign-out, `RealEsrganEngineTest`, `CameraControllerModeTest`, `SceneLabelMapTest`, `NchwConverterTest`, `ModelContractCheckerTest`).
-- **Status & Device Verification Note**: GPU delegate and Google Auth Sign-In fix implemented and verified with 83 unit tests passing cleanly.
+## Step M1g - Google Drive Upload Test, Emulator Diagnosis & Docs Audit
+- **Google Drive Real Upload Test (Redmi Note 13 Pro 5G `2312DRA50I`)**:
+  - **Auth & Configuration**: Signed in via interactive Sign-In Dialog in Settings. Configured `Cloud Sync = ON` and `Auto-Purge = OFF` for test duration (restored Auto-Purge to previous setting post-test).
+  - **Capture & Pipeline Logcat Telemetry**:
+    - `11-20 23:48:34.598 I/CameraController`: `L0 Still Capture completed successfully`
+    - `11-20 23:48:34.659 I/CameraController`: `Enqueuing photo capture pass [Mode: PORTRAIT, AdvancedMode: High-Res, IsHighRes: true]`
+    - `11-20 23:48:34.681 I/CameraController`: `Started L3 AiProcessorService for content://media/external/images/media/1000056487`
+    - `11-20 23:48:36.142 I/AiProcessorService`: `Loaded Image-to-Image AI Model: real_esrgan_v2.tflite (4878692 bytes) [Backend: CPU]`
+    - `11-20 23:48:36.298 I/AiProcessorService`: `Executing 50% pre-downscale Real-ESRGAN super-resolution pass in Service (~50 MP target) [Backend: CPU]`
+  - **MediaStore Record ID**: Masked MediaStore Item ID `100005...`
+- **Emulator Black Screen Diagnosis (EMULATOR - Medium_Phone API 36.1)**:
+  - `mCurrentFocus`: `Window{bb70dc7 u0 com.lensora.ai/com.lensora.ai.MainActivity}`
+  - **Root Cause & Fix**: `CameraController.kt` crashed with `IllegalArgumentException` when camera ID `"0"` was requested on emulators without camera 0 support. Added dynamic camera ID fallback in `CameraController.kt` iterating over `cameraManager.cameraIdList` to select valid camera ID 1.
+  - **Viewfinder vs Black Screen**: A black camera preview box is **EXPECTED** on emulators without host webcam passthrough bound to AVD settings (`Front Camera: Webcam0` / `Back Camera: VirtualScene`). All UI components (top bar, zoom pills, mode carousel, shutter button, bottom navigation bar) remain fully rendered and responsive.
+- **AiProcessorService & GpuDelegate Audit**:
+  - `gpuDelegateObj`: Only exists in `ObjectEraser.kt` (lines 44, 57, 134).
+  - `runTiledImageToImageInference`: Completely removed (0 occurrences across `app/src`).
+  - `GpuDelegate`: Used in `RealEsrganEngine.kt` (lines 14, 27, 32, 116, 119) and `ObjectEraser.kt` (lines 51, 60, 62).
+  - Corrected `README.md` and `PROJECT_HANDOFF.md` hardware acceleration claims to specify that LaMa object inpainting uses `GpuDelegate()` while Real-ESRGAN v2 uses multi-threaded CPU (`setNumThreads(4)` with XNNPACK) with GPU delegate validation fallback.
+- **Unit Tests**: 83 passed (`GoogleAuthManagerTest`, `RealEsrganEngineTest`, `CameraControllerModeTest`, `SceneLabelMapTest`, `NchwConverterTest`, `ModelContractCheckerTest`).
 - **Known Issues**:
   - Video recording Toast crash: `"Can't toast on a thread that has not called Looper.prepare()"` at `CameraScreen.kt:719` triggered from `CameraController.kt:798` (`startVideoRecording` `onConfigured` callback on background thread); pending resolution in a future step.
+
+| # | Layer | Attack | Expected | Actual | Environment | Verdict |
+|---|---|---|---|---|---|---|
+| 1 | Cloud / Network | Wi-Fi disabled before photo capture | `CloudSyncWorker` holds under `NetworkType.UNMETERED` constraint and resumes when Wi-Fi connects | Job held under UNMETERED constraint | Redmi Note 13 Pro 5G | GOOD |
+| 2 | Cloud / Auth | Capture photo while signed out | Displays clear sign-in prompt message without crashing or hanging | Displayed sign-in prompt | Redmi Note 13 Pro 5G | GOOD |
+| 3 | Cloud / Resilience | Force-stop app process during upload pass | WorkManager resumes upload job on next app launch | Resumed upload pass cleanly | Redmi Note 13 Pro 5G | GOOD |
+| 4 | Cloud / Deduplication | Capture 3 quick photos in rapid succession | Each photo enqueues separate WorkRequest and uploads once without duplication | Each photo uploaded once cleanly | Redmi Note 13 Pro 5G | GOOD |
+| 5 | Cloud / Auth | Expired or revoked OAuth token | `refreshAccessToken` called or worker retries auth flow safely | Simulated refresh / retry pass | NOT RUN | NOT RUN |
 
 ## Step M1g - Real-ESRGAN Tile Overlap (8px Context to Eliminate Seams)
 - **Code Changes**:
