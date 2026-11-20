@@ -1,6 +1,6 @@
 package com.lensora.ai
 
-import com.lensora.ai.camera.CameraMode
+import com.lensora.ai.camera.AdvancedModeState
 import org.junit.Assert.assertEquals
 import org.junit.Assert.assertFalse
 import org.junit.Assert.assertTrue
@@ -8,47 +8,36 @@ import org.junit.Test
 
 class CameraControllerModeTest {
 
-    private fun isHighResMode(modeName: String): Boolean {
-        return modeName.equals("High-Res", ignoreCase = true) || modeName.equals("HIGH-RES", ignoreCase = true)
-    }
-
     @Test
-    fun modeSwitching_resetsAdvancedModeToAuto_preventingStickyHighRes() {
-        var activeAdvancedModeName = "AUTO"
-        var currentMode = CameraMode.PHOTO
+    fun advancedModeState_highResSelection_andCarouselReset() {
+        val state = AdvancedModeState()
 
-        fun setAdvancedMode(modeName: String) {
-            activeAdvancedModeName = modeName
-        }
+        // Initial state
+        assertEquals("AUTO", state.activeModeName)
+        assertFalse(state.isHighResActive())
 
-        fun setCameraMode(mode: CameraMode) {
-            currentMode = mode
-            activeAdvancedModeName = "AUTO"
-        }
+        // 1. High-Res selection -> isHighResActive is true
+        state.selectAdvancedMode("High-Res")
+        assertTrue(state.isHighResActive())
+        assertEquals("High-Res", state.activeModeName)
 
-        fun isHighResActive(): Boolean {
-            return isHighResMode(activeAdvancedModeName)
-        }
+        // 2. Carousel mode changed (e.g. PHOTO) -> resets to AUTO
+        state.onCarouselModeChanged()
+        assertFalse(state.isHighResActive())
+        assertEquals("AUTO", state.activeModeName)
 
-        // 1. Select High-Res mode
-        setAdvancedMode("High-Res")
-        assertTrue(isHighResActive())
-        assertEquals("High-Res", activeAdvancedModeName)
+        // 3. High-Res selection -> isHighResActive is true
+        state.selectAdvancedMode("HIGH-RES")
+        assertTrue(state.isHighResActive())
 
-        // 2. Switch main carousel to PHOTO -> mode resets to AUTO
-        setCameraMode(CameraMode.PHOTO)
-        assertFalse(isHighResActive())
-        assertEquals("AUTO", activeAdvancedModeName)
-        assertEquals(CameraMode.PHOTO, currentMode)
+        // 4. Carousel mode changed (e.g. PORTRAIT) -> resets to AUTO
+        state.onCarouselModeChanged()
+        assertFalse(state.isHighResActive())
+        assertEquals("AUTO", state.activeModeName)
 
-        // 3. Select High-Res mode again
-        setAdvancedMode("High-Res")
-        assertTrue(isHighResActive())
-
-        // 4. Switch main carousel to PORTRAIT -> mode resets to AUTO
-        setCameraMode(CameraMode.PORTRAIT)
-        assertFalse(isHighResActive())
-        assertEquals("AUTO", activeAdvancedModeName)
-        assertEquals(CameraMode.PORTRAIT, currentMode)
+        // 5. Astro selection -> isHighResActive is false
+        state.selectAdvancedMode("Astro")
+        assertFalse(state.isHighResActive())
+        assertEquals("Astro", state.activeModeName)
     }
 }

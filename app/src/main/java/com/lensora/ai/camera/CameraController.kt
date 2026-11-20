@@ -67,8 +67,10 @@ class CameraController(private val context: Context) {
     var currentMode: CameraMode = CameraMode.PHOTO
         private set
 
-    var activeAdvancedModeName: String = "AUTO"
-        private set
+    private val advancedModeState = AdvancedModeState()
+
+    val activeAdvancedModeName: String
+        get() = advancedModeState.activeModeName
 
     var isRawCaptureEnabled: Boolean = false
         private set
@@ -305,7 +307,7 @@ class CameraController(private val context: Context) {
     }
 
     fun setAdvancedMode(modeName: String, onFeedback: (String) -> Unit = {}) {
-        activeAdvancedModeName = modeName
+        advancedModeState.selectAdvancedMode(modeName)
         Log.i(tag, "Applying Advanced Camera Mode: $modeName")
         val builder = previewRequestBuilder
         val session = captureSession
@@ -651,7 +653,7 @@ class CameraController(private val context: Context) {
 
     fun setCameraMode(mode: CameraMode) {
         currentMode = mode
-        activeAdvancedModeName = "AUTO"
+        advancedModeState.onCarouselModeChanged()
         Log.d("LensoraDebug", "Switching to mode $mode (Reset activeAdvancedModeName to AUTO)")
         val builder = previewRequestBuilder ?: return
         val session = captureSession ?: return
@@ -906,7 +908,7 @@ class CameraController(private val context: Context) {
 
                         tempFile.delete()
 
-                        val isHighRes = activeAdvancedModeName.equals("High-Res", ignoreCase = true) || activeAdvancedModeName.equals("HIGH-RES", ignoreCase = true)
+                        val isHighRes = advancedModeState.isHighResActive()
                         Log.i(tag, "Enqueuing photo capture pass [Mode: ${currentMode.name}, AdvancedMode: $activeAdvancedModeName, IsHighRes: $isHighRes]")
 
                         // Trigger L3 Foreground Service Computational AI Processor pass
