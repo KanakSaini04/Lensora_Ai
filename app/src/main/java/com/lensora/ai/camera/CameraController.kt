@@ -148,10 +148,52 @@ class CameraController(private val context: Context) {
             val cameraManager = context.getSystemService(Context.CAMERA_SERVICE) as? CameraManager
                 ?: return
 
-            // Query lens facing characteristics
-            cameraCharacteristics = cameraManager.getCameraCharacteristics(cameraId)
+            val idList = try { cameraManager.cameraIdList } catch (e: Exception) { emptyArray<String>() }
+            if (idList.isEmpty()) {
+                Log.w(tag, "No camera devices found on this device/emulator.")
+                return
+            }
+
+            var validCharacteristics: CameraCharacteristics? = null
+            var targetId = cameraId
+
+            if (idList.contains(targetId)) {
+                try {
+                    validCharacteristics = cameraManager.getCameraCharacteristics(targetId)
+                } catch (e: Exception) {
+                    Log.w(tag, "Failed to get characteristics for requested camera ID $targetId", e)
+                }
+            }
+
+            if (validCharacteristics == null) {
+                for (id in idList) {
+                    try {
+                        val chars = cameraManager.getCameraCharacteristics(id)
+                        targetId = id
+                        validCharacteristics = chars
+                        break
+                    } catch (_: Exception) {}
+                }
+            }
+
+            if (validCharacteristics == null) {
+                Log.e(tag, "Unable to retrieve valid camera characteristics for any available camera device.")
+                return
+            }
+
+            cameraId = targetId
+            cameraCharacteristics = validCharacteristics
             val facing = cameraCharacteristics?.get(CameraCharacteristics.LENS_FACING)
             isFrontCamera = (facing == CameraCharacteristics.LENS_FACING_FRONT)
+
+            if (cameraDevice != null) {
+                try {
+                    captureSession?.close()
+                    captureSession = null
+                    cameraDevice?.close()
+                    cameraDevice = null
+                } catch (_: Exception) {}
+            }
 
             // Setup Zoom Capabilities
             val zoomRange = if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.R) {
