@@ -3,7 +3,6 @@ package com.lensora.ai
 import com.lensora.ai.ai.RealEsrganEngine
 import org.junit.Assert.assertEquals
 import org.junit.Test
-import java.nio.ByteOrder
 
 class RealEsrganEngineTest {
 
@@ -25,42 +24,40 @@ class RealEsrganEngineTest {
 
     @Test
     fun calculateTileGrid_verifyTileCountsForFullAndPartialSizes() {
-        // Standard 1024x768 -> (1024/128=8 cols) x (768/128=6 rows) = 48 tiles
-        val cols1 = (1024 + 127) / 128
-        val rows1 = (768 + 127) / 128
-        assertEquals(8, cols1)
-        assertEquals(6, rows1)
-        assertEquals(48, cols1 * rows1)
+        // Standard 1024x768 -> (8 cols) x (6 rows) = 48 tiles
+        val grid1 = RealEsrganEngine.calculateTileGrid(1024, 768)
+        assertEquals(8, grid1.numCols)
+        assertEquals(6, grid1.numRows)
+        assertEquals(48, grid1.totalTiles)
 
-        // Non-multiple 1000x500 -> cols=(1000+127)/128=8, rows=(500+127)/128=4 = 32 tiles
-        val cols2 = (1000 + 127) / 128
-        val rows2 = (500 + 127) / 128
-        assertEquals(8, cols2)
-        assertEquals(4, rows2)
-        assertEquals(32, cols2 * rows2)
+        // 1530x2040 (halved 3060x4080 source) -> (12 cols) x (16 rows) = 192 tiles
+        val grid2 = RealEsrganEngine.calculateTileGrid(1530, 2040)
+        assertEquals(12, grid2.numCols)
+        assertEquals(16, grid2.numRows)
+        assertEquals(192, grid2.totalTiles)
     }
 
     @Test
-    fun calculateEdgeTileCrop_verifyCorrectScaledDimensions() {
-        val edgeTileW = 50
-        val edgeTileH = 128
+    fun calculatePartialEdgeTileBoundsAndCrop_verifyExactPartialTileAt1530x2040() {
+        // For a 1530x2040 image:
+        // Col 11 (last col, left = 11 * 128 = 1408): right = min(1536, 1530) = 1530 -> tileW = 122
+        // Row 15 (last row, top = 15 * 128 = 1920): bottom = min(2048, 2040) = 2040 -> tileH = 120
+        val bounds = RealEsrganEngine.calculateTileBounds(col = 11, row = 15, scaledInWidth = 1530, scaledInHeight = 2040)
+        assertEquals(1408, bounds.left)
+        assertEquals(1920, bounds.top)
+        assertEquals(1530, bounds.right)
+        assertEquals(2040, bounds.bottom)
+        assertEquals(122, bounds.width)
+        assertEquals(120, bounds.height)
 
-        val scaledW = edgeTileW * RealEsrganEngine.SCALE_FACTOR
-        val scaledH = edgeTileH * RealEsrganEngine.SCALE_FACTOR
+        // Crop dimensions for 122x120 input tile -> 4x scale = 488x480
+        val cropDims = RealEsrganEngine.calculateOutputCropDimensions(bounds.width, bounds.height)
+        assertEquals(488, cropDims.cropWidth)
+        assertEquals(480, cropDims.cropHeight)
 
-        assertEquals(200, scaledW)
-        assertEquals(512, scaledH)
-    }
-
-    @Test
-    fun calculateCornerTileCrop_verifyCorrectScaledDimensions() {
-        val cornerTileW = 40
-        val cornerTileH = 30
-
-        val scaledW = cornerTileW * RealEsrganEngine.SCALE_FACTOR
-        val scaledH = cornerTileH * RealEsrganEngine.SCALE_FACTOR
-
-        assertEquals(160, scaledW)
-        assertEquals(120, scaledH)
+        // Canvas destination coordinates at col=11, row=15
+        val destCoords = RealEsrganEngine.calculateDestCoordinates(col = 11, row = 15)
+        assertEquals(5632f, destCoords.destLeft) // 1408 * 4
+        assertEquals(7680f, destCoords.destTop)  // 1920 * 4
     }
 }

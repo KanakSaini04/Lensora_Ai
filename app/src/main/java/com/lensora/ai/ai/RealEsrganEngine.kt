@@ -12,11 +12,40 @@ import org.tensorflow.lite.Interpreter
 import java.nio.ByteBuffer
 import java.nio.ByteOrder
 
+data class TileGrid(val numCols: Int, val numRows: Int, val totalTiles: Int)
+data class TileBounds(val left: Int, val top: Int, val right: Int, val bottom: Int, val width: Int, val height: Int)
+data class TileCropDimensions(val cropWidth: Int, val cropHeight: Int)
+data class DestCoordinates(val destLeft: Float, val destTop: Float)
+
 object RealEsrganEngine {
     private const val TAG = "RealEsrganEngine"
     const val TILE_IN_SIZE = 128
     const val TILE_OUT_SIZE = 512
     const val SCALE_FACTOR = 4
+
+    fun calculateTileGrid(scaledInWidth: Int, scaledInHeight: Int): TileGrid {
+        val numCols = (scaledInWidth + TILE_IN_SIZE - 1) / TILE_IN_SIZE
+        val numRows = (scaledInHeight + TILE_IN_SIZE - 1) / TILE_IN_SIZE
+        return TileGrid(numCols, numRows, numCols * numRows)
+    }
+
+    fun calculateTileBounds(col: Int, row: Int, scaledInWidth: Int, scaledInHeight: Int): TileBounds {
+        val left = col * TILE_IN_SIZE
+        val top = row * TILE_IN_SIZE
+        val right = (left + TILE_IN_SIZE).coerceAtMost(scaledInWidth)
+        val bottom = (top + TILE_IN_SIZE).coerceAtMost(scaledInHeight)
+        return TileBounds(left, top, right, bottom, right - left, bottom - top)
+    }
+
+    fun calculateOutputCropDimensions(tileWidth: Int, tileHeight: Int): TileCropDimensions {
+        return TileCropDimensions(tileWidth * SCALE_FACTOR, tileHeight * SCALE_FACTOR)
+    }
+
+    fun calculateDestCoordinates(col: Int, row: Int): DestCoordinates {
+        val left = col * TILE_IN_SIZE
+        val top = row * TILE_IN_SIZE
+        return DestCoordinates((left * SCALE_FACTOR).toFloat(), (top * SCALE_FACTOR).toFloat())
+    }
 
     fun createInputBuffer(width: Int = TILE_IN_SIZE, height: Int = TILE_IN_SIZE): ByteBuffer {
         return ByteBuffer.allocateDirect(1 * width * height * 3 * 4).apply {
@@ -72,7 +101,7 @@ object RealEsrganEngine {
     }
 
     /**
-     * Pads edge tiles smaller than 128x128 by edge replication to prevent stretching distortion.
+     * Pads edge tiles smaller than 128x128 by edge pixel replication to prevent stretching distortion.
      */
     fun padTileTo128(inTile: Bitmap): Bitmap {
         val tileW = inTile.width
@@ -137,8 +166,9 @@ object RealEsrganEngine {
         interpreter.run(inBuf, outBuf)
         val raw512Tile = bufferToBitmap(outBuf, TILE_OUT_SIZE, TILE_OUT_SIZE)
 
-        val expectedOutW = tileW * SCALE_FACTOR
-        val expectedOutH = tileH * SCALE_FACTOR
+        val cropDims = calculateOutputCropDimensions(tileW, tileH)
+        val expectedOutW = cropDims.cropWidth
+        val expectedOutH = cropDims.cropHeight
 
         val croppedTile = if (expectedOutW != TILE_OUT_SIZE || expectedOutH != TILE_OUT_SIZE) {
             val cropped = Bitmap.createBitmap(raw512Tile, 0, 0, expectedOutW, expectedOutH)
@@ -179,6 +209,7 @@ object RealEsrganEngine {
 
         val outWidth = scaledInWidth * SCALE_FACTOR
         val outHeight = scaledInHeight * SCALE_FACTOR
+        val grid = calculateTileGrid(scaledInWidth, scaledInHeight)
 
         // Reuse ByteBuffers across all tiles
         val inputBuffer = createInputBuffer()
@@ -196,23 +227,12 @@ object RealEsrganEngine {
                 isFilterBitmap = true
             }
 
-            val numCols = (scaledInWidth + TILE_IN_SIZE - 1) / TILE_IN_SIZE
-            val numRows = (scaledInHeight + TILE_IN_SIZE - 1) / TILE_IN_SIZE
-            val totalTiles = numCols * numRows
-
             var tileIndex = 0
 
-            for (row in 0 until numRows) {
-                for (col in 0 until numCols) {
-                    val left = col * TILE_IN_SIZE
-                    val top = row * TILE_IN_SIZE
-                    val right = (left + TILE_IN_SIZE).coerceAtMost(scaledInWidth)
-                    val bottom = (top + TILE_IN_SIZE).coerceAtMost(scaledInHeight)
-
-                    val tileW = right - left
-                    val tileH = bottom - top
-
-                    val inTile = Bitmap.createBitmap(scaledSource, left, top, tileW, tileH)
+            for (row in 0 until grid.numRows) {
+                for (col in 0 until grid.numCols) {
+                    val bounds = calculateTileBounds(col, row, scaledInWidth, scaledInHeight)
+                    val inTile = Bitmap.createBitmap(scaledSource, bounds.left, bounds.top, bounds.width, bounds.height)
                     val outTile = processTileSuperResolution(
                         interpreter = interpreter,
                         inTile = inTile,
@@ -221,10 +241,8 @@ object RealEsrganEngine {
                         outputBuffer = outputBuffer,
                     )
 
-                    val destLeft = (left * SCALE_FACTOR).toFloat()
-                    val destTop = (top * SCALE_FACTOR).toFloat()
-
-                    canvas.drawBitmap(outTile, destLeft, destTop, paint)
+                    val destCoords = calculateDestCoordinates(col, row)
+                    canvas.drawBitmap(outTile, destCoords.destLeft, destCoords.destTop, paint)
 
                     outTile.recycle()
                     if (inTile != scaledSource) {
@@ -232,12 +250,13 @@ object RealEsrganEngine {
                     }
 
                     tileIndex++
-                    val progressPercent = (tileIndex * 100) / totalTiles
+                    val progressPercent = (tileIndex * 100) / grid.totalTiles
                     onProgress?.invoke(progressPercent)
                 }
             }
 
-            Log.i(TAG, "Completed Real-ESRGAN super-resolution pass: ${sourceBitmap.width}x${sourceBitmap.height} -> ${outWidth}x${outHeight} (${SCALE_FACTOR}x scale)")
+            val netUpscaleRatio = (outWidth.toFloat() / sourceBitmap.width.toFloat())
+            Log.i(TAG, "Completed Real-ESRGAN super-resolution pass: ${sourceBitmap.width}x${sourceBitmap.height} -> ${outWidth}x${outHeight} (${netUpscaleRatio}x net scale vs source)")
             return outBitmap
         } catch (e: Throwable) {
             outBitmap?.recycle()

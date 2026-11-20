@@ -328,56 +328,7 @@ class AiProcessorService : Service() {
         }
     }
 
-    private fun runTiledImageToImageInference(interpreter: Interpreter, tileBitmap: Bitmap): Bitmap? {
-        return try {
-            val width = tileBitmap.width
-            val height = tileBitmap.height
 
-            // 1. Convert tile Bitmap to float ByteBuffer (1 x H x W x 3)
-            val inputBuffer = ByteBuffer.allocateDirect(1 * height * width * 3 * 4).apply {
-                order(ByteOrder.nativeOrder())
-            }
-
-            val pixels = IntArray(width * height)
-            tileBitmap.getPixels(pixels, 0, width, 0, 0, width, height)
-
-            for (pixel in pixels) {
-                val r = ((pixel shr 16) and 0xFF) / 255.0f
-                val g = ((pixel shr 8) and 0xFF) / 255.0f
-                val b = (pixel and 0xFF) / 255.0f
-                inputBuffer.putFloat(r)
-                inputBuffer.putFloat(g)
-                inputBuffer.putFloat(b)
-            }
-
-            // 2. Allocate output float ByteBuffer (1 x H x W x 3)
-            val outputBuffer = ByteBuffer.allocateDirect(1 * height * width * 3 * 4).apply {
-                order(ByteOrder.nativeOrder())
-            }
-
-            interpreter.run(inputBuffer, outputBuffer)
-            outputBuffer.rewind()
-
-            // 3. Convert output ByteBuffer back to Bitmap
-            val enhancedBitmap = Bitmap.createBitmap(width, height, Bitmap.Config.ARGB_8888)
-            val outPixels = IntArray(width * height)
-
-            for (i in 0 until (width * height)) {
-                if (outputBuffer.hasRemaining()) {
-                    val r = (outputBuffer.float.coerceIn(0f, 1f) * 255f).toInt()
-                    val g = (outputBuffer.float.coerceIn(0f, 1f) * 255f).toInt()
-                    val b = (outputBuffer.float.coerceIn(0f, 1f) * 255f).toInt()
-                    outPixels[i] = (0xFF shl 24) or (r shl 16) or (g shl 8) or b
-                }
-            }
-
-            enhancedBitmap.setPixels(outPixels, 0, width, 0, 0, width, height)
-            enhancedBitmap
-        } catch (e: Exception) {
-            Log.w(tag, "Tiled Image-to-Image inference pass failed (${e.localizedMessage}). Safe fallback.", e)
-            null
-        }
-    }
 
     private fun createColorMatrixForPlan(sceneType: String, evOffset: Float): ColorMatrix {
         val matrix = ColorMatrix()
