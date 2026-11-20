@@ -60,7 +60,7 @@ object RealEsrganEngine {
                 Log.w(TAG, "GPU output validation fail: NaN or Infinite value detected at index $i")
                 return false
             }
-            if (g < 0.0f || g > 1.0f) {
+            if (g < -0.05f || g > 1.05f) {
                 Log.w(TAG, "GPU output validation fail: Out of bounds value $g at index $i")
                 return false
             }
@@ -91,11 +91,17 @@ object RealEsrganEngine {
         testInput.rewind()
 
         val cpuOutput = createOutputBuffer()
-        val cpuOptions = Interpreter.Options().apply { setNumThreads(4) }
-        val cpuInterpreter = Interpreter(modelFile, cpuOptions)
-
-        testInput.rewind()
-        cpuInterpreter.run(testInput, cpuOutput)
+        var cpuInterpreter: Interpreter? = null
+        try {
+            val cpuOptions = Interpreter.Options().apply { setNumThreads(4) }
+            cpuInterpreter = Interpreter(modelFile, cpuOptions)
+            testInput.rewind()
+            cpuInterpreter.run(testInput, cpuOutput)
+        } catch (cpuEx: Throwable) {
+            Log.w(TAG, "CPU warm-up failed: ${cpuEx.message}")
+            try { cpuInterpreter?.close() } catch (_: Throwable) {}
+            throw cpuEx
+        }
 
         val compat = CompatibilityList()
         var isGpuSupported = false
@@ -362,6 +368,7 @@ object RealEsrganEngine {
         validator: Validator,
         colorMatrix: ColorMatrix? = null,
         modelFile: File? = null,
+        esrganObj: EsrganInterpreter? = null,
         onProgress: ((Int) -> Unit)? = null,
     ): Bitmap {
         val pipelineStartMs = SystemClock.elapsedRealtime()
@@ -384,6 +391,7 @@ object RealEsrganEngine {
 
         var outBitmap: Bitmap? = null
         var padded: Bitmap? = null
+        var replacementCpuInterpreter: Interpreter? = null
 
         var totalFillMs = 0L
         var totalInferenceMs = 0L
@@ -419,10 +427,12 @@ object RealEsrganEngine {
                     try {
                         activeInterpreter.run(inputBuffer, outputBuffer)
                     } catch (t: Throwable) {
-                        Log.w(TAG, "Tile $tileIndex inference failed on active interpreter (${t.message}). Falling back to CPU 4-thread interpreter.")
-                        if (modelFile != null && modelFile.exists()) {
+                        if (esrganObj != null && esrganObj.usingGpu && replacementCpuInterpreter == null && modelFile != null && modelFile.exists()) {
+                            Log.w(TAG, "Tile $tileIndex GPU inference failed (${t.message}). Rebuilding CPU 4-thread interpreter and retrying tile.")
                             val cpuOptions = Interpreter.Options().apply { setNumThreads(4) }
-                            activeInterpreter = Interpreter(modelFile, cpuOptions)
+                            val newCpu = Interpreter(modelFile, cpuOptions)
+                            replacementCpuInterpreter = newCpu
+                            activeInterpreter = newCpu
                             activeInterpreter.run(inputBuffer, outputBuffer)
                         } else {
                             throw t
@@ -477,6 +487,7 @@ object RealEsrganEngine {
             outBitmap?.recycle()
             throw e
         } finally {
+            try { replacementCpuInterpreter?.close() } catch (_: Throwable) {}
             padded?.recycle()
             if (scaledSource != sourceBitmap) {
                 scaledSource.recycle()

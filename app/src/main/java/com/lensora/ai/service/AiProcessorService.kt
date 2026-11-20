@@ -154,23 +154,22 @@ class AiProcessorService : Service() {
             val imgWidth = decoder.width
             val imgHeight = decoder.height
 
-            // 2. Select Real Image-to-Image AI Enhancement Model (Dehaze / Real-ESRGAN, NOT MobileNet classifier)
-            var esrganInterpreterObj: com.lensora.ai.ai.EsrganInterpreter? = null
-            var usedImageToImageModel = false
-
-            val enhancementModelFile = modelManager.getEnhancementModelFile()
-
-            if (enhancementModelFile != null && enhancementModelFile.exists()) {
-                try {
-                    val candidateObj = com.lensora.ai.ai.RealEsrganEngine.createInterpreter(enhancementModelFile)
-                    esrganInterpreterObj = candidateObj
-                    usedImageToImageModel = true
-                    Log.i(tag, "Loaded Image-to-Image AI Model: ${enhancementModelFile.name} (${enhancementModelFile.length()} bytes) [Backend: ${if (candidateObj.usingGpu) "GPU" else "CPU"}]")
-                } catch (e: Exception) {
-                    Log.w(tag, "Failed to initialize TFLite Interpreter for ${enhancementModelFile.name}. Falling back to ColorMatrix engine.", e)
+            // 2. Select Real Image-to-Image AI Enhancement Model ONLY when isHighRes is true
+            var enhancementModelFile: File? = null
+            if (isHighRes) {
+                enhancementModelFile = modelManager.getEnhancementModelFile()
+                if (enhancementModelFile != null && enhancementModelFile.exists()) {
+                    try {
+                        val candidateObj = com.lensora.ai.ai.RealEsrganEngine.createInterpreter(enhancementModelFile)
+                        esrganInterpreterObj = candidateObj
+                        usedImageToImageModel = true
+                        Log.i(tag, "Loaded Image-to-Image AI Model: ${enhancementModelFile.name} (${enhancementModelFile.length()} bytes) [Backend: ${if (candidateObj.usingGpu) "GPU" else "CPU"}]")
+                    } catch (e: Exception) {
+                        Log.w(tag, "Failed to initialize TFLite Interpreter for ${enhancementModelFile.name}. Falling back to ColorMatrix engine.", e)
+                    }
+                } else {
+                    Log.w(tag, "FALLBACK WARNING: Real-ESRGAN DLC model missing at filesDir/models/. Executing ColorMatrix fallback pass.")
                 }
-            } else {
-                Log.w(tag, "FALLBACK WARNING: Real-ESRGAN / Dehaze DLC model missing at filesDir/models/. Executing ColorMatrix fallback pass.")
             }
 
             // 3. Prepare Master Target Bitmap & Paint with Stacked ColorMatrix / Vibe LUT
@@ -195,6 +194,8 @@ class AiProcessorService : Service() {
                             interpreter = activeEsrganObj.interpreter,
                             validator = validator,
                             colorMatrix = colorMatrix,
+                            modelFile = enhancementModelFile,
+                            esrganObj = activeEsrganObj,
                         )
                     } catch (oom: OutOfMemoryError) {
                         Log.w(tag, "OOM during 50% Real-ESRGAN pass in Service. Retrying at 25% scale.", oom)
@@ -207,6 +208,8 @@ class AiProcessorService : Service() {
                                 interpreter = activeEsrganObj.interpreter,
                                 validator = validator,
                                 colorMatrix = colorMatrix,
+                                modelFile = enhancementModelFile,
+                                esrganObj = activeEsrganObj,
                             )
                         } catch (retryOom: OutOfMemoryError) {
                             Log.e(tag, "OOM during 25% fallback pass in Service as well.", retryOom)
