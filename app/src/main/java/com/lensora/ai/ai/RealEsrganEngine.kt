@@ -16,6 +16,7 @@ data class TileGrid(val numCols: Int, val numRows: Int, val totalTiles: Int)
 data class TileBounds(val left: Int, val top: Int, val right: Int, val bottom: Int, val width: Int, val height: Int)
 data class TileCropDimensions(val cropWidth: Int, val cropHeight: Int)
 data class DestCoordinates(val destLeft: Float, val destTop: Float)
+data class PaddedSize(val width: Int, val height: Int)
 
 object RealEsrganEngine {
     private const val TAG = "RealEsrganEngine"
@@ -23,17 +24,24 @@ object RealEsrganEngine {
     const val TILE_OUT_SIZE = 512
     const val SCALE_FACTOR = 4
 
+    const val TILE_PAD = 8
+    const val TILE_CORE = TILE_IN_SIZE - 2 * TILE_PAD   // 112
+    const val CROP_OFFSET = TILE_PAD * SCALE_FACTOR      // 32
+
+    fun calculatePaddedSize(grid: TileGrid): PaddedSize =
+        PaddedSize(grid.numCols * TILE_CORE + 2 * TILE_PAD, grid.numRows * TILE_CORE + 2 * TILE_PAD)
+
     fun calculateTileGrid(scaledInWidth: Int, scaledInHeight: Int): TileGrid {
-        val numCols = (scaledInWidth + TILE_IN_SIZE - 1) / TILE_IN_SIZE
-        val numRows = (scaledInHeight + TILE_IN_SIZE - 1) / TILE_IN_SIZE
+        val numCols = (scaledInWidth + TILE_CORE - 1) / TILE_CORE
+        val numRows = (scaledInHeight + TILE_CORE - 1) / TILE_CORE
         return TileGrid(numCols, numRows, numCols * numRows)
     }
 
     fun calculateTileBounds(col: Int, row: Int, scaledInWidth: Int, scaledInHeight: Int): TileBounds {
-        val left = col * TILE_IN_SIZE
-        val top = row * TILE_IN_SIZE
-        val right = (left + TILE_IN_SIZE).coerceAtMost(scaledInWidth)
-        val bottom = (top + TILE_IN_SIZE).coerceAtMost(scaledInHeight)
+        val left = col * TILE_CORE
+        val top = row * TILE_CORE
+        val right = (left + TILE_CORE).coerceAtMost(scaledInWidth)
+        val bottom = (top + TILE_CORE).coerceAtMost(scaledInHeight)
         return TileBounds(left, top, right, bottom, right - left, bottom - top)
     }
 
@@ -42,9 +50,30 @@ object RealEsrganEngine {
     }
 
     fun calculateDestCoordinates(col: Int, row: Int): DestCoordinates {
-        val left = col * TILE_IN_SIZE
-        val top = row * TILE_IN_SIZE
+        val left = col * TILE_CORE
+        val top = row * TILE_CORE
         return DestCoordinates((left * SCALE_FACTOR).toFloat(), (top * SCALE_FACTOR).toFloat())
+    }
+
+    fun buildEdgePaddedSource(src: Bitmap, grid: TileGrid): Bitmap {
+        val size = calculatePaddedSize(grid)
+        val out = Bitmap.createBitmap(size.width, size.height, Bitmap.Config.ARGB_8888)
+        val c = Canvas(out)
+        val p = Paint()
+        val w = src.width
+        val h = src.height
+        val right = TILE_PAD + w
+        val bottom = TILE_PAD + h
+        c.drawBitmap(src, TILE_PAD.toFloat(), TILE_PAD.toFloat(), p)
+        c.drawBitmap(src, Rect(0, 0, 1, h), Rect(0, TILE_PAD, TILE_PAD, bottom), p)
+        c.drawBitmap(src, Rect(w - 1, 0, w, h), Rect(right, TILE_PAD, size.width, bottom), p)
+        c.drawBitmap(src, Rect(0, 0, w, 1), Rect(TILE_PAD, 0, right, TILE_PAD), p)
+        c.drawBitmap(src, Rect(0, h - 1, w, h), Rect(TILE_PAD, bottom, right, size.height), p)
+        c.drawBitmap(src, Rect(0, 0, 1, 1), Rect(0, 0, TILE_PAD, TILE_PAD), p)
+        c.drawBitmap(src, Rect(w - 1, 0, w, 1), Rect(right, 0, size.width, TILE_PAD), p)
+        c.drawBitmap(src, Rect(0, h - 1, 1, h), Rect(0, bottom, TILE_PAD, size.height), p)
+        c.drawBitmap(src, Rect(w - 1, h - 1, w, h), Rect(right, bottom, size.width, size.height), p)
+        return out
     }
 
     fun createInputBuffer(width: Int = TILE_IN_SIZE, height: Int = TILE_IN_SIZE): ByteBuffer {
@@ -190,6 +219,33 @@ object RealEsrganEngine {
         return croppedTile
     }
 
+    fun processTileWithContext(
+        interpreter: Interpreter,
+        window: Bitmap,
+        coreWidth: Int,
+        coreHeight: Int,
+        validator: Validator,
+        inputBuffer: ByteBuffer,
+        outputBuffer: ByteBuffer,
+    ): Bitmap {
+        fillBufferFromBitmap(window, inputBuffer)
+        outputBuffer.rewind()
+        interpreter.run(inputBuffer, outputBuffer)
+        val raw = bufferToBitmap(outputBuffer, TILE_OUT_SIZE, TILE_OUT_SIZE)
+        val dims = calculateOutputCropDimensions(coreWidth, coreHeight)
+        val cropped = Bitmap.createBitmap(raw, CROP_OFFSET, CROP_OFFSET, dims.cropWidth, dims.cropHeight)
+        if (cropped != raw) raw.recycle()
+        if (!validator.isValid(cropped)) {
+            Log.w(TAG, "L4 Validator failed on tile output. Falling back to bicubic scale tile.")
+            cropped.recycle()
+            val core = Bitmap.createBitmap(window, TILE_PAD, TILE_PAD, coreWidth, coreHeight)
+            val scaled = Bitmap.createScaledBitmap(core, dims.cropWidth, dims.cropHeight, true)
+            if (core != window) core.recycle()
+            return scaled
+        }
+        return cropped
+    }
+
     fun runSuperResolutionPipeline(
         sourceBitmap: Bitmap,
         downscaleFactor: Float,
@@ -216,8 +272,10 @@ object RealEsrganEngine {
         val outputBuffer = createOutputBuffer()
 
         var outBitmap: Bitmap? = null
+        var padded: Bitmap? = null
 
         try {
+            padded = buildEdgePaddedSource(scaledSource, grid)
             outBitmap = Bitmap.createBitmap(outWidth, outHeight, Bitmap.Config.ARGB_8888)
             val canvas = Canvas(outBitmap)
             val paint = Paint(Paint.ANTI_ALIAS_FLAG).apply {
@@ -231,11 +289,13 @@ object RealEsrganEngine {
 
             for (row in 0 until grid.numRows) {
                 for (col in 0 until grid.numCols) {
-                    val bounds = calculateTileBounds(col, row, scaledInWidth, scaledInHeight)
-                    val inTile = Bitmap.createBitmap(scaledSource, bounds.left, bounds.top, bounds.width, bounds.height)
-                    val outTile = processTileSuperResolution(
+                    val core = calculateTileBounds(col, row, scaledInWidth, scaledInHeight)
+                    val window = Bitmap.createBitmap(padded, col * TILE_CORE, row * TILE_CORE, TILE_IN_SIZE, TILE_IN_SIZE)
+                    val outTile = processTileWithContext(
                         interpreter = interpreter,
-                        inTile = inTile,
+                        window = window,
+                        coreWidth = core.width,
+                        coreHeight = core.height,
                         validator = validator,
                         inputBuffer = inputBuffer,
                         outputBuffer = outputBuffer,
@@ -245,9 +305,7 @@ object RealEsrganEngine {
                     canvas.drawBitmap(outTile, destCoords.destLeft, destCoords.destTop, paint)
 
                     outTile.recycle()
-                    if (inTile != scaledSource) {
-                        inTile.recycle()
-                    }
+                    window.recycle()
 
                     tileIndex++
                     val progressPercent = (tileIndex * 100) / grid.totalTiles
@@ -262,6 +320,7 @@ object RealEsrganEngine {
             outBitmap?.recycle()
             throw e
         } finally {
+            padded?.recycle()
             if (scaledSource != sourceBitmap) {
                 scaledSource.recycle()
             }
