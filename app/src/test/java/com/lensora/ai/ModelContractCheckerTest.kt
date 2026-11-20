@@ -47,9 +47,9 @@ class ModelContractCheckerTest {
     fun checkContract_validRealEsrganModel_returnsValidStatus() {
         val modelFile = tempFolder.newFile("real_esrgan_v2.tflite").apply { writeText("fake_tflite") }
         val provider = FakeTensorInfoProvider(
-            inShape = intArrayOf(1, 512, 512, 3),
+            inShape = intArrayOf(1, 128, 128, 3),
             inDtype = "FLOAT32",
-            outShape = intArrayOf(1, 1024, 1024, 3), // 2x output scale
+            outShape = intArrayOf(1, 512, 512, 3), // 4x output scale
             outDtype = "FLOAT32",
         )
 
@@ -59,10 +59,25 @@ class ModelContractCheckerTest {
     }
 
     @Test
+    fun checkContract_validSceneClassifierModel_returnsValidStatus() {
+        val modelFile = tempFolder.newFile("scene_classifier.tflite").apply { writeText("fake_tflite") }
+        val provider = FakeTensorInfoProvider(
+            inShape = intArrayOf(1, 3, 224, 224),
+            inDtype = "FLOAT32",
+            outShape = intArrayOf(1, 365),
+            outDtype = "FLOAT32",
+        )
+
+        val result = ModelContractChecker.checkContract(modelFile, ModelContracts.SCENE_CLASSIFIER, provider)
+
+        assertEquals(ModelContractStatus.Valid, result)
+    }
+
+    @Test
     fun checkContract_inputShapeMismatch_returnsIncompatibleStatus() {
         val modelFile = tempFolder.newFile("wrong_input.tflite").apply { writeText("fake_tflite") }
         val provider = FakeTensorInfoProvider(
-            inShape = intArrayOf(1, 256, 256, 3), // Mismatch (expected 512x512)
+            inShape = intArrayOf(1, 256, 256, 3),
             inDtype = "FLOAT32",
             outShape = intArrayOf(1, 512, 512, 3),
             outDtype = "FLOAT32",
@@ -79,10 +94,10 @@ class ModelContractCheckerTest {
     fun checkContract_outputDtypeMismatch_returnsIncompatibleStatus() {
         val modelFile = tempFolder.newFile("wrong_dtype.tflite").apply { writeText("fake_tflite") }
         val provider = FakeTensorInfoProvider(
-            inShape = intArrayOf(1, 224, 224, 3),
+            inShape = intArrayOf(1, 3, 224, 224),
             inDtype = "FLOAT32",
-            outShape = intArrayOf(1, 1000),
-            outDtype = "UINT8", // Mismatch (expected FLOAT32)
+            outShape = intArrayOf(1, 365),
+            outDtype = "UINT8",
         )
 
         val result = ModelContractChecker.checkContract(modelFile, ModelContracts.SCENE_CLASSIFIER, provider)

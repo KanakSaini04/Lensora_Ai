@@ -1,5 +1,6 @@
 package com.lensora.ai.ai
 
+import org.tensorflow.lite.Interpreter
 import java.io.File
 
 data class TensorContract(
@@ -40,11 +41,20 @@ interface TensorInfoProvider {
     fun getOutputDtype(): String?
 }
 
+class InterpreterTensorInfoProvider(
+    private val interpreter: Interpreter,
+) : TensorInfoProvider {
+    override fun getInputShape(): IntArray? = try { interpreter.getInputTensor(0).shape() } catch (_: Exception) { null }
+    override fun getInputDtype(): String? = try { interpreter.getInputTensor(0).dataType().name } catch (_: Exception) { null }
+    override fun getOutputShape(): IntArray? = try { interpreter.getOutputTensor(0).shape() } catch (_: Exception) { null }
+    override fun getOutputDtype(): String? = try { interpreter.getOutputTensor(0).dataType().name } catch (_: Exception) { null }
+}
+
 object ModelContracts {
     val SCENE_CLASSIFIER = TensorContract(
-        expectedInputShape = intArrayOf(1, 224, 224, 3),
+        expectedInputShape = intArrayOf(1, 3, 224, 224), // NCHW Float32 Places365
         expectedInputDtype = "FLOAT32",
-        expectedOutputShape = intArrayOf(1, 1000),
+        expectedOutputShape = intArrayOf(1, 365),
         expectedOutputDtype = "FLOAT32",
     )
 
@@ -56,9 +66,9 @@ object ModelContracts {
     )
 
     val REAL_ESRGAN_V2 = TensorContract(
-        expectedInputShape = intArrayOf(1, 512, 512, 3),
+        expectedInputShape = intArrayOf(1, 128, 128, 3),
         expectedInputDtype = "FLOAT32",
-        expectedOutputShape = intArrayOf(1, 1024, 1024, 3), // 2x output scale
+        expectedOutputShape = intArrayOf(1, 512, 512, 3), // 4x output scale
         expectedOutputDtype = "FLOAT32",
     )
 
@@ -89,6 +99,8 @@ object ModelContractChecker {
         if (inShape == null || outShape == null || inDtype == null || outDtype == null) {
             return ModelContractStatus.Incompatible("Could not read tensor shapes or dtypes from model file")
         }
+
+        android.util.Log.i("ModelContractChecker", "Model ${modelFile.name} tensor contract: Input shape=${inShape.contentToString()}, dtype=$inDtype; Output shape=${outShape.contentToString()}, dtype=$outDtype")
 
         if (!inShape.contentEquals(contract.expectedInputShape)) {
             return ModelContractStatus.Incompatible(

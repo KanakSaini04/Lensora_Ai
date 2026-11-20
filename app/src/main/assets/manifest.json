@@ -2,8 +2,8 @@
   "schema_version": 2,
   "scene_classifier": {
     "file_name": "scene_classifier.tflite",
-    "url": null,
-    "sha256": null
+    "url": "https://github.com/KanakSaini04/Lensora_Ai/releases/download/models-v1/places_fp16.tflite",
+    "sha256": "8eb6c7ee5ec21be435d6d11f24bd68e13199bb457ff4c01fb07bde213f289d39"
   },
   "lama_dilated": {
     "file_name": "lama_dilated.tflite",
@@ -12,8 +12,8 @@
   },
   "real_esrgan_v2": {
     "file_name": "real_esrgan_v2.tflite",
-    "url": null,
-    "sha256": null
+    "url": "https://github.com/KanakSaini04/Lensora_Ai/releases/download/models-v1/real_esrgan_general_x4v3.tflite",
+    "sha256": "47dbfe34c3492e6f7f7fb2b0ed99794e8e41215c2177821f03e0f5304e4b9846"
   },
   "dehaze": {
     "file_name": "dehaze.tflite",
