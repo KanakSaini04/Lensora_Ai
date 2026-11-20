@@ -1,3 +1,12 @@
+## [Unreleased] - Step M1h Real-ESRGAN GPU Delegate Acceleration & CPU Fallback (2026-11-20)
+
+### Added
+- **Step M1h Real-ESRGAN GPU Delegate Acceleration**:
+  - `RealEsrganEngine.kt`: Added `EsrganInterpreter` wrapper and `createInterpreter(modelFile: File)` using `CompatibilityList().isDelegateSupportedOnThisDevice` and `GpuDelegate()`, with a non-zero test input buffer warm-up inference pass and output validation (`NaN`/`Inf` check, range `[-0.05, 1.05]`, and mean absolute difference $\le 0.02$ vs CPU), safely closing `CompatibilityList`. If CPU warm-up or GPU validation fails, safely closes interpreters and falls back to CPU multi-threading (`setNumThreads(4)`).
+  - Telemetry: Added per-20-tile and final tile split timing logs (`Tile $tileIndex/${grid.totalTiles} [fill: ms, inf: ms, convert: ms, draw: ms, avgTotal: ms]`) using `SystemClock.elapsedRealtime()`.
+  - Automatic CPU Fallback: Tile-level `try-catch` converts to CPU 4-thread interpreter on GPU failure and closes replacement interpreter in `finally`.
+  - `AiProcessorService.kt` & `AiProcessorWorker.kt`: Resolved masked scope declarations for `esrganInterpreterObj`, instantiated interpreter ONLY when `isHighRes` is true, passed `modelFile` and `esrganObj` to pipeline, and ensured single-thread lifecycle without suspension.
+
 ## [Unreleased] - Step M1g Real-ESRGAN Tile Overlap (2026-11-20)
 
 ### Added
