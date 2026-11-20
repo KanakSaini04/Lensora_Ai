@@ -1,3 +1,10 @@
+## [Unreleased] - Step M1g Real-ESRGAN Tile Overlap (2026-11-20)
+
+### Added
+- **Step M1g Real-ESRGAN Tile Overlap**:
+  - `RealEsrganEngine.kt`: Implemented 8px tile overlap with context cropping (`TILE_PAD = 8`, `TILE_CORE = 112`, `CROP_OFFSET = 32`, `PaddedSize`, `calculatePaddedSize`, `buildEdgePaddedSource`, and `processTileWithContext`). Input window is $128 \times 128 = 112\text{px core} + 8\text{px context}$ on each side. Center $112 \times 112$ core ($448 \times 448$ output) of each $512 \times 512$ result is cropped at `CROP_OFFSET = 32` to eliminate tile border seams.
+  - `RealEsrganEngineTest.kt`: Updated unit tests for 266-tile grid math ($1530 \times 2040$ pre-downscaled input), $1584 \times 2144$ padded source size, partial edge tile core bounds ($74 \times 24 \rightarrow 296 \times 96$ crop), and overlap constants; all 80 unit tests passing.
+
 ## [Unreleased] - Step M1f Real AI Models UI Wiring & Device Verification (2026-11-20)
 
 ### Added

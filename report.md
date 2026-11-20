@@ -1,5 +1,19 @@
 # Lensora_Ai Master Build Report
 
+## Step M1g - Real-ESRGAN Tile Overlap (8px Context to Eliminate Seams)
+- **Code Changes**:
+  - `RealEsrganEngine.kt`: Added `TILE_PAD = 8`, `TILE_CORE = 112`, `CROP_OFFSET = 32`, `PaddedSize`, `calculatePaddedSize`, `buildEdgePaddedSource`, and `processTileWithContext`.
+  - Updated `calculateTileGrid`, `calculateTileBounds`, and `calculateDestCoordinates` to use `TILE_CORE` ($112$).
+  - Updated `runSuperResolutionPipeline` to construct `buildEdgePaddedSource` and extract $128 \times 128$ overlapping input windows ($112 \times 112$ core + 8px context on each side) and crop $448 \times 448$ core tiles from $512 \times 512$ model outputs at `CROP_OFFSET = 32`.
+- **Unit Tests**: 80 passed (`RealEsrganEngineTest` verified $1024 \times 768 \rightarrow 70$ tiles, $1530 \times 2040 \rightarrow 266$ tiles, padded source $1584 \times 2144$, partial edge tile bounds at $col=13, row=18 \rightarrow 74 \times 24$, crop dims $296 \times 96$, and dest coords $5824, 8064$).
+- **Performance & Overlap Note**: 266-tile pass for $1530 \times 2040$ input is expected to take $\sim 38-40\%$ longer ($\sim 10.5$ mins on CPU multi-threading). Speed optimization is a separate pending task. NOT device-verified yet (user will verify on Redmi device after build).
+
+| # | Layer | Attack | Expected | Actual | Environment | Verdict |
+|---|---|---|---|---|---|---|
+| 1 | AI / Overlap | Calculate tile grid for 1530x2040 input bitmap with 8px overlap | 112px core stride yields 14 cols x 19 rows = 266 tiles total | Calculated 14 cols x 19 rows = 266 tiles | Unit Test (`RealEsrganEngineTest`) | GOOD |
+| 2 | AI / Overlap | Calculate edge-padded source bitmap dimensions for 1530x2040 grid | 14*112 + 16 = 1584 width, 19*112 + 16 = 2144 height | Calculated 1584 x 2144 padded size | Unit Test (`RealEsrganEngineTest`) | GOOD |
+| 3 | AI / Overlap | Extract tile bounds and crop dimensions for partial edge tile (col=13, row=18) | Core width 74, height 24; crop dims 296x96; dest coords (5824, 8064) | Core 74x24, crop 296x96, dest (5824, 8064) | Unit Test (`RealEsrganEngineTest`) | GOOD |
+
 ## Step M1f - High-Res UI & Real-ESRGAN Device Verification (user-run, adb logcat, 2026-11-20)
 - **UI Selection**: High-Res tile added to "More Camera Modes" sheet under Pro Tools (`Icons.Outlined.HighQuality`). Tapping it updates active mode top pill to `"✨ Mode: High-Res"` and highlights `HIGH-RES` carousel card in Royal Blue.
 - **Physical Device Run (Redmi Note 13 Pro 5G `2312DRA50I`)**:

@@ -6,9 +6,9 @@
 
 ## 0. Status block (update every step)
 - **Last updated**: 2026-11-20
-- **Branch / HEAD**: `step-M1-real-ai-models`
-- **Last completed step**: Step M1f Real AI Models UI Wiring & Physical Device Verification (Places365 ResNet-18 FP16 + Real-ESRGAN v2)
-- **In progress**: Step M1f final review package generation & PR base confirmation (`build/all-features`)
+- **Branch / HEAD**: `step-M1g-tile-overlap`
+- **Last completed step**: Step M1g Real-ESRGAN 8px Tile Overlap (Seam Elimination)
+- **In progress**: Step M1g review package generation & PR base confirmation (`build/all-features`)
 - **Unit tests**: 80 passed, 0 skipped, 0 failed across 17 test classes
 - **Baseline APK size**: 94,720,306 bytes (~90.33 MB)
 - **Last emulator check**: `emulator-5554` (`Medium_Phone`), 2026-11-18; **Last physical-device (Redmi) check**: Step M1f (Verified on Redmi Note 13 Pro 5G `2312DRA50I`, High-Res UI tile selectable, $6120 \times 8160$ ~50 MP JPEG output saved in 459,633 ms, 80 unit tests passing, zero crashes)

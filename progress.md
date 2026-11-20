@@ -2,6 +2,11 @@
 
 ## Master Build Mode (Phases P0 - P9 - 100% COMPLETE)
 
+- [x] **Step M1g: Real-ESRGAN Tile Overlap (8px Context to Eliminate Seams)**
+  - **Tile Overlap Implementation**: Added `TILE_PAD = 8`, `TILE_CORE = 112`, `CROP_OFFSET = 32`, `calculatePaddedSize`, `buildEdgePaddedSource`, and `processTileWithContext` to `RealEsrganEngine.kt`. Each input tile window is $128 \times 128 = 112\text{px core} + 8\text{px context}$ on each side. Center $112 \times 112$ core ($448 \times 448$ output) of each $512 \times 512$ result is cropped at `CROP_OFFSET = 32`.
+  - **Grid Math & Unit Tests**: Updated `calculateTileGrid`, `calculateTileBounds`, and `calculateDestCoordinates` to use `TILE_CORE` ($112$). A $1530 \times 2040$ pre-downscaled input produces 266 tiles ($14 \times 19$). Unit tests in `RealEsrganEngineTest.kt` verify 266 tiles, padded source size $1584 \times 2144$, and partial edge tile bounds at $col=13, row=18$ ($74 \times 24 \rightarrow 296 \times 96$ crop); all 80 unit tests passing.
+  - **Performance Note**: 266-tile pass for $1530 \times 2040$ input is expected to take $\sim 38-40\%$ longer ($\sim 10.5$ mins on CPU multi-threading). Speed optimization is a separate pending task. Implemented and unit-tested; pending user device verification on Redmi.
+
 - [x] **Step M1f: Real AI Models Pipeline Hardening & Device Verification**
   - **MoreModesSheet & UI Activation**: Added non-SOON `"High-Res"` tile (`Icons.Outlined.HighQuality`) under Pro Tools. Selecting High-Res activates `"✨ Mode: High-Res"` top pill and highlights carousel mode card in Royal Blue.
   - **Sticky Mode Fix & Pure Helpers**: Added `AdvancedModeState.kt` pure class and `HighResModeHelper.kt` to prevent sticky mode execution when switching carousel modes. Added pure calculation helpers (`calculateTileGrid`, `calculateTileBounds`, `calculateOutputCropDimensions`, `calculateDestCoordinates`) to `RealEsrganEngine.kt`.
