@@ -67,6 +67,9 @@ class CameraController(private val context: Context) {
     var currentMode: CameraMode = CameraMode.PHOTO
         private set
 
+    var activeAdvancedModeName: String = "AUTO"
+        private set
+
     var isRawCaptureEnabled: Boolean = false
         private set
 
@@ -302,6 +305,7 @@ class CameraController(private val context: Context) {
     }
 
     fun setAdvancedMode(modeName: String, onFeedback: (String) -> Unit = {}) {
+        activeAdvancedModeName = modeName
         Log.i(tag, "Applying Advanced Camera Mode: $modeName")
         val builder = previewRequestBuilder
         val session = captureSession
@@ -546,10 +550,10 @@ class CameraController(private val context: Context) {
                     val mm = com.lensora.ai.ai.ModelManager(context)
                     val realEsrganFile = mm.getEnhancementModelFile()
                     if (realEsrganFile != null && com.lensora.ai.ai.ModelFileGuard.isUsable(realEsrganFile)) {
-                        onFeedback("🔍 High-Res: 12.5 MP Capture + Real-ESRGAN v2 2x Super-Res Active (50 MP Output)")
+                        onFeedback("🔍 High-Res: 12.5 MP Capture + Real-ESRGAN v2 Super-Res Active (50 MP Output)")
                     } else {
                         Log.i(tag, "Real-ESRGAN v2 model file missing. Safe 12.5 MP capture fallback.")
-                        onFeedback("🔍 High-Res: 12.5 MP Capture Active (AI 2x Upscale Model Unavailable)")
+                        onFeedback("🔍 High-Res: 12.5 MP Capture Active (AI Super-Res Model Unavailable)")
                     }
                 }
                 else -> {
@@ -647,7 +651,8 @@ class CameraController(private val context: Context) {
 
     fun setCameraMode(mode: CameraMode) {
         currentMode = mode
-        Log.d("LensoraDebug", "Switching to mode $mode")
+        activeAdvancedModeName = "AUTO"
+        Log.d("LensoraDebug", "Switching to mode $mode (Reset activeAdvancedModeName to AUTO)")
         val builder = previewRequestBuilder ?: return
         val session = captureSession ?: return
         try {
@@ -901,12 +906,16 @@ class CameraController(private val context: Context) {
 
                         tempFile.delete()
 
+                        val isHighRes = activeAdvancedModeName.equals("High-Res", ignoreCase = true) || activeAdvancedModeName.equals("HIGH-RES", ignoreCase = true)
+                        Log.i(tag, "Enqueuing photo capture pass [Mode: ${currentMode.name}, AdvancedMode: $activeAdvancedModeName, IsHighRes: $isHighRes]")
+
                         // Trigger L3 Foreground Service Computational AI Processor pass
                         val serviceIntent = Intent(context, com.lensora.ai.service.AiProcessorService::class.java).apply {
                             putExtra("PHOTO_URI", uri.toString())
                             putExtra("SCENE_TYPE", currentMode.name)
                             putExtra("EV_OFFSET", 0.0f)
                             putExtra("VIBE_PRESET", vibePreset)
+                            putExtra("IS_HIGH_RES", isHighRes)
                         }
                         androidx.core.content.ContextCompat.startForegroundService(context, serviceIntent)
                         Log.i(tag, "Started L3 AiProcessorService for $uri")

@@ -10,17 +10,21 @@ import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.layout.heightIn
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.lazy.grid.GridCells
 import androidx.compose.foundation.lazy.grid.LazyVerticalGrid
 import androidx.compose.foundation.lazy.grid.items
+import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.outlined.AutoAwesome
 import androidx.compose.material.icons.outlined.Camera
 import androidx.compose.material.icons.outlined.FilterVintage
+import androidx.compose.material.icons.outlined.HighQuality
 import androidx.compose.material.icons.outlined.Movie
 import androidx.compose.material.icons.outlined.Panorama
 import androidx.compose.material.icons.outlined.PhotoCamera
@@ -55,6 +59,7 @@ data class ModeItem(
 )
 
 val proToolsList = listOf(
+    ModeItem("High-Res", Icons.Outlined.HighQuality),
     ModeItem("Astro", Icons.Outlined.Stars),
     ModeItem("Panorama", Icons.Outlined.Panorama),
     ModeItem("Tele-Cine", Icons.Outlined.Movie, isSoon = true),
@@ -93,6 +98,7 @@ fun MoreModesSheet(
         Column(
             modifier = Modifier
                 .fillMaxWidth()
+                .verticalScroll(rememberScrollState())
                 .padding(horizontal = 20.dp, vertical = 12.dp),
         ) {
             // Header Title
@@ -121,7 +127,7 @@ fun MoreModesSheet(
                 verticalArrangement = Arrangement.spacedBy(8.dp),
                 modifier = Modifier
                     .fillMaxWidth()
-                    .height(170.dp),
+                    .heightIn(max = 260.dp),
             ) {
                 items(proToolsList) { item ->
                     ModeCard(item = item, onClick = {
@@ -149,7 +155,7 @@ fun MoreModesSheet(
                 verticalArrangement = Arrangement.spacedBy(8.dp),
                 modifier = Modifier
                     .fillMaxWidth()
-                    .height(210.dp),
+                    .heightIn(max = 260.dp),
             ) {
                 items(signatureBrandsList) { item ->
                     ModeCard(item = item, onClick = {
