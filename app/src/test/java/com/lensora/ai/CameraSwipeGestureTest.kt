@@ -19,7 +19,7 @@ class CameraSwipeGestureTest {
 
     @Test
     fun validLeftSwipe_navigatesToStudio() {
-        // Valid left swipe: start in middle viewfinder (500, 1000), totalDx = -300f (>= 270f), totalDy = 10f, 1 pointer
+        // Valid left swipe: start in middle viewfinder (500, 1000), totalDx = -300f (>= 15% of 1080 = 162f), totalDy = 10f, 1 pointer
         val decision = ZoomTransformMath.evaluateCameraSwipeGesture(
             startX = 500f,
             startY = 1000f,
@@ -71,7 +71,7 @@ class CameraSwipeGestureTest {
     }
 
     @Test
-    fun shortSwipe_below25PercentThreshold_returnsNone() {
+    fun shortSwipe_below15PercentThreshold_returnsNone() {
         val decision = ZoomTransformMath.evaluateCameraSwipeGesture(
             startX = 500f, startY = 1000f, totalDx = -100f, totalDy = 0f, pointerCount = 1,
             screenWidth = screenWidth, screenHeight = screenHeight, edgeInsetPx = 60f, excludedRects = excludedRects

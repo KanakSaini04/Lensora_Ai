@@ -2,6 +2,7 @@ package com.lensora.ai
 
 import androidx.compose.ui.geometry.Offset
 import androidx.compose.ui.geometry.Size
+import com.lensora.ai.ui.components.TouchMode
 import com.lensora.ai.ui.components.ZoomTransformMath
 import com.lensora.ai.ui.navigation.shouldShowBottomBarForRoute
 import org.junit.Assert.assertEquals
@@ -10,6 +11,68 @@ import org.junit.Assert.assertTrue
 import org.junit.Test
 
 class PhotoZoomAndNavigationTest {
+
+    @Test
+    fun stepZ5_decideTouchMode_evaluatesCorrectModeAcrossAllScalesAndTools() {
+        // 1 finger + Eraser active in Studio at scales 1.0, 1.29, 1.4, 4.0, 8.0 -> DRAW
+        assertEquals(TouchMode.DRAW, ZoomTransformMath.decideTouchMode(1, 1.0f, isDrawToolActive = true, isStudio = true))
+        assertEquals(TouchMode.DRAW, ZoomTransformMath.decideTouchMode(1, 1.29f, isDrawToolActive = true, isStudio = true))
+        assertEquals(TouchMode.DRAW, ZoomTransformMath.decideTouchMode(1, 1.4f, isDrawToolActive = true, isStudio = true))
+        assertEquals(TouchMode.DRAW, ZoomTransformMath.decideTouchMode(1, 4.0f, isDrawToolActive = true, isStudio = true))
+        assertEquals(TouchMode.DRAW, ZoomTransformMath.decideTouchMode(1, 8.0f, isDrawToolActive = true, isStudio = true))
+
+        // 2 fingers -> ZOOM_PAN
+        assertEquals(TouchMode.ZOOM_PAN, ZoomTransformMath.decideTouchMode(2, 1.0f, isDrawToolActive = true, isStudio = true))
+        assertEquals(TouchMode.ZOOM_PAN, ZoomTransformMath.decideTouchMode(2, 4.0f, isDrawToolActive = false, isStudio = true))
+
+        // 1 finger + Crop/Light/Color tool in Studio at scale > 1 -> PAN
+        assertEquals(TouchMode.PAN, ZoomTransformMath.decideTouchMode(1, 1.4f, isDrawToolActive = false, isStudio = true))
+
+        // Gallery context 1 finger scale > 1 -> PAN
+        assertEquals(TouchMode.PAN, ZoomTransformMath.decideTouchMode(1, 2.0f, isDrawToolActive = false, isStudio = false))
+
+        // Scale 1.0 non-draw -> NONE
+        assertEquals(TouchMode.NONE, ZoomTransformMath.decideTouchMode(1, 1.0f, isDrawToolActive = false, isStudio = true))
+
+        // 3 pointers -> ZOOM_PAN
+        assertEquals(TouchMode.ZOOM_PAN, ZoomTransformMath.decideTouchMode(3, 2.0f, isDrawToolActive = true, isStudio = true))
+
+        // Zero / negative values -> NONE (no crash)
+        assertEquals(TouchMode.NONE, ZoomTransformMath.decideTouchMode(0, 1.0f, isDrawToolActive = true, isStudio = true))
+        assertEquals(TouchMode.NONE, ZoomTransformMath.decideTouchMode(1, 0f, isDrawToolActive = true, isStudio = true))
+        assertEquals(TouchMode.NONE, ZoomTransformMath.decideTouchMode(-1, -2.0f, isDrawToolActive = true, isStudio = true))
+    }
+
+    @Test
+    fun studio_screenPointToImagePixelMapping_mapsAccuratelyAcrossScalesAndPanOffsets() {
+        val containerSize = Size(1000f, 1000f)
+        val imageSize = Size(1000f, 1000f)
+
+        // 1.0x scale, zero pan: center point (500, 500) -> image pixel (500, 500)
+        var px = ZoomTransformMath.mapScreenPointToImagePixel(Offset(500f, 500f), containerSize, imageSize, 1.0f, Offset.Zero)
+        assertEquals(500f, px.x, 0.01f)
+        assertEquals(500f, px.y, 0.01f)
+
+        // 1.4x scale, zero pan: center point (500, 500) -> image pixel (500, 500)
+        px = ZoomTransformMath.mapScreenPointToImagePixel(Offset(500f, 500f), containerSize, imageSize, 1.4f, Offset.Zero)
+        assertEquals(500f, px.x, 0.01f)
+        assertEquals(500f, px.y, 0.01f)
+
+        // 4.0x scale, zero pan: center point (500, 500) -> image pixel (500, 500)
+        px = ZoomTransformMath.mapScreenPointToImagePixel(Offset(500f, 500f), containerSize, imageSize, 4.0f, Offset.Zero)
+        assertEquals(500f, px.x, 0.01f)
+        assertEquals(500f, px.y, 0.01f)
+
+        // 8.0x scale, zero pan: center point (500, 500) -> image pixel (500, 500)
+        px = ZoomTransformMath.mapScreenPointToImagePixel(Offset(500f, 500f), containerSize, imageSize, 8.0f, Offset.Zero)
+        assertEquals(500f, px.x, 0.01f)
+        assertEquals(500f, px.y, 0.01f)
+
+        // 2.0x scale, pan Offset(100, 50): screen point (600, 550) -> image pixel (500, 500)
+        px = ZoomTransformMath.mapScreenPointToImagePixel(Offset(600f, 550f), containerSize, imageSize, 2.0f, Offset(100f, 50f))
+        assertEquals(500f, px.x, 0.01f)
+        assertEquals(500f, px.y, 0.01f)
+    }
 
     @Test
     fun stepZ3_bottomBarVisibilityRule_hidesBarOnCameraAndShowsOnSecondaryTabs() {
@@ -107,18 +170,5 @@ class PhotoZoomAndNavigationTest {
         assertEquals("100%", ZoomTransformMath.formatZoomPercentage(1.0f))
         assertEquals("250%", ZoomTransformMath.formatZoomPercentage(2.5f))
         assertEquals("800%", ZoomTransformMath.formatZoomPercentage(8.0f))
-    }
-
-    @Test
-    fun studio_screenPointToImagePixelMapping_mapsAccuratelyAt400PercentZoom() {
-        val containerSize = Size(1000f, 1000f)
-        val imageSize = Size(1000f, 1000f)
-        val scale = 4.0f // 400% zoom
-        val pan = Offset(0f, 0f)
-
-        // Center point on screen (500, 500)
-        val centerPixel = ZoomTransformMath.mapScreenPointToImagePixel(Offset(500f, 500f), containerSize, imageSize, scale, pan)
-        assertEquals(500f, centerPixel.x, 0.01f)
-        assertEquals(500f, centerPixel.y, 0.01f)
     }
 }

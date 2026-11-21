@@ -363,6 +363,8 @@ private fun StudioPhotoContent(
             ) {
                 ZoomableBox(
                     maxScale = 8.0f,
+                    isStudio = true,
+                    isDrawToolActive = isEraserModeActive,
                     resetKey = selectedPhotoIndex,
                 ) { scale, pan ->
                     val currentInpointed = inpaintedBitmap
@@ -425,6 +427,12 @@ private fun StudioPhotoContent(
                                             currentStrokePoints = currentStrokePoints + change.position
                                         },
                                         onDragEnd = {
+                                            if (currentStrokePoints.isNotEmpty()) {
+                                                brushStrokes = brushStrokes + BrushStroke(currentStrokePoints)
+                                                currentStrokePoints = emptyList()
+                                            }
+                                        },
+                                        onDragCancel = {
                                             if (currentStrokePoints.isNotEmpty()) {
                                                 brushStrokes = brushStrokes + BrushStroke(currentStrokePoints)
                                                 currentStrokePoints = emptyList()

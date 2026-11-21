@@ -4,8 +4,11 @@ import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.animation.fadeIn
 import androidx.compose.animation.fadeOut
 import androidx.compose.foundation.background
+import androidx.compose.foundation.gestures.awaitEachGesture
+import androidx.compose.foundation.gestures.awaitFirstDown
+import androidx.compose.foundation.gestures.calculatePan
+import androidx.compose.foundation.gestures.calculateZoom
 import androidx.compose.foundation.gestures.detectTapGestures
-import androidx.compose.foundation.gestures.detectTransformGestures
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.BoxScope
 import androidx.compose.foundation.layout.fillMaxSize
@@ -40,7 +43,30 @@ enum class CameraSwipeDecision {
     NONE
 }
 
+enum class TouchMode {
+    DRAW,
+    PAN,
+    ZOOM_PAN,
+    NONE
+}
+
 object ZoomTransformMath {
+    fun decideTouchMode(
+        pointerCount: Int,
+        scale: Float,
+        isDrawToolActive: Boolean,
+        isStudio: Boolean,
+    ): TouchMode {
+        if (pointerCount <= 0 || scale <= 0f) return TouchMode.NONE
+
+        return when {
+            pointerCount >= 2 -> TouchMode.ZOOM_PAN
+            isStudio && isDrawToolActive -> TouchMode.DRAW
+            scale > 1.05f -> TouchMode.PAN
+            else -> TouchMode.NONE
+        }
+    }
+
     fun calculateScale(currentScale: Float, zoomChange: Float, minScale: Float = 1.0f, maxScale: Float = 8.0f): Float {
         return (currentScale * zoomChange).coerceIn(minScale, maxScale)
     }
@@ -149,6 +175,8 @@ object ZoomTransformMath {
 fun ZoomableBox(
     modifier: Modifier = Modifier,
     maxScale: Float = 8.0f,
+    isStudio: Boolean = false,
+    isDrawToolActive: Boolean = false,
     onScaleChanged: (Float) -> Unit = {},
     resetKey: Any? = null,
     content: @Composable BoxScope.(scale: Float, pan: Offset) -> Unit,
@@ -177,13 +205,37 @@ fun ZoomableBox(
                     },
                 )
             }
-            .pointerInput(resetKey) {
-                detectTransformGestures { _, panChange, zoomChange, _ ->
-                    val newScale = ZoomTransformMath.calculateScale(scale, zoomChange, maxScale = maxScale)
-                    val newPan = ZoomTransformMath.calculateClampedPan(pan, panChange, newScale, containerSize)
-                    scale = newScale
-                    pan = newPan
-                    onScaleChanged(newScale)
+            .pointerInput(resetKey, isStudio, isDrawToolActive) {
+                awaitEachGesture {
+                    while (true) {
+                        val event = awaitPointerEvent()
+                        val pointerCount = event.changes.size
+                        val mode = ZoomTransformMath.decideTouchMode(
+                            pointerCount = pointerCount,
+                            scale = scale,
+                            isDrawToolActive = isDrawToolActive,
+                            isStudio = isStudio,
+                        )
+
+                        if (mode == TouchMode.ZOOM_PAN) {
+                            val zoomChange = event.calculateZoom()
+                            val panChange = event.calculatePan()
+                            val newScale = ZoomTransformMath.calculateScale(scale, zoomChange, maxScale = maxScale)
+                            val newPan = ZoomTransformMath.calculateClampedPan(pan, panChange, newScale, containerSize)
+                            scale = newScale
+                            pan = newPan
+                            onScaleChanged(newScale)
+                        } else if (mode == TouchMode.PAN) {
+                            val panChange = event.calculatePan()
+                            val newPan = ZoomTransformMath.calculateClampedPan(pan, panChange, scale, containerSize)
+                            pan = newPan
+                        }
+                        // TouchMode.DRAW: do NOT consume or handle pan in ZoomableBox! Inner Canvas handles brush drawing.
+
+                        if (event.changes.all { !it.pressed }) {
+                            break
+                        }
+                    }
                 }
             },
         contentAlignment = Alignment.Center,

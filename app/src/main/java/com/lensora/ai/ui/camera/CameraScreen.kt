@@ -77,6 +77,7 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.drawscope.Stroke
 import androidx.compose.ui.graphics.graphicsLayer
 import androidx.compose.ui.hapticfeedback.HapticFeedbackType
+import androidx.compose.ui.input.pointer.PointerEventPass
 import androidx.compose.ui.input.pointer.pointerInput
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.layout.boundsInRoot
@@ -169,6 +170,7 @@ fun CameraScreen(
         var recentPhotos by remember { mutableStateOf<List<Uri>>(emptyList()) }
 
         // Measured UI Exclusion Bounds for Swipe Gesture Evaluator
+        var gestureBoxBoundsInRoot by remember { mutableStateOf<Rect?>(null) }
         var topBarBounds by remember { mutableStateOf<Rect?>(null) }
         var aiBadgeBounds by remember { mutableStateOf<Rect?>(null) }
         var zoomPillsBounds by remember { mutableStateOf<Rect?>(null) }
@@ -379,59 +381,76 @@ fun CameraScreen(
             Box(
                 modifier = Modifier
                     .fillMaxSize()
+                    .onGloballyPositioned { coordinates ->
+                        gestureBoxBoundsInRoot = coordinates.boundsInRoot()
+                    }
                     .pointerInput(Unit) {
-                        awaitEachGesture {
-                            val down = awaitFirstDown()
-                            var dragStartPos = down.position
-                            var totalDx = 0f
-                            var totalDy = 0f
-                            var maxPointerCount = 1
-
+                        awaitPointerEventScope {
                             while (true) {
-                                val event = awaitPointerEvent()
-                                val currentPointerCount = event.changes.size
-                                if (currentPointerCount > maxPointerCount) {
-                                    maxPointerCount = currentPointerCount
-                                }
+                                val down = awaitFirstDown(pass = PointerEventPass.Initial)
+                                var dragStartLocal = down.position
+                                var totalDx = 0f
+                                var totalDy = 0f
+                                var maxPointerCount = 1
 
-                                if (currentPointerCount >= 2) {
-                                    val zoomChange = event.calculateZoom()
-                                    if (zoomChange != 1.0f) {
-                                        currentZoomRatio = (currentZoomRatio * zoomChange).coerceIn(1.0f, 10.0f)
-                                        cameraController.setZoomRatio(currentZoomRatio)
-                                        selectedZoom = if (currentZoomRatio % 1f == 0f) {
-                                            "${currentZoomRatio.toInt()}x"
-                                        } else {
-                                            String.format(Locale.US, "%.1fx", currentZoomRatio)
+                                val boxOffset = gestureBoxBoundsInRoot?.topLeft ?: Offset.Zero
+                                val dragStartInRoot = dragStartLocal + boxOffset
+
+                                val screenWidthPx = size.width.toFloat()
+                                val screenHeightPx = size.height.toFloat()
+                                val threshold15Px = screenWidthPx * 0.15f
+
+                                Log.d("SwipeDbg", "Down: local=($dragStartLocal), root=($dragStartInRoot), screenSize=($screenWidthPx x $screenHeightPx), 15%Threshold=$threshold15Px")
+                                Log.d("SwipeDbg", "Rects - TopBar: $topBarBounds, AiBadge: $aiBadgeBounds, ZoomPills: $zoomPillsBounds, Carousel: $carouselBounds, Shutter: $shutterRowBounds")
+                                Log.d("SwipeDbg", "InTopBar: ${topBarBounds?.contains(dragStartInRoot)}, InAiBadge: ${aiBadgeBounds?.contains(dragStartInRoot)}, InPills: ${zoomPillsBounds?.contains(dragStartInRoot)}, InCarousel: ${carouselBounds?.contains(dragStartInRoot)}, InShutter: ${shutterRowBounds?.contains(dragStartInRoot)}")
+
+                                while (true) {
+                                    val event = awaitPointerEvent(pass = PointerEventPass.Initial)
+                                    val currentPointerCount = event.changes.size
+                                    if (currentPointerCount > maxPointerCount) {
+                                        maxPointerCount = currentPointerCount
+                                    }
+
+                                    if (currentPointerCount >= 2) {
+                                        val zoomChange = event.calculateZoom()
+                                        if (zoomChange != 1.0f) {
+                                            currentZoomRatio = (currentZoomRatio * zoomChange).coerceIn(1.0f, 10.0f)
+                                            cameraController.setZoomRatio(currentZoomRatio)
+                                            selectedZoom = if (currentZoomRatio % 1f == 0f) {
+                                                "${currentZoomRatio.toInt()}x"
+                                            } else {
+                                                String.format(Locale.US, "%.1fx", currentZoomRatio)
+                                            }
+                                        }
+                                    } else if (currentPointerCount == 1 && maxPointerCount == 1) {
+                                        val change = event.changes.firstOrNull()
+                                        if (change != null && change.pressed) {
+                                            totalDx += (change.position.x - change.previousPosition.x)
+                                            totalDy += (change.position.y - change.previousPosition.y)
+                                            if (kotlin.math.abs(totalDx) > (1.5f * kotlin.math.abs(totalDy)) && totalDx < -80f) {
+                                                change.consume()
+                                            }
                                         }
                                     }
-                                } else if (currentPointerCount == 1 && maxPointerCount == 1) {
-                                    val change = event.changes.firstOrNull()
-                                    if (change != null && change.pressed) {
-                                        totalDx += (change.position.x - change.previousPosition.x)
-                                        totalDy += (change.position.y - change.previousPosition.y)
-                                        if (kotlin.math.abs(totalDx) > (1.5f * kotlin.math.abs(totalDy)) && totalDx < -80f) {
-                                            change.consume()
-                                        }
-                                    }
-                                }
 
-                                if (event.changes.all { !it.pressed }) {
-                                    val excludedRects = listOfNotNull(topBarBounds, aiBadgeBounds, zoomPillsBounds, carouselBounds, shutterRowBounds)
-                                    val decision = ZoomTransformMath.evaluateCameraSwipeGesture(
-                                        startX = dragStartPos.x,
-                                        startY = dragStartPos.y,
-                                        totalDx = totalDx,
-                                        totalDy = totalDy,
-                                        pointerCount = maxPointerCount,
-                                        screenWidth = size.width.toFloat(),
-                                        screenHeight = size.height.toFloat(),
-                                        excludedRects = excludedRects,
-                                    )
-                                    if (decision == CameraSwipeDecision.NAVIGATE_NEXT_TAB) {
-                                        onNavigateToStudio()
+                                    if (event.changes.all { !it.pressed }) {
+                                        val excludedRects = listOfNotNull(topBarBounds, aiBadgeBounds, zoomPillsBounds, carouselBounds, shutterRowBounds)
+                                        val decision = ZoomTransformMath.evaluateCameraSwipeGesture(
+                                            startX = dragStartInRoot.x,
+                                            startY = dragStartInRoot.y,
+                                            totalDx = totalDx,
+                                            totalDy = totalDy,
+                                            pointerCount = maxPointerCount,
+                                            screenWidth = screenWidthPx,
+                                            screenHeight = screenHeightPx,
+                                            excludedRects = excludedRects,
+                                        )
+                                        Log.d("SwipeDbg", "End: totalDx=$totalDx, totalDy=$totalDy, maxPointers=$maxPointerCount, decision=$decision")
+                                        if (decision == CameraSwipeDecision.NAVIGATE_NEXT_TAB) {
+                                            onNavigateToStudio()
+                                        }
+                                        break
                                     }
-                                    break
                                 }
                             }
                         }
