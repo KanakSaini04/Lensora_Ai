@@ -163,6 +163,15 @@ fun AppNavigation(
             composable(NavScreen.Camera.route) {
                 CameraScreen(
                     onOpenQuickView = { navController.navigate(ROUTE_QUICK_VIEW) },
+                    onNavigateToStudio = {
+                        navController.navigate(NavScreen.Studio.route) {
+                            popUpTo(navController.graph.findStartDestination().id) {
+                                saveState = true
+                            }
+                            launchSingleTop = true
+                            restoreState = true
+                        }
+                    },
                 )
             }
             composable(NavScreen.Studio.route) { StudioScreen() }

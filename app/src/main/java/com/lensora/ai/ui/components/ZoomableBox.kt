@@ -23,6 +23,7 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.geometry.Offset
+import androidx.compose.ui.geometry.Rect
 import androidx.compose.ui.geometry.Size
 import androidx.compose.ui.graphics.graphicsLayer
 import androidx.compose.ui.input.pointer.pointerInput
@@ -33,6 +34,11 @@ import androidx.compose.ui.unit.sp
 import androidx.compose.ui.unit.toSize
 import com.lensora.ai.ui.theme.ColorWhite
 import com.lensora.ai.ui.theme.PitchBlackBackground
+
+enum class CameraSwipeDecision {
+    NAVIGATE_NEXT_TAB,
+    NONE
+}
 
 object ZoomTransformMath {
     fun calculateScale(currentScale: Float, zoomChange: Float, minScale: Float = 1.0f, maxScale: Float = 8.0f): Float {
@@ -101,6 +107,41 @@ object ZoomTransformMath {
         if (targetUriStr.isNullOrBlank()) return 0
         val index = items.indexOf(targetUriStr)
         return if (index != -1) index else 0
+    }
+
+    fun evaluateCameraSwipeGesture(
+        startX: Float,
+        startY: Float,
+        totalDx: Float,
+        totalDy: Float,
+        pointerCount: Int,
+        screenWidth: Float,
+        screenHeight: Float,
+        edgeInsetPx: Float = 60f,
+        excludedRects: List<Rect> = emptyList(),
+    ): CameraSwipeDecision {
+        if (pointerCount != 1) return CameraSwipeDecision.NONE
+        if (screenWidth <= 0f || screenHeight <= 0f) return CameraSwipeDecision.NONE
+
+        // Exclude system edge gesture regions (starts within edgeInsetPx of left/right)
+        if (startX < edgeInsetPx || startX > (screenWidth - edgeInsetPx)) return CameraSwipeDecision.NONE
+
+        // Exclude measured UI bounds (top bar, AI badge, zoom pills, mode carousel, shutter row)
+        val startPoint = Offset(startX, startY)
+        if (excludedRects.any { rect -> rect.contains(startPoint) }) return CameraSwipeDecision.NONE
+
+        // Distance >= 25% of screen width for LEFT swipe
+        val minSwipeDistance = screenWidth * 0.25f
+        val isLeftSwipe = totalDx <= -minSwipeDistance
+
+        // Horizontal dominance check: |totalDx| > 2 * |totalDy|
+        val isHorizontalDominant = kotlin.math.abs(totalDx) > (2.0f * kotlin.math.abs(totalDy))
+
+        return if (isLeftSwipe && isHorizontalDominant) {
+            CameraSwipeDecision.NAVIGATE_NEXT_TAB
+        } else {
+            CameraSwipeDecision.NONE
+        }
     }
 }
 
