@@ -1,21 +1,39 @@
-# ProGuard Rules for Release Build
+# ProGuard / R8 Rules for Lensora_Ai
 
-# OpenCV
--keep class org.opencv.** { *; }
--dontwarn org.opencv.**
+# Hilt / Dagger
+-keep class * extends dagger.hilt.internal.UnstableApi
+-keep class dagger.hilt.** { *; }
+-dontwarn dagger.hilt.**
 
-# ML Kit
--keep class com.google.mlkit.** { *; }
--dontwarn com.google.mlkit.**
+# TensorFlow Lite & GPU Delegate
+-keep class org.tensorflow.lite.** { *; }
+-keep class org.tensorflow.lite.gpu.** { *; }
+-dontwarn org.tensorflow.lite.**
 
-# Room Database
--keep class * extends androidx.room.RoomDatabase
--dontwarn androidx.room.**
+# Media3 Transformer, ExoPlayer & Effects
+-keep class androidx.media3.** { *; }
+-dontwarn androidx.media3.**
+
+# WorkManager
+-keep class androidx.work.** { *; }
+-dontwarn androidx.work.**
+
+# Kotlinx Serialization
+-keepattributes *Annotation*,Signature,InnerClasses,EnclosingMethod
+-keepclassmembers class * {
+    @kotlinx.serialization.Serializable *;
+}
+-keepclassmembers class * {
+    *** Companion;
+}
+-keepclasseswithmembers class * {
+    public static *** serializer(...);
+}
 
 # ZXing QR Code
 -keep class com.google.zxing.** { *; }
 -dontwarn com.google.zxing.**
 
-# TensorFlow Lite
--keep class org.tensorflow.lite.** { *; }
--dontwarn org.tensorflow.lite.**
+# OpenCV
+-keep class org.opencv.** { *; }
+-dontwarn org.opencv.**

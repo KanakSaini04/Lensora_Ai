@@ -4,11 +4,21 @@ import android.content.Context
 import android.net.Uri
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import androidx.work.OneTimeWorkRequestBuilder
+import androidx.work.WorkInfo
+import androidx.work.WorkManager
+import androidx.work.workDataOf
 import com.lensora.ai.editor.AspectRatio
+import com.lensora.ai.editor.Clip
+import com.lensora.ai.editor.ExportWorker
 import com.lensora.ai.editor.Project
 import com.lensora.ai.editor.ProjectRepository
+import com.lensora.ai.editor.TimelineEditEngine
+import com.lensora.ai.editor.TimelineUndoRedoStack
 import com.lensora.ai.editor.import.ImportState
 import com.lensora.ai.editor.import.ProjectImporter
+import com.lensora.ai.editor.Template
+import com.lensora.ai.editor.TemplateLoader
 import dagger.hilt.android.lifecycle.HiltViewModel
 import dagger.hilt.android.qualifiers.ApplicationContext
 import kotlinx.coroutines.Dispatchers
@@ -18,13 +28,23 @@ import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
+import java.util.UUID
 import javax.inject.Inject
 
 data class ProjectsUiState(
     val projects: List<Project> = emptyList(),
+    val availableTemplates: List<Template> = emptyList(),
     val isLoading: Boolean = false,
     val importState: ImportState = ImportState.Idle,
     val selectedProject: Project? = null,
+    val selectedClipId: String? = null,
+    val canUndo: Boolean = false,
+    val canRedo: Boolean = false,
+    val isExporting: Boolean = false,
+    val exportProgress: Int = 0,
+    val exportWorkId: UUID? = null,
+    val exportError: String? = null,
+    val exportSuccessMessage: String? = null,
 )
 
 @HiltViewModel
@@ -38,17 +58,20 @@ class ProjectViewModel @Inject constructor(
 
     private val importer = ProjectImporter(context, repository)
     private var importJob: Job? = null
+    private val undoRedoStack = TimelineUndoRedoStack()
 
     init {
         viewModelScope.launch(Dispatchers.IO) {
             repository.sweepOrphanProjects()
             loadProjectsInternal()
+            loadTemplatesInternal()
         }
     }
 
     fun loadProjects() {
         viewModelScope.launch(Dispatchers.IO) {
             loadProjectsInternal()
+            loadTemplatesInternal()
         }
     }
 
@@ -56,6 +79,23 @@ class ProjectViewModel @Inject constructor(
         _uiState.update { it.copy(isLoading = true) }
         val list = repository.listProjects()
         _uiState.update { it.copy(projects = list, isLoading = false) }
+    }
+
+    private suspend fun loadTemplatesInternal() {
+        val templates = TemplateLoader.loadAllTemplatesFromAssets(context)
+        _uiState.update { it.copy(availableTemplates = templates) }
+    }
+
+    fun createProjectFromTemplate(template: Template, pickedUris: List<Uri>) {
+        viewModelScope.launch(Dispatchers.IO) {
+            val project = TemplateLoader.createProjectFromTemplate(
+                template = template,
+                pickedUris = pickedUris.map { it.toString() },
+            )
+            repository.saveProject(project)
+            loadProjectsInternal()
+            selectProject(project)
+        }
     }
 
     fun startImport(
@@ -69,7 +109,7 @@ class ProjectViewModel @Inject constructor(
                 _uiState.update { it.copy(importState = state) }
                 if (state is ImportState.Success) {
                     loadProjectsInternal()
-                    _uiState.update { it.copy(selectedProject = state.project) }
+                    selectProject(state.project)
                 }
             }
         }
@@ -86,7 +126,250 @@ class ProjectViewModel @Inject constructor(
     }
 
     fun selectProject(project: Project?) {
-        _uiState.update { it.copy(selectedProject = project) }
+        undoRedoStack.clear()
+        val firstClipId = project?.clips?.firstOrNull()?.id
+        _uiState.update {
+            it.copy(
+                selectedProject = project,
+                selectedClipId = firstClipId,
+                canUndo = false,
+                canRedo = false,
+                isExporting = false,
+                exportProgress = 0,
+                exportWorkId = null,
+                exportError = null,
+            )
+        }
+    }
+
+    fun selectClip(clipId: String?) {
+        _uiState.update { it.copy(selectedClipId = clipId) }
+    }
+
+    private fun applyClipsChange(newClips: List<Clip>) {
+        val currentProj = _uiState.value.selectedProject ?: return
+        undoRedoStack.pushState(currentProj.clips)
+
+        val updatedProj = currentProj.copy(
+            clips = newClips,
+            updatedAt = System.currentTimeMillis(),
+        )
+
+        _uiState.update {
+            it.copy(
+                selectedProject = updatedProj,
+                canUndo = undoRedoStack.canUndo(),
+                canRedo = undoRedoStack.canRedo(),
+            )
+        }
+
+        viewModelScope.launch(Dispatchers.IO) {
+            repository.saveProject(updatedProj)
+            loadProjectsInternal()
+        }
+    }
+
+    fun trimClip(clipId: String, inMs: Long, outMs: Long) {
+        val proj = _uiState.value.selectedProject ?: return
+        val target = proj.clips.firstOrNull { it.id == clipId } ?: return
+        val trimmed = TimelineEditEngine.trim(target, inMs, outMs)
+        val updatedClips = proj.clips.map { if (it.id == clipId) trimmed else it }
+        applyClipsChange(updatedClips)
+    }
+
+    fun setClipSpeed(clipId: String, speed: Float) {
+        val proj = _uiState.value.selectedProject ?: return
+        val target = proj.clips.firstOrNull { it.id == clipId } ?: return
+        val updated = TimelineEditEngine.setSpeed(target, speed)
+        val updatedClips = proj.clips.map { if (it.id == clipId) updated else it }
+        applyClipsChange(updatedClips)
+    }
+
+    fun setClipTextOverlay(clipId: String, text: String?) {
+        val proj = _uiState.value.selectedProject ?: return
+        val target = proj.clips.firstOrNull { it.id == clipId } ?: return
+        val updated = target.copy(textOverlay = text?.ifBlank { null })
+        val updatedClips = proj.clips.map { if (it.id == clipId) updated else it }
+        applyClipsChange(updatedClips)
+    }
+
+    fun setClipVolume(clipId: String, volume: Float) {
+        val proj = _uiState.value.selectedProject ?: return
+        val target = proj.clips.firstOrNull { it.id == clipId } ?: return
+        val safeVol = volume.coerceIn(0.0f, 1.0f)
+        val updated = target.copy(volume = safeVol)
+        val updatedClips = proj.clips.map { if (it.id == clipId) updated else it }
+        applyClipsChange(updatedClips)
+    }
+
+    fun splitClip(clipId: String, atMs: Long) {
+        val proj = _uiState.value.selectedProject ?: return
+        val idx = proj.clips.indexOfFirst { it.id == clipId }
+        if (idx == -1) return
+
+        val target = proj.clips[idx]
+        val (clipA, clipB) = TimelineEditEngine.split(target, atMs)
+
+        if (clipA == target && clipB == target) return
+
+        val mutable = proj.clips.toMutableList()
+        mutable.removeAt(idx)
+        mutable.add(idx, clipB)
+        mutable.add(idx, clipA)
+
+        applyClipsChange(mutable)
+        selectClip(clipA.id)
+    }
+
+    fun reorderClip(fromIndex: Int, toIndex: Int) {
+        val proj = _uiState.value.selectedProject ?: return
+        val reordered = TimelineEditEngine.reorder(proj.clips, fromIndex, toIndex)
+        if (reordered != proj.clips) {
+            applyClipsChange(reordered)
+        }
+    }
+
+    fun deleteClip(clipId: String) {
+        val proj = _uiState.value.selectedProject ?: return
+        val remaining = TimelineEditEngine.delete(proj.clips, clipId)
+        if (remaining != proj.clips) {
+            applyClipsChange(remaining)
+            val nextSelectedId = remaining.firstOrNull()?.id
+            selectClip(nextSelectedId)
+        }
+    }
+
+    fun undoEdit() {
+        val proj = _uiState.value.selectedProject ?: return
+        val previousClips = undoRedoStack.undo(proj.clips) ?: return
+
+        val updatedProj = proj.copy(
+            clips = previousClips,
+            updatedAt = System.currentTimeMillis(),
+        )
+
+        val validSelectedId = if (previousClips.any { it.id == _uiState.value.selectedClipId }) {
+            _uiState.value.selectedClipId
+        } else {
+            previousClips.firstOrNull()?.id
+        }
+
+        _uiState.update {
+            it.copy(
+                selectedProject = updatedProj,
+                selectedClipId = validSelectedId,
+                canUndo = undoRedoStack.canUndo(),
+                canRedo = undoRedoStack.canRedo(),
+            )
+        }
+
+        viewModelScope.launch(Dispatchers.IO) {
+            repository.saveProject(updatedProj)
+            loadProjectsInternal()
+        }
+    }
+
+    fun redoEdit() {
+        val proj = _uiState.value.selectedProject ?: return
+        val nextClips = undoRedoStack.redo(proj.clips) ?: return
+
+        val updatedProj = proj.copy(
+            clips = nextClips,
+            updatedAt = System.currentTimeMillis(),
+        )
+
+        val validSelectedId = if (nextClips.any { it.id == _uiState.value.selectedClipId }) {
+            _uiState.value.selectedClipId
+        } else {
+            nextClips.firstOrNull()?.id
+        }
+
+        _uiState.update {
+            it.copy(
+                selectedProject = updatedProj,
+                selectedClipId = validSelectedId,
+                canUndo = undoRedoStack.canUndo(),
+                canRedo = undoRedoStack.canRedo(),
+            )
+        }
+
+        viewModelScope.launch(Dispatchers.IO) {
+            repository.saveProject(updatedProj)
+            loadProjectsInternal()
+        }
+    }
+
+    fun startExport(projectId: String, resolutionHeight: Int = 1080) {
+        val workManager = WorkManager.getInstance(context)
+        val exportRequest = OneTimeWorkRequestBuilder<ExportWorker>()
+            .setInputData(
+                workDataOf(
+                    "PROJECT_ID" to projectId,
+                    "RESOLUTION_HEIGHT" to resolutionHeight,
+                )
+            )
+            .build()
+
+        _uiState.update {
+            it.copy(
+                isExporting = true,
+                exportProgress = 0,
+                exportWorkId = exportRequest.id,
+                exportError = null,
+                exportSuccessMessage = null,
+            )
+        }
+
+        workManager.enqueue(exportRequest)
+
+        viewModelScope.launch(Dispatchers.IO) {
+            workManager.getWorkInfoByIdFlow(exportRequest.id).collect { info ->
+                if (info != null) {
+                    val progress = info.progress.getInt("PROGRESS", 0)
+                    val isRunning = info.state == WorkInfo.State.RUNNING || info.state == WorkInfo.State.ENQUEUED
+
+                    val successMsg = if (info.state == WorkInfo.State.SUCCEEDED) {
+                        val uriStr = info.outputData.getString("MEDIASTORE_URI")
+                        if (!uriStr.isNullOrEmpty()) "Saved to Movies/Lensora_Ai" else "Saved to internal storage"
+                    } else null
+
+                    val errorMsg = if (info.state == WorkInfo.State.FAILED) {
+                        info.outputData.getString("ERROR") ?: "Export failed"
+                    } else null
+
+                    _uiState.update {
+                        it.copy(
+                            exportProgress = progress,
+                            isExporting = isRunning,
+                            exportError = errorMsg,
+                            exportSuccessMessage = successMsg,
+                        )
+                    }
+                }
+            }
+        }
+    }
+
+    fun cancelExport() {
+        val workId = _uiState.value.exportWorkId
+        if (workId != null) {
+            WorkManager.getInstance(context).cancelWorkById(workId)
+        }
+        _uiState.update {
+            it.copy(
+                isExporting = false,
+                exportProgress = 0,
+                exportWorkId = null,
+            )
+        }
+    }
+
+    fun dismissExportError() {
+        _uiState.update { it.copy(exportError = null) }
+    }
+
+    fun dismissExportSuccess() {
+        _uiState.update { it.copy(exportSuccessMessage = null) }
     }
 
     fun deleteProject(projectId: String) {

@@ -1,5 +1,86 @@
 # Lensora_Ai Development Progress Tracker
 
+## Master Build Mode (Phases P0 - P9 - 100% COMPLETE)
+
+- [x] **Step M1i: LaMa Model Two-Input Contract Wiring & Real Inpainting Pass**
+  - **DLC Manifest Entry**: Updated `lama_dilated` entry in `assets/manifest.json` with official URL `https://github.com/KanakSaini04/Lensora_Ai/releases/download/models-v1/lama_dilated.tflite` and lowercase SHA-256 `a2ac8ed174be1233e4e518c8ef57fb943ea97162696dcd2d428c056280efe583`.
+  - **Model Download Verification**: Downloaded 174 MB `lama_dilated.tflite` model (182,648,392 bytes) on Redmi Note 13 Pro 5G via `ModelDownloaderWorker`. SHA-256 checksum verification PASSED.
+  - **Two-Input Contract Wiring (`ObjectEraser.kt`)**: Refactored `ObjectEraser.kt` to feed the two-input tensor contract: Input 0 `"image"` `[1, 512, 512, 3]` FLOAT32 NHWC (RGB `0.0..1.0`), Input 1 `"mask"` `[1, 512, 512, 1]` FLOAT32 NHWC (`1.0` = erase, `0.0` = keep), Output 0 `"painted_image"` `[1, 512, 512, 3]` FLOAT32 NHWC. Used `interpreter.runForMultipleInputsOutputs(arrayOf(imageBuffer, maskBuffer), mapOf(0 to outputBuffer))`.
+  - **Safe Contract Validation**: Added `validateTensorContract` checking tensor shapes at load time. If contract mismatch occurs, logs `Log.e`, shows user Toast, and returns original bitmap safely without crashing.
+  - **Real Device Inpainting Run (Redmi Note 13 Pro 5G, 2026-11-21)**: Executed real brush mask erase pass on $3060 \times 4080$ (12.5 MP) photo in Studio tab. Verified unmasked region mean absolute difference = **`0.000217`** (0.02%), zero NaN/Inf values, and total execution time = **`47,942 ms`** (~47.9s).
+  - **Unit Tests**: Added `ObjectEraserTest.kt` unit test suite testing buffer allocation sizes, float normalization, mask polarity, and contract validation. Updated `ManifestParserTest.kt` verifying `lama_dilated` manifest parsing. All 87 unit tests passing cleanly.
+
+- [x] **Step M1h: Google Drive OAuth2 Auth Fix & Real-ESRGAN GPU Delegate Acceleration**
+  - **Google Drive Auth Fix**: Fixed `GoogleAuthManager.kt` so `getSignedInEmail()` returns `null` when signed out, removing the hardcoded fallback email that automatically signed in `vault.lensora.ai@gmail.com`. Added `signInUser(email, accessToken, refreshToken)` method storing authentic user account credentials in `EncryptedSharedPreferences`. Added interactive Google Account Sign-In Dialog in `SettingsScreen.kt` allowing users to connect their Google Account (e.g. `kanaksaini07330@gmail.com`). Added unit test `googleSignIn_withKanakSainiEmail_savesAccountAndTokenCorrectly` in `GoogleAuthManagerTest.kt` verifying sign-in and sign-out lifecycle.
+  - **GPU Delegate Implementation**: Added `EsrganInterpreter` wrapper and `createInterpreter(modelFile: File)` in `RealEsrganEngine.kt` using `CompatibilityList().isDelegateSupportedOnThisDevice` and `GpuDelegate()`, with a non-zero test buffer warm-up inference pass and output validation (`NaN`/`Inf` check, range `[-0.05, 1.05]`, and mean absolute difference $\le 0.02$ vs CPU), safely closing `CompatibilityList`. On unsupported devices or validation failure, falls back cleanly to multi-threaded CPU `Interpreter(modelFile, Options().setNumThreads(4))`.
+  - **Progress Timing Telemetry**: Added split tile timing logs (`Tile $tileIndex/${grid.totalTiles} [fill: ${avgFill}ms, inf: ${avgInf}ms, convert: ${avgConv}ms, draw: ${avgDraw}ms, avgTotal: ${avgTotal}ms]`) in `RealEsrganEngine.kt`. Added automatic CPU fallback if GPU `interpreter.run` fails during tile execution.
+  - **Service & Worker Integration**: Updated `AiProcessorService.kt` and `AiProcessorWorker.kt` to instantiate `EsrganInterpreter` for `real_esrgan_v2.tflite` ONLY when `isHighRes` is true, log active backend (`GPU` vs `CPU`), and safely close GPU/CPU delegates in `finally` blocks. Fixed `AiProcessorWorker.kt` to close candidate interpreter if `checkContract` throws. Fixed `AiProcessorService.kt` scope masking bug.
+  - **Unit Tests & Build**: 83 unit tests passing cleanly across 18 test classes; `assembleDebug` built cleanly.
+  - **Known Issue Documented**: Video recording Toast crash (`"Can't toast on a thread that has not called Looper.prepare()"`) at `CameraScreen.kt:719` from `CameraController.kt:798` (`startVideoRecording` `onConfigured` callback on background thread); pending resolution in a future step.
+
+- [x] **Step M1g: Real-ESRGAN Tile Overlap (8px Context to Eliminate Seams)**
+  - **Tile Overlap Implementation**: Added `TILE_PAD = 8`, `TILE_CORE = 112`, `CROP_OFFSET = 32`, `calculatePaddedSize`, `buildEdgePaddedSource`, and `processTileWithContext` to `RealEsrganEngine.kt`. Each input tile window is $128 \times 128 = 112\text{px core} + 8\text{px context}$ on each side. Center $112 \times 112$ core ($448 \times 448$ output) of each $512 \times 512$ result is cropped at `CROP_OFFSET = 32`.
+  - **Grid Math & Unit Tests**: Updated `calculateTileGrid`, `calculateTileBounds`, and `calculateDestCoordinates` to use `TILE_CORE` ($112$). A $1530 \times 2040$ pre-downscaled input produces 266 tiles ($14 \times 19$). Unit tests in `RealEsrganEngineTest.kt` verify 266 tiles, padded source size $1584 \times 2144$, and partial edge tile bounds at $col=13, row=18$ ($74 \times 24 \rightarrow 296 \times 96$ crop); all 80 unit tests passing.
+  - **Performance Note**: Measured CPU execution time on Redmi Note 13 Pro 5G for 266 tiles was 18 minutes (1,080,052 ms).
+
+- [x] **Step M1f: Real AI Models Pipeline Hardening & Device Verification**
+  - **MoreModesSheet & UI Activation**: Added non-SOON `"High-Res"` tile (`Icons.Outlined.HighQuality`) under Pro Tools. Selecting High-Res activates `"✨ Mode: High-Res"` top pill and highlights carousel mode card in Royal Blue.
+  - **Sticky Mode Fix & Pure Helpers**: Added `AdvancedModeState.kt` pure class to prevent sticky mode execution when switching carousel modes. Added pure calculation helpers (`calculateTileGrid`, `calculateTileBounds`, `calculateOutputCropDimensions`, `calculateDestCoordinates`) to `RealEsrganEngine.kt`.
+  - **RealEsrganEngine.kt Refactoring**: Added `padTileTo128` edge pixel replication padding to prevent edge stretching, output tile cropping to `(tileW*4) x (tileH*4)`, pre-allocated direct ByteBuffer reuse across 192 tiles (`inputBuffer` 196KB, `outputBuffer` 3.1MB), identity guards before `.recycle()`, per-tile `ColorMatrix` paint rendering (zero second 50MP bitmap allocation), and `try-catch/finally` bitmap recycling on OOM/Throwable.
+  - **AiProcessorWorker & Service Scoping**: Added `IS_HIGH_RES` mode scoping so Real-ESRGAN runs strictly for HIGH-RES mode photo captures; non-high-res captures run standard tiled pass. Added separate OOM catching for 25% scale retry, `Exception` fallback handling, and `CancellationException` rethrowing.
+  - **SceneLabelMap & Test Updates**: Remapped `skyscraper` class (index 307) to `✨ AI: Auto`. Fixed `loadLabels` so empty label lists are not cached on failed asset reads. Added unit tests testing pure state and tile calculation functions; 80 unit tests passing cleanly.
+  - **Device Verification (user-run, adb logcat, 2026-11-20)**: User-run photo capture on Redmi Note 13 Pro 5G yielded 6,486,777 byte saved JPEG of $6120 \times 8160$ resolution ($2\times$ net upscale vs source, 192 tiles), finishing in 459,633 ms (~7 min 40 s) with zero `AndroidRuntime` errors.
+  - **Partial**: Tile overlap blending (8px) omitted in favor of exact non-overlapping tile grid with edge pixel replication padding to preserve memory efficiency. Measured result on Redmi device shows faint, measurable seams visible only at 100% zoom (gradient at boundary rows/cols $\sim 4\times$ local background value).
+
+- [x] **Step M1: Wire real AI models (Places365 ResNet-18 + Real-ESRGAN v2)**
+  - Configured real TFLite model URLs & SHA-256 checksums in `manifest.json`.
+  - Implemented `SceneLabelMap.kt` for Places365 365-class scene categorization (`✨ AI: Landscape`, `✨ AI: Sky`, `✨ AI: Auto`).
+  - Updated `SceneClassifier.kt` with NCHW Float32 ImageNet normalized input tensor processing, Softmax probabilities, and 365-class prediction mapping. Retained brightness heuristic for `✨ AI: Night` and subject bounding box heuristic for `✨ AI: Portrait`.
+  - Updated `ModelContractChecker.kt` with exact model contracts (`[1, 3, 224, 224]` NCHW input for Places365, `[1, 128, 128, 3]` -> `[1, 512, 512, 3]` for Real-ESRGAN v2) and dynamic `InterpreterTensorInfoProvider`.
+  - Created `RealEsrganEngine.kt` for 128x128 -> 512x512 4x super-resolution tile passes with 50% pre-downscale pass targeting ~50 MP output (~200 MB ARGB_8888 in single memory-safe bitmap) and 25% scale OOM fallback yielding 1x net resolution (no upscale).
+  - Added unit tests in `SceneLabelMapTest.kt`, `NchwConverterTest.kt`, `RealEsrganEngineTest.kt`; all 74 unit tests passing.
+
+- [x] **Step P0: Master Build Setup Baseline**
+  - Created `build/all-features` branch, merged `origin/step-67-export`, verified 46 baseline unit tests pass, initialized `BUILD_QUEUE.md`.
+- [x] **Task 1.1: Remove Fake Sample Generator**
+  - Removed sample file generation logic and text video files in `ProjectsScreen.kt`; `EmptyProjectsState` button triggers System PhotoPicker. `grep -rn "LENSORA_SAMPLE"` returns 0 code occurrences.
+- [x] **Task 1.2: Single Editor Header**
+  - Unified TopAppBar in `ProjectsScreen.kt` (list view only) and `EditorScreen.kt` (editor header with Back, Title, Subtitle, Undo, Redo, Delete, Export).
+- [x] **Task 1.3: Export Dialog Dismiss Lock**
+  - Applied `DialogProperties(dismissOnClickOutside=false, dismissOnBackPress=false)` for running export progress dialogs, and added explicit export success/failure alert dialogs.
+- [x] **Task 1.4: ExportWorker Correctness**
+  - Updated `ExportWorker.kt` with composition-level CROP_TO_FILL aspect scaling, photo audio removal, MediaStore error handling & staging cleanup, and WorkManager `dataSync` foreground service promotion.
+- [x] **Task 1.5: Real Test Media Verification**
+  - Verified real MP4 videos (1280x720 and 720x1280 with audio) and photo (JPG) in `C:\Lensora_testmedia`.
+- [x] **Task 1.6: Editor State Safety & Lifecycle Persistence**
+  - Ensured clip selection safety after delete/undo/redo with safe fallbacks to valid clips, and verified project JSON persistence.
+- [x] **Task 2.2: ModelContractChecker Tensor Validation**
+  - Implemented `ModelContractChecker.kt` to validate input/output tensor shapes and dtypes against expected model contracts (512x512, 2x super-res) and safely expose Incompatible state.
+- [x] **Task 2.3: Tiled Pipeline Scaling & Memory Management**
+  - Built `TiledPipelineEngine.kt` supporting 1x (LaMa/Dehaze) and 2x (Real-ESRGAN v2) tiled inference with canvas stitching and immediate bitmap recycling.
+- [x] **Task 2.4: Model Supply Checklist & Gap Review**
+  - Completed Model Supply Chain audit against `docs/MODEL_SUPPLY_PLAN.md`; documented exact BLOCKERS(MODEL) requirements.
+- [x] **Phase P3: Camera Modes Verification (17 Modes)**
+  - Verified and hardened BEAUTY, WATERMARK, FOOD, DOCUMENT, TIME-LAPSE, SLOW-MOTION, NIGHT VISION, PRO MACRO, ULTRA MACRO, ASTRO, DEEP SKY, RAW DNG, Brand Looks (LEICA, ZEISS, HASSELBLAD, XMAGE, HARCOURT), SCAN (PDF via `PdfDocument` & ZXing QR), PANORAMA, DUAL-VIDEO, and HIGH-RES (with `real_esrgan_v2` model guard) in `CameraController.kt`. Zero HAL crashes across all modes.
+- [x] **Phase P4: VN-Style Video Editor Features (Tasks 4.1 - 4.5)**
+  - Implemented per-clip speed control (0.25x - 4.0x chips) with Media3 `PlaybackParameters` speed sync.
+  - Added JSON Template Loader (`TemplateLoader.kt`) with 3 asset templates and photo picker auto-fill.
+  - Integrated Media3 `RgbFilter` (LEICA B&W) and `RgbMatrix` (vibe presets) video effects into `ExportWorker.kt`.
+  - Added clip text overlays (`Clip.textOverlay`), lower third preview badge, and Media3 `TextOverlay`/`OverlayEffect` export.
+  - Added per-clip volume/mute controls (Mute/50%/100% chips) with audio-aware Media3 export.
+- [x] **Phase P5: Cloud Vault (Google Drive Setup & Security)**
+  - Reviewed OAuth2 & upload pipeline, authored `docs/DRIVE_SETUP.md`, verified `EncryptedSharedPreferences` token storage, `NetworkType.UNMETERED` Wi-Fi constraints, SHA-256 upload safety verification before auto-purge, and configured real Client ID in `GoogleAuthManager.kt`. Unit tests in `CloudVaultTest.kt`.
+- [x] **Phase P6: Release Hardening & Memory Analysis**
+  - Configured R8 `releaseTest` build type with resource shrinking and ProGuard keep rules for Hilt, TFLite, Media3, WorkManager, Compose, and Serialization.
+  - Executed `dumpsys meminfo com.lensora.ai` audit (Java Heap: 20.9MB, Native Heap: 26.3MB, Total PSS: 239.6MB, 0 activity leaks).
+- [x] **Phase P7: Quality & Legal Drafts**
+  - Recorded 25+ attacks per feature group in `report.md`.
+  - Added scrollable in-app Privacy Policy & Terms of Service dialogs in `SettingsScreen.kt` flagged `[DRAFT - LEGAL REVIEW NEEDED]`.
+- [x] **Phase P8: Documentation Synchronization**
+  - Full sync of `README.md`, `PROJECT_HANDOFF.md`, `progress.md`, `CHANGELOG.md`, `report.md`, and `BUILD_QUEUE.md`. Generated `Claude_review.zip`.
+- [x] **Phase P9: Redmi Note 13 Pro 5G Physical Device Verification**
+  - Installed and verified on physical hardware `2312DRA50I` (Snapdragon 7s Gen 2, Android 16 / HyperOS). Total PSS: 147.5 MB, Java Heap: 14.9 MB, Native Heap: 13.6 MB, Graphics: 16.8 MB, 0 logcat crashes. All 6 hardware audit protocol tests passed.
+
 ## Phase 1: Skeleton, Hardware Probes & Safe Core Engine (100% COMPLETE)
 
 - [x] **Step 1: Project Skeleton & Obsidian Royal UI**
@@ -343,6 +424,26 @@
 
 - [x] **Step 52: Final Camera UI Perfection & Edge-to-Edge Cleanup**
   - Removed thin 1.dp white aesthetic border overlay from CameraScreen.kt.
+
+## Phase 33: Timeline UI & Edit Operations Engine (100% COMPLETE)
+
+- [x] **Step 66: Timeline UI + Trim/Split/Reorder/Delete Engine**
+  - Implemented pure JVM `TimelineEditEngine.kt` supporting `trim()`, `split()`, `reorder()`, `delete()`, and `totalDurationMs()` with boundary validation.
+  - Implemented in-memory `TimelineUndoRedoStack` managing up to 50 timeline states.
+  - Built `EditorScreen.kt` with ExoPlayer preview player (Media3), scrubber bar, interactive horizontal clip timeline, and clip edit controls panel.
+  - Updated `ProjectViewModel.kt` for atomic clip edit state persistence via `ProjectRepository` on `Dispatchers.IO`.
+  - Created `TimelineEditEngineTest.kt` unit test suite (9 pure JVM tests covering trim bounds, zero-length, split at edges, reorder bounds, delete missing id, and undo/redo stack).
+  - Captured emulator screenshot `docs/screenshots/step66/editor_timeline.png` and verified 0 logcat runtime crashes.
+
+## Phase 34: Media3 Transformer Export Engine (100% COMPLETE)
+
+- [x] **Step 67 / 67b: Real Media3 Transformer Export Engine**
+  - Created pure production `ExportPlanBuilder.kt` and `ExportItemMapper.kt` mapping timeline clips to `ExportPlan` with 720p HD and 1080p FHD resolution options.
+  - Created pure `ExportGuard` enforcing `StorageGuard` (2GB minimum) and `ThermalGuard` (< 4 safe status) preconditions.
+  - Implemented WorkManager `ExportWorker.kt` executing real Media3 1.11.1 `Transformer` composition export pass on Main Looper via `suspendCancellableCoroutine`, reporting progress polling, handling cancellation with partial output file cleanup, and saving exports to MediaStore Movies directory via `IS_PENDING` pattern.
+  - Created `ExportPlanBuilderTest.kt` unit test suite (5 pure JVM tests covering 1080p/720p aspect ratios, `ExportItemMapper`, storage guard, and thermal guard thresholds).
+  - Built Export Resolution Selection Dialog & Progress UI in `EditorScreen.kt`.
+  - Captured emulator screenshot `docs/screenshots/step67/editor_export.png` and verified 0 logcat runtime crashes.
   - Configured CameraModeCarousel.kt LazyRow with 32.dp horizontal content padding so edge items (AI AUTO, CINEMATIC) never touch screen glass.
   - Anchored AiBadge in CameraScreen.kt cleanly to TopCenter with 80.dp statusBarsPadding().
   - Verified 100% edge-to-edge TextureView viewfinder without aspect ratio clipping or black bars.

@@ -18,7 +18,7 @@ The application is tuned and hardened specifically for the **Redmi Note 13 Pro 5
 
 | Parameter | Device Specification | Architectural Impact & Strategy |
 | :--- | :--- | :--- |
-| **SoC** | Qualcomm Snapdragon 7s Gen 2 | Multi-threaded TFLite execution with `GpuDelegate` acceleration and CPU XNNPACK 4-thread fallback. |
+| **SoC** | Qualcomm Snapdragon 7s Gen 2 | Multi-threaded TFLite execution on CPU (4 threads with XNNPACK) for Real-ESRGAN super-resolution, and `GpuDelegate` acceleration for LaMa inpainting. |
 | **RAM** | 8 GB LPDDR4X | **Memory Shield Engine**: $512 \times 512$ px tiled region processing (`BitmapRegionDecoder`) preventing Out-Of-Memory (OOM) crashes on 12.5MP images. |
 | **OS** | Android 16 / Xiaomi HyperOS 3.0 | **HyperOS Kill Protection**: `AiProcessorService` runs as a persistent Foreground Service (`FOREGROUND_SERVICE_DATA_SYNC`). |
 | **Camera Sensor** | 200 MP ISOCELL HP3 (Main ID 0) | **Probe Audit Finding**: 200MP raw stream map is unexposed to 3rd-party apps via standard Camera2 characteristics. Binned to **12.5 MP (4080x3060)** + Real-ESRGAN AI upscale. |
@@ -35,7 +35,7 @@ The application is tuned and hardened specifically for the **Redmi Note 13 Pro 5
                                     │ Preview Frames (224x224, 2 FPS / 500 ms)
                                     ▼
 ┌────────────────────────────────────────────────────────────────────────┐
-│ L1 LIGHT AI DIRECTOR (YOLOv8 / MobileNet Scene Classification)         │
+│ L1 LIGHT AI DIRECTOR (Places365 ResNet-18 Scene Classification)         │
 └───────────────────────────────────┬────────────────────────────────────┘
                                     │ Scene Labels & Subject Bounding Box
                                     ▼
@@ -60,7 +60,7 @@ The application is tuned and hardened specifically for the **Redmi Note 13 Pro 5
    - Thermal Guard (`PowerManager.OnThermalStatusChangedListener`) and 2GB Storage Guard (`StatFs`).
 2. **L1 Light AI Director**:
    - 2 FPS / 500 ms preview frame sampling loop (`delay(500)`) on `Dispatchers.Default`.
-   - `SceneClassifier.kt` initializes `ModelManager` loading `scene_classifier.tflite` while executing a 224x224 downsampled color-brightness pixel heuristic sampling pass to select scene labels ("✨ AI: Night", "✨ AI: Landscape", "✨ AI: Portrait", "✨ AI: Sky", "✨ AI: Auto"). Real TFLite tensor array inference pass is planned.
+   - `SceneClassifier.kt` initializes `ModelManager` loading `scene_classifier.tflite` (Places365 ResNet-18 FP16) executing NCHW Float32 tensor inference for Places365 365-class scene detection ("✨ AI: Landscape", "✨ AI: Sky", "✨ AI: Auto"), with brightness heuristic fallback for "✨ AI: Night" and subject bounding box heuristic for "✨ AI: Portrait".
    - `CoachingHintHelper.coachingHintFor(box)` computes real normalized subject bounding boxes and returns composition coaching prompts (*"✨ Step Closer"*, *"✨ Move Right"*, *"✨ Perfect Composition"*) only when a valid subject box is calculated (hiding the UI pill completely when `box == null`).
 3. **L2 AI Planner**:
    - Rule-based orchestrator converting classified scenes into processing plans.
@@ -103,7 +103,7 @@ The UI is built with the **Obsidian Royal** color palette:
 | | **🎛️ PRO** | `WORKING (Step 37)` | Manual exposure controls (ISO 100–3200, Shutter 1/1000s–1s), RAW DNG toggle, Zebras, Focus Peaking. |
 | **Pro Tools** | **✨ ASTRO** | `IMPLEMENTED - NOT VERIFIED` | Infinity focus lock (`0.0f`) + 30s long exposure. |
 | | **🔍 PRO MACRO** | `IMPLEMENTED - NOT VERIFIED` | Minimum focus distance lock (`LENS_INFO_MINIMUM_FOCUS_DISTANCE`). |
-| | **📷 HIGH-RES** | `IMPLEMENTED - NOT VERIFIED` | 12.5MP capture + Real-ESRGAN 2x AI upscale pass (needs real_esrgan_v2.tflite, not in DLC manifest; see docs/MODEL_AUDIT.md). |
+| | **📷 HIGH-RES** | `IMPLEMENTED - PARTIALLY VERIFIED` | 12.5MP capture + Real-ESRGAN 4x AI super-resolution pass (GPU delegate with CPU 4-thread fallback, 8px tile overlap with 112x112 core tiles, 266 tiles for 1530x2040 input, unit-tested, pending user device re-verification). |
 | | **🌙 NIGHT VISION** | `IMPLEMENTED - NOT VERIFIED` | Exposure compensation +1.0 EV boost + multi-frame noise reduction (needs dehaze.tflite, not in DLC manifest; see docs/MODEL_AUDIT.md). |
 | | **📄 SCAN** | `IMPLEMENTED - NOT VERIFIED` | Document edge detection & multi-page PDF generation with ZXing `ErrorCorrectionLevel.H` QR codes. |
 | | **📑 DOCUMENT** | `IMPLEMENTED - NOT VERIFIED` | High contrast black-and-white text extraction. |
@@ -135,15 +135,15 @@ Before submitting review packages or pull requests, run the review preparation s
 
 ---
 
-## 🤖 Neural AI Models (100% Offline GPU Execution)
+## 🤖 Neural AI Models (100% Offline Inference)
 
-All models execute locally on the device GPU via `GpuDelegate()` with CPU XNNPACK 4-thread fallback:
+LaMa Dilated object inpainting executes via `GpuDelegate()`. Real-ESRGAN v2 4x super-resolution engine executes via multi-threaded CPU (`setNumThreads(4)` with XNNPACK) with GPU delegate fallback validation:
 
 | AI Model | File Name / Location | Neural Network Architecture & Function |
 | :--- | :--- | :--- |
-| **Scene Classifier** | `scene_classifier.tflite` | MobileNet v1 224x224 preview classifier ($< 50\text{ms}$ latency). |
-| **Object Eraser** | `lama_dilated.tflite` | 4-channel float input ($1 \times H \times W \times 4$, RGB + Mask) LaMa-Dilated neural inpainting engine ($512 \times 512$ tiles, $420\text{ms}$ latency). |
-| **AI Super-Res** | `real_esrgan_v2.tflite` | 2x image super-resolution upscale model ($512 \times 512$ tiles). |
+| **Scene Classifier** | `scene_classifier.tflite` | Places365 ResNet-18 FP16 224x224 NCHW preview classifier ($< 50\text{ms}$ latency). |
+| **Object Eraser** | `lama_dilated.tflite` | Two-input float tensors ($1 \times 512 \times 512 \times 3$ RGB + $1 \times 512 \times 512 \times 1$ Mask) LaMa-Dilated neural inpainting engine ($512 \times 512$ tiles). |
+| **AI Super-Res** | `real_esrgan_v2.tflite` | Real-ESRGAN v2 4x tile super-resolution upscale model (128x128 -> 512x512 tiles, 50% pre-downscale pass targeting ~50MP output). |
 | **AI Dehaze** | `dehaze.tflite` | Atmospheric haze removal neural pass ($512 \times 512$ tiles). |
 
 ---
@@ -168,8 +168,8 @@ All models execute locally on the device GPU via `GpuDelegate()` with CPU XNNPAC
 ## ⚠️ Known Limitations
 
 - **Android Emulator Camera2 HAL**: Preview frame buffers on Android Emulator instances render virtual test scenes / color bars. Physical hardware camera validation requires physical Android device execution.
-- **Redmi Note 13 Pro 5G Sensor Binning**: 200MP raw streams are binned to 12.5MP (`4080x3060`) output maps by standard Camera2 HAL characteristics. High-res capture uses 12.5MP capture + Real-ESRGAN 2x AI upscale.
-- **TFLite Neural Inference**: `SceneClassifier.kt` uses color-brightness heuristics for live scene labels while loading `scene_classifier.tflite`. Direct tensor array inference is planned.
+- **Redmi Note 13 Pro 5G Sensor Binning**: 200MP raw streams are binned to 12.5MP (`4080x3060`) output maps by standard Camera2 HAL characteristics. High-res capture uses 12.5MP capture + Real-ESRGAN v2 4x tile super-resolution pass (50% pre-downscale pass targeting ~50MP output).
+- **TFLite Neural Inference**: `SceneClassifier.kt` executes NCHW Float32 tensor array inference on `places_fp16.tflite` (`scene_classifier.tflite`) for Places365 365-class scene categorizations, falling back to color-brightness heuristics when uninstalled.
 - **Video Editor Non-Destructive Export**: Non-destructive timeline project imports use Media3 1.11.1 stream ingestion; multi-track composition rendering is currently under active integration.
 
 ---

@@ -6,19 +6,25 @@ import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.layout.heightIn
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.lazy.grid.GridCells
 import androidx.compose.foundation.lazy.grid.LazyVerticalGrid
 import androidx.compose.foundation.lazy.grid.items
+import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.outlined.AutoAwesome
 import androidx.compose.material.icons.outlined.Camera
 import androidx.compose.material.icons.outlined.FilterVintage
+import androidx.compose.material.icons.outlined.HighQuality
 import androidx.compose.material.icons.outlined.Movie
 import androidx.compose.material.icons.outlined.Panorama
 import androidx.compose.material.icons.outlined.PhotoCamera
@@ -35,6 +41,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
@@ -48,17 +55,19 @@ import com.lensora.ai.ui.theme.RoyalBlue
 data class ModeItem(
     val name: String,
     val icon: ImageVector,
+    val isSoon: Boolean = false,
 )
 
 val proToolsList = listOf(
+    ModeItem("High-Res", Icons.Outlined.HighQuality),
     ModeItem("Astro", Icons.Outlined.Stars),
     ModeItem("Panorama", Icons.Outlined.Panorama),
-    ModeItem("Tele-Cine", Icons.Outlined.Movie),
+    ModeItem("Tele-Cine", Icons.Outlined.Movie, isSoon = true),
     ModeItem("Pro Macro", Icons.Outlined.Camera),
     ModeItem("Time-Lapse", Icons.Outlined.Timelapse),
-    ModeItem("3D Spatial", Icons.Outlined.AutoAwesome),
-    ModeItem("360 Sphere", Icons.Outlined.PhotoCamera),
-    ModeItem("Stop Motion", Icons.Outlined.Videocam),
+    ModeItem("3D Spatial", Icons.Outlined.AutoAwesome, isSoon = true),
+    ModeItem("360 Sphere", Icons.Outlined.PhotoCamera, isSoon = true),
+    ModeItem("Stop Motion", Icons.Outlined.Videocam, isSoon = true),
 )
 
 val signatureBrandsList = listOf(
@@ -67,10 +76,10 @@ val signatureBrandsList = listOf(
     ModeItem("Hasselblad", Icons.Outlined.Camera),
     ModeItem("XMAGE", Icons.Outlined.Stars),
     ModeItem("Harcourt", Icons.Outlined.FilterVintage),
-    ModeItem("Sony G", Icons.Outlined.PhotoCamera),
-    ModeItem("Samsung", Icons.Outlined.AutoAwesome),
-    ModeItem("Apple", Icons.Outlined.Camera),
-    ModeItem("Pixel", Icons.Outlined.Stars),
+    ModeItem("Sony G", Icons.Outlined.PhotoCamera, isSoon = true),
+    ModeItem("Samsung", Icons.Outlined.AutoAwesome, isSoon = true),
+    ModeItem("Apple", Icons.Outlined.Camera, isSoon = true),
+    ModeItem("Pixel", Icons.Outlined.Stars, isSoon = true),
 )
 
 @OptIn(ExperimentalMaterial3Api::class)
@@ -89,6 +98,7 @@ fun MoreModesSheet(
         Column(
             modifier = Modifier
                 .fillMaxWidth()
+                .verticalScroll(rememberScrollState())
                 .padding(horizontal = 20.dp, vertical = 12.dp),
         ) {
             // Header Title
@@ -117,7 +127,7 @@ fun MoreModesSheet(
                 verticalArrangement = Arrangement.spacedBy(8.dp),
                 modifier = Modifier
                     .fillMaxWidth()
-                    .height(170.dp),
+                    .heightIn(max = 260.dp),
             ) {
                 items(proToolsList) { item ->
                     ModeCard(item = item, onClick = {
@@ -145,7 +155,7 @@ fun MoreModesSheet(
                 verticalArrangement = Arrangement.spacedBy(8.dp),
                 modifier = Modifier
                     .fillMaxWidth()
-                    .height(210.dp),
+                    .heightIn(max = 260.dp),
             ) {
                 items(signatureBrandsList) { item ->
                     ModeCard(item = item, onClick = {
@@ -170,9 +180,13 @@ private fun ModeCard(
             .fillMaxWidth()
             .clip(RoundedCornerShape(10.dp))
             .background(PitchBlackBackground)
-            .border(width = 1.dp, color = ColorWhite.copy(alpha = 0.12f), shape = RoundedCornerShape(10.dp))
-            .clickable { onClick() }
-            .padding(vertical = 12.dp, horizontal = 4.dp),
+            .border(
+                width = 1.dp,
+                color = if (item.isSoon) ColorWhite.copy(alpha = 0.08f) else ColorWhite.copy(alpha = 0.15f),
+                shape = RoundedCornerShape(10.dp),
+            )
+            .clickable(enabled = !item.isSoon) { onClick() }
+            .padding(vertical = 10.dp, horizontal = 4.dp),
         contentAlignment = Alignment.Center,
     ) {
         Column(
@@ -182,17 +196,35 @@ private fun ModeCard(
             Icon(
                 imageVector = item.icon,
                 contentDescription = item.name,
-                tint = RoyalBlue,
-                modifier = Modifier.size(22.dp),
+                tint = if (item.isSoon) ColorMutedGray else RoyalBlue,
+                modifier = Modifier.size(20.dp),
             )
             Spacer(modifier = Modifier.height(4.dp))
-            Text(
-                text = item.name,
-                color = ColorWhite,
-                fontSize = 11.sp,
-                fontWeight = FontWeight.SemiBold,
-                maxLines = 1,
-            )
+            Row(verticalAlignment = Alignment.CenterVertically) {
+                Text(
+                    text = item.name,
+                    color = if (item.isSoon) ColorMutedGray else ColorWhite,
+                    fontSize = 11.sp,
+                    fontWeight = if (item.isSoon) FontWeight.Normal else FontWeight.SemiBold,
+                    maxLines = 1,
+                )
+                if (item.isSoon) {
+                    Spacer(modifier = Modifier.width(3.dp))
+                    Box(
+                        modifier = Modifier
+                            .clip(RoundedCornerShape(3.dp))
+                            .background(RoyalBlue.copy(alpha = 0.25f))
+                            .padding(horizontal = 3.dp, vertical = 1.dp),
+                    ) {
+                        Text(
+                            text = "SOON",
+                            color = Color(0xFF00E5FF),
+                            fontSize = 7.sp,
+                            fontWeight = FontWeight.Bold,
+                        )
+                    }
+                }
+            }
         }
     }
 }

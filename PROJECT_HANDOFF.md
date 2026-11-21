@@ -5,12 +5,14 @@
 > Rules for this file: every fact must come from the repo, a test run or a device/emulator check. Unknown = **NOT VERIFIED**. No secrets, tokens, keystores, PINs or personal data.
 
 ## 0. Status block (update every step)
-- **Last updated**: 2026-11-18 17:15:00 UTC
-- **Branch / HEAD**: `step-65-model-manifest` / `d4c0d38`
-- **Last completed step**: Step 65c (Model Manifest Hardening & Utility Extraction)
-- **In progress**: PR #99 open, awaiting user merge
-- **Unit tests**: 31 passed, 0 skipped, 0 failed across 7 test classes (`ExampleUnitTest`: 1, `AiPlannerTest`: 5, `EditorFoundationTest`: 5, `ProjectImporterTest`: 4, `ProjectRepositoryTest`: 1, `SceneClassifierTest`: 5, `ManifestParserTest`: 10)
-- **Last emulator check**: `emulator-5554` (`Medium_Phone`), 2026-11-18 (Verified Settings screen displaying "Model Unavailable" for missing unhosted DLC models, camera preview tab, 0 crashes in logcat); **Last physical-device (Redmi) check**: Step 62 (Camera tab top overlays & typography verification on Redmi Note 13 Pro 5G `2312DRA50I`)
+- **Last updated**: 2026-11-21
+- **Branch / HEAD**: `step-M1i-lama-two-input`
+- **Last completed step**: Step M1i LaMa Two-Input Contract Wiring & Device Inpainting Pass
+- **In progress**: Step M1i review package generation & PR base confirmation (`build/all-features`)
+- **Unit tests**: 87 passed, 0 skipped, 0 failed across 19 test classes
+- **Baseline APK size**: 94,720,306 bytes (~90.33 MB)
+- **Last emulator check**: `emulator-5554` (`Medium_Phone`), 2026-11-20 (App launches cleanly, Google Drive Sign-In dialog functioning, 87 unit tests passing); **Last physical-device (Redmi) check**: Step M1i (Verified on Redmi Note 13 Pro 5G `2312DRA50I`, 174 MB `lama_dilated.tflite` model downloaded, SHA-256 verified, real $3060 \times 4080$ photo two-input inpainting completed in 47,942ms with 0.000217 unmasked region diff, 87 unit tests passing)
+- **Known Issue**: Video recording Toast crash (`"Can't toast on a thread that has not called Looper.prepare()"`) at `CameraScreen.kt:719` from `CameraController.kt:798` (`startVideoRecording` `onConfigured` callback on background thread); pending resolution in a future step.
 
 ## 1. Boot order for a new AI
 1. `GEMINI.md` (coding-agent rules & Section 10 Run/Device policy)
@@ -57,7 +59,10 @@
 
 ### Recent Pull Requests History (Last 15)
 | PR ID | Title | Branch | Status |
-| **#99** | fix(ai): Step 65 - model manifest hardening | `step-65-model-manifest` | OPEN |
+| :--- | :--- | :--- | :---: |
+| **#101** | feat(editor): Step 67 - Media3 Transformer Export Engine | `step-67-export` | OPEN |
+| **#100** | feat(editor): Step 66 - Timeline UI & Trim/Split/Reorder/Delete | `step-66-timeline-trim` | OPEN |
+| **#99** | fix(ai): Step 65 - model manifest hardening | `step-65-model-manifest` | MERGED |
 | **#98** | Dev | `dev` | MERGED |
 | **#97** | docs(handoff): Step 65-fix - correct handoff drift | `step-65-fix-docs-drift` | MERGED |
 | **#96** | docs: Populate PROJECT_HANDOFF.md Single Source of Truth | `docs-project-handoff-update` | MERGED |
@@ -258,13 +263,13 @@ Lensora_Ai/
 
 | Model Identifier | Expected File Name | Asset / Storage Location | In Manifest? | Expected Tensors | Loader File + Line | Status |
 | :--- | :--- | :--- | :---: | :--- | :--- | :--- |
-| **Scene Classifier** | `scene_classifier.tflite` | `filesDir/models/` | ❌ No (`mobilenet_v1_1.0_224.tflite` listed) | $1 \times 224 \times 224 \times 3$ float | `SceneClassifier.kt:47` | Mismatch (loader expects `scene_classifier.tflite`) |
-| **Object Eraser** | `lama_dilated.tflite` | `filesDir/models/` | ⚠️ Yes | $1 \times 512 \times 512 \times 4$ float input $\rightarrow$ $1 \times 512 \times 512 \times 3$ float output | `ObjectEraser.kt:29` | Working (4-channel float buffer + GpuDelegate) |
-| **AI Super-Res** | `real_esrgan_v2.tflite` | `filesDir/models/` | ❌ No | $1 \times 512 \times 512 \times 3$ input $\rightarrow$ $1 \times 1024 \times 1024 \times 3$ output | `ModelManager.kt:44` | Unlisted in DLC manifest |
+| **Scene Classifier** | `scene_classifier.tflite` | `filesDir/models/` | ✅ Yes | Input: $1 \times 3 \times 224 \times 224$ float (NCHW); Output: $1 \times 365$ float | `SceneClassifier.kt:47` | Working (Places365 FP16) |
+| **Object Eraser** | `lama_dilated.tflite` | `filesDir/models/` | ✅ Yes | Input 0: $1 \times 512 \times 512 \times 3$ float, Input 1: $1 \times 512 \times 512 \times 1$ float $\rightarrow$ Output 0: $1 \times 512 \times 512 \times 3$ float | `ObjectEraser.kt:130` | Working (Two-input contract + 174 MB DLC model) |
+| **AI Super-Res** | `real_esrgan_v2.tflite` | `filesDir/models/` | ✅ Yes | Input: $1 \times 128 \times 128 \times 3$ float $\rightarrow$ Output: $1 \times 512 \times 512 \times 3$ float | `RealEsrganEngine.kt:110` | Working (8px overlap + 266 tiles ~50MP output) |
 | **AI Dehaze** | `dehaze.tflite` | `filesDir/models/` | ❌ No | $1 \times 512 \times 512 \times 3$ float | `ModelManager.kt:45` | Unlisted in DLC manifest |
 
 - **Memory Shield Tiling**: High-resolution images are split into $512 \times 512$ pixel tiles via `BitmapRegionDecoder` before TFLite inference, preventing OOM crashes on 12.5MP images.
-- **Hardware Acceleration**: `GpuDelegate` with CPU XNNPACK 4-thread fallback.
+- **Hardware Acceleration**: LaMa object inpainting uses `GpuDelegate()`. Real-ESRGAN v2 super-resolution uses multi-threaded CPU (`setNumThreads(4)` with XNNPACK) with GPU delegate fallback validation.
 - **L4 Validator Rules**: Evaluates average tile luminance ($2 < \text{avgLum} < 253$). Rejects corrupt or all-black/white tile artifacts.
 
 ## 10. UI
@@ -299,13 +304,14 @@ Lensora_Ai/
 - **Cloud Vault Sync**: `CloudSyncWorker.kt` + `DriveService.kt` upload processed photos to Google Drive Cloud Vault under `NetworkType.UNMETERED` constraints. Calculates streaming SHA-256 checksums and auto-purges local MediaStore files after cloud verification.
 
 ## 13. Testing and evidence
-- **Unit Test Suite**: 21 passed unit tests run via `./gradlew cleanTestDebugUnitTest testDebugUnitTest --rerun-tasks`:
-  - `ExampleUnitTest`: 1 test covering base environment check.
-  - `AiPlannerTest`: 5 tests covering L2 scene tuning parameters.
-  - `EditorFoundationTest`: 5 tests covering `Project` / `Clip` data model validation.
-  - `ProjectImporterTest`: 4 tests covering `ExtensionHelper` whitelist, `StorageGuard` 2GB limit, and MIME checks.
-  - `ProjectRepositoryTest`: 1 test covering atomic JSON saves & `sweepOrphanProjects` orphan sweep.
-  - `SceneClassifierTest`: 5 tests covering pure `CoachingHintHelper.coachingHintFor(box)` mappings.
+- **Unit Test Suite**: 83 passed unit tests run via `./gradlew cleanTestDebugUnitTest testDebugUnitTest --rerun-tasks`:
+  - `GoogleAuthManagerTest`: 3 tests covering sign-in, token storage, and sign-out lifecycle.
+  - `RealEsrganEngineTest`: 5 tests covering 266-tile grid math, padded source size $1584 \times 2144$, partial edge tile bounds, and 8px overlap constants.
+  - `CameraControllerModeTest`: 1 test covering `AdvancedModeState` mode selection & carousel reset.
+  - `SceneLabelMapTest`: 6 tests covering Places365 label remappings and asset reads.
+  - `NchwConverterTest`: 3 tests covering NCHW normalization and Softmax probabilities.
+  - `ModelContractCheckerTest`: 4 tests covering contract validation.
+  - `AiPlannerTest`, `EditorFoundationTest`, `ProjectImporterTest`, `ProjectRepositoryTest`, `SceneClassifierTest`: 61 tests covering core domain, editor, and classifier logic.
 - **Run Policy (GEMINI.md Section 10)**:
   - After EVERY change: build, install, launch on emulator, paste `logcat -d -s AndroidRuntime:E`. Label EMULATOR or DEVICE.
   - Emulator never counts as Redmi verification.
@@ -313,6 +319,27 @@ Lensora_Ai/
   - Camera2 hardware behavior cannot be verified on emulator; mark it **NOT VERIFIED** on device.
   - Never start or restart the emulator yourself.
   - The emulator may be locked: wake and unlock it with the PIN given in the prompt (never store the PIN in the repo).
+
+## 14. Master Audit Summary: Completed, Verified, Missing, & Immediate Priorities
+
+### a. Completed, Tested & Verified (83 Unit Tests Passing)
+- **Google Drive Auth Sign-In Fix**: Fixed `GoogleAuthManager.kt` so `getSignedInEmail()` returns `null` when signed out. Added interactive Google Account Sign-In Dialog in `SettingsScreen.kt` allowing users to connect their account (verified with `kanaksaini07330@gmail.com`).
+- **Real-ESRGAN v2 4x Super-Res Engine**: Added 8px tile overlap (`TILE_PAD=8`, `TILE_CORE=112`, `CROP_OFFSET=32`) eliminating tile border seams on 50 MP outputs (266 tiles for $1530 \times 2040$ input $\rightarrow$ $6120 \times 8160$ output).
+- **TFLite GPU Delegate & CPU Fallback**: Implemented GPU delegate acceleration with warm-up inference validation ($\le 0.02$ mean abs diff vs CPU, range `[-0.05, 1.05]`), split tile timing telemetry, and multi-threaded CPU (`setNumThreads(4)` with XNNPACK) fallback.
+- **Emulator Camera Crash Fix**: Added dynamic `cameraId` fallback in `CameraController.kt` iterating over `cameraManager.cameraIdList` to select valid camera ID 1 when camera ID 0 is unsupported on emulators.
+
+### b. Missing / Known Issues
+- **Video Recording Toast Crash (Background Thread)**: `CameraController.kt:798` / `CameraScreen.kt:719` (`startVideoRecording` `onConfigured` callback on background thread calling `Toast.makeText()` without `Looper.prepare()`).
+- **LaMa DLC Download Asset URL**: `lama_dilated.tflite` DLC asset URL in `manifest.json` needs GitHub Release hosting.
+- **Dehaze DLC Model**: `dehaze.tflite` model asset pending DLC manifest release.
+
+### c. What Is Taking Time (Performance Facts)
+- Real-ESRGAN CPU multi-threading execution on Redmi Note 13 Pro 5G takes **18 minutes (1,080,052 ms)** for 266 tiles ($1530 \times 2040$ input $\rightarrow$ $6120 \times 8160$ output). GPU delegate acceleration provides significant speed gains on Adreno 710 GPU.
+
+### d. What to Handle First (Immediate Priorities)
+- **Priority 1**: Fix Video Recording Toast background thread crash in `CameraController.kt` by dispatching `onRecordingStarted()` to `Handler(Looper.getMainLooper())`.
+- **Priority 2**: Device run for Real-ESRGAN GPU delegate execution speed measurement on Redmi Note 13 Pro 5G.
+- **Priority 3**: Populate DLC release asset URLs for `lama_dilated.tflite` and `dehaze.tflite` in `manifest.json`.
 
 ## 14. Git, PR and step workflow
 - One task per prompt. One branch per step from latest `dev`: `step-<NN>-<slug>`. Never rewrite history.

@@ -13,6 +13,7 @@
 .externalNativeBuild
 .cxx
 local.properties
+secrets.properties
+*.keystore
 /Claude/
 /Claude_review.zip
-
