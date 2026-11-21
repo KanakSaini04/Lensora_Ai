@@ -29,8 +29,8 @@ import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.gestures.awaitEachGesture
 import androidx.compose.foundation.gestures.awaitFirstDown
+import androidx.compose.foundation.gestures.calculateZoom
 import androidx.compose.foundation.gestures.detectTapGestures
-import androidx.compose.foundation.gestures.detectTransformGestures
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -375,7 +375,7 @@ fun CameraScreen(
             // Animated Focus Ring Overlay
             FocusRingOverlay(tapOffset = focusTapOffset)
 
-            // Transparent Gesture Layer for Pinch-to-Zoom, Tap-to-Focus & Horizontal Tab Swipe Gesture
+            // Transparent Unified Gesture Layer for Pinch-to-Zoom, Tap-to-Focus & Horizontal Tab Swipe Gesture
             Box(
                 modifier = Modifier
                     .fillMaxSize()
@@ -389,16 +389,30 @@ fun CameraScreen(
 
                             while (true) {
                                 val event = awaitPointerEvent()
-                                if (event.changes.size > maxPointerCount) {
-                                    maxPointerCount = event.changes.size
+                                val currentPointerCount = event.changes.size
+                                if (currentPointerCount > maxPointerCount) {
+                                    maxPointerCount = currentPointerCount
                                 }
 
-                                val change = event.changes.firstOrNull()
-                                if (change != null && change.pressed) {
-                                    totalDx += (change.position.x - change.previousPosition.x)
-                                    totalDy += (change.position.y - change.previousPosition.y)
-                                    if (kotlin.math.abs(totalDx) > (2.0f * kotlin.math.abs(totalDy)) && totalDx < -80f && maxPointerCount == 1) {
-                                        change.consume()
+                                if (currentPointerCount >= 2) {
+                                    val zoomChange = event.calculateZoom()
+                                    if (zoomChange != 1.0f) {
+                                        currentZoomRatio = (currentZoomRatio * zoomChange).coerceIn(1.0f, 10.0f)
+                                        cameraController.setZoomRatio(currentZoomRatio)
+                                        selectedZoom = if (currentZoomRatio % 1f == 0f) {
+                                            "${currentZoomRatio.toInt()}x"
+                                        } else {
+                                            String.format(Locale.US, "%.1fx", currentZoomRatio)
+                                        }
+                                    }
+                                } else if (currentPointerCount == 1 && maxPointerCount == 1) {
+                                    val change = event.changes.firstOrNull()
+                                    if (change != null && change.pressed) {
+                                        totalDx += (change.position.x - change.previousPosition.x)
+                                        totalDy += (change.position.y - change.previousPosition.y)
+                                        if (kotlin.math.abs(totalDx) > (1.5f * kotlin.math.abs(totalDy)) && totalDx < -80f) {
+                                            change.consume()
+                                        }
                                     }
                                 }
 
@@ -423,17 +437,6 @@ fun CameraScreen(
                         }
                     }
                     .pointerInput(Unit) {
-                        detectTransformGestures { _, _, zoomChange, _ ->
-                            currentZoomRatio = (currentZoomRatio * zoomChange).coerceIn(1.0f, 10.0f)
-                            cameraController.setZoomRatio(currentZoomRatio)
-                            selectedZoom = if (currentZoomRatio % 1f == 0f) {
-                                "${currentZoomRatio.toInt()}x"
-                            } else {
-                                String.format(Locale.US, "%.1fx", currentZoomRatio)
-                            }
-                        }
-                    }
-                    .pointerInput(Unit) {
                         detectTapGestures { offset ->
                             focusTapOffset = offset
                             cameraController.triggerTapToFocus(
@@ -451,10 +454,7 @@ fun CameraScreen(
                 modifier = Modifier
                     .align(Alignment.TopCenter)
                     .statusBarsPadding()
-                    .fillMaxWidth()
-                    .onGloballyPositioned { coordinates ->
-                        topBarBounds = coordinates.boundsInRoot()
-                    },
+                    .fillMaxWidth(),
                 horizontalAlignment = Alignment.CenterHorizontally,
             ) {
                 CameraTopBar(
@@ -497,6 +497,9 @@ fun CameraScreen(
                     },
                     onSettingsClick = {
                         Toast.makeText(context, "Camera Settings", Toast.LENGTH_SHORT).show()
+                    },
+                    modifier = Modifier.onGloballyPositioned { coordinates ->
+                        topBarBounds = coordinates.boundsInRoot()
                     },
                 )
 

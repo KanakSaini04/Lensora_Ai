@@ -1,3 +1,11 @@
+## [Unreleased] - Step Z4: Camera Viewfinder Swipe Gesture & Timestamp Pill Removal (2026-11-22)
+
+### Added
+- **Camera Viewfinder Swipe Gesture & Timestamp Pill Removal (Step Z4)**:
+  - `ZoomableBox.kt`: Added `CameraSwipeDecision` enum and `evaluateCameraSwipeGesture` pure evaluator function checking 1-pointer count, $24\text{dp}$ system edge gesture insets, and measured UI exclusion bounds (`topBarBounds`, `aiBadgeBounds`, `zoomPillsBounds`, `carouselBounds`, `shutterRowBounds`).
+  - `CameraScreen.kt`: Attached dynamic pointer tracking on viewfinder overlay Box. Removed orphan `currentTimeString` state, LaunchedEffect ticking loop, and viewfinder `"LENSORA • hh:mm:ss"` overlay pill.
+  - `CameraSwipeGestureTest.kt`: Added 15 unit tests covering left swipe, right swipe, vertical/diagonal swipes, short swipes, 2-pointer pinch cancellation, edge gesture insets, measured UI exclusion bounds, and zero screen size safety. All 109 unit tests passing cleanly.
+
 ## [Unreleased] - Step Z: Gallery Photo Selection, ZoomableBox, Translucent Quick View Overlay & Selective Navigation Bar (2026-11-21)
 
 ### Added

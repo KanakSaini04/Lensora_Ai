@@ -130,12 +130,12 @@ object ZoomTransformMath {
         val startPoint = Offset(startX, startY)
         if (excludedRects.any { rect -> rect.contains(startPoint) }) return CameraSwipeDecision.NONE
 
-        // Distance >= 25% of screen width for LEFT swipe
-        val minSwipeDistance = screenWidth * 0.25f
+        // Distance >= 15% of screen width for LEFT swipe
+        val minSwipeDistance = screenWidth * 0.15f
         val isLeftSwipe = totalDx <= -minSwipeDistance
 
-        // Horizontal dominance check: |totalDx| > 2 * |totalDy|
-        val isHorizontalDominant = kotlin.math.abs(totalDx) > (2.0f * kotlin.math.abs(totalDy))
+        // Horizontal dominance check: |totalDx| > 1.5 * |totalDy|
+        val isHorizontalDominant = kotlin.math.abs(totalDx) > (1.5f * kotlin.math.abs(totalDy))
 
         return if (isLeftSwipe && isHorizontalDominant) {
             CameraSwipeDecision.NAVIGATE_NEXT_TAB

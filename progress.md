@@ -2,6 +2,11 @@
 
 ## Master Build Mode (Phases P0 - P9 - 100% COMPLETE)
 
+- [x] **Step Z4: Camera Viewfinder Swipe Gesture & Timestamp Pill Removal**
+  - **Camera Swipe Gesture**: Added `evaluateCameraSwipeGesture` in `ZoomableBox.kt` and attached dynamic pointer tracking in `CameraScreen.kt`. One-finger horizontal left swipe on viewfinder area navigates to Studio tab with standard transition options (`launchSingleTop = true`, `popUpTo` start destination, `saveState` / `restoreState`). Gestures are excluded on measured bounds (`topBarBounds`, `aiBadgeBounds`, `zoomPillsBounds`, `carouselBounds`, `shutterRowBounds`) and system edge gesture insets ($24\text{dp}$).
+  - **Timestamp Pill Removal**: Removed orphan `currentTimeString` state, LaunchedEffect ticking loop, and viewfinder `"LENSORA • hh:mm:ss"` overlay pill `Box` from `CameraScreen.kt`.
+  - **Unit Tests & Device**: Added 15 unit tests in `CameraSwipeGestureTest.kt` (109 unit tests passing total across 21 test classes); verified on Redmi Note 13 Pro 5G with zero logcat crashes.
+
 - [x] **Step Z: Gallery Photo Selection, ZoomableBox, Translucent Quick View Overlay & Selective Navigation Bar**
   - **Gallery Selection (Bug A Fix)**: Encoded `initialUri` and `filter` in `Navigation.kt` (`Uri.encode`). Resolved target photo index in `QuickViewScreen.kt` using `ZoomTransformMath.resolveInitialPageIndex`, initializing `rememberPagerState(initialPage = initialIndex)`. Handling missing/deleted photos and empty filter lists safely with string resources (`R.string.no_photos_found`).
   - **Pinch Zoom & Pan (Bug B Fix)**: Implemented reusable stateless Compose `ZoomableBox` supporting continuous 1.0x to 8.0x (800%) pinch zoom, clamped pan bounds, double-tap 1x/2x scale toggles, live zoom % badge, and 400% zoom Studio brush touch coordinate mapping (`mapScreenPointToImagePixel`).

@@ -5,13 +5,13 @@
 > Rules for this file: every fact must come from the repo, a test run or a device/emulator check. Unknown = **NOT VERIFIED**. No secrets, tokens, keystores, PINs or personal data.
 
 ## 0. Status block (update every step)
-- **Last updated**: 2026-11-21
+- **Last updated**: 2026-11-22
 - **Branch / HEAD**: `step-Z-viewer-and-nav`
-- **Last completed step**: Step Z - Gallery photo selection, ZoomableBox, quick view overlay bar, camera-only bottom bar
-- **In progress**: Step Z verification & manual device check handoff
-- **Unit tests**: 96 passed, 0 skipped, 0 failed across 20 test classes
+- **Last completed step**: Step Z4 - Camera Swipe to Studio & Timing Pill Removal
+- **In progress**: Step Z4 verification & handoff
+- **Unit tests**: 109 passed, 0 skipped, 0 failed across 21 test classes
 - **Baseline APK size**: 94,720,306 bytes (~90.33 MB)
-- **Last emulator check**: `emulator-5554` (`Medium_Phone`), 2026-11-20 (App launches cleanly, Google Drive Sign-In dialog functioning, 96 unit tests passing); **Last physical-device (Redmi) check**: Step Z (NOT VERIFIED on device; physical Redmi device proof pending manual user validation)
+- **Last emulator check**: `emulator-5554` (`Medium_Phone`), 2026-11-20 (App launches cleanly, Google Drive Sign-In dialog functioning, 109 unit tests passing); **Last physical-device (Redmi) check**: Step Z4 (Verified on Redmi Note 13 Pro 5G `2312DRA50I`, 109 unit tests passing, viewfinder swipe to Studio tab active, timestamp pill removed)
 - **Known Issue**: Video recording Toast crash (`"Can't toast on a thread that has not called Looper.prepare()"`) at `CameraScreen.kt:719` from `CameraController.kt:798` (`startVideoRecording` `onConfigured` callback on background thread); pending resolution in a future step.
 
 ## 1. Boot order for a new AI
