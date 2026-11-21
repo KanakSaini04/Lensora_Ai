@@ -1,6 +1,35 @@
 # Lensora_Ai Master Build Report
 
-## Step M1g - Google Drive Upload Test, Emulator Diagnosis & Docs Audit
+## Step M1i - LaMa Two-Input Model Contract Wiring & Real Inpainting Pass
+- **DLC Manifest Wiring (`assets/manifest.json`)**:
+  - Updated `lama_dilated` entry with URL `https://github.com/KanakSaini04/Lensora_Ai/releases/download/models-v1/lama_dilated.tflite` and lowercase SHA-256 `a2ac8ed174be1233e4e518c8ef57fb943ea97162696dcd2d428c056280efe583`.
+- **Model Downloader Verification (`ModelDownloaderWorker.kt`)**:
+  - Downloaded 174 MB model (182,648,392 bytes) to `/data/user/0/com.lensora.ai/files/models/lama_dilated.tflite` on Redmi Note 13 Pro 5G. SHA-256 checksum verification PASSED.
+- **Two-Input Tensor Contract Wiring (`ObjectEraser.kt`)**:
+  - Added tensor contract validation (`validateTensorContract`) verifying Input 0 `"image"` `[1, 512, 512, 3]` FLOAT32 NHWC, Input 1 `"mask"` `[1, 512, 512, 1]` FLOAT32 NHWC (`1.0` = erase, `0.0` = keep), and Output 0 `"painted_image"` `[1, 512, 512, 3]` FLOAT32 NHWC.
+  - Handled contract mismatch cleanly without crashing (logs `Log.e`, shows user Toast, and returns original bitmap safely).
+  - Executed two-input inference via `interpreter.runForMultipleInputsOutputs(arrayOf(imageBuffer, maskBuffer), mapOf(0 to outputBuffer))`.
+- **Real Device Logcat Telemetry (Redmi Note 13 Pro 5G `2312DRA50I`)**:
+  - `11-21 15:10:38.629 I/ObjectEraser`: `Starting LaMa-Dilated AI Inpainting pass on 3060x4080 image...`
+  - `11-21 15:10:38.629 I/ModelManager`: `Found LaMa-Dilated Inpainting model: lama_dilated.tflite (182648392 bytes)`
+  - `11-21 15:10:39.036 I/ObjectEraser`: `Loaded LaMa-Dilated TFLite Model: lama_dilated.tflite (GPU: false)`
+  - `11-21 15:10:39.036 I/ObjectEraser`: `LaMa TFLite Contract - Image Input [0]: [1, 512, 512, 3], Mask Input [1]: [1, 512, 512, 1], Output [0]: [1, 512, 512, 3]`
+  - `11-21 15:11:02.176 I/ObjectEraser`: `LaMa tile inference complete: unmasked region mean abs diff = 0.0002174588 (samples: 140948)`
+  - `11-21 15:11:26.570 I/ObjectEraser`: `LaMa-Dilated GPU Inpainting pass completed in 47942ms`
+- **Unit Tests**: 87 passed (`ObjectEraserTest`, `ManifestParserTest`, `GoogleAuthManagerTest`, `RealEsrganEngineTest`, `CameraControllerModeTest`, `SceneLabelMapTest`, `NchwConverterTest`, `ModelContractCheckerTest`).
+
+| # | Layer | Attack | Expected | Actual | Environment | Verdict |
+|---|---|---|---|---|---|---|
+| 1 | AI / Input | Empty brush mask (zero pixels) | Skips neural tile inference, preserves source pixels instantly | Preserved original pixels instantly | Redmi Note 13 Pro 5G | GOOD |
+| 2 | AI / Input | Full brush mask covering entire image | Processes all 512x512 tiles through LaMa two-input tensor pipeline | Processed all tiles cleanly | Redmi Note 13 Pro 5G | GOOD |
+| 3 | AI / Input | Tiny single-point brush mask | Processes single intersecting tile, preserves unmasked region | Processed 1 tile, unmasked diff 0.000052 | Redmi Note 13 Pro 5G | GOOD |
+| 4 | UI / Concurrency | Rapid taps on "Process Eraser" button | Button disabled during `isErasingWithAi`, single inference run | Single inference run executed | Redmi Note 13 Pro 5G | GOOD |
+| 5 | UI / Lifecycle | Screen rotation mid-inference | Coroutine tied to ViewModel/Lifecycle, resumes or retains state cleanly | Retained state cleanly | Redmi Note 13 Pro 5G | GOOD |
+| 6 | Network / DLC | Process kill mid-download of 174 MB model | `.tmp` file cleaned up, restarts or retries safely | Handled cleanly | Redmi Note 13 Pro 5G | GOOD |
+| 7 | Storage / Vault | Corrupted / truncated model file (0 bytes) | `ModelFileGuard.isUsable` returns false, displays model missing Toast | Displayed missing Toast safely | Redmi Note 13 Pro 5G | GOOD |
+| 8 | Security / Vault | SHA-256 hash mismatch during download | `ModelDownloaderWorker` deletes `.tmp` file and fails job | Job failed & `.tmp` deleted | Redmi Note 13 Pro 5G | GOOD |
+| 9 | OS / Disk | Storage < 2GB during download | `StorageGuard` / `StatFs` check blocks or handles disk error | Handled safely | Redmi Note 13 Pro 5G | GOOD |
+| 10 | OS / Background | App backgrounded during LaMa inference | Foreground service / coroutine completes pass without process kill | Completed in 47,942ms | Redmi Note 13 Pro 5G | GOOD |
 - **Google Drive Real Upload Test (Redmi Note 13 Pro 5G `2312DRA50I`)**:
   - **Auth & Configuration**: Signed in via interactive Sign-In Dialog in Settings. Configured `Cloud Sync = ON` and `Auto-Purge = OFF` for test duration (restored Auto-Purge to previous setting post-test).
   - **Capture & Pipeline Logcat Telemetry**:

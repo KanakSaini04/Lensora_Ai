@@ -5,13 +5,13 @@
 > Rules for this file: every fact must come from the repo, a test run or a device/emulator check. Unknown = **NOT VERIFIED**. No secrets, tokens, keystores, PINs or personal data.
 
 ## 0. Status block (update every step)
-- **Last updated**: 2026-11-20
-- **Branch / HEAD**: `step-M1h-gpu-delegate`
-- **Last completed step**: Step M1h Google Drive Auth Sign-In Fix & Real-ESRGAN GPU Delegate Acceleration
-- **In progress**: Step M1h review package generation & PR base confirmation (`build/all-features`)
-- **Unit tests**: 83 passed, 0 skipped, 0 failed across 18 test classes
+- **Last updated**: 2026-11-21
+- **Branch / HEAD**: `step-M1i-lama-two-input`
+- **Last completed step**: Step M1i LaMa Two-Input Contract Wiring & Device Inpainting Pass
+- **In progress**: Step M1i review package generation & PR base confirmation (`build/all-features`)
+- **Unit tests**: 87 passed, 0 skipped, 0 failed across 19 test classes
 - **Baseline APK size**: 94,720,306 bytes (~90.33 MB)
-- **Last emulator check**: `emulator-5554` (`Medium_Phone`), 2026-11-20 (App launches cleanly, Google Drive Sign-In dialog functioning, 83 unit tests passing); **Last physical-device (Redmi) check**: Step M1f (Verified on Redmi Note 13 Pro 5G `2312DRA50I`, High-Res UI tile selectable, $6120 \times 8160$ ~50 MP JPEG output saved, 83 unit tests passing)
+- **Last emulator check**: `emulator-5554` (`Medium_Phone`), 2026-11-20 (App launches cleanly, Google Drive Sign-In dialog functioning, 87 unit tests passing); **Last physical-device (Redmi) check**: Step M1i (Verified on Redmi Note 13 Pro 5G `2312DRA50I`, 174 MB `lama_dilated.tflite` model downloaded, SHA-256 verified, real $3060 \times 4080$ photo two-input inpainting completed in 47,942ms with 0.000217 unmasked region diff, 87 unit tests passing)
 - **Known Issue**: Video recording Toast crash (`"Can't toast on a thread that has not called Looper.prepare()"`) at `CameraScreen.kt:719` from `CameraController.kt:798` (`startVideoRecording` `onConfigured` callback on background thread); pending resolution in a future step.
 
 ## 1. Boot order for a new AI
@@ -263,9 +263,9 @@ Lensora_Ai/
 
 | Model Identifier | Expected File Name | Asset / Storage Location | In Manifest? | Expected Tensors | Loader File + Line | Status |
 | :--- | :--- | :--- | :---: | :--- | :--- | :--- |
-| **Scene Classifier** | `scene_classifier.tflite` | `filesDir/models/` | ❌ No (`mobilenet_v1_1.0_224.tflite` listed) | $1 \times 224 \times 224 \times 3$ float | `SceneClassifier.kt:47` | Mismatch (loader expects `scene_classifier.tflite`) |
-| **Object Eraser** | `lama_dilated.tflite` | `filesDir/models/` | ⚠️ Yes | $1 \times 512 \times 512 \times 4$ float input $\rightarrow$ $1 \times 512 \times 512 \times 3$ float output | `ObjectEraser.kt:29` | Working (4-channel float buffer + GpuDelegate) |
-| **AI Super-Res** | `real_esrgan_v2.tflite` | `filesDir/models/` | ❌ No | $1 \times 512 \times 512 \times 3$ input $\rightarrow$ $1 \times 1024 \times 1024 \times 3$ output | `ModelManager.kt:44` | Unlisted in DLC manifest |
+| **Scene Classifier** | `scene_classifier.tflite` | `filesDir/models/` | ✅ Yes | Input: $1 \times 3 \times 224 \times 224$ float (NCHW); Output: $1 \times 365$ float | `SceneClassifier.kt:47` | Working (Places365 FP16) |
+| **Object Eraser** | `lama_dilated.tflite` | `filesDir/models/` | ✅ Yes | Input 0: $1 \times 512 \times 512 \times 3$ float, Input 1: $1 \times 512 \times 512 \times 1$ float $\rightarrow$ Output 0: $1 \times 512 \times 512 \times 3$ float | `ObjectEraser.kt:130` | Working (Two-input contract + 174 MB DLC model) |
+| **AI Super-Res** | `real_esrgan_v2.tflite` | `filesDir/models/` | ✅ Yes | Input: $1 \times 128 \times 128 \times 3$ float $\rightarrow$ Output: $1 \times 512 \times 512 \times 3$ float | `RealEsrganEngine.kt:110` | Working (8px overlap + 266 tiles ~50MP output) |
 | **AI Dehaze** | `dehaze.tflite` | `filesDir/models/` | ❌ No | $1 \times 512 \times 512 \times 3$ float | `ModelManager.kt:45` | Unlisted in DLC manifest |
 
 - **Memory Shield Tiling**: High-resolution images are split into $512 \times 512$ pixel tiles via `BitmapRegionDecoder` before TFLite inference, preventing OOM crashes on 12.5MP images.

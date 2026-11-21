@@ -41,10 +41,11 @@
 
 ---
 
-## 3. Step M1 / M1b Neural AI Model Verification Update (2026-11-20)
+## 3. Step M1 / M1b / M1i Neural AI Model Verification Update (2026-11-21)
 
 | Model Identifier | File Name | Present in DLC Manifest? | Downloaded & Verified on Device? | Verified Tensor Contract |
 | :--- | :--- | :---: | :---: | :--- |
 | **Scene Classifier** | `scene_classifier.tflite` | ✅ Yes (`places_fp16.tflite`) | ✅ Yes (22,775,088 bytes) | Input: `[1, 3, 224, 224]` FLOAT32 (NCHW); Output: `[1, 365]` FLOAT32 |
-| **AI Super-Res** | `real_esrgan_v2.tflite` | ✅ Yes (`real_esrgan_general_x4v3.tflite`) | ✅ Yes | Input: `[1, 128, 128, 3]` FLOAT32; Output: `[1, 512, 512, 3]` FLOAT32 |
+| **AI Super-Res** | `real_esrgan_v2.tflite` | ✅ Yes (`real_esrgan_general_x4v3.tflite`) | ✅ Yes (4,878,692 bytes) | Input: `[1, 128, 128, 3]` FLOAT32; Output: `[1, 512, 512, 3]` FLOAT32 |
+| **Object Eraser** | `lama_dilated.tflite` | ✅ Yes (`lama_dilated.tflite`) | ✅ Yes (182,648,392 bytes) | Input 0: `"image"` `[1, 512, 512, 3]` FLOAT32; Input 1: `"mask"` `[1, 512, 512, 1]` FLOAT32; Output 0: `"painted_image"` `[1, 512, 512, 3]` FLOAT32 |
 

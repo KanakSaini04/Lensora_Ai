@@ -1,3 +1,12 @@
+## [Unreleased] - Step M1i LaMa Model Two-Input Contract Wiring (2026-11-21)
+
+### Added
+- **Step M1i LaMa Model Two-Input Contract Wiring**:
+  - `assets/manifest.json`: Configured official URL `https://github.com/KanakSaini04/Lensora_Ai/releases/download/models-v1/lama_dilated.tflite` and SHA-256 `a2ac8ed174be1233e4e518c8ef57fb943ea97162696dcd2d428c056280efe583` for 174 MB `lama_dilated.tflite` DLC model entry.
+  - `ObjectEraser.kt`: Refactored Object Eraser engine to feed two separate direct `ByteBuffer` inputs: Input 0 `"image"` `[1, 512, 512, 3]` FLOAT32 NHWC (RGB `0.0..1.0`) and Input 1 `"mask"` `[1, 512, 512, 1]` FLOAT32 NHWC (`1.0` = erase, `0.0` = keep), executing via `interpreter.runForMultipleInputsOutputs(arrayOf(imageBuffer, maskBuffer), mapOf(0 to outputBuffer))`.
+  - Contract Validation: Added `validateTensorContract` checking tensor shapes at load time, failing safely with a user Toast and logging `Log.e` if shapes do not match.
+  - Unit Tests: Added `ObjectEraserTest.kt` unit test suite testing buffer sizes, float normalization, mask polarity, and contract validation. Updated `ManifestParserTest.kt` verifying `lama_dilated` parsing. All 87 unit tests passing cleanly.
+
 ## [Unreleased] - Step M1h Real-ESRGAN GPU Delegate Acceleration & CPU Fallback (2026-11-20)
 
 ### Added

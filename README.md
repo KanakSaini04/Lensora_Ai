@@ -142,7 +142,7 @@ LaMa Dilated object inpainting executes via `GpuDelegate()`. Real-ESRGAN v2 4x s
 | AI Model | File Name / Location | Neural Network Architecture & Function |
 | :--- | :--- | :--- |
 | **Scene Classifier** | `scene_classifier.tflite` | Places365 ResNet-18 FP16 224x224 NCHW preview classifier ($< 50\text{ms}$ latency). |
-| **Object Eraser** | `lama_dilated.tflite` | 4-channel float input ($1 \times H \times W \times 4$, RGB + Mask) LaMa-Dilated neural inpainting engine ($512 \times 512$ tiles, $420\text{ms}$ latency). |
+| **Object Eraser** | `lama_dilated.tflite` | Two-input float tensors ($1 \times 512 \times 512 \times 3$ RGB + $1 \times 512 \times 512 \times 1$ Mask) LaMa-Dilated neural inpainting engine ($512 \times 512$ tiles). |
 | **AI Super-Res** | `real_esrgan_v2.tflite` | Real-ESRGAN v2 4x tile super-resolution upscale model (128x128 -> 512x512 tiles, 50% pre-downscale pass targeting ~50MP output). |
 | **AI Dehaze** | `dehaze.tflite` | Atmospheric haze removal neural pass ($512 \times 512$ tiles). |
 

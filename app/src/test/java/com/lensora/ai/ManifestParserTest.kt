@@ -223,4 +223,27 @@ class ManifestParserTest {
         assertEquals(1, entries.size)
         assertNull(entries.first().url)
     }
+
+    @Test
+    fun parseManifest_lamaDilatedRealManifestEntry_parsesLamaManifestCorrectly() {
+        val json = """
+            {
+              "schema_version": 2,
+              "lama_dilated": {
+                "file_name": "lama_dilated.tflite",
+                "url": "https://github.com/KanakSaini04/Lensora_Ai/releases/download/models-v1/lama_dilated.tflite",
+                "sha256": "a2ac8ed174be1233e4e518c8ef57fb943ea97162696dcd2d428c056280efe583"
+              }
+            }
+        """.trimIndent()
+
+        val entries = ManifestParser.parseManifest(json)
+
+        assertEquals(1, entries.size)
+        val entry = entries.first()
+        assertEquals("lama_dilated", entry.key)
+        assertEquals("lama_dilated.tflite", entry.fileName)
+        assertEquals("https://github.com/KanakSaini04/Lensora_Ai/releases/download/models-v1/lama_dilated.tflite", entry.url)
+        assertEquals("a2ac8ed174be1233e4e518c8ef57fb943ea97162696dcd2d428c056280efe583", entry.sha256)
+    }
 }
