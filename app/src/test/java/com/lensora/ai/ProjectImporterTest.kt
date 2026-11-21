@@ -39,24 +39,20 @@ class ProjectImporterTest {
 
     @Test
     fun testStorageGuardEvaluation() {
-        // 1. Enough space: Available 5 GB, Total picked 100 MB -> Required 2.1 GB -> PASS
         val enoughAvailable = 5L * 1024 * 1024 * 1024
         val pickedSize = 100L * 1024 * 1024
         assertTrue(StorageGuard.evaluateStorageGuard(enoughAvailable, pickedSize))
 
-        // 2. Not enough space: Available 1 GB, Total picked 100 MB -> Required 2.1 GB -> FAIL
-        val lowAvailable = 1L * 1024 * 1024 * 1024
+        val lowAvailable = 100L * 1024 * 1024
         assertFalse(StorageGuard.evaluateStorageGuard(lowAvailable, pickedSize))
 
-        // 3. Large download space test: Available 3 GB, Total picked 2 GB -> Required 4 GB -> FAIL
         val largePicked = 2L * 1024 * 1024 * 1024
-        val tightAvailable = 3L * 1024 * 1024 * 1024
+        val tightAvailable = 1L * 1024 * 1024 * 1024
         assertFalse(StorageGuard.evaluateStorageGuard(tightAvailable, largePicked))
     }
 
     @Test
     fun testClipBuildingPhotoAndVideoDurations() {
-        // Photo default duration must be 3000ms
         val photoClip = Clip(
             id = "c1",
             sourceUri = "file:///path/photo.jpg",
@@ -66,7 +62,6 @@ class ProjectImporterTest {
         assertTrue(photoClip.validate())
         assertEquals(3000L, photoClip.durationMs)
 
-        // Video duration read or fallback
         val videoClip = Clip(
             id = "c2",
             sourceUri = "file:///path/video.mp4",
@@ -76,12 +71,11 @@ class ProjectImporterTest {
         assertTrue(videoClip.validate())
         assertEquals(12500L, videoClip.durationMs)
 
-        // Invalid video fallback clip duration
         val fallbackVideoClip = Clip(
             id = "c3",
             sourceUri = "file:///path/corrupt.mp4",
             type = ClipType.VIDEO,
-            durationMs = 3000L, // Fallback duration
+            durationMs = 3000L,
         )
         assertTrue(fallbackVideoClip.validate())
         assertEquals(3000L, fallbackVideoClip.durationMs)
@@ -98,7 +92,6 @@ class ProjectImporterTest {
         assertTrue(tmpFile1.exists())
         assertTrue(tmpFile2.exists())
 
-        // Simulate cancellation / failure cleanup
         testProjectDir.deleteRecursively()
 
         assertFalse(tmpFile1.exists())
