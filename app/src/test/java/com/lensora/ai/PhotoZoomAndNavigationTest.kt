@@ -75,6 +75,43 @@ class PhotoZoomAndNavigationTest {
     }
 
     @Test
+    fun studio_offCenterMappingAndPanClamping_evaluatesExactCoordinates() {
+        val containerSize = Size(1000f, 1000f)
+        val imageSize = Size(1000f, 1000f)
+        val screenPoint = Offset(200f, 300f)
+
+        // Off-center point (200, 300) at 1.4x scale, zero pan
+        var px = ZoomTransformMath.mapScreenPointToImagePixel(screenPoint, containerSize, imageSize, 1.4f, Offset.Zero)
+        assertEquals(285.714f, px.x, 0.01f)
+        assertEquals(357.143f, px.y, 0.01f)
+
+        // Off-center point (200, 300) at 4.0x scale, zero pan
+        px = ZoomTransformMath.mapScreenPointToImagePixel(screenPoint, containerSize, imageSize, 4.0f, Offset.Zero)
+        assertEquals(425f, px.x, 0.01f)
+        assertEquals(450f, px.y, 0.01f)
+
+        // Off-center point (200, 300) at 8.0x scale, zero pan
+        px = ZoomTransformMath.mapScreenPointToImagePixel(screenPoint, containerSize, imageSize, 8.0f, Offset.Zero)
+        assertEquals(462.5f, px.x, 0.01f)
+        assertEquals(475f, px.y, 0.01f)
+
+        // Off-center point (200, 300) at 4.0x scale with pan Offset(100f, -50f)
+        px = ZoomTransformMath.mapScreenPointToImagePixel(screenPoint, containerSize, imageSize, 4.0f, Offset(100f, -50f))
+        assertEquals(400f, px.x, 0.01f)
+        assertEquals(462.5f, px.y, 0.01f)
+
+        // Pan clamping tests
+        // 1.0x scale: pan clamped to Offset.Zero
+        val pan1x = ZoomTransformMath.calculateClampedPan(Offset.Zero, Offset(500f, 500f), 1.0f, containerSize)
+        assertEquals(Offset.Zero, pan1x)
+
+        // 2.0x scale: maxPan = 500f
+        val pan2x = ZoomTransformMath.calculateClampedPan(Offset.Zero, Offset(2000f, -2000f), 2.0f, containerSize)
+        assertEquals(500f, pan2x.x, 0.01f)
+        assertEquals(-500f, pan2x.y, 0.01f)
+    }
+
+    @Test
     fun stepZ3_bottomBarVisibilityRule_hidesBarOnCameraAndShowsOnSecondaryTabs() {
         // Camera tab: bottom bar MUST be hidden (false)
         assertFalse(shouldShowBottomBarForRoute("camera"))

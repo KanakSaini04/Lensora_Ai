@@ -1,3 +1,11 @@
+## [Unreleased] - Step Z5: Studio Eraser Brush Drawing at All Zoom Levels (2026-11-22)
+
+### Added
+- **Studio Eraser Brush Drawing at All Zoom Levels (Step Z5)**:
+  - `ZoomableBox.kt`: Added `TouchMode` enum and `decideTouchMode` pure evaluator function. Evaluates `TouchMode.DRAW` for 1-finger drags when Eraser is active in Studio at all zoom levels ($100\%$ to $800\%$), `TouchMode.ZOOM_PAN` for 2+ pointers, and `TouchMode.PAN` for non-draw tools when zoomed.
+  - `StudioScreen.kt`: Passed `isStudio = true` and `isDrawToolActive = isEraserModeActive` to `ZoomableBox`. Mid-stroke 2-finger touch ends active stroke cleanly without stray lines and switches to zoom/pan.
+  - `PhotoZoomAndNavigationTest.kt`: Added unit tests for `decideTouchMode` across all scales and tools, and screen-to-image coordinate mapping tests across 1.0x, 1.4x, 4.0x, 8.0x scales and pan offsets. All 110 unit tests passing cleanly.
+
 ## [Unreleased] - Step Z4: Camera Viewfinder Swipe Gesture & Timestamp Pill Removal (2026-11-22)
 
 ### Added

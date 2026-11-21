@@ -11,6 +11,8 @@ import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
+import androidx.compose.foundation.gestures.awaitEachGesture
+import androidx.compose.foundation.gestures.awaitFirstDown
 import androidx.compose.foundation.gestures.detectDragGestures
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
@@ -419,26 +421,42 @@ private fun StudioPhotoContent(
                             modifier = Modifier
                                 .fillMaxSize()
                                 .pointerInput(Unit) {
-                                    detectDragGestures(
-                                        onDragStart = { offset ->
-                                            currentStrokePoints = listOf(offset)
-                                        },
-                                        onDrag = { change, _ ->
-                                            currentStrokePoints = currentStrokePoints + change.position
-                                        },
-                                        onDragEnd = {
-                                            if (currentStrokePoints.isNotEmpty()) {
-                                                brushStrokes = brushStrokes + BrushStroke(currentStrokePoints)
-                                                currentStrokePoints = emptyList()
+                                    awaitEachGesture {
+                                        val down = awaitFirstDown()
+                                        var activeStroke = listOf(down.position)
+                                        currentStrokePoints = activeStroke
+
+                                        while (true) {
+                                            val event = awaitPointerEvent()
+                                            val pointerCount = event.changes.size
+
+                                            if (pointerCount >= 2) {
+                                                // End stroke (commit points) the moment pointerCount >= 2, ignore rest of gesture
+                                                if (activeStroke.isNotEmpty()) {
+                                                    brushStrokes = brushStrokes + BrushStroke(activeStroke)
+                                                    currentStrokePoints = emptyList()
+                                                    activeStroke = emptyList()
+                                                }
+                                                break
                                             }
-                                        },
-                                        onDragCancel = {
-                                            if (currentStrokePoints.isNotEmpty()) {
-                                                brushStrokes = brushStrokes + BrushStroke(currentStrokePoints)
-                                                currentStrokePoints = emptyList()
+
+                                            val change = event.changes.firstOrNull()
+                                            if (change != null && change.pressed) {
+                                                change.consume()
+                                                activeStroke = activeStroke + change.position
+                                                currentStrokePoints = activeStroke
                                             }
-                                        },
-                                    )
+
+                                            if (event.changes.all { !it.pressed }) {
+                                                if (activeStroke.isNotEmpty()) {
+                                                    brushStrokes = brushStrokes + BrushStroke(activeStroke)
+                                                    currentStrokePoints = emptyList()
+                                                    activeStroke = emptyList()
+                                                }
+                                                break
+                                            }
+                                        }
+                                    }
                                 },
                         ) {
                             val strokeWidthPx = 40.dp.toPx()

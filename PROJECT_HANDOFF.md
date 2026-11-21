@@ -8,10 +8,10 @@
 - **Last updated**: 2026-11-22
 - **Branch / HEAD**: `step-Z-viewer-and-nav`
 - **Last completed step**: Step Z4 - Camera Swipe to Studio & Timing Pill Removal
-- **In progress**: Step Z4 verification & handoff
-- **Unit tests**: 109 passed, 0 skipped, 0 failed across 21 test classes
+- **In progress**: Step Z5b - Studio Brush Drawing Refinement (Partial, NOT VERIFIED on device)
+- **Unit tests**: 110 passed, 0 skipped, 0 failed across 21 test classes
 - **Baseline APK size**: 94,720,306 bytes (~90.33 MB)
-- **Last emulator check**: `emulator-5554` (`Medium_Phone`), 2026-11-20 (App launches cleanly, Google Drive Sign-In dialog functioning, 109 unit tests passing); **Last physical-device (Redmi) check**: Step Z4 (Verified on Redmi Note 13 Pro 5G `2312DRA50I`, 109 unit tests passing, viewfinder swipe to Studio tab active, timestamp pill removed)
+- **Last emulator check**: `emulator-5554` (`Medium_Phone`), 2026-11-20 (App launches cleanly, Google Drive Sign-In dialog functioning, 110 unit tests passing); **Last physical-device (Redmi) check**: Step Z4 (Verified on Redmi Note 13 Pro 5G `2312DRA50I`, 109 unit tests passing, viewfinder swipe active). Step Z5 is **NOT VERIFIED on device**.
 - **Known Issue**: Video recording Toast crash (`"Can't toast on a thread that has not called Looper.prepare()"`) at `CameraScreen.kt:719` from `CameraController.kt:798` (`startVideoRecording` `onConfigured` callback on background thread); pending resolution in a future step.
 
 ## 1. Boot order for a new AI

@@ -2,6 +2,11 @@
 
 ## Master Build Mode (Phases P0 - P9 - 100% COMPLETE)
 
+- [/] **Step Z5: Studio Eraser Brush Drawing at All Zoom Levels (Partial / NOT VERIFIED on device)**
+  - **Touch Mode Evaluator**: Extracted pure evaluator `decideTouchMode(pointerCount, scale, isDrawToolActive, isStudio)`. Evaluates `TouchMode.DRAW` for 1-finger drags when Eraser is active in Studio at all zoom levels ($100\%$ to $800\%$), `TouchMode.ZOOM_PAN` for 2+ pointers, and `TouchMode.PAN` for non-draw tools when zoomed.
+  - **ZoomableBox & Studio Integration**: Bypassed panning in `ZoomableBox` when `TouchMode.DRAW` is active so inner `Canvas` receives all single-finger drag events. Replacing `detectDragGestures` with `awaitEachGesture` in `StudioScreen.kt`, ending stroke the moment `pointerCount >= 2`.
+  - **Unit Tests & Device**: Added `decideTouchMode` unit tests and multi-scale coordinate mapping tests in `PhotoZoomAndNavigationTest.kt` (110 unit tests passing total across 21 test classes). NOT VERIFIED on device.
+
 - [x] **Step Z4: Camera Viewfinder Swipe Gesture & Timestamp Pill Removal**
   - **Camera Swipe Gesture**: Added `evaluateCameraSwipeGesture` in `ZoomableBox.kt` and attached dynamic pointer tracking in `CameraScreen.kt`. One-finger horizontal left swipe on viewfinder area navigates to Studio tab with standard transition options (`launchSingleTop = true`, `popUpTo` start destination, `saveState` / `restoreState`). Gestures are excluded on measured bounds (`topBarBounds`, `aiBadgeBounds`, `zoomPillsBounds`, `carouselBounds`, `shutterRowBounds`) and system edge gesture insets ($24\text{dp}$).
   - **Timestamp Pill Removal**: Removed orphan `currentTimeString` state, LaunchedEffect ticking loop, and viewfinder `"LENSORA • hh:mm:ss"` overlay pill `Box` from `CameraScreen.kt`.
