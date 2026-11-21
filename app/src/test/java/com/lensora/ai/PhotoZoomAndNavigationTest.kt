@@ -5,12 +5,125 @@ import androidx.compose.ui.geometry.Size
 import com.lensora.ai.ui.components.TouchMode
 import com.lensora.ai.ui.components.ZoomTransformMath
 import com.lensora.ai.ui.navigation.shouldShowBottomBarForRoute
+import com.lensora.ai.ui.studio.StudioPrimitiveState
+import com.lensora.ai.ui.studio.StudioStateSaver
+import com.lensora.ai.ui.studio.StudioStroke
+import com.lensora.ai.ui.studio.StrokeHistory
 import org.junit.Assert.assertEquals
 import org.junit.Assert.assertFalse
 import org.junit.Assert.assertTrue
 import org.junit.Test
 
 class PhotoZoomAndNavigationTest {
+
+    @Test
+    fun stepZ6_brushRadiusAndConstantScreenSpaceMath_calculatesCorrectlyAcrossScales() {
+        val density = 2.5f
+        val screenBrushDp = 40.0f // 40dp
+
+        // At 1.0x scale: local width = 100px, image radius (scaleFactor 1.0) = 50px
+        val localWidth1x = ZoomTransformMath.calculateLocalCanvasBrushWidthPx(screenBrushDp, density, 1.0f)
+        assertEquals(100f, localWidth1x, 0.01f)
+        val imageRadius1x = ZoomTransformMath.calculateImageSpaceBrushRadiusPx(screenBrushDp, density, 1.0f, 1.0f)
+        assertEquals(50f, imageRadius1x, 0.01f)
+
+        // At 1.4x scale: local width = 71.428f px (when scaled by 1.4x graphicsLayer, screen width remains 100px!)
+        val localWidth1_4x = ZoomTransformMath.calculateLocalCanvasBrushWidthPx(screenBrushDp, density, 1.4f)
+        assertEquals(71.42857f, localWidth1_4x, 0.01f)
+
+        // At 4.0x scale: local width = 25px
+        val localWidth4x = ZoomTransformMath.calculateLocalCanvasBrushWidthPx(screenBrushDp, density, 4.0f)
+        assertEquals(25f, localWidth4x, 0.01f)
+
+        // At 8.0x scale: local width = 12.5px
+        val localWidth8x = ZoomTransformMath.calculateLocalCanvasBrushWidthPx(screenBrushDp, density, 8.0f)
+        assertEquals(12.5f, localWidth8x, 0.01f)
+    }
+
+    @Test
+    fun stepZ6_strokeHistory_clampsTo25StepsAndHandlesUndoRedoClear() {
+        val history = StrokeHistory(maxUndoSteps = 25)
+        assertFalse(history.canUndo)
+        assertFalse(history.canRedo)
+
+        // Add 30 strokes
+        for (i in 1..30) {
+            history.addStroke(
+                StudioStroke(
+                    points = listOf(Offset(i.toFloat(), i.toFloat()), Offset(i + 1f, i + 1f)),
+                    isEraseMode = true,
+                    radiusImagePx = 20f,
+                ),
+            )
+        }
+
+        // Must be clamped to exactly 25 strokes
+        assertEquals(25, history.strokes.size)
+        assertTrue(history.canUndo)
+        assertFalse(history.canRedo)
+
+        // Perform Undo
+        val undoSuccess = history.undo()
+        assertTrue(undoSuccess)
+        assertEquals(24, history.strokes.size)
+        assertTrue(history.canRedo)
+
+        // Perform Redo
+        val redoSuccess = history.redo()
+        assertTrue(redoSuccess)
+        assertEquals(25, history.strokes.size)
+
+        // Condition 3 & 4: Clear mask and history (on photo switch or process eraser pass)
+        history.clear()
+        assertEquals(0, history.strokes.size)
+        assertFalse(history.canUndo)
+        assertFalse(history.canRedo)
+    }
+
+    @Test
+    fun stepZ6_studioStateSaver_serializesAndDeserializesSmallPrimitiveValues() {
+        val originalState = StudioPrimitiveState(
+            selectedToolCategory = 2,
+            exposureValue = 1.25f,
+            contrastValue = -15.0f,
+            brushSizeDp = 45.0f,
+            opacityFloat = 0.65f,
+            isEraseModeActive = false,
+        )
+
+        // Save state to Bundle list
+        val savedBundleList = with(StudioStateSaver) { dummySaverScope.save(originalState) }
+        assertTrue(savedBundleList is List<*>)
+
+        // Restore state from Bundle list
+        val restoredState = StudioStateSaver.restore(savedBundleList!!)
+        assertEquals(2, restoredState!!.selectedToolCategory)
+        assertEquals(1.25f, restoredState.exposureValue, 0.001f)
+        assertEquals(-15.0f, restoredState.contrastValue, 0.001f)
+        assertEquals(45.0f, restoredState.brushSizeDp, 0.001f)
+        assertEquals(0.65f, restoredState.opacityFloat, 0.001f)
+        assertFalse(restoredState.isEraseModeActive)
+    }
+
+    @Test
+    fun stepZ6_maskAccuracy_canvasLocalPointToImagePixel_mapsAccurately() {
+        val canvasSize = Size(1000f, 1000f)
+        val imageSize = Size(500f, 500f) // 1:1 aspect ratio, letterbox scaleFactor = 2.0
+
+        // Canvas local center point (500, 500) -> image pixel (250, 250)
+        val imagePixel = ZoomTransformMath.mapCanvasLocalPointToImagePixel(Offset(500f, 500f), canvasSize, imageSize)
+        assertEquals(250f, imagePixel.x, 0.01f)
+        assertEquals(250f, imagePixel.y, 0.01f)
+
+        // Canvas local point (200, 300) -> image pixel (100, 150)
+        val offCenterPixel = ZoomTransformMath.mapCanvasLocalPointToImagePixel(Offset(200f, 300f), canvasSize, imageSize)
+        assertEquals(100f, offCenterPixel.x, 0.01f)
+        assertEquals(150f, offCenterPixel.y, 0.01f)
+    }
+
+    private val dummySaverScope = object : androidx.compose.runtime.saveable.SaverScope {
+        override fun canBeSaved(value: Any): Boolean = true
+    }
 
     @Test
     fun stepZ5_decideTouchMode_evaluatesCorrectModeAcrossAllScalesAndTools() {

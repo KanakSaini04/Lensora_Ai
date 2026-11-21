@@ -4,15 +4,19 @@ import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.animation.fadeIn
 import androidx.compose.animation.fadeOut
 import androidx.compose.foundation.background
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.gestures.awaitEachGesture
-import androidx.compose.foundation.gestures.awaitFirstDown
 import androidx.compose.foundation.gestures.calculatePan
 import androidx.compose.foundation.gestures.calculateZoom
 import androidx.compose.foundation.gestures.detectTapGestures
+import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.BoxScope
+import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
@@ -37,6 +41,7 @@ import androidx.compose.ui.unit.sp
 import androidx.compose.ui.unit.toSize
 import com.lensora.ai.ui.theme.ColorWhite
 import com.lensora.ai.ui.theme.PitchBlackBackground
+import com.lensora.ai.ui.theme.RoyalBlue
 
 enum class CameraSwipeDecision {
     NAVIGATE_NEXT_TAB,
@@ -95,6 +100,40 @@ object ZoomTransformMath {
         return Offset(newX, newY)
     }
 
+    fun calculateLocalCanvasBrushWidthPx(screenDp: Float, density: Float, scale: Float): Float {
+        if (scale <= 0f) return screenDp * density
+        val screenPx = screenDp * density
+        return screenPx / scale
+    }
+
+    fun calculateImageSpaceBrushRadiusPx(screenDp: Float, density: Float, scale: Float, scaleFactor: Float): Float {
+        if (scale <= 0f || scaleFactor <= 0f) return (screenDp * density) / 2f
+        val localWidthPx = calculateLocalCanvasBrushWidthPx(screenDp, density, scale)
+        return (localWidthPx / 2f) / scaleFactor
+    }
+
+    fun mapCanvasLocalPointToImagePixel(
+        canvasPoint: Offset,
+        canvasSize: Size,
+        imageSize: Size,
+    ): Offset {
+        if (canvasSize.width <= 0f || canvasSize.height <= 0f || imageSize.width <= 0f || imageSize.height <= 0f) {
+            return Offset.Zero
+        }
+
+        val scaleFactor = minOf(canvasSize.width / imageSize.width, canvasSize.height / imageSize.height)
+        val drawnWidth = imageSize.width * scaleFactor
+        val drawnHeight = imageSize.height * scaleFactor
+
+        val imageLeft = (canvasSize.width - drawnWidth) / 2f
+        val imageTop = (canvasSize.height - drawnHeight) / 2f
+
+        val imageX = ((canvasPoint.x - imageLeft) / scaleFactor).coerceIn(0f, imageSize.width)
+        val imageY = ((canvasPoint.y - imageTop) / scaleFactor).coerceIn(0f, imageSize.height)
+
+        return Offset(imageX, imageY)
+    }
+
     fun mapScreenPointToImagePixel(
         screenPoint: Offset,
         containerSize: Size,
@@ -112,17 +151,7 @@ object ZoomTransformMath {
         val unscaledX = (screenPoint.x - centerX - pan.x) / scale + centerX
         val unscaledY = (screenPoint.y - centerY - pan.y) / scale + centerY
 
-        val scaleFactor = minOf(containerSize.width / imageSize.width, containerSize.height / imageSize.height)
-        val drawnWidth = imageSize.width * scaleFactor
-        val drawnHeight = imageSize.height * scaleFactor
-
-        val imageLeft = (containerSize.width - drawnWidth) / 2f
-        val imageTop = (containerSize.height - drawnHeight) / 2f
-
-        val imageX = ((unscaledX - imageLeft) / scaleFactor).coerceIn(0f, imageSize.width)
-        val imageY = ((unscaledY - imageTop) / scaleFactor).coerceIn(0f, imageSize.height)
-
-        return Offset(imageX, imageY)
+        return mapCanvasLocalPointToImagePixel(Offset(unscaledX, unscaledY), containerSize, imageSize)
     }
 
     fun formatZoomPercentage(scale: Float): String {
@@ -149,18 +178,14 @@ object ZoomTransformMath {
         if (pointerCount != 1) return CameraSwipeDecision.NONE
         if (screenWidth <= 0f || screenHeight <= 0f) return CameraSwipeDecision.NONE
 
-        // Exclude system edge gesture regions (starts within edgeInsetPx of left/right)
         if (startX < edgeInsetPx || startX > (screenWidth - edgeInsetPx)) return CameraSwipeDecision.NONE
 
-        // Exclude measured UI bounds (top bar, AI badge, zoom pills, mode carousel, shutter row)
         val startPoint = Offset(startX, startY)
         if (excludedRects.any { rect -> rect.contains(startPoint) }) return CameraSwipeDecision.NONE
 
-        // Distance >= 15% of screen width for LEFT swipe
         val minSwipeDistance = screenWidth * 0.15f
         val isLeftSwipe = totalDx <= -minSwipeDistance
 
-        // Horizontal dominance check: |totalDx| > 1.5 * |totalDy|
         val isHorizontalDominant = kotlin.math.abs(totalDx) > (1.5f * kotlin.math.abs(totalDy))
 
         return if (isLeftSwipe && isHorizontalDominant) {
@@ -195,13 +220,15 @@ fun ZoomableBox(
         modifier = modifier
             .fillMaxSize()
             .onSizeChanged { containerSize = it.toSize() }
-            .pointerInput(resetKey) {
+            .pointerInput(resetKey, isDrawToolActive) {
                 detectTapGestures(
                     onDoubleTap = {
-                        val newScale = ZoomTransformMath.toggleDoubleTapScale(scale)
-                        scale = newScale
-                        pan = if (newScale == 1.0f) Offset.Zero else pan
-                        onScaleChanged(newScale)
+                        if (!isDrawToolActive) {
+                            val newScale = ZoomTransformMath.toggleDoubleTapScale(scale)
+                            scale = newScale
+                            pan = if (newScale == 1.0f) Offset.Zero else pan
+                            onScaleChanged(newScale)
+                        }
                     },
                 )
             }
@@ -230,7 +257,6 @@ fun ZoomableBox(
                             val newPan = ZoomTransformMath.calculateClampedPan(pan, panChange, scale, containerSize)
                             pan = newPan
                         }
-                        // TouchMode.DRAW: do NOT consume or handle pan in ZoomableBox! Inner Canvas handles brush drawing.
 
                         if (event.changes.all { !it.pressed }) {
                             break
@@ -254,7 +280,7 @@ fun ZoomableBox(
             content(scale, pan)
         }
 
-        // Live Zoom Percentage Pill Badge Overlay (Top Right)
+        // Live Zoom Percentage Badge & "Fit" Reset Chip Overlay (Top Right)
         AnimatedVisibility(
             visible = scale > 1.02f,
             enter = fadeIn(),
@@ -263,18 +289,44 @@ fun ZoomableBox(
                 .align(Alignment.TopEnd)
                 .padding(16.dp),
         ) {
-            Box(
-                modifier = Modifier
-                    .clip(RoundedCornerShape(8.dp))
-                    .background(PitchBlackBackground.copy(alpha = 0.8f))
-                    .padding(horizontal = 10.dp, vertical = 4.dp),
+            Row(
+                verticalAlignment = Alignment.CenterVertically,
+                horizontalArrangement = Arrangement.spacedBy(6.dp),
             ) {
-                Text(
-                    text = ZoomTransformMath.formatZoomPercentage(scale),
-                    color = ColorWhite,
-                    fontSize = 11.sp,
-                    fontWeight = FontWeight.Bold,
-                )
+                // Zoom Percentage Badge
+                Box(
+                    modifier = Modifier
+                        .clip(RoundedCornerShape(8.dp))
+                        .background(PitchBlackBackground.copy(alpha = 0.8f))
+                        .padding(horizontal = 10.dp, vertical = 4.dp),
+                ) {
+                    Text(
+                        text = ZoomTransformMath.formatZoomPercentage(scale),
+                        color = ColorWhite,
+                        fontSize = 11.sp,
+                        fontWeight = FontWeight.Bold,
+                    )
+                }
+
+                // "Fit" Reset Chip Button
+                Box(
+                    modifier = Modifier
+                        .clip(RoundedCornerShape(8.dp))
+                        .background(RoyalBlue)
+                        .clickable {
+                            scale = 1.0f
+                            pan = Offset.Zero
+                            onScaleChanged(1.0f)
+                        }
+                        .padding(horizontal = 10.dp, vertical = 4.dp),
+                ) {
+                    Text(
+                        text = "Fit",
+                        color = ColorWhite,
+                        fontSize = 11.sp,
+                        fontWeight = FontWeight.Bold,
+                    )
+                }
             }
         }
     }
