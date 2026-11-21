@@ -1,5 +1,25 @@
 # Lensora_Ai Master Build Report
 
+## Step Z5 - Studio Eraser Brush Drawing at All Zoom Levels
+- **Touch Mode Evaluator (`ZoomTransformMath.decideTouchMode`)**:
+  - Evaluates `TouchMode.DRAW` for 1-finger drags when Eraser is active in Studio at all zoom levels ($100\%$ to $800\%$).
+  - Evaluates `TouchMode.ZOOM_PAN` for multi-pointer gestures ($2+$ fingers).
+  - Evaluates `TouchMode.PAN` for non-draw tools when zoomed (`scale > 1.05f`).
+  - Evaluates `TouchMode.NONE` for 1-finger drags at fit scale ($1.0x$) when no draw tool is active.
+- **ZoomableBox & Studio Integration**:
+  - Bypassed panning in `ZoomableBox` when `TouchMode.DRAW` is active so inner `Canvas` receives all single-finger drag events for brush drawing.
+  - Implemented single-stroke drag loop using `awaitEachGesture` in `StudioScreen.kt`, ending and committing stroke points the moment `pointerCount >= 2`.
+- **Unit Tests**: 110 passed across 21 test classes (`PhotoZoomAndNavigationTest`, `CameraSwipeGestureTest`, `BugReproTest`, `ObjectEraserTest`, etc.).
+- **Device Status**: **NOT VERIFIED on device** (Physical Redmi device telemetry and screenshot verification pending).
+
+## Step Z4 - Camera Viewfinder Swipe Gesture & Timestamp Pill Removal
+- **Gallery Photo Selection (Bug A Fix)**: Encoded `initialUri` and `filter` arguments in `Navigation.kt`. `QuickViewScreen.kt` resolves exact photo index using `ZoomTransformMath.resolveInitialPageIndex`, initializing `rememberPagerState(initialPage = initialIndex)`. Handled deleted photos and empty lists safely with `R.string.no_photos_found`.
+- **Pinch Zoom & Pan (Bug B Fix)**: Implemented stateless Compose `ZoomableBox` supporting continuous 1.0x to 8.0x pinch zoom, clamped pan bounds, double-tap toggles, live zoom % badge, and 400% zoom Studio brush touch coordinate mapping (`mapScreenPointToImagePixel`).
+- **Translucent Quick View Top Bar (Z2)**: Edge-to-edge photo rendering in `QuickViewScreen.kt` with a translucent overlay top bar (`CharcoalSurface.copy(alpha = 0.8f)` with `statusBarsPadding()`) toggling on single tap.
+- **Selective Bottom Navigation Bar (Z3)**: Extracted `shouldShowBottomBarForRoute` in `Navigation.kt`. Hides bottom navigation bar on Camera tab (`"camera"`) for 100% full-screen view; shows bottom bar on secondary tabs (`"studio"`, `"gallery"`, `"vibes"`, `"settings"`).
+- **Unit Tests**: 96 passed across 20 test classes (`BugReproTest`, `PhotoZoomAndNavigationTest`, `ObjectEraserTest`, `ManifestParserTest`, etc.).
+- **Device Status**: Code compiled and assembled (`app:assembleDebug`). **NOT VERIFIED on device** (Physical Redmi device proof pending manual user validation).
+
 ## Step M1i - LaMa Two-Input Model Contract Wiring & Real Inpainting Pass
 - **DLC Manifest Wiring (`assets/manifest.json`)**:
   - Updated `lama_dilated` entry with URL `https://github.com/KanakSaini04/Lensora_Ai/releases/download/models-v1/lama_dilated.tflite` and lowercase SHA-256 `a2ac8ed174be1233e4e518c8ef57fb943ea97162696dcd2d428c056280efe583`.

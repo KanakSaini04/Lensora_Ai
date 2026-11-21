@@ -11,6 +11,8 @@ import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
+import androidx.compose.foundation.gestures.awaitEachGesture
+import androidx.compose.foundation.gestures.awaitFirstDown
 import androidx.compose.foundation.gestures.detectDragGestures
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
@@ -78,6 +80,7 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import coil.compose.AsyncImage
+import com.lensora.ai.ui.components.ZoomableBox
 import com.lensora.ai.data.GalleryRepository
 import com.lensora.ai.ui.theme.CharcoalSurface
 import com.lensora.ai.ui.theme.ColorMutedGray
@@ -360,100 +363,129 @@ private fun StudioPhotoContent(
                     .background(Color(0xFF0A0A0A)),
                 contentAlignment = Alignment.Center,
             ) {
-                val currentInpointed = inpaintedBitmap
-                if (currentInpointed != null) {
-                    Image(
-                        bitmap = currentInpointed.asImageBitmap(),
-                        contentDescription = "Inpainted AI Image",
-                        contentScale = ContentScale.Fit,
-                        colorFilter = realTimeColorFilter,
-                        modifier = Modifier
-                            .fillMaxSize()
-                            .graphicsLayer {
-                                if (activeLutRenderEffect != null && Build.VERSION.SDK_INT >= Build.VERSION_CODES.S) {
-                                    renderEffect = activeLutRenderEffect.asComposeRenderEffect()
-                                }
-                            },
-                    )
-                } else if (photoUris.isNotEmpty() && selectedPhotoIndex in photoUris.indices) {
-                    AsyncImage(
-                        model = photoUris[selectedPhotoIndex],
-                        contentDescription = "Studio Active Image",
-                        contentScale = ContentScale.Fit,
-                        colorFilter = realTimeColorFilter,
-                        modifier = Modifier
-                            .fillMaxSize()
-                            .graphicsLayer {
-                                if (activeLutRenderEffect != null && Build.VERSION.SDK_INT >= Build.VERSION_CODES.S) {
-                                    renderEffect = activeLutRenderEffect.asComposeRenderEffect()
-                                }
-                            },
-                    )
-                } else {
-                    Box(
-                        modifier = Modifier
-                            .fillMaxSize()
-                            .padding(24.dp)
-                            .background(CharcoalSurface, shape = RoundedCornerShape(12.dp)),
-                        contentAlignment = Alignment.Center,
-                    ) {
-                        Text(
-                            text = "No Photo Loaded\nCapture a photo to start editing",
-                            color = ColorMutedGray,
-                            fontWeight = FontWeight.Medium,
-                            fontSize = 14.sp,
+                ZoomableBox(
+                    maxScale = 8.0f,
+                    isStudio = true,
+                    isDrawToolActive = isEraserModeActive,
+                    resetKey = selectedPhotoIndex,
+                ) { scale, pan ->
+                    val currentInpointed = inpaintedBitmap
+                    if (currentInpointed != null) {
+                        Image(
+                            bitmap = currentInpointed.asImageBitmap(),
+                            contentDescription = "Inpainted AI Image",
+                            contentScale = ContentScale.Fit,
+                            colorFilter = realTimeColorFilter,
+                            modifier = Modifier
+                                .fillMaxSize()
+                                .graphicsLayer {
+                                    if (activeLutRenderEffect != null && Build.VERSION.SDK_INT >= Build.VERSION_CODES.S) {
+                                        renderEffect = activeLutRenderEffect.asComposeRenderEffect()
+                                    }
+                                },
                         )
+                    } else if (photoUris.isNotEmpty() && selectedPhotoIndex in photoUris.indices) {
+                        AsyncImage(
+                            model = photoUris[selectedPhotoIndex],
+                            contentDescription = "Studio Active Image",
+                            contentScale = ContentScale.Fit,
+                            colorFilter = realTimeColorFilter,
+                            modifier = Modifier
+                                .fillMaxSize()
+                                .graphicsLayer {
+                                    if (activeLutRenderEffect != null && Build.VERSION.SDK_INT >= Build.VERSION_CODES.S) {
+                                        renderEffect = activeLutRenderEffect.asComposeRenderEffect()
+                                    }
+                                },
+                        )
+                    } else {
+                        Box(
+                            modifier = Modifier
+                                .fillMaxSize()
+                                .padding(24.dp)
+                                .background(CharcoalSurface, shape = RoundedCornerShape(12.dp)),
+                            contentAlignment = Alignment.Center,
+                        ) {
+                            Text(
+                                text = "No Photo Loaded\nCapture a photo to start editing",
+                                color = ColorMutedGray,
+                                fontWeight = FontWeight.Medium,
+                                fontSize = 14.sp,
+                            )
+                        }
                     }
-                }
 
-                // Interactive Brush Mask Canvas Layer (When Magic Eraser mode is active)
-                if (isEraserModeActive) {
-                    Canvas(
-                        modifier = Modifier
-                            .fillMaxSize()
-                            .pointerInput(Unit) {
-                                detectDragGestures(
-                                    onDragStart = { offset ->
-                                        currentStrokePoints = listOf(offset)
-                                    },
-                                    onDrag = { change, _ ->
-                                        currentStrokePoints = currentStrokePoints + change.position
-                                    },
-                                    onDragEnd = {
-                                        if (currentStrokePoints.isNotEmpty()) {
-                                            brushStrokes = brushStrokes + BrushStroke(currentStrokePoints)
-                                            currentStrokePoints = emptyList()
+                    // Interactive Brush Mask Canvas Layer (When Magic Eraser mode is active)
+                    if (isEraserModeActive) {
+                        Canvas(
+                            modifier = Modifier
+                                .fillMaxSize()
+                                .pointerInput(Unit) {
+                                    awaitEachGesture {
+                                        val down = awaitFirstDown()
+                                        var activeStroke = listOf(down.position)
+                                        currentStrokePoints = activeStroke
+
+                                        while (true) {
+                                            val event = awaitPointerEvent()
+                                            val pointerCount = event.changes.size
+
+                                            if (pointerCount >= 2) {
+                                                // End stroke (commit points) the moment pointerCount >= 2, ignore rest of gesture
+                                                if (activeStroke.isNotEmpty()) {
+                                                    brushStrokes = brushStrokes + BrushStroke(activeStroke)
+                                                    currentStrokePoints = emptyList()
+                                                    activeStroke = emptyList()
+                                                }
+                                                break
+                                            }
+
+                                            val change = event.changes.firstOrNull()
+                                            if (change != null && change.pressed) {
+                                                change.consume()
+                                                activeStroke = activeStroke + change.position
+                                                currentStrokePoints = activeStroke
+                                            }
+
+                                            if (event.changes.all { !it.pressed }) {
+                                                if (activeStroke.isNotEmpty()) {
+                                                    brushStrokes = brushStrokes + BrushStroke(activeStroke)
+                                                    currentStrokePoints = emptyList()
+                                                    activeStroke = emptyList()
+                                                }
+                                                break
+                                            }
                                         }
-                                    },
-                                )
-                            },
-                    ) {
-                        val strokeWidthPx = 40.dp.toPx()
-                        val maskColor = Color(0x80FF0055)
+                                    }
+                                },
+                        ) {
+                            val strokeWidthPx = 40.dp.toPx()
+                            val maskColor = Color(0x80FF0055)
 
-                        brushStrokes.forEach { stroke ->
-                            if (stroke.points.size > 1) {
-                                for (i in 0 until stroke.points.size - 1) {
+                            brushStrokes.forEach { stroke ->
+                                if (stroke.points.size > 1) {
+                                    for (i in 0 until stroke.points.size - 1) {
+                                        drawLine(
+                                            color = maskColor,
+                                            start = stroke.points[i],
+                                            end = stroke.points[i + 1],
+                                            strokeWidth = strokeWidthPx,
+                                            cap = StrokeCap.Round,
+                                        )
+                                    }
+                                }
+                            }
+
+                            if (currentStrokePoints.size > 1) {
+                                for (i in 0 until currentStrokePoints.size - 1) {
                                     drawLine(
                                         color = maskColor,
-                                        start = stroke.points[i],
-                                        end = stroke.points[i + 1],
+                                        start = currentStrokePoints[i],
+                                        end = currentStrokePoints[i + 1],
                                         strokeWidth = strokeWidthPx,
                                         cap = StrokeCap.Round,
                                     )
                                 }
-                            }
-                        }
-
-                        if (currentStrokePoints.size > 1) {
-                            for (i in 0 until currentStrokePoints.size - 1) {
-                                drawLine(
-                                    color = maskColor,
-                                    start = currentStrokePoints[i],
-                                    end = currentStrokePoints[i + 1],
-                                    strokeWidth = strokeWidthPx,
-                                    cap = StrokeCap.Round,
-                                )
                             }
                         }
                     }

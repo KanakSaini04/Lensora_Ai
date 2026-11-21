@@ -50,6 +50,9 @@
 | 7.2 | In-app Privacy Policy & Terms drafts | None | DONE | pending | SettingsScreen legal section & scrollable dialog views active | Flagged [DRAFT - LEGAL REVIEW NEEDED], Obsidian Royal theme tokens |
 | 8.1 | Documentation sync pass | None | DONE | pending | README, HANDOFF, progress, CHANGELOG, report synced | Final master documentation sync |
 | 9.1 | Redmi Note 13 Pro physical device verification | USER | DONE | pending | Installed & verified on 2312DRA50I, Total PSS 147.5MB, 0 logcat crashes | Physical device audit protocol passed |
+| Z | Gallery photo selection, ZoomableBox, Quick View top bar, Camera bottom bar | None | DONE | step-Z-viewer-and-nav | 96 tests pass, NOT VERIFIED on device (pending manual proof) | Combined Z1 + Z2 Quick View overlay + Z3 bottom bar |
+| Z4 | Camera viewfinder swipe to Studio, timestamp pill removal | None | DONE | 1c4060b | 109 tests pass, verified on Redmi Note 13 Pro 5G (2312DRA50I) | Viewfinder swipe to Studio active, timestamp pill removed |
+| Z5 | Studio Eraser brush drawing at all zoom levels | None | Partial | 5f85e7d | 110 tests pass, NOT VERIFIED on device | TouchMode.DRAW evaluator active; physical device verification pending |
 
 ## DECISIONS
 - 2026-11-18: Initialized master build queue from docs/MASTER_BUILD_PROMPT.md.

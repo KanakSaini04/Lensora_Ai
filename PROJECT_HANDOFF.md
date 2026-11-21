@@ -5,13 +5,13 @@
 > Rules for this file: every fact must come from the repo, a test run or a device/emulator check. Unknown = **NOT VERIFIED**. No secrets, tokens, keystores, PINs or personal data.
 
 ## 0. Status block (update every step)
-- **Last updated**: 2026-11-21
-- **Branch / HEAD**: `step-M1i-lama-two-input`
-- **Last completed step**: Step M1i LaMa Two-Input Contract Wiring & Device Inpainting Pass
-- **In progress**: Step M1i review package generation & PR base confirmation (`build/all-features`)
-- **Unit tests**: 87 passed, 0 skipped, 0 failed across 19 test classes
+- **Last updated**: 2026-11-22
+- **Branch / HEAD**: `step-Z-viewer-and-nav`
+- **Last completed step**: Step Z4 - Camera Swipe to Studio & Timing Pill Removal
+- **In progress**: Step Z5b - Studio Brush Drawing Refinement (Partial, NOT VERIFIED on device)
+- **Unit tests**: 110 passed, 0 skipped, 0 failed across 21 test classes
 - **Baseline APK size**: 94,720,306 bytes (~90.33 MB)
-- **Last emulator check**: `emulator-5554` (`Medium_Phone`), 2026-11-20 (App launches cleanly, Google Drive Sign-In dialog functioning, 87 unit tests passing); **Last physical-device (Redmi) check**: Step M1i (Verified on Redmi Note 13 Pro 5G `2312DRA50I`, 174 MB `lama_dilated.tflite` model downloaded, SHA-256 verified, real $3060 \times 4080$ photo two-input inpainting completed in 47,942ms with 0.000217 unmasked region diff, 87 unit tests passing)
+- **Last emulator check**: `emulator-5554` (`Medium_Phone`), 2026-11-20 (App launches cleanly, Google Drive Sign-In dialog functioning, 110 unit tests passing); **Last physical-device (Redmi) check**: Step Z4 (Verified on Redmi Note 13 Pro 5G `2312DRA50I`, 109 unit tests passing, viewfinder swipe active). Step Z5 is **NOT VERIFIED on device**.
 - **Known Issue**: Video recording Toast crash (`"Can't toast on a thread that has not called Looper.prepare()"`) at `CameraScreen.kt:719` from `CameraController.kt:798` (`startVideoRecording` `onConfigured` callback on background thread); pending resolution in a future step.
 
 ## 1. Boot order for a new AI

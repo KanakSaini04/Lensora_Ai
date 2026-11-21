@@ -1,3 +1,29 @@
+## [Unreleased] - Step Z5: Studio Eraser Brush Drawing at All Zoom Levels (2026-11-22)
+
+### Added
+- **Studio Eraser Brush Drawing at All Zoom Levels (Step Z5)**:
+  - `ZoomableBox.kt`: Added `TouchMode` enum and `decideTouchMode` pure evaluator function. Evaluates `TouchMode.DRAW` for 1-finger drags when Eraser is active in Studio at all zoom levels ($100\%$ to $800\%$), `TouchMode.ZOOM_PAN` for 2+ pointers, and `TouchMode.PAN` for non-draw tools when zoomed.
+  - `StudioScreen.kt`: Passed `isStudio = true` and `isDrawToolActive = isEraserModeActive` to `ZoomableBox`. Mid-stroke 2-finger touch ends active stroke cleanly without stray lines and switches to zoom/pan.
+  - `PhotoZoomAndNavigationTest.kt`: Added unit tests for `decideTouchMode` across all scales and tools, and screen-to-image coordinate mapping tests across 1.0x, 1.4x, 4.0x, 8.0x scales and pan offsets. All 110 unit tests passing cleanly.
+
+## [Unreleased] - Step Z4: Camera Viewfinder Swipe Gesture & Timestamp Pill Removal (2026-11-22)
+
+### Added
+- **Camera Viewfinder Swipe Gesture & Timestamp Pill Removal (Step Z4)**:
+  - `ZoomableBox.kt`: Added `CameraSwipeDecision` enum and `evaluateCameraSwipeGesture` pure evaluator function checking 1-pointer count, $24\text{dp}$ system edge gesture insets, and measured UI exclusion bounds (`topBarBounds`, `aiBadgeBounds`, `zoomPillsBounds`, `carouselBounds`, `shutterRowBounds`).
+  - `CameraScreen.kt`: Attached dynamic pointer tracking on viewfinder overlay Box. Removed orphan `currentTimeString` state, LaunchedEffect ticking loop, and viewfinder `"LENSORA • hh:mm:ss"` overlay pill.
+  - `CameraSwipeGestureTest.kt`: Added 15 unit tests covering left swipe, right swipe, vertical/diagonal swipes, short swipes, 2-pointer pinch cancellation, edge gesture insets, measured UI exclusion bounds, and zero screen size safety. All 109 unit tests passing cleanly.
+
+## [Unreleased] - Step Z: Gallery Photo Selection, ZoomableBox, Translucent Quick View Overlay & Selective Navigation Bar (2026-11-21)
+
+### Added
+- **Step Z: Gallery Photo Selection, ZoomableBox, Translucent Quick View Overlay & Selective Navigation Bar**:
+  - `Navigation.kt`: Encoded `initialUri` and `filter` arguments (`Uri.encode`). Extracted `shouldShowBottomBarForRoute` to hide bottom navigation bar on Camera tab (`"camera"`) and show it on secondary tabs (`"studio"`, `"gallery"`, `"vibes"`, `"settings"`).
+  - `QuickViewScreen.kt`: Resolved target photo index via `ZoomTransformMath.resolveInitialPageIndex`, initializing `rememberPagerState(initialPage = initialIndex)`. Refactored for edge-to-edge photo rendering with a slim translucent top bar overlay (`CharcoalSurface.copy(alpha = 0.8f)` with `statusBarsPadding()`) toggling on single tap. Handled empty filter lists and deleted photos safely with string resources (`R.string.no_photos_found`).
+  - `ZoomableBox.kt`: Created reusable stateless Compose `ZoomableBox` component supporting continuous 1.0x to 8.0x pinch zoom, clamped pan bounds, double-tap 1x/2x scale toggles, live zoom % badge, and 400% zoom Studio brush touch coordinate mapping (`mapScreenPointToImagePixel`).
+  - Unit Tests: Added `BugReproTest.kt` (failing-first & resolution tests) and `PhotoZoomAndNavigationTest.kt` (URI encoding with `/`, `:`, `%`, spaces, deleted photo fallbacks, scale/pan clamping, coordinate mapping, bottom bar rules). All 96 unit tests passing.
+  - Device Status: Compiled and assembled (`app:assembleDebug`). **NOT VERIFIED on device** (Physical Redmi device proof pending manual user validation).
+
 ## [Unreleased] - Step M1i LaMa Model Two-Input Contract Wiring (2026-11-21)
 
 ### Added
