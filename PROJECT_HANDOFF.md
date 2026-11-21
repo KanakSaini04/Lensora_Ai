@@ -6,12 +6,12 @@
 
 ## 0. Status block (update every step)
 - **Last updated**: 2026-11-21
-- **Branch / HEAD**: `step-M1i-lama-two-input`
-- **Last completed step**: Step M1i LaMa Two-Input Contract Wiring & Device Inpainting Pass
-- **In progress**: Step M1i review package generation & PR base confirmation (`build/all-features`)
-- **Unit tests**: 87 passed, 0 skipped, 0 failed across 19 test classes
+- **Branch / HEAD**: `step-Z-viewer-and-nav`
+- **Last completed step**: Step Z - Gallery photo selection, ZoomableBox, quick view overlay bar, camera-only bottom bar
+- **In progress**: Step Z verification & manual device check handoff
+- **Unit tests**: 96 passed, 0 skipped, 0 failed across 20 test classes
 - **Baseline APK size**: 94,720,306 bytes (~90.33 MB)
-- **Last emulator check**: `emulator-5554` (`Medium_Phone`), 2026-11-20 (App launches cleanly, Google Drive Sign-In dialog functioning, 87 unit tests passing); **Last physical-device (Redmi) check**: Step M1i (Verified on Redmi Note 13 Pro 5G `2312DRA50I`, 174 MB `lama_dilated.tflite` model downloaded, SHA-256 verified, real $3060 \times 4080$ photo two-input inpainting completed in 47,942ms with 0.000217 unmasked region diff, 87 unit tests passing)
+- **Last emulator check**: `emulator-5554` (`Medium_Phone`), 2026-11-20 (App launches cleanly, Google Drive Sign-In dialog functioning, 96 unit tests passing); **Last physical-device (Redmi) check**: Step Z (NOT VERIFIED on device; physical Redmi device proof pending manual user validation)
 - **Known Issue**: Video recording Toast crash (`"Can't toast on a thread that has not called Looper.prepare()"`) at `CameraScreen.kt:719` from `CameraController.kt:798` (`startVideoRecording` `onConfigured` callback on background thread); pending resolution in a future step.
 
 ## 1. Boot order for a new AI

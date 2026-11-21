@@ -68,7 +68,7 @@ import com.lensora.ai.ui.theme.RoyalBlue
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun GalleryScreen(
-    onPhotoClick: (Uri, Int) -> Unit = { _, _ -> },
+    onPhotoClick: (Uri, String) -> Unit = { _, _ -> },
 ) {
     val context = LocalContext.current
     val galleryRepository = remember { GalleryRepository(context) }
@@ -187,7 +187,7 @@ fun GalleryScreen(
                                         .height(itemHeight)
                                         .clip(RoundedCornerShape(12.dp))
                                         .background(CharcoalSurface)
-                                        .clickable { onPhotoClick(item.uri, index) },
+                                        .clickable { onPhotoClick(item.uri, activeFilter.name) },
                                 ) {
                                     AsyncImage(
                                         model = item.uri,

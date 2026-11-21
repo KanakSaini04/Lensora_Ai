@@ -1,3 +1,13 @@
+## [Unreleased] - Step Z: Gallery Photo Selection, ZoomableBox, Translucent Quick View Overlay & Selective Navigation Bar (2026-11-21)
+
+### Added
+- **Step Z: Gallery Photo Selection, ZoomableBox, Translucent Quick View Overlay & Selective Navigation Bar**:
+  - `Navigation.kt`: Encoded `initialUri` and `filter` arguments (`Uri.encode`). Extracted `shouldShowBottomBarForRoute` to hide bottom navigation bar on Camera tab (`"camera"`) and show it on secondary tabs (`"studio"`, `"gallery"`, `"vibes"`, `"settings"`).
+  - `QuickViewScreen.kt`: Resolved target photo index via `ZoomTransformMath.resolveInitialPageIndex`, initializing `rememberPagerState(initialPage = initialIndex)`. Refactored for edge-to-edge photo rendering with a slim translucent top bar overlay (`CharcoalSurface.copy(alpha = 0.8f)` with `statusBarsPadding()`) toggling on single tap. Handled empty filter lists and deleted photos safely with string resources (`R.string.no_photos_found`).
+  - `ZoomableBox.kt`: Created reusable stateless Compose `ZoomableBox` component supporting continuous 1.0x to 8.0x pinch zoom, clamped pan bounds, double-tap 1x/2x scale toggles, live zoom % badge, and 400% zoom Studio brush touch coordinate mapping (`mapScreenPointToImagePixel`).
+  - Unit Tests: Added `BugReproTest.kt` (failing-first & resolution tests) and `PhotoZoomAndNavigationTest.kt` (URI encoding with `/`, `:`, `%`, spaces, deleted photo fallbacks, scale/pan clamping, coordinate mapping, bottom bar rules). All 96 unit tests passing.
+  - Device Status: Compiled and assembled (`app:assembleDebug`). **NOT VERIFIED on device** (Physical Redmi device proof pending manual user validation).
+
 ## [Unreleased] - Step M1i LaMa Model Two-Input Contract Wiring (2026-11-21)
 
 ### Added

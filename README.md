@@ -188,7 +188,7 @@ LaMa Dilated object inpainting executes via `GpuDelegate()`. Real-ESRGAN v2 4x s
 git clone https://github.com/KanakSaini04/Lensora_Ai.git
 cd Lensora_Ai
 
-# Run unit tests (21/21 pass)
+# Run unit tests (96/96 pass across 20 test classes)
 ./gradlew testDebugUnitTest
 
 # Assemble Debug APK
