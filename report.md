@@ -6,6 +6,17 @@
 - **Unit Tests**: 121 passed across 21 test classes (Note: The 121st test `stepZ11_galleryFilterEnumValues_verifyPhotosFilter` asserts enum `displayName` properties and does not test `getAllPhotos()` query behavior directly, as MediaStore ContentResolver queries require an Android system environment).
 - **Device Status**: **VERIFIED on device (owner, 2026-11-22)**: Studio opens on newest photo, no blank tiles, filmstrip shows only photos and edited photos.
 
+### Unrelated Older Problems Reported (Unfixed)
+1. **`BUILD_QUEUE.md` vs `progress.md` Mismatches**:
+   - **Step Z5**: `BUILD_QUEUE.md:55` lists status as `Partial` (`| Z5 | ... | Partial | 5f85e7d |`), whereas `progress.md:39` lists it as completed `- [x] **Step Z5: Studio Eraser Brush Drawing at All Zoom Levels**`.
+   - **Step Z6**: `BUILD_QUEUE.md:56` lists `115 tests pass, verified on Redmi Note 13 Pro 5G (2312DRA50I)`, whereas `progress.md:36` lists `All 117 unit tests passing cleanly. NOT VERIFIED on device.` and `report.md:27` lists `115 unit tests`.
+2. **Remaining Hardcoded UI Strings**:
+   - `"Back"` in `QuickViewScreen.kt:173` (`contentDescription = "Back"`).
+   - `"Quick View"` in `QuickViewScreen.kt:180` (`text = "Quick View$subtitle"`).
+   - `"Gallery"` in `GalleryScreen.kt:125` (`text = "Gallery"`).
+3. **RAW DNG Exclusion from Studio Filmstrip**:
+   - `getAllPhotos()` now queries `GalleryFilter.PHOTOS`, which evaluates `matchesFilter = !isRaw`. Consequently, RAW `.dng` files no longer appear in the Studio Screen filmstrip (they appear only under `GalleryFilter.RAW_DNG` and `GalleryFilter.ALL` in the main Gallery screen).
+
 ### Step Z11 Break-It Table (5 Attacks)
 | # | Layer | Attack | Expected Result | Actual Result | Verdict |
 |---|---|---|---|---|---|
