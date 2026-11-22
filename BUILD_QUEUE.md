@@ -59,6 +59,7 @@
 | Z10 | Gallery video thumbnails & Quick View Media3 playback | None | DONE | 98baa20 | 120 tests pass, VERIFIED on device (owner, 2026-11-22) | Native API 33 loadThumbnail, duration pills, Media3 ExoPlayer |
 | Z10b | Fix Z10 video player bugs (lifecycle pause, duration, tap conflict, strings) | None | DONE | dbb561e | 120 tests pass, VERIFIED on device (owner, 2026-11-22) | ON_STOP pause observer, ready state duration, tap toggle, localized strings |
 | Z11 | Exclude videos from Studio filmstrip (`getAllPhotos`) | None | DONE | 1df8caf | 121 tests pass, VERIFIED on device (owner, 2026-11-22) | Changed getAllPhotos() to query GalleryFilter.PHOTOS |
+| Z12 | Move hardcoded UI strings to `strings.xml` | None | DONE | step-Z12-strings | 121 tests pass, NOT VERIFIED on device | Extracted Back, Quick View, and Gallery strings to strings.xml |
 
 ## DECISIONS
 - 2026-11-18: Initialized master build queue from docs/MASTER_BUILD_PROMPT.md.

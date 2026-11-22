@@ -17,4 +17,9 @@
     <string name="mute">Mute</string>
     <string name="unmute">Unmute</string>
     <string name="badge_video">VIDEO</string>
+    <string name="cd_back">Back</string>
+    <string name="quick_view_title">Quick View</string>
+    <string name="quick_view_title_count">Quick View (%1$d)</string>
+    <string name="gallery_title">Gallery</string>
+    <string name="gallery_title_count">Gallery (%1$d)</string>
 </resources>

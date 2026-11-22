@@ -2,6 +2,11 @@
 
 ## Master Build Mode (Phases P0 - P9 - 100% COMPLETE)
 
+- [x] **Step Z12: Move Hardcoded UI Strings to `strings.xml`**
+  - **Localized Strings**: Moved hardcoded strings in `QuickViewScreen.kt` (`"Back"`, `"Quick View$subtitle"`) and `GalleryScreen.kt` (`"Gallery$countBadge"`) to `strings.xml` (`R.string.cd_back`, `R.string.quick_view_title`, `R.string.quick_view_title_count`, `R.string.gallery_title`, `R.string.gallery_title_count`).
+  - **Unit Tests**: 121 unit tests passing total across 21 test classes.
+  - **Device Status**: NOT VERIFIED on device (`DEVICE REQUIRED: no`).
+
 - [x] **Step Z11: Exclude Videos from Studio Filmstrip (`getAllPhotos`)**
   - **Photos-Only Query**: Changed `GalleryRepository.getAllPhotos()` to query `GalleryFilter.PHOTOS` instead of `GalleryFilter.ALL`, preventing video URIs from populating Studio Screen photo filmstrip tiles.
   - **RAW DNG Finding**: Verified that `GalleryFilter.PHOTOS` excludes RAW DNG files (`isRaw == false`).

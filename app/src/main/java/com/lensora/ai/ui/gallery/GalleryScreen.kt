@@ -53,10 +53,12 @@ import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import coil.compose.AsyncImage
+import com.lensora.ai.R
 import com.lensora.ai.data.ExifMetadata
 import com.lensora.ai.data.GalleryFilter
 import com.lensora.ai.data.GalleryRepository
@@ -101,9 +103,13 @@ fun GalleryScreen(
         topBar = {
             TopAppBar(
                 title = {
-                    val countBadge = if (mediaItems.isNotEmpty()) " (${mediaItems.size})" else ""
+                    val titleText = if (mediaItems.isNotEmpty()) {
+                        stringResource(R.string.gallery_title_count, mediaItems.size)
+                    } else {
+                        stringResource(R.string.gallery_title)
+                    }
                     Text(
-                        text = "Gallery$countBadge",
+                        text = titleText,
                         color = ColorWhite,
                         fontWeight = FontWeight.Bold,
                     )
