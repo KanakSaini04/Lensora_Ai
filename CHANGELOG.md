@@ -1,3 +1,9 @@
+## [Unreleased] - Step Z8: Video Recording Toast Main Thread Fix (2026-11-22)
+
+### Fixed
+- **Video Recording Toast Main Thread Fix (Step Z8)**:
+  - `CameraController.kt`: Dispatched all UI callbacks (`onRecordingStarted`, `onVideoSaved`, `onPhotoSaved`, `onError`) onto `Handler(Looper.getMainLooper())`. Resolved `NullPointerException: Can't toast on a thread that has not called Looper.prepare()` on video recording start. All 119 unit tests passing cleanly.
+
 ## [Unreleased] - Step Z7: App-Wide Portrait Lock & Hardware Sensor Orientation (2026-11-22)
 
 ### Added

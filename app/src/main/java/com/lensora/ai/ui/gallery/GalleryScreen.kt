@@ -1,6 +1,8 @@
 package com.lensora.ai.ui.gallery
 
+import android.graphics.Bitmap
 import android.net.Uri
+import androidx.compose.ui.graphics.asImageBitmap
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
@@ -72,6 +74,7 @@ fun GalleryScreen(
 ) {
     val context = LocalContext.current
     val galleryRepository = remember { GalleryRepository(context) }
+    val thumbnailLoader = remember { VideoThumbnailLoader(context) }
     var mediaItems by remember { mutableStateOf<List<MediaItemInfo>>(emptyList()) }
     var activeFilter by remember { mutableStateOf(GalleryFilter.ALL) }
     var isLoading by remember { mutableStateOf(true) }
@@ -189,12 +192,36 @@ fun GalleryScreen(
                                         .background(CharcoalSurface)
                                         .clickable { onPhotoClick(item.uri, activeFilter.name) },
                                 ) {
-                                    AsyncImage(
-                                        model = item.uri,
-                                        contentDescription = item.displayName,
-                                        contentScale = ContentScale.Crop,
-                                        modifier = Modifier.fillMaxSize(),
-                                    )
+                                    if (item.isVideo) {
+                                        var videoBitmap by remember(item.uri) { mutableStateOf<Bitmap?>(null) }
+                                        LaunchedEffect(item.uri) {
+                                            videoBitmap = thumbnailLoader.loadVideoThumbnail(item.uri, item.dateAddedMs, item.sizeBytes)
+                                        }
+
+                                        val currentBitmap = videoBitmap
+                                        if (currentBitmap != null) {
+                                            androidx.compose.foundation.Image(
+                                                bitmap = currentBitmap.asImageBitmap(),
+                                                contentDescription = item.displayName,
+                                                contentScale = ContentScale.Crop,
+                                                modifier = Modifier.fillMaxSize(),
+                                            )
+                                        } else {
+                                            AsyncImage(
+                                                model = item.uri,
+                                                contentDescription = item.displayName,
+                                                contentScale = ContentScale.Crop,
+                                                modifier = Modifier.fillMaxSize(),
+                                            )
+                                        }
+                                    } else {
+                                        AsyncImage(
+                                            model = item.uri,
+                                            contentDescription = item.displayName,
+                                            contentScale = ContentScale.Crop,
+                                            modifier = Modifier.fillMaxSize(),
+                                        )
+                                    }
 
                                     // Type Badge (VIDEO, RAW, EDITED)
                                     val badgeText = when {
@@ -224,6 +251,25 @@ fun GalleryScreen(
                                                 color = if (badgeText == "EDITED") PitchBlackBackground else ColorWhite,
                                                 fontSize = 8.sp,
                                                 fontWeight = FontWeight.Bold,
+                                            )
+                                        }
+                                    }
+
+                                    // Video Duration Pill (Bottom Left)
+                                    if (item.isVideo) {
+                                        Box(
+                                            modifier = Modifier
+                                                .align(Alignment.BottomStart)
+                                                .padding(6.dp)
+                                                .clip(RoundedCornerShape(4.dp))
+                                                .background(PitchBlackBackground.copy(alpha = 0.75f))
+                                                .padding(horizontal = 6.dp, vertical = 2.dp),
+                                        ) {
+                                            Text(
+                                                text = formatDurationMs(item.durationMs),
+                                                color = ColorWhite,
+                                                fontSize = 9.sp,
+                                                fontWeight = FontWeight.SemiBold,
                                             )
                                         }
                                     }

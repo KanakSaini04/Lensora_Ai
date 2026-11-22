@@ -1,5 +1,11 @@
 # Lensora_Ai Master Build Report
 
+## Step Z8 - Video Recording Toast Main Thread Dispatch Fix
+- **Main Thread Callback Dispatch**: Added `mainHandler` (`Handler(Looper.getMainLooper())`) to `CameraController.kt`. Dispatched all UI callbacks (`onRecordingStarted`, `onVideoSaved`, `onPhotoSaved`, `onError`) onto main thread.
+- **Crash Resolved**: Fixed `NullPointerException: Can't toast on a thread that has not called Looper.prepare()` crash on video recording start.
+- **Unit Tests**: 119 passed across 21 test classes.
+- **Device Status**: **NOT VERIFIED on device** (Physical Redmi device video recording verification pending).
+
 ## Step Z7 - App-Wide Portrait Lock & Hardware Sensor Orientation for Capture
 - **Portrait Orientation Lock**: Set `android:screenOrientation="portrait"` on `.MainActivity` in `AndroidManifest.xml`.
 - **Hardware Sensor Orientation Listener**: Attached `OrientationEventListener` in `CameraScreen.kt` using pure function `snapSensorDegreesToSurfaceRotation` to track physical hardware rotation (0°, 90°, 180°, 270°) independent of display rotation.

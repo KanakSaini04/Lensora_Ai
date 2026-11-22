@@ -2,6 +2,11 @@
 
 ## Master Build Mode (Phases P0 - P9 - 100% COMPLETE)
 
+- [x] **Step Z8: Video Recording Toast Main Thread Dispatch Fix**
+  - **Main Thread Callback Dispatch**: Added `mainHandler` (`Handler(Looper.getMainLooper())`) to `CameraController.kt`. Dispatched all UI callbacks (`onRecordingStarted`, `onVideoSaved`, `onPhotoSaved`, `onError`) onto main thread.
+  - **Crash Resolved**: Fixed `NullPointerException: Can't toast on a thread that has not called Looper.prepare()` crash on video recording start.
+  - **Unit Tests**: All 119 unit tests passing cleanly across 21 test classes.
+
 - [x] **Step Z7: App-Wide Portrait Lock & Hardware Sensor Orientation for Capture**
   - **Portrait Orientation Lock**: Set `android:screenOrientation="portrait"` on `.MainActivity` in `AndroidManifest.xml`.
   - **Hardware Sensor Orientation Listener**: Attached `OrientationEventListener` in `CameraScreen.kt` using pure function `snapSensorDegreesToSurfaceRotation` to track physical hardware rotation (0°, 90°, 180°, 270°) independent of display rotation.

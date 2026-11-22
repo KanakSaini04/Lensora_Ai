@@ -118,21 +118,29 @@ fun QuickViewScreen(
             ) { page ->
                 val item = mediaItems[page]
 
-                ZoomableBox(
-                    maxScale = 8.0f,
-                    resetKey = page,
-                    onScaleChanged = { scale ->
-                        if (page == pagerState.currentPage) {
-                            currentZoomScale = scale
-                        }
-                    },
-                ) { _, _ ->
-                    AsyncImage(
-                        model = item.uri,
-                        contentDescription = item.displayName,
-                        contentScale = ContentScale.Fit,
+                if (item.isVideo) {
+                    QuickViewVideoPlayer(
+                        uri = item.uri,
+                        isCurrentPage = (pagerState.currentPage == page),
                         modifier = Modifier.fillMaxSize(),
                     )
+                } else {
+                    ZoomableBox(
+                        maxScale = 8.0f,
+                        resetKey = page,
+                        onScaleChanged = { scale ->
+                            if (page == pagerState.currentPage) {
+                                currentZoomScale = scale
+                            }
+                        },
+                    ) { _, _ ->
+                        AsyncImage(
+                            model = item.uri,
+                            contentDescription = item.displayName,
+                            contentScale = ContentScale.Fit,
+                            modifier = Modifier.fillMaxSize(),
+                        )
+                    }
                 }
             }
         } else if (isLoaded) {

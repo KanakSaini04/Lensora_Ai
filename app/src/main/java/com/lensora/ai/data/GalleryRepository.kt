@@ -30,6 +30,7 @@ data class MediaItemInfo(
     val dateAddedMs: Long,
     val sizeBytes: Long,
     val mimeType: String,
+    val durationMs: Long = 0L,
 )
 
 data class ExifMetadata(
@@ -139,6 +140,7 @@ class GalleryRepository(
                 MediaStore.Video.Media.SIZE,
                 MediaStore.Video.Media.MIME_TYPE,
                 MediaStore.Video.Media.RELATIVE_PATH,
+                MediaStore.Video.Media.DURATION,
             )
 
             val selection = "${MediaStore.Video.Media.RELATIVE_PATH} LIKE ?"
@@ -158,6 +160,7 @@ class GalleryRepository(
                     val dateCol = cursor.getColumnIndexOrThrow(MediaStore.Video.Media.DATE_ADDED)
                     val sizeCol = cursor.getColumnIndexOrThrow(MediaStore.Video.Media.SIZE)
                     val mimeCol = cursor.getColumnIndexOrThrow(MediaStore.Video.Media.MIME_TYPE)
+                    val durCol = cursor.getColumnIndex(MediaStore.Video.Media.DURATION)
 
                     while (cursor.moveToNext()) {
                         val id = cursor.getLong(idCol)
@@ -165,6 +168,7 @@ class GalleryRepository(
                         val dateAddedSecs = cursor.getLong(dateCol)
                         val size = cursor.getLong(sizeCol)
                         val mime = cursor.getString(mimeCol) ?: "video/mp4"
+                        val duration = if (durCol != -1) cursor.getLong(durCol) else 0L
                         val contentUri = ContentUris.withAppendedId(MediaStore.Video.Media.EXTERNAL_CONTENT_URI, id)
 
                         items.add(
@@ -177,6 +181,7 @@ class GalleryRepository(
                                 dateAddedMs = dateAddedSecs * 1000L,
                                 sizeBytes = size,
                                 mimeType = mime,
+                                durationMs = duration,
                             )
                         )
                     }

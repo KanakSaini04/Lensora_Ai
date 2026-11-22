@@ -5,6 +5,9 @@ import androidx.compose.ui.geometry.Size
 import com.lensora.ai.ui.components.StrokePaintStyle
 import com.lensora.ai.ui.components.TouchMode
 import com.lensora.ai.ui.components.ZoomTransformMath
+import com.lensora.ai.ui.gallery.buildThumbnailCacheKey
+import com.lensora.ai.ui.gallery.formatDurationMs
+import com.lensora.ai.ui.gallery.isVideoMimeType
 import com.lensora.ai.ui.navigation.shouldShowBottomBarForRoute
 import com.lensora.ai.ui.studio.StudioPrimitiveState
 import com.lensora.ai.ui.studio.StudioStateSaver
@@ -16,6 +19,29 @@ import org.junit.Assert.assertTrue
 import org.junit.Test
 
 class PhotoZoomAndNavigationTest {
+
+    @Test
+    fun stepZ10_videoSupportPureLogicTests_mimeDurationAndCacheKey() {
+        // 1. isVideoMimeType
+        assertTrue(isVideoMimeType("video/mp4"))
+        assertTrue(isVideoMimeType("VIDEO/MP4"))
+        assertTrue(isVideoMimeType("video/webm"))
+        assertFalse(isVideoMimeType("image/jpeg"))
+        assertFalse(isVideoMimeType("image/png"))
+        assertFalse(isVideoMimeType(null))
+        assertFalse(isVideoMimeType(""))
+
+        // 2. formatDurationMs cases (null, 0, negative, 59s, 61s, 1h 5m)
+        assertEquals("00:00", formatDurationMs(null))
+        assertEquals("00:00", formatDurationMs(0L))
+        assertEquals("00:00", formatDurationMs(-1000L))
+        assertEquals("00:59", formatDurationMs(59000L))
+        assertEquals("01:01", formatDurationMs(61000L))
+        assertEquals("01:05:00", formatDurationMs(3900000L))
+
+        // 3. buildThumbnailCacheKey
+        assertEquals("content://media/video/1_10000_50000", buildThumbnailCacheKey("content://media/video/1", 10000L, 50000L))
+    }
 
     @Test
     fun stepZ7_snapSensorDegreesToSurfaceRotation_boundaryTests() {
