@@ -24,7 +24,7 @@
 
 ### Fixed
 - **Video Recording Toast Main Thread Fix (Step Z8)**:
-  - `CameraController.kt`: Dispatched all UI callbacks (`onRecordingStarted`, `onVideoSaved`, `onPhotoSaved`, `onError`) onto `Handler(Looper.getMainLooper())`. Resolved `NullPointerException: Can't toast on a thread that has not called Looper.prepare()` on video recording start. All 119 unit tests passing cleanly.
+  - `CameraController.kt`: Dispatched all UI callbacks (`onRecordingStarted`, `onVideoSaved`, `onPhotoSaved`, `onError`) onto `Handler(Looper.getMainLooper())`. Resolved `NullPointerException: Can't toast on a thread that has not called Looper.prepare()` on video recording start. All 119 unit tests passing. Verified on device (owner, 2026-11-22).
 
 ## [Unreleased] - Step Z7: App-Wide Portrait Lock & Hardware Sensor Orientation (2026-11-22)
 
@@ -33,7 +33,7 @@
   - `AndroidManifest.xml`: Locked `.MainActivity` to portrait mode (`android:screenOrientation="portrait"`).
   - `ZoomableBox.kt`: Created pure evaluator `snapSensorDegreesToSurfaceRotation` mapping sensor angles to 0°, 90°, 180°, 270° surface rotation values with `ORIENTATION_UNKNOWN` (-1) fallback handling.
   - `CameraScreen.kt`: Registered `OrientationEventListener` bound to screen lifecycle (`DisposableEffect`) to track physical device rotation independent of window display rotation.
-  - `PhotoZoomAndNavigationTest.kt`: Added boundary unit tests for `snapSensorDegreesToSurfaceRotation` and rotation math unit tests for back (sensor 90°) and front (sensor 270°) camera orientation formulas. All 119 unit tests passing cleanly.
+  - `PhotoZoomAndNavigationTest.kt`: Added boundary unit tests for `snapSensorDegreesToSurfaceRotation` and rotation math unit tests for back (sensor 90°) and front (sensor 270°) camera orientation formulas. All 119 unit tests passing. Verified on device (owner, 2026-11-22).
 
 ## [Unreleased] - Step Z6: Studio Screen Redesign (Lightroom Mobile Style) (2026-11-22)
 

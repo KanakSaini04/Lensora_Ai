@@ -6,12 +6,12 @@
 
 ## 0. Status block (update every step)
 - **Last updated**: 2026-11-22
-- **Branch / HEAD**: `step-Z12b-docs`
-- **Last completed step**: Step Z12b - Documentation Sync & Owner Device Verification
-- **In progress**: Step Z12b verification & handoff
+- **Branch / HEAD**: `step-Z12c-docs`
+- **Last completed step**: Step Z12c - Record Z7 and Z8 Device Verification in Documentation
+- **In progress**: Step Z12c verification & handoff
 - **Unit tests**: 121 passed, 0 skipped, 0 failed across 21 test classes
 - **Baseline APK size**: 94,720,306 bytes (~90.33 MB)
-- **Last emulator check**: `emulator-5554` (`Medium_Phone`), 2026-11-20 (App launches cleanly, Google Drive Sign-In dialog functioning, 121 unit tests passing); **Last physical-device (Redmi) check**: Step Z12 (VERIFIED on device by owner, 2026-11-22: Gallery and Quick View title count strings)
+- **Last emulator check**: `emulator-5554` (`Medium_Phone`), 2026-11-20 (App launches cleanly, Google Drive Sign-In dialog functioning, 121 unit tests passing); **Last physical-device (Redmi) check**: Step Z7 & Z8 (VERIFIED on device by owner, 2026-11-22: Z7 portrait lock & capture EXIF orientation, Z8 video start without crash)
 
 ## 1. Boot order for a new AI
 1. `GEMINI.md` (coding-agent rules & Section 10 Run/Device policy)
