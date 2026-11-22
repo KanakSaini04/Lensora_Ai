@@ -6,12 +6,12 @@
 
 ## 0. Status block (update every step)
 - **Last updated**: 2026-11-22
-- **Branch / HEAD**: `step-Z11-studio-photos-only`
-- **Last completed step**: Step Z11 - Exclude Videos from Studio Filmstrip (`getAllPhotos`)
-- **In progress**: Step Z11 verification & handoff
+- **Branch / HEAD**: `step-Z12-strings`
+- **Last completed step**: Step Z12 - Move Hardcoded UI Strings to `strings.xml`
+- **In progress**: Step Z12 verification & handoff
 - **Unit tests**: 121 passed, 0 skipped, 0 failed across 21 test classes
 - **Baseline APK size**: 94,720,306 bytes (~90.33 MB)
-- **Last emulator check**: `emulator-5554` (`Medium_Phone`), 2026-11-20 (App launches cleanly, Google Drive Sign-In dialog functioning, 121 unit tests passing); **Last physical-device (Redmi) check**: Step Z11 (NOT VERIFIED on device; `getAllPhotos` queries `GalleryFilter.PHOTOS`, 121 unit tests passing)
+- **Last emulator check**: `emulator-5554` (`Medium_Phone`), 2026-11-20 (App launches cleanly, Google Drive Sign-In dialog functioning, 121 unit tests passing); **Last physical-device (Redmi) check**: Step Z12 (NOT VERIFIED on device; `DEVICE REQUIRED: no`, 121 unit tests passing)
 
 ## 1. Boot order for a new AI
 1. `GEMINI.md` (coding-agent rules & Section 10 Run/Device policy)

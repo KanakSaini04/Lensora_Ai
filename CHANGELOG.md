@@ -1,3 +1,10 @@
+## [Unreleased] - Step Z12: Move Hardcoded UI Strings to `strings.xml` (2026-11-22)
+
+### Fixed
+- **Move Hardcoded UI Strings to `strings.xml` (Step Z12)**:
+  - `strings.xml`: Added `cd_back`, `quick_view_title`, `quick_view_title_count`, `gallery_title`, and `gallery_title_count`.
+  - `QuickViewScreen.kt` & `GalleryScreen.kt`: Replaced hardcoded `"Back"`, `"Quick View$subtitle"`, and `"Gallery$countBadge"` strings with `stringResource`. All 121 unit tests passing cleanly.
+
 ## [Unreleased] - Step Z11: Exclude Videos from Studio Filmstrip (2026-11-22)
 
 ### Fixed

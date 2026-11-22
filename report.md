@@ -1,5 +1,25 @@
 # Lensora_Ai Master Build Report
 
+## Step Z12 - Move Hardcoded UI Strings to `strings.xml`
+- **Moved Hardcoded Strings**: Replaced hardcoded strings in `QuickViewScreen.kt` (`"Back"`, `"Quick View$subtitle"`) and `GalleryScreen.kt` (`"Gallery$countBadge"`) with `stringResource` calls mapped to `R.string.cd_back`, `R.string.quick_view_title`, `R.string.quick_view_title_count`, `R.string.gallery_title`, and `R.string.gallery_title_count`.
+- **Unit Tests**: 121 passed across 21 test classes.
+- **Device Status**: **NOT VERIFIED on device** (`DEVICE REQUIRED: no` for Step Z12).
+
+### Remaining Un-Extracted Hardcoded Strings (Reported, Unfixed as Instructed)
+- `"EXIF Info"` in `GalleryScreen.kt:250`
+- `"EXIF METADATA INSPECTOR"` in `GalleryScreen.kt:310`
+- `"No media found for active filter"` in `GalleryScreen.kt:160` & `QuickViewScreen.kt:145`
+- `"Camera Settings"` in `CameraScreen.kt:520`
+
+### Step Z12 Break-It Table (5 Attacks)
+| # | Layer | Attack | Expected Result | Actual Result | Verdict |
+|---|---|---|---|---|---|
+| 1 | UI | Render Quick View header with 0 items | Renders `"Quick View"` via `R.string.quick_view_title` | NOT RUN on device | NOT RUN |
+| 2 | UI | Render Quick View header with 15 items | Renders `"Quick View (15)"` via `R.string.quick_view_title_count` | NOT RUN on device | NOT RUN |
+| 3 | UI | Render Gallery header with 0 items | Renders `"Gallery"` via `R.string.gallery_title` | NOT RUN on device | NOT RUN |
+| 4 | UI | Render Gallery header with 42 items | Renders `"Gallery (42)"` via `R.string.gallery_title_count` | NOT RUN on device | NOT RUN |
+| 5 | Accessibility | TalkBack screen reader reading Back icon button | Reads localized `"Back"` via `R.string.cd_back` | NOT RUN on device | NOT RUN |
+
 ## Step Z11 - Exclude Videos from Studio Filmstrip (`getAllPhotos`)
 - **Photos-Only Query**: Changed `GalleryRepository.getAllPhotos()` to query `GalleryFilter.PHOTOS` instead of `GalleryFilter.ALL`, excluding video URIs from Studio Screen filmstrip.
 - **RAW DNG Finding**: Verified that `GalleryFilter.PHOTOS` excludes RAW DNG files (`isRaw == false`).

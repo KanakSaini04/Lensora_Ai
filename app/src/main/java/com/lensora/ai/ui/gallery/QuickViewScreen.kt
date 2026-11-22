@@ -178,14 +178,18 @@ fun QuickViewScreen(
                 ) {
                     Icon(
                         imageVector = Icons.AutoMirrored.Filled.ArrowBack,
-                        contentDescription = "Back",
+                        contentDescription = stringResource(R.string.cd_back),
                         tint = ColorWhite,
                     )
                 }
                 Spacer(modifier = Modifier.width(8.dp))
-                val subtitle = if (mediaItems.isNotEmpty()) " (${mediaItems.size})" else ""
+                val titleText = if (mediaItems.isNotEmpty()) {
+                    stringResource(R.string.quick_view_title_count, mediaItems.size)
+                } else {
+                    stringResource(R.string.quick_view_title)
+                }
                 Text(
-                    text = "Quick View$subtitle",
+                    text = titleText,
                     color = ColorWhite,
                     fontWeight = FontWeight.Bold,
                     fontSize = 18.sp,
