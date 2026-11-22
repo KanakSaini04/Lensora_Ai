@@ -1,3 +1,21 @@
+## [Unreleased] - Step Z12d: Documentation Sync Pass (2026-11-22)
+
+### Documentation
+- **Documentation Alignment & Sync Pass (Step Z12d)**:
+  - Synchronized `progress.md`, `BUILD_QUEUE.md`, `CHANGELOG.md`, `report.md`, and `PROJECT_HANDOFF.md` with PR #104..#107 merge history and owner physical device verification records. All 121 unit tests passing cleanly.
+
+## [Unreleased] - Step Z12c: Record Z7 & Z8 Device Verification (2026-11-22)
+
+### Documentation
+- **Record Z7 & Z8 Device Verification (Step Z12c)**:
+  - Recorded owner physical device verification on Redmi Note 13 Pro 5G for Z7 (portrait orientation lock and EXIF capture orientation) and Z8 (video recording start without crash).
+
+## [Unreleased] - Step Z12b: Documentation Sync & Z12 Device Verification (2026-11-22)
+
+### Documentation
+- **Documentation Sync & Z12 Verification (Step Z12b)**:
+  - Recorded owner physical device verification for Z12 title count strings and aligned Z5/Z6 status metrics across documentation files.
+
 ## [Unreleased] - Step Z12: Move Hardcoded UI Strings to `strings.xml` (2026-11-22)
 
 ### Fixed

@@ -1,5 +1,24 @@
 # Lensora_Ai Master Build Report
 
+## Step Z12d - Documentation Alignment & Sync Pass
+- **Documentation Sync**: Aligned `progress.md`, `BUILD_QUEUE.md`, `CHANGELOG.md`, `PROJECT_HANDOFF.md`, and `report.md` with PR #104..#107 merge history, recorded owner physical device verification statuses for Z7, Z8, Z10, Z10b, Z11, Z12, and documented open UI string and filter items.
+- **Unit Tests**: 121 passed across 21 test classes.
+- **Device Status**: **NOT VERIFIED on device** (`DEVICE REQUIRED: no` for Step Z12d).
+- **Break-It**: Not applicable, docs only.
+
+### Open Items Audit (Reported, Unfixed)
+1. **Remaining Hardcoded UI Strings**:
+   - `"EXIF Info"` in `GalleryScreen.kt:250`
+   - `"EXIF METADATA INSPECTOR"` in `GalleryScreen.kt:310`
+   - `"No media found for active filter"` in `GalleryScreen.kt:160` & `QuickViewScreen.kt:145`
+   - `"Camera Settings"` in `CameraScreen.kt:520`
+2. **RAW DNG Exclusion from Studio Filmstrip**:
+   - `getAllPhotos()` queries `GalleryFilter.PHOTOS`, which evaluates `matchesFilter = !isRaw`. Consequently, RAW `.dng` files no longer appear in the Studio Screen filmstrip (they appear only under `GalleryFilter.RAW_DNG` and `GalleryFilter.ALL` in the main Gallery screen).
+3. **Unit Test 121 Scope**:
+   - Test 121 (`stepZ11_galleryFilterEnumValues_verifyPhotosFilter`) asserts `GalleryFilter` enum `displayName` properties and does not test `getAllPhotos()` MediaStore query behavior directly.
+4. **Z6 Device Status in Historical Tables**:
+   - Device results in Z6 Break-It and control tables have not been confirmed by the owner.
+
 ## Step Z12 - Move Hardcoded UI Strings to `strings.xml`
 - **Moved Hardcoded Strings**: Replaced hardcoded strings in `QuickViewScreen.kt` (`"Back"`, `"Quick View$subtitle"`) and `GalleryScreen.kt` (`"Gallery$countBadge"`) with `stringResource` calls mapped to `R.string.cd_back`, `R.string.quick_view_title`, `R.string.quick_view_title_count`, `R.string.gallery_title`, and `R.string.gallery_title_count`.
 - **Unit Tests**: 121 passed across 21 test classes.

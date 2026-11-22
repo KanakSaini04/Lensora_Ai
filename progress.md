@@ -2,6 +2,11 @@
 
 ## Master Build Mode (Phases P0 - P9 - 100% COMPLETE)
 
+- [x] **Step Z12d: Documentation Alignment & Sync Pass**
+  - **Documentation Sync**: Aligned `progress.md`, `BUILD_QUEUE.md`, `CHANGELOG.md`, `PROJECT_HANDOFF.md`, and `report.md` with PR #104..#107 merge history, recorded owner physical device verification statuses, and documented open UI string and filter items.
+  - **Unit Tests**: 121 unit tests passing total across 21 test classes.
+  - **Device Status**: NOT VERIFIED on device (`DEVICE REQUIRED: no`).
+
 - [x] **Step Z12: Move Hardcoded UI Strings to `strings.xml`**
   - **Localized Strings**: Moved hardcoded strings in `QuickViewScreen.kt` (`"Back"`, `"Quick View$subtitle"`) and `GalleryScreen.kt` (`"Gallery$countBadge"`) to `strings.xml` (`R.string.cd_back`, `R.string.quick_view_title`, `R.string.quick_view_title_count`, `R.string.gallery_title`, `R.string.gallery_title_count`).
   - **Unit Tests**: 121 unit tests passing total across 21 test classes.
@@ -43,12 +48,14 @@
 - [x] **Step Z6: Studio Screen Redesign (Lightroom Mobile Style)**
   - **Lightroom Mobile Layout**: Redesigned Studio screen to ~65% photo height with "Fit" reset chip overlay, double-tap zoom reset (when Eraser inactive), top bar with Back button, Undo, Redo, Hold-to-Compare, and Export.
   - **Eraser Controls & Undo Stack**: Brush size slider with live circle preview, Opacity slider, Erase/Restore mode toggle, and 25-step undo/redo history stack managed by `StudioViewModel`.
-  - **State Persistence & Unit Tests**: Added `StudioViewModel` and `StudioStateSaver` small-values saver. All 117 unit tests passing cleanly. NOT VERIFIED on device.
+  - **State Persistence & Unit Tests**: Added `StudioViewModel` and `StudioStateSaver` small-values saver. All 117 unit tests passing cleanly.
+  - **Device Status**: NOT VERIFIED on device.
 
 - [/] **Step Z5: Studio Eraser Brush Drawing at All Zoom Levels (Partial)**
   - **Touch Mode Evaluator**: Extracted pure evaluator `decideTouchMode(pointerCount, scale, isDrawToolActive, isStudio)`. Evaluates `TouchMode.DRAW` for 1-finger drags when Eraser is active in Studio at all zoom levels ($100\%$ to $800\%$), `TouchMode.ZOOM_PAN` for 2+ pointers, and `TouchMode.PAN` for non-draw tools when zoomed.
   - **ZoomableBox & Studio Integration**: Bypassed panning in `ZoomableBox` when `TouchMode.DRAW` is active so inner `Canvas` receives all single-finger drag events. Replacing `detectDragGestures` with `awaitEachGesture` in `StudioScreen.kt`, ending stroke the moment `pointerCount >= 2`.
-  - **Unit Tests & Device**: Added `decideTouchMode` unit tests and multi-scale coordinate mapping tests in `PhotoZoomAndNavigationTest.kt` (110 unit tests passing total across 21 test classes). NOT VERIFIED on device.
+  - **Unit Tests**: Added `decideTouchMode` unit tests and multi-scale coordinate mapping tests in `PhotoZoomAndNavigationTest.kt` (110 unit tests passing total across 21 test classes).
+  - **Device Status**: NOT VERIFIED on device.
 
 - [x] **Step Z4: Camera Viewfinder Swipe Gesture & Timestamp Pill Removal**
   - **Camera Swipe Gesture**: Added `evaluateCameraSwipeGesture` in `ZoomableBox.kt` and attached dynamic pointer tracking in `CameraScreen.kt`. One-finger horizontal left swipe on viewfinder area navigates to Studio tab with standard transition options (`launchSingleTop = true`, `popUpTo` start destination, `saveState` / `restoreState`). Gestures are excluded on measured bounds (`topBarBounds`, `aiBadgeBounds`, `zoomPillsBounds`, `carouselBounds`, `shutterRowBounds`) and system edge gesture insets ($24\text{dp}$).

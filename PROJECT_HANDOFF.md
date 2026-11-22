@@ -6,12 +6,12 @@
 
 ## 0. Status block (update every step)
 - **Last updated**: 2026-11-22
-- **Branch / HEAD**: `step-Z12c-docs`
-- **Last completed step**: Step Z12c - Record Z7 and Z8 Device Verification in Documentation
-- **In progress**: Step Z12c verification & handoff
+- **Branch / HEAD**: `step-Z12d-docs`
+- **Last completed step**: Step Z12d - Full Documentation Alignment & Sync Pass
+- **In progress**: Step Z12d verification & handoff
 - **Unit tests**: 121 passed, 0 skipped, 0 failed across 21 test classes
 - **Baseline APK size**: 94,720,306 bytes (~90.33 MB)
-- **Last emulator check**: `emulator-5554` (`Medium_Phone`), 2026-11-20 (App launches cleanly, Google Drive Sign-In dialog functioning, 121 unit tests passing); **Last physical-device (Redmi) check**: Step Z7 & Z8 (VERIFIED on device by owner, 2026-11-22: Z7 portrait lock & capture EXIF orientation, Z8 video start without crash)
+- **Last emulator check**: `emulator-5554` (`Medium_Phone`), 2026-11-20 (App launches cleanly, Google Drive Sign-In dialog functioning, 121 unit tests passing); **Last physical-device (Redmi) check**: VERIFIED on device by owner (2026-11-22) for Z7 (portrait lock & EXIF orientation), Z8 (video recording start), Z10 (video thumbnails, badges, duration pills), Z10b (video Home pause, initial duration, tap controls), Z11 (Studio filmstrip photos only), Z12 (localized title count strings). NOT VERIFIED: Z5, Z6, and features not explicitly tested.
 
 ## 1. Boot order for a new AI
 1. `GEMINI.md` (coding-agent rules & Section 10 Run/Device policy)
@@ -40,6 +40,7 @@
 
 ## 4. Repo, links, branches
 - **Repo**: [https://github.com/KanakSaini04/Lensora_Ai](https://github.com/KanakSaini04/Lensora_Ai) (`main` = release, `dev` = integration). Step branches branch from `dev`.
+- **Workflow Rule**: All PRs go into `dev` (base branch: `dev`). `main` is updated only when the owner creates an official release. Step branches branch from `dev`. `dev` currently contains Z6, Z6b, Z7, Z8, Z10, Z10b, Z11, Z12, Z12b, Z12c (PRs #104..#107 merged into `dev`).
 
 ### Key Repository Files
 | Path | Link | Purpose |

@@ -60,6 +60,9 @@
 | Z10b | Fix Z10 video player bugs (lifecycle pause, duration, tap conflict, strings) | None | DONE | dbb561e | 120 tests pass, VERIFIED on device (owner, 2026-11-22) | ON_STOP pause observer, ready state duration, tap toggle, localized strings |
 | Z11 | Exclude videos from Studio filmstrip (`getAllPhotos`) | None | DONE | 1df8caf | 121 tests pass, VERIFIED on device (owner, 2026-11-22) | Changed getAllPhotos() to query GalleryFilter.PHOTOS |
 | Z12 | Move hardcoded UI strings to `strings.xml` | None | DONE | c1bad89 | 121 tests pass, VERIFIED on device (owner, 2026-11-22) | Extracted Back, Quick View, and Gallery strings to strings.xml |
+| Z12b | Documentation sync pass & Z12 device verification | None | DONE | 23023b6 | 121 tests pass, docs only | Recorded owner device verification for Z12; aligned Z5/Z6 doc statuses |
+| Z12c | Documentation sync pass & Z7/Z8 device verification | None | DONE | 53eef65 | 121 tests pass, docs only | Recorded owner device verification for Z7 and Z8 |
+| Z12d | Full documentation alignment & open items sync pass | None | DONE | step-Z12d-docs | 121 tests pass, docs only | Synchronized progress.md, BUILD_QUEUE.md, CHANGELOG.md, report.md, HANDOFF |
 
 ## DECISIONS
 - 2026-11-18: Initialized master build queue from docs/MASTER_BUILD_PROMPT.md.
