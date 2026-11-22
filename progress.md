@@ -5,7 +5,7 @@
 - [x] **Step Z12: Move Hardcoded UI Strings to `strings.xml`**
   - **Localized Strings**: Moved hardcoded strings in `QuickViewScreen.kt` (`"Back"`, `"Quick View$subtitle"`) and `GalleryScreen.kt` (`"Gallery$countBadge"`) to `strings.xml` (`R.string.cd_back`, `R.string.quick_view_title`, `R.string.quick_view_title_count`, `R.string.gallery_title`, `R.string.gallery_title_count`).
   - **Unit Tests**: 121 unit tests passing total across 21 test classes.
-  - **Device Status**: NOT VERIFIED on device (`DEVICE REQUIRED: no`).
+  - **Device Status**: VERIFIED on device (owner, 2026-11-22): Gallery title shows "Gallery (N)", Quick View title shows "Quick View (N)", screens look unchanged.
 
 - [x] **Step Z11: Exclude Videos from Studio Filmstrip (`getAllPhotos`)**
   - **Photos-Only Query**: Changed `GalleryRepository.getAllPhotos()` to query `GalleryFilter.PHOTOS` instead of `GalleryFilter.ALL`, preventing video URIs from populating Studio Screen photo filmstrip tiles.
@@ -43,7 +43,7 @@
   - **Eraser Controls & Undo Stack**: Brush size slider with live circle preview, Opacity slider, Erase/Restore mode toggle, and 25-step undo/redo history stack managed by `StudioViewModel`.
   - **State Persistence & Unit Tests**: Added `StudioViewModel` and `StudioStateSaver` small-values saver. All 117 unit tests passing cleanly. NOT VERIFIED on device.
 
-- [x] **Step Z5: Studio Eraser Brush Drawing at All Zoom Levels**
+- [/] **Step Z5: Studio Eraser Brush Drawing at All Zoom Levels (Partial)**
   - **Touch Mode Evaluator**: Extracted pure evaluator `decideTouchMode(pointerCount, scale, isDrawToolActive, isStudio)`. Evaluates `TouchMode.DRAW` for 1-finger drags when Eraser is active in Studio at all zoom levels ($100\%$ to $800\%$), `TouchMode.ZOOM_PAN` for 2+ pointers, and `TouchMode.PAN` for non-draw tools when zoomed.
   - **ZoomableBox & Studio Integration**: Bypassed panning in `ZoomableBox` when `TouchMode.DRAW` is active so inner `Canvas` receives all single-finger drag events. Replacing `detectDragGestures` with `awaitEachGesture` in `StudioScreen.kt`, ending stroke the moment `pointerCount >= 2`.
   - **Unit Tests & Device**: Added `decideTouchMode` unit tests and multi-scale coordinate mapping tests in `PhotoZoomAndNavigationTest.kt` (110 unit tests passing total across 21 test classes). NOT VERIFIED on device.
