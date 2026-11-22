@@ -56,7 +56,7 @@ class GalleryRepository(
     }
 
     suspend fun getAllPhotos(): List<Uri> = withContext(Dispatchers.IO) {
-        return@withContext getFilteredMediaItems(GalleryFilter.ALL).map { it.uri }
+        return@withContext getFilteredMediaItems(GalleryFilter.PHOTOS).map { it.uri }
     }
 
     suspend fun getFilteredMediaItems(filter: GalleryFilter = GalleryFilter.ALL): List<MediaItemInfo> = withContext(Dispatchers.IO) {

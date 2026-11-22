@@ -21,6 +21,13 @@ import org.junit.Test
 class PhotoZoomAndNavigationTest {
 
     @Test
+    fun stepZ11_galleryFilterEnumValues_verifyPhotosFilter() {
+        assertEquals("Photos", com.lensora.ai.data.GalleryFilter.PHOTOS.displayName)
+        assertEquals("All", com.lensora.ai.data.GalleryFilter.ALL.displayName)
+        assertEquals("Videos", com.lensora.ai.data.GalleryFilter.VIDEOS.displayName)
+    }
+
+    @Test
     fun stepZ10_videoSupportPureLogicTests_mimeDurationAndCacheKey() {
         // 1. isVideoMimeType
         assertTrue(isVideoMimeType("video/mp4"))

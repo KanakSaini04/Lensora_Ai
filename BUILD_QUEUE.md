@@ -56,8 +56,9 @@
 | Z6 | Studio screen redesign (Lightroom Mobile style) | None | DONE | 5e59119 | 115 tests pass, verified on Redmi Note 13 Pro 5G (2312DRA50I) | Lightroom Mobile layout (~65% photo height), Fit chip, 25-step undo history |
 | Z7 | App-wide portrait lock & hardware sensor orientation for capture | None | DONE | a6d6617 | 119 tests pass, NOT VERIFIED on device | Portrait lock on .MainActivity, OrientationEventListener attached |
 | Z8 | Video recording Toast main thread fix | None | DONE | 222904c | 119 tests pass, NOT VERIFIED on device | Dispatched UI callbacks on Handler(Looper.getMainLooper()) |
-| Z10 | Gallery video thumbnails & Quick View Media3 playback | None | DONE | 98baa20 | 120 tests pass, NOT VERIFIED on device | Native API 33 loadThumbnail, duration pills, Media3 ExoPlayer |
-| Z10b | Fix Z10 video player bugs (lifecycle pause, duration, tap conflict, strings) | None | DONE | step-Z10b-video-fixes | 120 tests pass, NOT VERIFIED on device | ON_STOP pause observer, ready state duration, tap toggle, localized strings |
+| Z10 | Gallery video thumbnails & Quick View Media3 playback | None | DONE | 98baa20 | 120 tests pass, VERIFIED on device (owner, 2026-11-22) | Native API 33 loadThumbnail, duration pills, Media3 ExoPlayer |
+| Z10b | Fix Z10 video player bugs (lifecycle pause, duration, tap conflict, strings) | None | DONE | dbb561e | 120 tests pass, VERIFIED on device (owner, 2026-11-22) | ON_STOP pause observer, ready state duration, tap toggle, localized strings |
+| Z11 | Exclude videos from Studio filmstrip (`getAllPhotos`) | None | DONE | 4076f0b | 121 tests pass, VERIFIED on device (owner, 2026-11-22) | Changed getAllPhotos() to query GalleryFilter.PHOTOS |
 
 ## DECISIONS
 - 2026-11-18: Initialized master build queue from docs/MASTER_BUILD_PROMPT.md.

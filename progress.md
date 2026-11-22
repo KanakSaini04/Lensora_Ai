@@ -2,17 +2,22 @@
 
 ## Master Build Mode (Phases P0 - P9 - 100% COMPLETE)
 
+- [x] **Step Z11: Exclude Videos from Studio Filmstrip (`getAllPhotos`)**
+  - **Photos-Only Query**: Changed `GalleryRepository.getAllPhotos()` to query `GalleryFilter.PHOTOS` instead of `GalleryFilter.ALL`, preventing video URIs from populating Studio Screen photo filmstrip tiles.
+  - **RAW DNG Finding**: Verified that `GalleryFilter.PHOTOS` excludes RAW DNG files (`isRaw == false`).
+  - **Unit Tests**: Added `stepZ11_galleryFilterEnumValues_verifyPhotosFilter` unit test (121 unit tests passing total across 21 test classes). VERIFIED on device (owner, 2026-11-22).
+
 - [x] **Step Z10b: Fix Z10 Video Player Bugs & Localized Strings**
   - **Lifecycle Pause & Initial Duration**: Added `LifecycleEventObserver` on `ON_STOP` to pause active video playback when app goes to background. Set `durationMs` on `STATE_READY` and `STATE_ENDED` in `onPlaybackStateChanged`.
   - **Tap Gesture Isolation**: Hoisted tap callback to toggle both video controls overlay and Quick View top bar simultaneously.
   - **Localized Strings**: Extracted hardcoded UI strings to `strings.xml` (`R.string.video_unavailable`, `R.string.unable_to_play_video`, `R.string.play`, `R.string.pause`, `R.string.mute`, `R.string.unmute`, `R.string.badge_video`).
-  - **Unit Tests**: 120 unit tests passing total across 21 test classes. NOT VERIFIED on device.
+  - **Unit Tests**: 120 unit tests passing total across 21 test classes. VERIFIED on device (owner, 2026-11-22).
 
 - [x] **Step Z10: Gallery Video Thumbnails & Quick View Media3 Playback**
   - **Video Thumbnails & Duration Badges**: Created `VideoThumbnailLoader.kt` using native API 33 `ContentResolver.loadThumbnail(uri, Size(512, 512), null)` with 16MB in-memory `LruCache`. Updated `GalleryRepository.kt` to query `MediaStore.Video.Media.DURATION` and rendered video thumbnails with VIDEO badge and duration pills (`"00:05"`).
   - **Quick View Media3 Video Player**: Created `QuickViewVideoPlayer.kt` using `TextureView` bound to `Media3 ExoPlayer`. Added overlay controls (play/pause toggle, seek slider, duration display, mute toggle), dynamic aspect ratio calculation, error handling (`onPlayerError`), and lifecycle release (`DisposableEffect`).
   - **Pager Isolation & Auto-Pause**: Paused video playback automatically when scrolling to another pager page or on `ON_STOP` lifecycle event. Preserved 100% unchanged photo zoom and navigation behaviors.
-  - **Unit Tests**: Added pure logic unit tests for `isVideoMimeType`, `formatDurationMs`, and `buildThumbnailCacheKey` (120 unit tests passing total across 21 test classes). NOT VERIFIED on device.
+  - **Unit Tests**: Added pure logic unit tests for `isVideoMimeType`, `formatDurationMs`, and `buildThumbnailCacheKey` (120 unit tests passing total across 21 test classes). VERIFIED on device (owner, 2026-11-22).
 
 - [x] **Step Z8: Video Recording Toast Main Thread Dispatch Fix**
   - **Main Thread Callback Dispatch**: Added `mainHandler` (`Handler(Looper.getMainLooper())`) to `CameraController.kt`. Dispatched all UI callbacks (`onRecordingStarted`, `onVideoSaved`, `onPhotoSaved`, `onError`) onto main thread.

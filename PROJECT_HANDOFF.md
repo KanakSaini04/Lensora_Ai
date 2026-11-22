@@ -6,12 +6,12 @@
 
 ## 0. Status block (update every step)
 - **Last updated**: 2026-11-22
-- **Branch / HEAD**: `step-Z10-gallery-video`
-- **Last completed step**: Step Z10 - Gallery Video Thumbnails & Quick View Media3 Playback
-- **In progress**: Step Z10 verification & handoff
-- **Unit tests**: 120 passed, 0 skipped, 0 failed across 21 test classes
+- **Branch / HEAD**: `step-Z11-studio-photos-only`
+- **Last completed step**: Step Z11 - Exclude Videos from Studio Filmstrip (`getAllPhotos`)
+- **In progress**: Step Z11 verification & handoff
+- **Unit tests**: 121 passed, 0 skipped, 0 failed across 21 test classes
 - **Baseline APK size**: 94,720,306 bytes (~90.33 MB)
-- **Last emulator check**: `emulator-5554` (`Medium_Phone`), 2026-11-20 (App launches cleanly, Google Drive Sign-In dialog functioning, 120 unit tests passing); **Last physical-device (Redmi) check**: Step Z10 (Installed & launched on `2312DRA50I`, video thumbnails and Media3 player active, 120 unit tests passing)
+- **Last emulator check**: `emulator-5554` (`Medium_Phone`), 2026-11-20 (App launches cleanly, Google Drive Sign-In dialog functioning, 121 unit tests passing); **Last physical-device (Redmi) check**: Step Z11 (NOT VERIFIED on device; `getAllPhotos` queries `GalleryFilter.PHOTOS`, 121 unit tests passing)
 
 ## 1. Boot order for a new AI
 1. `GEMINI.md` (coding-agent rules & Section 10 Run/Device policy)

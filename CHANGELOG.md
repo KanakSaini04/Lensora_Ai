@@ -1,3 +1,9 @@
+## [Unreleased] - Step Z11: Exclude Videos from Studio Filmstrip (2026-11-22)
+
+### Fixed
+- **Exclude Videos from Studio Filmstrip (Step Z11)**:
+  - `GalleryRepository.kt`: Changed `getAllPhotos()` to query `GalleryFilter.PHOTOS` instead of `GalleryFilter.ALL`, excluding video URIs from Studio Screen filmstrip tiles. All 121 unit tests passing cleanly.
+
 ## [Unreleased] - Step Z10: Gallery Video Thumbnails & Quick View Media3 Playback (2026-11-22)
 
 ### Added

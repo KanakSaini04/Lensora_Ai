@@ -1,11 +1,26 @@
 # Lensora_Ai Master Build Report
 
+## Step Z11 - Exclude Videos from Studio Filmstrip (`getAllPhotos`)
+- **Photos-Only Query**: Changed `GalleryRepository.getAllPhotos()` to query `GalleryFilter.PHOTOS` instead of `GalleryFilter.ALL`, excluding video URIs from Studio Screen filmstrip.
+- **RAW DNG Finding**: Verified that `GalleryFilter.PHOTOS` excludes RAW DNG files (`isRaw == false`).
+- **Unit Tests**: 121 passed across 21 test classes (Note: The 121st test `stepZ11_galleryFilterEnumValues_verifyPhotosFilter` asserts enum `displayName` properties and does not test `getAllPhotos()` query behavior directly, as MediaStore ContentResolver queries require an Android system environment).
+- **Device Status**: **VERIFIED on device (owner, 2026-11-22)**: Studio opens on newest photo, no blank tiles, filmstrip shows only photos and edited photos.
+
+### Step Z11 Break-It Table (5 Attacks)
+| # | Layer | Attack | Expected Result | Actual Result | Verdict |
+|---|---|---|---|---|---|
+| 1 | Data | Studio Screen launch when MediaStore contains 100% video files | Studio filmstrip shows empty state without crashing or rendering black tiles | NOT RUN on device | NOT RUN |
+| 2 | Data | Studio Screen launch when latest MediaStore file is an MP4 video | Studio preview area displays latest photo image instead of video tile | NOT RUN on device | NOT RUN |
+| 3 | UI | Rapid tapping between Studio filmstrip photo items while background scanning completes | Selected photo index switches cleanly without race condition or crash | NOT RUN on device | NOT RUN |
+| 4 | State | Rotating device while Studio filmstrip contains photos | Photo state and selected photo index persist cleanly via `StudioViewModel` | NOT RUN on device | NOT RUN |
+| 5 | OS | Revoking storage permissions while Studio filmstrip is loaded | Studio handles empty media list safely without null pointer exception | NOT RUN on device | NOT RUN |
+
 ## Step Z10b - Fix Z10 Video Player Bugs & Localized Strings
 - **Lifecycle Pause & Initial Duration**: Added `LifecycleEventObserver` on `ON_STOP` to pause active video playback when app goes to background. Set `durationMs` on `STATE_READY` and `STATE_ENDED` in `onPlaybackStateChanged`.
 - **Tap Gesture Isolation**: Hoisted tap callback to toggle both video controls overlay and Quick View top bar simultaneously.
 - **Localized Strings**: Extracted hardcoded UI strings to `strings.xml` (`R.string.video_unavailable`, `R.string.unable_to_play_video`, `R.string.play`, `R.string.pause`, `R.string.mute`, `R.string.unmute`, `R.string.badge_video`).
 - **Unit Tests**: 120 passed across 21 test classes.
-- **Device Status**: **NOT VERIFIED on device** (`DEVICE REQUIRED: no` for Step Z10b).
+- **Device Status**: **VERIFIED on device (owner, 2026-11-22)** for video pause on Home press, duration display before Play, and video tap toggling Quick View top bar. (Video seek, mute, corrupt video, and rotation remain NOT VERIFIED).
 
 ### Step Z10b Break-It Table (10 Attacks)
 | # | Layer | Attack | Expected Result | Actual Result | Verdict |
@@ -26,7 +41,7 @@
 - **Quick View Media3 Video Player**: Created `QuickViewVideoPlayer.kt` using `TextureView` bound to `Media3 ExoPlayer`. Added overlay controls (play/pause toggle, seek slider, duration display, mute toggle), dynamic aspect ratio calculation, error handling (`onPlayerError`), and lifecycle release (`DisposableEffect`).
 - **Pager Isolation & Auto-Pause**: Paused video playback automatically when scrolling to another pager page or on `ON_STOP` lifecycle event. Preserved 100% unchanged photo zoom and navigation behaviors.
 - **Unit Tests**: 120 passed across 21 test classes.
-- **Device Status**: **NOT VERIFIED on device** (Installed & launched on Redmi Note 13 Pro 5G `2312DRA50I`; awaiting manual user testing).
+- **Device Status**: **VERIFIED on device (owner, 2026-11-22)** for gallery video thumbnails, VIDEO badges, and duration pills. (Swipe-to-pause and playback seek remain NOT VERIFIED).
 
 ## Step Z8 - Video Recording Toast Main Thread Dispatch Fix
 - **Main Thread Callback Dispatch**: Added `mainHandler` (`Handler(Looper.getMainLooper())`) to `CameraController.kt`. Dispatched all UI callbacks (`onRecordingStarted`, `onVideoSaved`, `onPhotoSaved`, `onError`) onto main thread.
