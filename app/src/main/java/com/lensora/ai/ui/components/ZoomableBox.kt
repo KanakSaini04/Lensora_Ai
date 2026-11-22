@@ -84,6 +84,17 @@ object ZoomTransformMath {
         }
     }
 
+    fun snapSensorDegreesToSurfaceRotation(degrees: Int, lastRotationDegrees: Int = 0): Int {
+        if (degrees == -1) return lastRotationDegrees
+        val normDegrees = (degrees % 360 + 360) % 360
+        return when (normDegrees) {
+            in 45..134 -> 270
+            in 135..224 -> 180
+            in 225..314 -> 90
+            else -> 0
+        }
+    }
+
     fun calculateScale(currentScale: Float, zoomChange: Float, minScale: Float = 1.0f, maxScale: Float = 8.0f): Float {
         return (currentScale * zoomChange).coerceIn(minScale, maxScale)
     }

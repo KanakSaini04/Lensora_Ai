@@ -235,18 +235,20 @@ fun CameraScreen(
             }
         }
 
-        val display = if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.R) {
-            context.display
-        } else {
-            @Suppress("DEPRECATION")
-            (context.getSystemService(Context.WINDOW_SERVICE) as? WindowManager)?.defaultDisplay
-        }
+        var sensorRotationDegrees by remember { mutableIntStateOf(0) }
 
-        val deviceRotationDegrees = when (display?.rotation) {
-            Surface.ROTATION_90 -> 90
-            Surface.ROTATION_180 -> 180
-            Surface.ROTATION_270 -> 270
-            else -> 0
+        DisposableEffect(context) {
+            val orientationListener = object : android.view.OrientationEventListener(context) {
+                override fun onOrientationChanged(orientation: Int) {
+                    sensorRotationDegrees = ZoomTransformMath.snapSensorDegreesToSurfaceRotation(orientation, sensorRotationDegrees)
+                }
+            }
+            if (orientationListener.canDetectOrientation()) {
+                orientationListener.enable()
+            }
+            onDispose {
+                orientationListener.disable()
+            }
         }
 
         // Shutter Timer Countdown Tick Effect
@@ -257,7 +259,7 @@ fun CameraScreen(
                 countdownRemaining = next
                 if (next == 0) {
                     cameraController.takePicture(
-                        displayRotationDegrees = deviceRotationDegrees,
+                        displayRotationDegrees = sensorRotationDegrees,
                         isRawEnabled = isRawEnabled && selectedMode == CameraMode.PRO,
                         vibePreset = VibeState.selectedVibe.name,
                         onPhotoSaved = { uri, msg ->
@@ -770,7 +772,7 @@ fun CameraScreen(
                                         } else {
                                             cameraController.startVideoRecording(
                                                 hasAudioPermission = hasAudioPermission,
-                                                displayRotationDegrees = deviceRotationDegrees,
+                                                displayRotationDegrees = sensorRotationDegrees,
                                                 onRecordingStarted = {
                                                     isRecordingVideo = true
                                                     Toast.makeText(context, "Recording started...", Toast.LENGTH_SHORT).show()
@@ -786,7 +788,7 @@ fun CameraScreen(
                                             countdownRemaining = timerMode.seconds
                                         } else if (countdownRemaining == 0) {
                                             cameraController.takePicture(
-                                                displayRotationDegrees = deviceRotationDegrees,
+                                                displayRotationDegrees = sensorRotationDegrees,
                                                 isRawEnabled = isRawEnabled && selectedMode == CameraMode.PRO,
                                                 vibePreset = VibeState.selectedVibe.name,
                                                 onPhotoSaved = { uri, msg ->

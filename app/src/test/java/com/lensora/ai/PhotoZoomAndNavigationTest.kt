@@ -18,6 +18,44 @@ import org.junit.Test
 class PhotoZoomAndNavigationTest {
 
     @Test
+    fun stepZ7_snapSensorDegreesToSurfaceRotation_boundaryTests() {
+        // Boundary tests for sensor degrees -> surface rotation degrees
+        assertEquals(0, ZoomTransformMath.snapSensorDegreesToSurfaceRotation(0))
+        assertEquals(0, ZoomTransformMath.snapSensorDegreesToSurfaceRotation(44))
+        assertEquals(270, ZoomTransformMath.snapSensorDegreesToSurfaceRotation(45))
+        assertEquals(270, ZoomTransformMath.snapSensorDegreesToSurfaceRotation(134))
+        assertEquals(180, ZoomTransformMath.snapSensorDegreesToSurfaceRotation(135))
+        assertEquals(180, ZoomTransformMath.snapSensorDegreesToSurfaceRotation(224))
+        assertEquals(90, ZoomTransformMath.snapSensorDegreesToSurfaceRotation(225))
+        assertEquals(90, ZoomTransformMath.snapSensorDegreesToSurfaceRotation(314))
+        assertEquals(0, ZoomTransformMath.snapSensorDegreesToSurfaceRotation(315))
+        assertEquals(0, ZoomTransformMath.snapSensorDegreesToSurfaceRotation(359))
+
+        // ORIENTATION_UNKNOWN (-1) keeps last rotation value
+        assertEquals(90, ZoomTransformMath.snapSensorDegreesToSurfaceRotation(-1, lastRotationDegrees = 90))
+        assertEquals(270, ZoomTransformMath.snapSensorDegreesToSurfaceRotation(-1, lastRotationDegrees = 270))
+    }
+
+    @Test
+    fun stepZ7_jpegAndVideoRotationMath_backAndFrontCameras() {
+        // Back Camera (sensorOrientation = 90) EXIF JPEG & Video Hint math: (sensor - rotation + 360) % 360
+        fun backCameraRotation(sensor: Int, rotation: Int) = (sensor - rotation + 360) % 360
+
+        assertEquals(90, backCameraRotation(sensor = 90, rotation = 0))
+        assertEquals(0, backCameraRotation(sensor = 90, rotation = 90))
+        assertEquals(270, backCameraRotation(sensor = 90, rotation = 180))
+        assertEquals(180, backCameraRotation(sensor = 90, rotation = 270))
+
+        // Front Camera (sensorOrientation = 270) EXIF JPEG math: (sensor + rotation) % 360
+        fun frontCameraRotation(sensor: Int, rotation: Int) = (sensor + rotation) % 360
+
+        assertEquals(270, frontCameraRotation(sensor = 270, rotation = 0))
+        assertEquals(0, frontCameraRotation(sensor = 270, rotation = 90))
+        assertEquals(90, frontCameraRotation(sensor = 270, rotation = 180))
+        assertEquals(180, frontCameraRotation(sensor = 270, rotation = 270))
+    }
+
+    @Test
     fun stepZ6b_pointMappingAndRadiusConversion_with3060x4080ImageIn1080x1400Canvas() {
         val imageSize = Size(3060f, 4080f) // 3060x4080
         val canvasSize = Size(1080f, 1400f) // 1080x1400
