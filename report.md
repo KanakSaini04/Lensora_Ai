@@ -1,5 +1,33 @@
 # Lensora_Ai Master Build Report
 
+## Step Z10b - Fix Z10 Video Player Bugs & Localized Strings
+- **Lifecycle Pause & Initial Duration**: Added `LifecycleEventObserver` on `ON_STOP` to pause active video playback when app goes to background. Set `durationMs` on `STATE_READY` and `STATE_ENDED` in `onPlaybackStateChanged`.
+- **Tap Gesture Isolation**: Hoisted tap callback to toggle both video controls overlay and Quick View top bar simultaneously.
+- **Localized Strings**: Extracted hardcoded UI strings to `strings.xml` (`R.string.video_unavailable`, `R.string.unable_to_play_video`, `R.string.play`, `R.string.pause`, `R.string.mute`, `R.string.unmute`, `R.string.badge_video`).
+- **Unit Tests**: 120 passed across 21 test classes.
+- **Device Status**: **NOT VERIFIED on device** (`DEVICE REQUIRED: no` for Step Z10b).
+
+### Step Z10b Break-It Table (10 Attacks)
+| # | Layer | Attack | Expected Result | Actual Result | Verdict |
+|---|---|---|---|---|---|
+| 1 | Logic | `formatDurationMs(null)` | Returns `"00:00"` | `"00:00"` | GOOD (Unit Test) |
+| 2 | Logic | `formatDurationMs(-500L)` | Returns `"00:00"` | `"00:00"` | GOOD (Unit Test) |
+| 3 | Logic | `formatDurationMs(59000L)` | Returns `"00:59"` | `"00:59"` | GOOD (Unit Test) |
+| 4 | Logic | `formatDurationMs(61000L)` | Returns `"01:01"` | `"01:01"` | GOOD (Unit Test) |
+| 5 | Logic | `formatDurationMs(3900000L)` | Returns `"01:05:00"` | `"01:05:00"` | GOOD (Unit Test) |
+| 6 | Logic | `isVideoMimeType("video/mp4")` | Returns `true` | `true` | GOOD (Unit Test) |
+| 7 | Logic | `isVideoMimeType("image/jpeg")` | Returns `false` | `false` | GOOD (Unit Test) |
+| 8 | Logic | `buildThumbnailCacheKey("uri", 100L, 200L)` | Returns `"uri_100_200"` | `"uri_100_200"` | GOOD (Unit Test) |
+| 9 | OS | Rapid app backgrounding on `ON_STOP` during active playback | Video automatically pauses via `LifecycleEventObserver` | NOT RUN on device | NOT RUN |
+| 10 | Data | Corrupted/missing video file playback | Player displays `R.string.video_unavailable` card via `onPlayerError` without crash | NOT RUN on device | NOT RUN |
+
+## Step Z10 - Gallery Video Thumbnails & Quick View Media3 Playback
+- **Video Thumbnails & Duration Badges**: Created `VideoThumbnailLoader.kt` using native API 33 `ContentResolver.loadThumbnail(uri, Size(512, 512), null)` with 16MB in-memory `LruCache`. Updated `GalleryRepository.kt` to query `MediaStore.Video.Media.DURATION` and rendered video thumbnails with VIDEO badge and duration pills (`"00:05"`).
+- **Quick View Media3 Video Player**: Created `QuickViewVideoPlayer.kt` using `TextureView` bound to `Media3 ExoPlayer`. Added overlay controls (play/pause toggle, seek slider, duration display, mute toggle), dynamic aspect ratio calculation, error handling (`onPlayerError`), and lifecycle release (`DisposableEffect`).
+- **Pager Isolation & Auto-Pause**: Paused video playback automatically when scrolling to another pager page or on `ON_STOP` lifecycle event. Preserved 100% unchanged photo zoom and navigation behaviors.
+- **Unit Tests**: 120 passed across 21 test classes.
+- **Device Status**: **NOT VERIFIED on device** (Installed & launched on Redmi Note 13 Pro 5G `2312DRA50I`; awaiting manual user testing).
+
 ## Step Z8 - Video Recording Toast Main Thread Dispatch Fix
 - **Main Thread Callback Dispatch**: Added `mainHandler` (`Handler(Looper.getMainLooper())`) to `CameraController.kt`. Dispatched all UI callbacks (`onRecordingStarted`, `onVideoSaved`, `onPhotoSaved`, `onError`) onto main thread.
 - **Crash Resolved**: Fixed `NullPointerException: Can't toast on a thread that has not called Looper.prepare()` crash on video recording start.

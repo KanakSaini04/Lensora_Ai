@@ -1,3 +1,12 @@
+## [Unreleased] - Step Z10: Gallery Video Thumbnails & Quick View Media3 Playback (2026-11-22)
+
+### Added
+- **Gallery Video Thumbnails & Quick View Media3 Playback (Step Z10)**:
+  - `VideoThumbnailLoader.kt`: Created native API 33 `ContentResolver.loadThumbnail` video frame loader with 16MB in-memory `LruCache`.
+  - `GalleryRepository.kt` & `GalleryScreen.kt`: Added `MediaStore.Video.Media.DURATION` to query projection and rendered video tile thumbnails with VIDEO badge and duration pills (`formatDurationMs`).
+  - `QuickViewVideoPlayer.kt`: Created Media3 ExoPlayer component with `TextureView`, dynamic aspect ratio calculation, controls overlay (play/pause, seek slider, duration text, mute toggle), error handling (`onPlayerError`), and `DisposableEffect` release.
+  - `QuickViewScreen.kt`: Integrated `QuickViewVideoPlayer` for video items inside `HorizontalPager` with auto-pause on page scroll and `ON_STOP` lifecycle events. All 120 unit tests passing cleanly.
+
 ## [Unreleased] - Step Z8: Video Recording Toast Main Thread Fix (2026-11-22)
 
 ### Fixed

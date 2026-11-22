@@ -122,6 +122,7 @@ fun QuickViewScreen(
                     QuickViewVideoPlayer(
                         uri = item.uri,
                         isCurrentPage = (pagerState.currentPage == page),
+                        onTap = { isTopBarVisible = !isTopBarVisible },
                         modifier = Modifier.fillMaxSize(),
                     )
                 } else {

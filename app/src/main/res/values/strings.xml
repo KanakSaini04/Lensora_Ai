@@ -10,4 +10,11 @@
     <string name="restore">Restore</string>
     <string name="reset_edits">Reset</string>
     <string name="filmstrip">FILMSTRIP</string>
+    <string name="video_unavailable">Video Unavailable</string>
+    <string name="unable_to_play_video">Unable to play video file</string>
+    <string name="play">Play</string>
+    <string name="pause">Pause</string>
+    <string name="mute">Mute</string>
+    <string name="unmute">Unmute</string>
+    <string name="badge_video">VIDEO</string>
 </resources>

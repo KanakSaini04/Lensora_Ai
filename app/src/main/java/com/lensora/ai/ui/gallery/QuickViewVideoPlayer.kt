@@ -21,7 +21,6 @@ import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.navigationBarsPadding
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
-import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
@@ -48,17 +47,21 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
-import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.compose.ui.viewinterop.AndroidView
+import androidx.lifecycle.Lifecycle
+import androidx.lifecycle.LifecycleEventObserver
+import androidx.lifecycle.compose.LocalLifecycleOwner
 import androidx.media3.common.MediaItem
 import androidx.media3.common.PlaybackException
 import androidx.media3.common.Player
 import androidx.media3.common.VideoSize
 import androidx.media3.exoplayer.ExoPlayer
+import com.lensora.ai.R
 import com.lensora.ai.ui.theme.CharcoalSurface
 import com.lensora.ai.ui.theme.ColorMutedGray
 import com.lensora.ai.ui.theme.ColorWhite
@@ -71,16 +74,17 @@ import kotlinx.coroutines.isActive
 fun QuickViewVideoPlayer(
     uri: Uri,
     isCurrentPage: Boolean,
+    onTap: () -> Unit = {},
     modifier: Modifier = Modifier,
 ) {
     val context = LocalContext.current
+    val lifecycleOwner = LocalLifecycleOwner.current
     val tag = "QuickViewVideoPlayer"
 
     var videoAspect by remember { mutableFloatStateOf(16f / 9f) }
     var isPlaying by remember { mutableStateOf(false) }
     var isMuted by remember { mutableStateOf(false) }
     var hasError by remember { mutableStateOf(false) }
-    var errorMessage by remember { mutableStateOf<String?>(null) }
     var isControlsVisible by remember { mutableStateOf(true) }
 
     var currentPositionMs by remember { mutableLongStateOf(0L) }
@@ -96,7 +100,14 @@ fun QuickViewVideoPlayer(
         }
     }
 
-    DisposableEffect(player) {
+    DisposableEffect(lifecycleOwner, player) {
+        val observer = LifecycleEventObserver { _, event ->
+            if (event == Lifecycle.Event.ON_STOP && player.isPlaying) {
+                player.pause()
+            }
+        }
+        lifecycleOwner.lifecycle.addObserver(observer)
+
         val listener = object : Player.Listener {
             override fun onVideoSizeChanged(videoSize: VideoSize) {
                 if (videoSize.height > 0) {
@@ -107,6 +118,19 @@ fun QuickViewVideoPlayer(
                 }
             }
 
+            override fun onPlaybackStateChanged(playbackState: Int) {
+                if (playbackState == Player.STATE_READY) {
+                    val dur = player.duration.coerceAtLeast(0L)
+                    durationMs = dur
+                    currentPositionMs = player.currentPosition.coerceAtLeast(0L)
+                } else if (playbackState == Player.STATE_ENDED) {
+                    val dur = player.duration.coerceAtLeast(0L)
+                    durationMs = dur
+                    currentPositionMs = dur
+                    isPlaying = false
+                }
+            }
+
             override fun onIsPlayingChanged(playing: Boolean) {
                 isPlaying = playing
             }
@@ -114,13 +138,13 @@ fun QuickViewVideoPlayer(
             override fun onPlayerError(error: PlaybackException) {
                 Log.e(tag, "Playback error for $uri: ${error.localizedMessage}", error)
                 hasError = true
-                errorMessage = error.localizedMessage ?: "Video Playback Error"
             }
         }
 
         player.addListener(listener)
 
         onDispose {
+            lifecycleOwner.lifecycle.removeObserver(observer)
             player.removeListener(listener)
             player.release()
             Log.i(tag, "Released ExoPlayer for $uri")
@@ -138,7 +162,8 @@ fun QuickViewVideoPlayer(
     LaunchedEffect(isPlaying, isDraggingSeekBar) {
         while (isActive && isPlaying && !isDraggingSeekBar) {
             currentPositionMs = player.currentPosition.coerceAtLeast(0L)
-            durationMs = player.duration.coerceAtLeast(0L)
+            val dur = player.duration.coerceAtLeast(0L)
+            if (dur > 0L) durationMs = dur
             delay(200)
         }
     }
@@ -151,6 +176,7 @@ fun QuickViewVideoPlayer(
                 indication = null,
             ) {
                 isControlsVisible = !isControlsVisible
+                onTap()
             },
         contentAlignment = Alignment.Center,
     ) {
@@ -165,14 +191,14 @@ fun QuickViewVideoPlayer(
                     horizontalAlignment = Alignment.CenterHorizontally,
                 ) {
                     Text(
-                        text = "Video Unavailable",
+                        text = stringResource(R.string.video_unavailable),
                         color = ColorWhite,
                         fontWeight = FontWeight.Bold,
                         fontSize = 16.sp,
                     )
                     Spacer(modifier = Modifier.height(8.dp))
                     Text(
-                        text = errorMessage ?: "Unable to play video file",
+                        text = stringResource(R.string.unable_to_play_video),
                         color = ColorMutedGray,
                         fontSize = 12.sp,
                     )
@@ -228,7 +254,7 @@ fun QuickViewVideoPlayer(
                     ) {
                         Icon(
                             imageVector = if (isPlaying) Icons.Default.Pause else Icons.Default.PlayArrow,
-                            contentDescription = if (isPlaying) "Pause" else "Play",
+                            contentDescription = if (isPlaying) stringResource(R.string.pause) else stringResource(R.string.play),
                             tint = ColorWhite,
                             modifier = Modifier.size(36.dp),
                         )
@@ -269,7 +295,7 @@ fun QuickViewVideoPlayer(
                             ) {
                                 Icon(
                                     imageVector = if (isMuted) Icons.Outlined.VolumeOff else Icons.Outlined.VolumeUp,
-                                    contentDescription = if (isMuted) "Unmute" else "Mute",
+                                    contentDescription = if (isMuted) stringResource(R.string.unmute) else stringResource(R.string.mute),
                                     tint = ColorWhite,
                                     modifier = Modifier.size(22.dp),
                                 )

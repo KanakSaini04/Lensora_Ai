@@ -2,16 +2,28 @@
 
 ## Master Build Mode (Phases P0 - P9 - 100% COMPLETE)
 
+- [x] **Step Z10b: Fix Z10 Video Player Bugs & Localized Strings**
+  - **Lifecycle Pause & Initial Duration**: Added `LifecycleEventObserver` on `ON_STOP` to pause active video playback when app goes to background. Set `durationMs` on `STATE_READY` and `STATE_ENDED` in `onPlaybackStateChanged`.
+  - **Tap Gesture Isolation**: Hoisted tap callback to toggle both video controls overlay and Quick View top bar simultaneously.
+  - **Localized Strings**: Extracted hardcoded UI strings to `strings.xml` (`R.string.video_unavailable`, `R.string.unable_to_play_video`, `R.string.play`, `R.string.pause`, `R.string.mute`, `R.string.unmute`, `R.string.badge_video`).
+  - **Unit Tests**: 120 unit tests passing total across 21 test classes. NOT VERIFIED on device.
+
+- [x] **Step Z10: Gallery Video Thumbnails & Quick View Media3 Playback**
+  - **Video Thumbnails & Duration Badges**: Created `VideoThumbnailLoader.kt` using native API 33 `ContentResolver.loadThumbnail(uri, Size(512, 512), null)` with 16MB in-memory `LruCache`. Updated `GalleryRepository.kt` to query `MediaStore.Video.Media.DURATION` and rendered video thumbnails with VIDEO badge and duration pills (`"00:05"`).
+  - **Quick View Media3 Video Player**: Created `QuickViewVideoPlayer.kt` using `TextureView` bound to `Media3 ExoPlayer`. Added overlay controls (play/pause toggle, seek slider, duration display, mute toggle), dynamic aspect ratio calculation, error handling (`onPlayerError`), and lifecycle release (`DisposableEffect`).
+  - **Pager Isolation & Auto-Pause**: Paused video playback automatically when scrolling to another pager page or on `ON_STOP` lifecycle event. Preserved 100% unchanged photo zoom and navigation behaviors.
+  - **Unit Tests**: Added pure logic unit tests for `isVideoMimeType`, `formatDurationMs`, and `buildThumbnailCacheKey` (120 unit tests passing total across 21 test classes). NOT VERIFIED on device.
+
 - [x] **Step Z8: Video Recording Toast Main Thread Dispatch Fix**
   - **Main Thread Callback Dispatch**: Added `mainHandler` (`Handler(Looper.getMainLooper())`) to `CameraController.kt`. Dispatched all UI callbacks (`onRecordingStarted`, `onVideoSaved`, `onPhotoSaved`, `onError`) onto main thread.
   - **Crash Resolved**: Fixed `NullPointerException: Can't toast on a thread that has not called Looper.prepare()` crash on video recording start.
-  - **Unit Tests**: All 119 unit tests passing cleanly across 21 test classes.
+  - **Unit Tests**: All 119 unit tests passing cleanly across 21 test classes. NOT VERIFIED on device.
 
 - [x] **Step Z7: App-Wide Portrait Lock & Hardware Sensor Orientation for Capture**
   - **Portrait Orientation Lock**: Set `android:screenOrientation="portrait"` on `.MainActivity` in `AndroidManifest.xml`.
   - **Hardware Sensor Orientation Listener**: Attached `OrientationEventListener` in `CameraScreen.kt` using pure function `snapSensorDegreesToSurfaceRotation` to track physical hardware rotation (0°, 90°, 180°, 270°) independent of display rotation.
   - **EXIF & Video Rotation**: Passed sensor orientation to `CameraController.takePicture` and `VideoRecorder.startVideoRecording` to ensure landscape photo EXIF and video rotation hints remain 100% accurate when held sideways.
-  - **Unit Tests**: Added boundary unit tests and back/front camera rotation math unit tests in `PhotoZoomAndNavigationTest.kt` (119 unit tests passing total across 21 test classes).
+  - **Unit Tests**: Added boundary unit tests and back/front camera rotation math unit tests in `PhotoZoomAndNavigationTest.kt` (119 unit tests passing total across 21 test classes). NOT VERIFIED on device.
 
 - [x] **Step Z6: Studio Screen Redesign (Lightroom Mobile Style)**
   - **Lightroom Mobile Layout**: Redesigned Studio screen to ~65% photo height with "Fit" reset chip overlay, double-tap zoom reset (when Eraser inactive), top bar with Back button, Undo, Redo, Hold-to-Compare, and Export.

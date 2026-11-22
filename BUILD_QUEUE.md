@@ -54,8 +54,10 @@
 | Z4 | Camera viewfinder swipe to Studio, timestamp pill removal | None | DONE | 1c4060b | 109 tests pass, verified on Redmi Note 13 Pro 5G (2312DRA50I) | Viewfinder swipe to Studio active, timestamp pill removed |
 | Z5 | Studio Eraser brush drawing at all zoom levels | None | Partial | 5f85e7d | 110 tests pass, NOT VERIFIED on device | TouchMode.DRAW evaluator active; physical device verification pending |
 | Z6 | Studio screen redesign (Lightroom Mobile style) | None | DONE | 5e59119 | 115 tests pass, verified on Redmi Note 13 Pro 5G (2312DRA50I) | Lightroom Mobile layout (~65% photo height), Fit chip, 25-step undo history |
-| Z7 | App-wide portrait lock & hardware sensor orientation for capture | None | DONE | a6d6617 | 119 tests pass, verified on Redmi Note 13 Pro 5G (2312DRA50I) | Portrait lock on .MainActivity, OrientationEventListener attached |
-| Z8 | Video recording Toast main thread fix | None | DONE | 222904c | 119 tests pass, verified on Redmi Note 13 Pro 5G (2312DRA50I) | Dispatched UI callbacks on Handler(Looper.getMainLooper()) |
+| Z7 | App-wide portrait lock & hardware sensor orientation for capture | None | DONE | a6d6617 | 119 tests pass, NOT VERIFIED on device | Portrait lock on .MainActivity, OrientationEventListener attached |
+| Z8 | Video recording Toast main thread fix | None | DONE | 222904c | 119 tests pass, NOT VERIFIED on device | Dispatched UI callbacks on Handler(Looper.getMainLooper()) |
+| Z10 | Gallery video thumbnails & Quick View Media3 playback | None | DONE | 98baa20 | 120 tests pass, NOT VERIFIED on device | Native API 33 loadThumbnail, duration pills, Media3 ExoPlayer |
+| Z10b | Fix Z10 video player bugs (lifecycle pause, duration, tap conflict, strings) | None | DONE | step-Z10b-video-fixes | 120 tests pass, NOT VERIFIED on device | ON_STOP pause observer, ready state duration, tap toggle, localized strings |
 
 ## DECISIONS
 - 2026-11-18: Initialized master build queue from docs/MASTER_BUILD_PROMPT.md.
