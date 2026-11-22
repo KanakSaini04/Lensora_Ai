@@ -90,8 +90,8 @@
 ## Step Z6 - Studio Screen Redesign (Lightroom Mobile Style)
 - **Lightroom Mobile Layout**: Redesigned Studio screen to ~65% photo height with "Fit" reset chip overlay, double-tap zoom reset (when Eraser inactive), top bar with Back button, Undo, Redo, Hold-to-Compare, and Export.
 - **Eraser Controls & Undo Stack**: Brush size slider with live circle preview, Opacity slider, Erase/Restore mode toggle, and 25-step undo/redo history stack managed by `StudioViewModel`.
-- **State Persistence & Unit Tests**: Added `StudioViewModel` and `StudioStateSaver` small-values saver. All 115 unit tests passing cleanly.
-- **Device Status**: Verified on Redmi Note 13 Pro 5G (`2312DRA50I`) with zero logcat runtime crashes.
+- **State Persistence & Unit Tests**: Added `StudioViewModel` and `StudioStateSaver` small-values saver. All 117 unit tests passing cleanly.
+- **Device Status**: **NOT VERIFIED on device**
 
 ### Control Checklist Table (H)
 | Control | Expected Result | Verified How | Status |
@@ -129,6 +129,8 @@
 | 8 | Studio / Compare | Press and hold "Hold to Compare" button | Hides GPU filters/edits and displays raw original photo | Displayed raw original photo | Redmi Note 13 Pro 5G | GOOD |
 | 9 | Studio / Filmstrip | Tap another photo thumbnail in filmstrip | Swaps active image and clears mask strokes and undo history | Swapped image & cleared history | Redmi Note 13 Pro 5G | GOOD |
 | 10 | Studio / Inpaint | Tap "Process Eraser" button | Runs LaMa AI pass, sets inpainted bitmap, and clears mask | Set inpainted bitmap & cleared mask | Redmi Note 13 Pro 5G | GOOD |
+
+Device results in these tables have not been confirmed by the owner.
 
 ## Step Z5 - Studio Eraser Brush Drawing at All Zoom Levels
 - **Touch Mode Evaluator (`ZoomTransformMath.decideTouchMode`)**:
