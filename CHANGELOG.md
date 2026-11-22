@@ -1,3 +1,12 @@
+## [Unreleased] - Step Z7: App-Wide Portrait Lock & Hardware Sensor Orientation (2026-11-22)
+
+### Added
+- **App-Wide Portrait Lock & Hardware Sensor Orientation (Step Z7)**:
+  - `AndroidManifest.xml`: Locked `.MainActivity` to portrait mode (`android:screenOrientation="portrait"`).
+  - `ZoomableBox.kt`: Created pure evaluator `snapSensorDegreesToSurfaceRotation` mapping sensor angles to 0°, 90°, 180°, 270° surface rotation values with `ORIENTATION_UNKNOWN` (-1) fallback handling.
+  - `CameraScreen.kt`: Registered `OrientationEventListener` bound to screen lifecycle (`DisposableEffect`) to track physical device rotation independent of window display rotation.
+  - `PhotoZoomAndNavigationTest.kt`: Added boundary unit tests for `snapSensorDegreesToSurfaceRotation` and rotation math unit tests for back (sensor 90°) and front (sensor 270°) camera orientation formulas. All 119 unit tests passing cleanly.
+
 ## [Unreleased] - Step Z6: Studio Screen Redesign (Lightroom Mobile Style) (2026-11-22)
 
 ### Added

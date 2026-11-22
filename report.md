@@ -1,5 +1,12 @@
 # Lensora_Ai Master Build Report
 
+## Step Z7 - App-Wide Portrait Lock & Hardware Sensor Orientation for Capture
+- **Portrait Orientation Lock**: Set `android:screenOrientation="portrait"` on `.MainActivity` in `AndroidManifest.xml`.
+- **Hardware Sensor Orientation Listener**: Attached `OrientationEventListener` in `CameraScreen.kt` using pure function `snapSensorDegreesToSurfaceRotation` to track physical hardware rotation (0°, 90°, 180°, 270°) independent of display rotation.
+- **EXIF & Video Rotation**: Passed sensor orientation to `CameraController.takePicture` and `VideoRecorder.startVideoRecording` to ensure landscape photo EXIF and video rotation hints remain 100% accurate when held sideways.
+- **Unit Tests**: 119 passed across 21 test classes (`PhotoZoomAndNavigationTest`, `CameraSwipeGestureTest`, `BugReproTest`, `ObjectEraserTest`, etc.).
+- **Device Status**: **NOT VERIFIED on device** (Awaiting manual user verification one step at a time).
+
 ## Step Z6 - Studio Screen Redesign (Lightroom Mobile Style)
 - **Lightroom Mobile Layout**: Redesigned Studio screen to ~65% photo height with "Fit" reset chip overlay, double-tap zoom reset (when Eraser inactive), top bar with Back button, Undo, Redo, Hold-to-Compare, and Export.
 - **Eraser Controls & Undo Stack**: Brush size slider with live circle preview, Opacity slider, Erase/Restore mode toggle, and 25-step undo/redo history stack managed by `StudioViewModel`.

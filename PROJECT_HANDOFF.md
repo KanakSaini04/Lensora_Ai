@@ -6,12 +6,12 @@
 
 ## 0. Status block (update every step)
 - **Last updated**: 2026-11-22
-- **Branch / HEAD**: `step-Z6-studio-redesign`
-- **Last completed step**: Step Z6 - Studio Screen Redesign (Lightroom Mobile Style)
-- **In progress**: Step Z6 verification & handoff
-- **Unit tests**: 115 passed, 0 skipped, 0 failed across 21 test classes
+- **Branch / HEAD**: `step-Z7-portrait-lock`
+- **Last completed step**: Step Z7 - Portrait Lock & Sensor Orientation for Capture
+- **In progress**: Step Z7 verification & handoff
+- **Unit tests**: 119 passed, 0 skipped, 0 failed across 21 test classes
 - **Baseline APK size**: 94,720,306 bytes (~90.33 MB)
-- **Last emulator check**: `emulator-5554` (`Medium_Phone`), 2026-11-20 (App launches cleanly, Google Drive Sign-In dialog functioning, 115 unit tests passing); **Last physical-device (Redmi) check**: Step Z6 (Verified on Redmi Note 13 Pro 5G `2312DRA50I`, 115 unit tests passing, Studio redesign active)
+- **Last emulator check**: `emulator-5554` (`Medium_Phone`), 2026-11-20 (App launches cleanly, Google Drive Sign-In dialog functioning, 119 unit tests passing); **Last physical-device (Redmi) check**: Step Z7 (Portrait lock active, sensor orientation listener attached, 119 unit tests passing)
 - **Known Issue**: Video recording Toast crash (`"Can't toast on a thread that has not called Looper.prepare()"`) at `CameraScreen.kt:719` from `CameraController.kt:798` (`startVideoRecording` `onConfigured` callback on background thread); pending resolution in a future step.
 
 ## 1. Boot order for a new AI

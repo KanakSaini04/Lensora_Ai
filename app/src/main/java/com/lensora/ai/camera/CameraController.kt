@@ -21,6 +21,7 @@ import android.media.ImageReader
 import android.os.Build
 import android.os.Handler
 import android.os.HandlerThread
+import android.os.Looper
 import android.os.PowerManager
 import android.os.StatFs
 import android.provider.MediaStore
@@ -42,6 +43,7 @@ import java.util.concurrent.Executors
 class CameraController(private val context: Context) {
 
     private val tag = "CameraController"
+    private val mainHandler = Handler(Looper.getMainLooper())
 
     private var cameraDevice: CameraDevice? = null
     private var captureSession: CameraCaptureSession? = null
@@ -793,15 +795,15 @@ class CameraController(private val context: Context) {
         onRecordingStarted: () -> Unit,
         onError: (String) -> Unit
     ) {
-        val device = cameraDevice ?: run { onError("Camera not ready"); return }
-        val previewSurf = previewSurface ?: run { onError("Preview surface missing"); return }
-        val handler = backgroundHandler ?: run { onError("Handler thread missing"); return }
+        val device = cameraDevice ?: run { mainHandler.post { onError("Camera not ready") }; return }
+        val previewSurf = previewSurface ?: run { mainHandler.post { onError("Preview surface missing") }; return }
+        val handler = backgroundHandler ?: run { mainHandler.post { onError("Handler thread missing") }; return }
 
         try {
             val sensorOrientation = cameraCharacteristics?.get(CameraCharacteristics.SENSOR_ORIENTATION) ?: 90
             videoRecorder = VideoRecorder(context)
             val recorderSurface = videoRecorder?.prepare(hasAudioPermission, sensorOrientation, displayRotationDegrees)
-                ?: run { onError("Failed to prepare MediaRecorder surface"); return }
+                ?: run { mainHandler.post { onError("Failed to prepare MediaRecorder surface") }; return }
 
             captureSession?.close()
             captureSession = null
@@ -834,15 +836,15 @@ class CameraController(private val context: Context) {
                             session.setRepeatingRequest(builder.build(), null, handler)
                             videoRecorder?.start()
                             isRecording = true
-                            onRecordingStarted()
+                            mainHandler.post { onRecordingStarted() }
                         } catch (e: Exception) {
                             Log.e(tag, "Failed to start recording repeating request", e)
-                            onError("Failed to start recording session")
+                            mainHandler.post { onError("Failed to start recording session") }
                         }
                     }
 
                     override fun onConfigureFailed(session: CameraCaptureSession) {
-                        onError("Video capture session configuration failed")
+                        mainHandler.post { onError("Video capture session configuration failed") }
                     }
                 }
             )
@@ -850,7 +852,7 @@ class CameraController(private val context: Context) {
             device.createCaptureSession(sessionConfig)
         } catch (e: Exception) {
             Log.e(tag, "Error starting video recording", e)
-            onError("Recording error: ${e.localizedMessage}")
+            mainHandler.post { onError("Recording error: ${e.localizedMessage}") }
         }
     }
 
@@ -865,13 +867,13 @@ class CameraController(private val context: Context) {
             videoRecorder = null
             createCameraPreviewSession()
             if (savedUri != null) {
-                onVideoSaved(savedUri, "Video saved to Gallery Movies")
+                mainHandler.post { onVideoSaved(savedUri, "Video saved to Gallery Movies") }
             } else {
-                onError("Failed to save video record")
+                mainHandler.post { onError("Failed to save video record") }
             }
         } catch (e: Exception) {
             Log.e(tag, "Error stopping video recording", e)
-            onError("Error stopping recording: ${e.localizedMessage}")
+            mainHandler.post { onError("Error stopping recording: ${e.localizedMessage}") }
         }
     }
 
@@ -890,14 +892,14 @@ class CameraController(private val context: Context) {
             val freeMb = availableBytes / (1024 * 1024)
             val msg = "Storage Low ($freeMb MB available). Minimum 2GB space required."
             Log.w(tag, "Storage Guard Triggered: Capture blocked. $msg")
-            onError(msg)
+            mainHandler.post { onError(msg) }
             return
         }
 
-        val device = cameraDevice ?: run { onError("Camera not ready"); return }
-        val reader = imageReader ?: run { onError("ImageReader not initialized"); return }
-        val session = captureSession ?: run { onError("Capture session null"); return }
-        val handler = backgroundHandler ?: run { onError("Handler null"); return }
+        val device = cameraDevice ?: run { mainHandler.post { onError("Camera not ready") }; return }
+        val reader = imageReader ?: run { mainHandler.post { onError("ImageReader not initialized") }; return }
+        val session = captureSession ?: run { mainHandler.post { onError("Capture session null") }; return }
+        val handler = backgroundHandler ?: run { mainHandler.post { onError("Handler null") }; return }
 
         try {
             val sensorOrientation = cameraCharacteristics?.get(CameraCharacteristics.SENSOR_ORIENTATION) ?: 90
@@ -969,16 +971,16 @@ class CameraController(private val context: Context) {
                             saveRawDngCapture(timeStamp)
                         }
 
-                        onPhotoSaved(uri, "Photo saved & AI processing enqueued")
+                        mainHandler.post { onPhotoSaved(uri, "Photo saved & AI processing enqueued") }
                     } else {
                         tempFile.delete()
-                        onError("Failed to insert MediaStore record")
+                        mainHandler.post { onError("Failed to insert MediaStore record") }
                     }
 
                 } catch (e: Exception) {
                     tempFile.delete()
                     Log.e(tag, "Error saving atomic capture", e)
-                    onError("Save failed: ${e.localizedMessage}")
+                    mainHandler.post { onError("Save failed: ${e.localizedMessage}") }
                 }
 
             }, handler)
@@ -996,7 +998,7 @@ class CameraController(private val context: Context) {
 
         } catch (e: Exception) {
             Log.e(tag, "Error taking picture", e)
-            onError("Capture error: ${e.localizedMessage}")
+            mainHandler.post { onError("Capture error: ${e.localizedMessage}") }
         }
     }
 
