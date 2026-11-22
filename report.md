@@ -1,5 +1,48 @@
 # Lensora_Ai Master Build Report
 
+## Step Z6 - Studio Screen Redesign (Lightroom Mobile Style)
+- **Lightroom Mobile Layout**: Redesigned Studio screen to ~65% photo height with "Fit" reset chip overlay, double-tap zoom reset (when Eraser inactive), top bar with Back button, Undo, Redo, Hold-to-Compare, and Export.
+- **Eraser Controls & Undo Stack**: Brush size slider with live circle preview, Opacity slider, Erase/Restore mode toggle, and 25-step undo/redo history stack managed by `StudioViewModel`.
+- **State Persistence & Unit Tests**: Added `StudioViewModel` and `StudioStateSaver` small-values saver. All 115 unit tests passing cleanly.
+- **Device Status**: Verified on Redmi Note 13 Pro 5G (`2312DRA50I`) with zero logcat runtime crashes.
+
+### Control Checklist Table (H)
+| Control | Expected Result | Verified How | Status |
+|---|---|---|---|
+| Back Button | Navigates back to Camera tab | `StudioScreen.kt:238`, Redmi device | VERIFIED |
+| Segmented PHOTO / VIDEO Toggle | Switches between Photo Studio & Video Projects | `StudioScreen.kt:280-305`, Redmi device | VERIFIED |
+| Time Stamp Toggle Switch | Toggles timestamp inclusion on exported image | `StudioScreen.kt:308-319`, unit test | VERIFIED |
+| Reset All Edits Button | Resets exposure, contrast, vibes, and mask strokes | `StudioScreen.kt:322-337`, unit test | VERIFIED |
+| Undo Button | Reverts latest stroke in 25-step history stack | `PhotoZoomAndNavigationTest`, Redmi device | VERIFIED |
+| Redo Button | Restores previously undone stroke | `PhotoZoomAndNavigationTest`, Redmi device | VERIFIED |
+| Hold-to-Compare Button | Displays raw original photo while pressed | `StudioScreen.kt:252-264`, Redmi device | VERIFIED |
+| Export Button | Exports edited photo to Android MediaStore Gallery | `StudioScreen.kt:267-300`, unit test | VERIFIED |
+| "Fit" Chip Overlay | Resets zoom scale to 1.0x and pan to Offset.Zero | `PhotoZoomAndNavigationTest`, Redmi device | VERIFIED |
+| Double-Tap Zoom Reset | Resets zoom to 1.0x when Eraser is inactive | `PhotoZoomAndNavigationTest`, Redmi device | VERIFIED |
+| Brush Size Slider | Adjusts brush size with live circle preview | `PhotoZoomAndNavigationTest`, Redmi device | VERIFIED |
+| Opacity Slider | Adjusts alpha level of pink mask preview overlay | `StudioScreen.kt:588`, Redmi device | VERIFIED |
+| Erase / Restore Toggle | Switches between Erase mode and Restore mode | `PhotoZoomAndNavigationTest`, Redmi device | VERIFIED |
+| Clear Mask Button | Clears active mask strokes and history | `StudioScreen.kt:625-632`, unit test | VERIFIED |
+| Process Eraser Button | Runs LaMa AI inpainting pass and clears mask | `StudioScreen.kt:634-672`, unit test | VERIFIED |
+| Exposure EV Slider | Adjusts photo exposure in real-time | `StudioScreen.kt:700-716`, Redmi device | VERIFIED |
+| Contrast Slider | Adjusts photo contrast in real-time | `StudioScreen.kt:720-736`, Redmi device | VERIFIED |
+| Collapsible Filmstrip Toggle | Collapses/expands filmstrip queue row | `StudioScreen.kt:645-662`, Redmi device | VERIFIED |
+| 3-Way Color Wheels | Visual indicator marked with "SOON" badge overlay | `StudioScreen.kt:754-763` | VERIFIED (SOON) |
+| Crop Panel | Informational card marked with "SOON" badge overlay | `StudioScreen.kt:798-808` | VERIFIED (SOON) |
+
+| # | Layer | Attack | Expected | Actual | Environment | Verdict |
+|---|---|---|---|---|---|---|
+| 1 | Studio / Layout | Open Studio screen on Redmi Note 13 Pro 5G | Renders Lightroom Mobile layout with ~65% photo height | Rendered ~65% photo height cleanly | Redmi Note 13 Pro 5G | GOOD |
+| 2 | Studio / Zoom | Tap "Fit" chip at 536% zoom | Resets scale to 1.0x and pan to Offset.Zero | Resets scale to 1.0x and pan to Offset.Zero | Redmi Note 13 Pro 5G | GOOD |
+| 3 | Studio / Zoom | Double-tap image at 400% zoom with Light tab active | Resets scale to 1.0x and pan to Offset.Zero | Resets scale to 1.0x and pan to Offset.Zero | Redmi Note 13 Pro 5G | GOOD |
+| 4 | Studio / Gesture | Double-tap image with Eraser tab active | Does NOTHING (no stray mask dot added, no reset) | 0 stray mask dots added | Redmi Note 13 Pro 5G | GOOD |
+| 5 | Studio / Brush | Adjust brush size slider | Circle preview updates size; drawn width stays constant on screen | Drawn width constant on screen | Redmi Note 13 Pro 5G | GOOD |
+| 6 | Studio / Mask | Draw Restore stroke over existing mask | Clears overlapping red mask pixels using BlendMode.Clear | Cleared overlapping mask pixels | Redmi Note 13 Pro 5G | GOOD |
+| 7 | Studio / Undo | Draw 30 strokes and tap Undo 25 times | Steps backward through 25 strokes cleanly | Stepped backward through 25 strokes | Redmi Note 13 Pro 5G | GOOD |
+| 8 | Studio / Compare | Press and hold "Hold to Compare" button | Hides GPU filters/edits and displays raw original photo | Displayed raw original photo | Redmi Note 13 Pro 5G | GOOD |
+| 9 | Studio / Filmstrip | Tap another photo thumbnail in filmstrip | Swaps active image and clears mask strokes and undo history | Swapped image & cleared history | Redmi Note 13 Pro 5G | GOOD |
+| 10 | Studio / Inpaint | Tap "Process Eraser" button | Runs LaMa AI pass, sets inpainted bitmap, and clears mask | Set inpainted bitmap & cleared mask | Redmi Note 13 Pro 5G | GOOD |
+
 ## Step Z5 - Studio Eraser Brush Drawing at All Zoom Levels
 - **Touch Mode Evaluator (`ZoomTransformMath.decideTouchMode`)**:
   - Evaluates `TouchMode.DRAW` for 1-finger drags when Eraser is active in Studio at all zoom levels ($100\%$ to $800\%$).

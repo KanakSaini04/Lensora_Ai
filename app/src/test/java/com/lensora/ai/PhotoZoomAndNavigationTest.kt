@@ -2,6 +2,7 @@ package com.lensora.ai
 
 import androidx.compose.ui.geometry.Offset
 import androidx.compose.ui.geometry.Size
+import com.lensora.ai.ui.components.StrokePaintStyle
 import com.lensora.ai.ui.components.TouchMode
 import com.lensora.ai.ui.components.ZoomTransformMath
 import com.lensora.ai.ui.navigation.shouldShowBottomBarForRoute
@@ -17,6 +18,61 @@ import org.junit.Test
 class PhotoZoomAndNavigationTest {
 
     @Test
+    fun stepZ6b_pointMappingAndRadiusConversion_with3060x4080ImageIn1080x1400Canvas() {
+        val imageSize = Size(3060f, 4080f) // 3060x4080
+        val canvasSize = Size(1080f, 1400f) // 1080x1400
+
+        // Letterbox scaleFactor = minOf(1080 / 3060, 1400 / 4080) = minOf(0.352941, 0.343137) = 0.34313725f
+        val expectedScaleFactor = 0.34313725f
+
+        // Test Canvas point mapping to image pixel
+        val canvasCenter = Offset(540f, 700f)
+        val imagePixel = ZoomTransformMath.mapCanvasLocalPointToImagePixel(canvasCenter, canvasSize, imageSize)
+
+        // Drawn height = 4080 * 0.34313725 = 1400f
+        // Drawn width = 3060 * 0.34313725 = 1050f
+        // imageLeft = (1080 - 1050) / 2 = 15f
+        // imagePixel.x = (540 - 15) / 0.34313725 = 525 / 0.34313725 = 1530f
+        // imagePixel.y = (700 - 0) / 0.34313725 = 700 / 0.34313725 = 2040f
+        assertEquals(1530f, imagePixel.x, 0.1f)
+        assertEquals(2040f, imagePixel.y, 0.1f)
+
+        // Test Canvas-local brush radius conversion to image space radius
+        val density = 2.75f // e.g. 440 dpi
+        val screenDp = 40f
+        val localRadius1x = ZoomTransformMath.calculateLocalCanvasBrushWidthPx(screenDp, density, 1.0f) / 2f
+        assertEquals(55f, localRadius1x, 0.01f)
+
+        val imageRadius1x = ZoomTransformMath.calculateImageRadiusFromCanvasPx(localRadius1x, canvasSize, imageSize)
+        assertEquals(55f / expectedScaleFactor, imageRadius1x, 0.1f) // ~160.28 px in image space
+
+        // At 1.4x scale
+        val localRadius1_4x = ZoomTransformMath.calculateLocalCanvasBrushWidthPx(screenDp = screenDp, density = density, scale = 1.4f) / 2f
+        assertEquals(39.2857f, localRadius1_4x, 0.01f)
+
+        // At 4.0x scale
+        val localRadius4x = ZoomTransformMath.calculateLocalCanvasBrushWidthPx(screenDp = screenDp, density = density, scale = 4.0f) / 2f
+        assertEquals(13.75f, localRadius4x, 0.01f)
+
+        // At 8.0x scale
+        val localRadius8x = ZoomTransformMath.calculateLocalCanvasBrushWidthPx(screenDp = screenDp, density = density, scale = 8.0f) / 2f
+        assertEquals(6.875f, localRadius8x, 0.01f)
+    }
+
+    @Test
+    fun stepZ6b_decideStrokePaintStyle_singleTapVsLineStrokeDecisions() {
+        // Single-tap stroke (1 point) -> FILL
+        assertEquals(StrokePaintStyle.FILL, ZoomTransformMath.decideStrokePaintStyle(1))
+
+        // Line stroke (2+ points) -> STROKE
+        assertEquals(StrokePaintStyle.STROKE, ZoomTransformMath.decideStrokePaintStyle(2))
+        assertEquals(StrokePaintStyle.STROKE, ZoomTransformMath.decideStrokePaintStyle(50))
+
+        // Zero points -> NONE
+        assertEquals(StrokePaintStyle.NONE, ZoomTransformMath.decideStrokePaintStyle(0))
+    }
+
+    @Test
     fun stepZ6_brushRadiusAndConstantScreenSpaceMath_calculatesCorrectlyAcrossScales() {
         val density = 2.5f
         val screenBrushDp = 40.0f // 40dp
@@ -24,7 +80,7 @@ class PhotoZoomAndNavigationTest {
         // At 1.0x scale: local width = 100px, image radius (scaleFactor 1.0) = 50px
         val localWidth1x = ZoomTransformMath.calculateLocalCanvasBrushWidthPx(screenBrushDp, density, 1.0f)
         assertEquals(100f, localWidth1x, 0.01f)
-        val imageRadius1x = ZoomTransformMath.calculateImageSpaceBrushRadiusPx(screenBrushDp, density, 1.0f, 1.0f)
+        val imageRadius1x = ZoomTransformMath.calculateImageRadiusFromCanvasPx(50f, Size(1000f, 1000f), Size(1000f, 1000f))
         assertEquals(50f, imageRadius1x, 0.01f)
 
         // At 1.4x scale: local width = 71.428f px (when scaled by 1.4x graphicsLayer, screen width remains 100px!)
@@ -52,7 +108,7 @@ class PhotoZoomAndNavigationTest {
                 StudioStroke(
                     points = listOf(Offset(i.toFloat(), i.toFloat()), Offset(i + 1f, i + 1f)),
                     isEraseMode = true,
-                    radiusImagePx = 20f,
+                    radiusCanvasPx = 20f,
                 ),
             )
         }

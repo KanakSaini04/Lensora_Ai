@@ -541,17 +541,12 @@ private fun StudioPhotoContent(
                                             if (pointerCount >= 2) {
                                                 // End stroke immediately when 2+ pointers touch down
                                                 if (activePoints.isNotEmpty()) {
-                                                    val strokeRadiusImagePx = ZoomTransformMath.calculateImageSpaceBrushRadiusPx(
-                                                        screenDp = brushSizeDp,
-                                                        density = density,
-                                                        scale = scale,
-                                                        scaleFactor = if (canvasSize.width > 0f) minOf(canvasSize.width / 500f, canvasSize.height / 500f) else 1f,
-                                                    )
+                                                    val localRadiusPx = localCanvasStrokeWidth / 2f
                                                     viewModel.addStroke(
                                                         StudioStroke(
                                                             points = activePoints,
                                                             isEraseMode = isEraseModeActiveState,
-                                                            radiusImagePx = strokeRadiusImagePx,
+                                                            radiusCanvasPx = localRadiusPx,
                                                         ),
                                                     )
                                                     currentStrokePoints = emptyList()
@@ -571,17 +566,12 @@ private fun StudioPhotoContent(
 
                                             if (event.changes.all { !it.pressed }) {
                                                 if (activePoints.isNotEmpty()) {
-                                                    val strokeRadiusImagePx = ZoomTransformMath.calculateImageSpaceBrushRadiusPx(
-                                                        screenDp = brushSizeDp,
-                                                        density = density,
-                                                        scale = scale,
-                                                        scaleFactor = if (canvasSize.width > 0f) minOf(canvasSize.width / 500f, canvasSize.height / 500f) else 1f,
-                                                    )
+                                                    val localRadiusPx = localCanvasStrokeWidth / 2f
                                                     viewModel.addStroke(
                                                         StudioStroke(
                                                             points = activePoints,
                                                             isEraseMode = isEraseModeActiveState,
-                                                            radiusImagePx = strokeRadiusImagePx,
+                                                            radiusCanvasPx = localRadiusPx,
                                                         ),
                                                     )
                                                     currentStrokePoints = emptyList()
@@ -598,8 +588,8 @@ private fun StudioPhotoContent(
 
                             // Render completed history strokes
                             strokesState.forEach { stroke ->
+                                val strokeWidth = stroke.radiusCanvasPx * 2f
                                 if (stroke.points.size > 1) {
-                                    val strokeWidth = stroke.radiusImagePx * 2f
                                     for (i in 0 until stroke.points.size - 1) {
                                         drawLine(
                                             color = if (stroke.isEraseMode) eraseColor else Color.Transparent,
@@ -610,6 +600,13 @@ private fun StudioPhotoContent(
                                             blendMode = if (stroke.isEraseMode) BlendMode.SrcOver else BlendMode.Clear,
                                         )
                                     }
+                                } else if (stroke.points.size == 1) {
+                                    drawCircle(
+                                        color = if (stroke.isEraseMode) eraseColor else Color.Transparent,
+                                        center = stroke.points[0],
+                                        radius = stroke.radiusCanvasPx,
+                                        blendMode = if (stroke.isEraseMode) BlendMode.SrcOver else BlendMode.Clear,
+                                    )
                                 }
                             }
 
@@ -976,6 +973,7 @@ private fun StudioPhotoContent(
                                                         val maskBitmap = MaskComposer.buildMaskBitmap(
                                                             imageWidth = sourceBitmap.width,
                                                             imageHeight = sourceBitmap.height,
+                                                            canvasSize = canvasSize,
                                                             strokes = strokesState,
                                                         )
 

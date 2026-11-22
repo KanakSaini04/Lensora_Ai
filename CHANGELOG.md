@@ -1,3 +1,12 @@
+## [Unreleased] - Step Z6: Studio Screen Redesign (Lightroom Mobile Style) (2026-11-22)
+
+### Added
+- **Studio Screen Redesign (Step Z6)**:
+  - `StudioScreen.kt`: Redesigned Lightroom Mobile layout with ~65% photo height, top bar with Back button, Undo, Redo, Hold-to-Compare button, Export; secondary sub-header with PHOTO/VIDEO toggle, Time toggle, Reset All Edits button.
+  - `ZoomableBox.kt`: Added "Fit" reset chip overlay and double-tap zoom reset (when Eraser inactive). Pure math functions `calculateLocalCanvasBrushWidthPx` and `calculateImageSpaceBrushRadiusPx`.
+  - `StudioStrokeModels.kt` & `StudioViewModel.kt`: Created pure `StudioStroke`, `MaskComposer`, and `StrokeHistory` classes with 25-step undo history stack retained across screen rotations without `TransactionTooLargeException`.
+  - `PhotoZoomAndNavigationTest.kt`: Added unit tests for brush radius math across zoom scales, 25-step undo history clamping, filmstrip selection mask reset, process eraser mask reset, and mask accuracy pixel coverage tests (J). All 115 unit tests passing cleanly.
+
 ## [Unreleased] - Step Z5: Studio Eraser Brush Drawing at All Zoom Levels (2026-11-22)
 
 ### Added

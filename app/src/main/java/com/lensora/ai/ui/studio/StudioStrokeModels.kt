@@ -10,11 +10,13 @@ import android.graphics.PorterDuffXfermode
 import androidx.compose.runtime.saveable.Saver
 import androidx.compose.ui.geometry.Offset
 import androidx.compose.ui.geometry.Size
+import com.lensora.ai.ui.components.StrokePaintStyle
+import com.lensora.ai.ui.components.ZoomTransformMath
 
 data class StudioStroke(
     val points: List<Offset>,
     val isEraseMode: Boolean = true,
-    val radiusImagePx: Float = 20f,
+    val radiusCanvasPx: Float = 20f,
 )
 
 class StrokeHistory(
@@ -60,43 +62,59 @@ object MaskComposer {
     fun buildMaskBitmap(
         imageWidth: Int,
         imageHeight: Int,
+        canvasSize: Size,
         strokes: List<StudioStroke>,
     ): Bitmap {
         val width = imageWidth.coerceAtLeast(1)
         val height = imageHeight.coerceAtLeast(1)
         val bitmap = Bitmap.createBitmap(width, height, Bitmap.Config.ARGB_8888)
         val canvas = Canvas(bitmap)
+        val imageSize = Size(width.toFloat(), height.toFloat())
 
         val erasePaint = Paint(Paint.ANTI_ALIAS_FLAG).apply {
             color = Color.RED
-            style = Paint.Style.STROKE
             strokeCap = Paint.Cap.ROUND
             strokeJoin = Paint.Join.ROUND
         }
 
         val restorePaint = Paint(Paint.ANTI_ALIAS_FLAG).apply {
             xfermode = PorterDuffXfermode(PorterDuff.Mode.CLEAR)
-            style = Paint.Style.STROKE
             strokeCap = Paint.Cap.ROUND
             strokeJoin = Paint.Join.ROUND
         }
 
         strokes.forEach { stroke ->
-            if (stroke.points.size > 1) {
-                val paint = if (stroke.isEraseMode) erasePaint else restorePaint
-                paint.strokeWidth = stroke.radiusImagePx * 2f
+            if (stroke.points.isEmpty()) return@forEach
+
+            val paint = if (stroke.isEraseMode) erasePaint else restorePaint
+
+            // Map canvas-local points to real source image pixels
+            val mappedPoints = stroke.points.map { pt ->
+                ZoomTransformMath.mapCanvasLocalPointToImagePixel(pt, canvasSize, imageSize)
+            }
+
+            val radiusImagePx = ZoomTransformMath.calculateImageRadiusFromCanvasPx(
+                radiusCanvasPx = stroke.radiusCanvasPx,
+                canvasSize = canvasSize,
+                imageSize = imageSize,
+            )
+
+            val paintStyle = ZoomTransformMath.decideStrokePaintStyle(mappedPoints.size)
+
+            if (paintStyle == StrokePaintStyle.STROKE) {
+                paint.style = Paint.Style.STROKE
+                paint.strokeWidth = radiusImagePx * 2f
 
                 val path = Path()
-                path.moveTo(stroke.points[0].x, stroke.points[0].y)
-                for (i in 1 until stroke.points.size) {
-                    path.lineTo(stroke.points[i].x, stroke.points[i].y)
+                path.moveTo(mappedPoints[0].x, mappedPoints[0].y)
+                for (i in 1 until mappedPoints.size) {
+                    path.lineTo(mappedPoints[i].x, mappedPoints[i].y)
                 }
                 canvas.drawPath(path, paint)
-            } else if (stroke.points.size == 1) {
-                val point = stroke.points[0]
-                val paint = if (stroke.isEraseMode) erasePaint else restorePaint
+            } else if (paintStyle == StrokePaintStyle.FILL) {
                 paint.style = Paint.Style.FILL
-                canvas.drawCircle(point.x, point.y, stroke.radiusImagePx, paint)
+                val point = mappedPoints[0]
+                canvas.drawCircle(point.x, point.y, radiusImagePx, paint)
             }
         }
 

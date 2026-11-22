@@ -13,10 +13,8 @@ import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.BoxScope
 import androidx.compose.foundation.layout.Row
-import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
@@ -55,6 +53,12 @@ enum class TouchMode {
     NONE
 }
 
+enum class StrokePaintStyle {
+    FILL,
+    STROKE,
+    NONE
+}
+
 object ZoomTransformMath {
     fun decideTouchMode(
         pointerCount: Int,
@@ -69,6 +73,14 @@ object ZoomTransformMath {
             isStudio && isDrawToolActive -> TouchMode.DRAW
             scale > 1.05f -> TouchMode.PAN
             else -> TouchMode.NONE
+        }
+    }
+
+    fun decideStrokePaintStyle(pointCount: Int): StrokePaintStyle {
+        return when {
+            pointCount > 1 -> StrokePaintStyle.STROKE
+            pointCount == 1 -> StrokePaintStyle.FILL
+            else -> StrokePaintStyle.NONE
         }
     }
 
@@ -106,10 +118,12 @@ object ZoomTransformMath {
         return screenPx / scale
     }
 
-    fun calculateImageSpaceBrushRadiusPx(screenDp: Float, density: Float, scale: Float, scaleFactor: Float): Float {
-        if (scale <= 0f || scaleFactor <= 0f) return (screenDp * density) / 2f
-        val localWidthPx = calculateLocalCanvasBrushWidthPx(screenDp, density, scale)
-        return (localWidthPx / 2f) / scaleFactor
+    fun calculateImageRadiusFromCanvasPx(radiusCanvasPx: Float, canvasSize: Size, imageSize: Size): Float {
+        if (canvasSize.width <= 0f || canvasSize.height <= 0f || imageSize.width <= 0f || imageSize.height <= 0f) {
+            return radiusCanvasPx
+        }
+        val scaleFactor = minOf(canvasSize.width / imageSize.width, canvasSize.height / imageSize.height)
+        return if (scaleFactor > 0f) radiusCanvasPx / scaleFactor else radiusCanvasPx
     }
 
     fun mapCanvasLocalPointToImagePixel(
