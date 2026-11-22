@@ -5,7 +5,7 @@
 - [x] **Step Z6: Studio Screen Redesign (Lightroom Mobile Style)**
   - **Lightroom Mobile Layout**: Redesigned Studio screen to ~65% photo height with "Fit" reset chip overlay, double-tap zoom reset (when Eraser inactive), top bar with Back button, Undo, Redo, Hold-to-Compare, and Export.
   - **Eraser Controls & Undo Stack**: Brush size slider with live circle preview, Opacity slider, Erase/Restore mode toggle, and 25-step undo/redo history stack managed by `StudioViewModel`.
-  - **State Persistence & Unit Tests**: Added `StudioViewModel` and `StudioStateSaver` small-values saver. All 115 unit tests passing cleanly.
+  - **State Persistence & Unit Tests**: Added `StudioViewModel` and `StudioStateSaver` small-values saver. All 117 unit tests passing cleanly. NOT VERIFIED on device.
 
 - [x] **Step Z5: Studio Eraser Brush Drawing at All Zoom Levels**
   - **Touch Mode Evaluator**: Extracted pure evaluator `decideTouchMode(pointerCount, scale, isDrawToolActive, isStudio)`. Evaluates `TouchMode.DRAW` for 1-finger drags when Eraser is active in Studio at all zoom levels ($100\%$ to $800\%$), `TouchMode.ZOOM_PAN` for 2+ pointers, and `TouchMode.PAN` for non-draw tools when zoomed.
