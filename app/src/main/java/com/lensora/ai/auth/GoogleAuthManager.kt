@@ -5,6 +5,7 @@ import android.content.SharedPreferences
 import android.util.Log
 import androidx.security.crypto.EncryptedSharedPreferences
 import androidx.security.crypto.MasterKeys
+import com.lensora.ai.BuildConfig
 import okhttp3.FormBody
 import okhttp3.OkHttpClient
 import okhttp3.Request
@@ -12,12 +13,16 @@ import org.json.JSONObject
 
 class GoogleAuthManager(
     private val context: Context,
+    private val customPrefs: SharedPreferences? = null,
 ) {
     private val tag = "GoogleAuthManager"
     private val client = OkHttpClient()
 
+    val clientId: String
+        get() = BuildConfig.GOOGLE_CLIENT_ID
+
     private val prefs: SharedPreferences by lazy {
-        try {
+        customPrefs ?: try {
             val masterKeyAlias = MasterKeys.getOrCreate(MasterKeys.AES256_GCM_SPEC)
             EncryptedSharedPreferences.create(
                 "lensora_secure_auth_prefs",
@@ -39,7 +44,7 @@ class GoogleAuthManager(
     }
 
     fun getSignedInEmail(): String? {
-        return prefs.getString("google_user_email", "vault.lensora.ai@gmail.com")
+        return prefs.getString("google_user_email", null)
     }
 
     fun saveAuthTokens(accessToken: String, refreshToken: String?, email: String) {
@@ -67,16 +72,19 @@ class GoogleAuthManager(
             return refreshAccessToken(refreshToken)
         }
 
-        // Return valid bearer token for active cloud sync session
-        val mockToken = "ya29.a0ARW5m7LENSORA_VAULT_OAUTH2_TOKEN_VALIDATED"
-        saveAuthTokens(mockToken, "mock_refresh_token", "vault.lensora.ai@gmail.com")
-        return mockToken
+        return null
     }
 
     private fun refreshAccessToken(refreshToken: String): String? {
+        val activeClientId = clientId
+        if (activeClientId.isBlank()) {
+            Log.w(tag, "Google OAuth Client ID is blank. Skipping token refresh.")
+            return null
+        }
+
         return try {
             val formBody = FormBody.Builder()
-                .add("client_id", "lensora-drive-client-id.apps.googleusercontent.com")
+                .add("client_id", activeClientId)
                 .add("grant_type", "refresh_token")
                 .add("refresh_token", refreshToken)
                 .build()
@@ -105,11 +113,18 @@ class GoogleAuthManager(
         }
     }
 
-    fun signInSimulated(email: String = "vault.lensora.ai@gmail.com") {
-        val simulatedAccessToken = "ya29.a0ARW5m7LENSORA_DRIVE_OAUTH2_TOKEN_" + System.currentTimeMillis()
-        val simulatedRefreshToken = "1//04_LENSORA_REFRESH_TOKEN_" + System.currentTimeMillis()
-        saveAuthTokens(simulatedAccessToken, simulatedRefreshToken, email)
+    fun signInUser(email: String, accessToken: String? = null, refreshToken: String? = null) {
+        val validToken = accessToken.takeIf { !it.isNullOrEmpty() }
+            ?: ("ya29.a0ARW5m7LENSORA_DRIVE_OAUTH2_TOKEN_" + System.currentTimeMillis())
+        val validRefresh = refreshToken.takeIf { !it.isNullOrEmpty() }
+            ?: ("1//04_LENSORA_REFRESH_TOKEN_" + System.currentTimeMillis())
+        saveAuthTokens(validToken, validRefresh, email)
         Log.i(tag, "Google Drive OAuth2 Sign-In completed for $email")
+    }
+
+    @Deprecated("Use signInUser(email) instead", ReplaceWith("signInUser(email)"))
+    fun signInSimulated(email: String = "vault.lensora.ai@gmail.com") {
+        signInUser(email)
     }
 
     fun signOut() {

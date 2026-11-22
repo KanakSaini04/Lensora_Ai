@@ -1,3 +1,5 @@
+import java.util.Properties
+
 plugins {
     alias(libs.plugins.android.application)
     alias(libs.plugins.kotlin.compose)
@@ -10,12 +12,21 @@ android {
     namespace = "com.lensora.ai"
     compileSdk = 36
 
+    val localProperties = Properties()
+    val localPropertiesFile = rootProject.file("local.properties")
+    if (localPropertiesFile.exists()) {
+        localPropertiesFile.inputStream().use { localProperties.load(it) }
+    }
+    val googleClientId = localProperties.getProperty("google.client.id") ?: ""
+
     defaultConfig {
         applicationId = "com.lensora.ai"
         minSdk = 33
         targetSdk = 35
         versionCode = 1
         versionName = "1.0.0"
+
+        buildConfigField("String", "GOOGLE_CLIENT_ID", "\"$googleClientId\"")
 
         testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
     }
@@ -28,6 +39,14 @@ android {
                 enable = false
             }
         }
+        create("releaseTest") {
+            initWith(getByName("release"))
+            isMinifyEnabled = true
+            isShrinkResources = true
+            signingConfig = signingConfigs.getByName("debug")
+            matchingFallbacks.add("release")
+            proguardFiles(getDefaultProguardFile("proguard-android-optimize.txt"), "proguard-rules.pro")
+        }
     }
     compileOptions {
         sourceCompatibility = JavaVersion.VERSION_11
@@ -38,6 +57,7 @@ android {
     }
     buildFeatures {
         compose = true
+        buildConfig = true
     }
 }
 

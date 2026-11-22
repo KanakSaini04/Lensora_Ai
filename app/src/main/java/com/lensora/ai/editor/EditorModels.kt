@@ -37,6 +37,7 @@ data class Clip(
     val volume: Float = 1.0f,
     val vibePreset: String? = null,
     val transitionIn: TransitionType = TransitionType.NONE,
+    val textOverlay: String? = null,
 ) {
     fun validate(): Boolean {
         return durationMs > 0 &&

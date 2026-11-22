@@ -3,6 +3,7 @@ package com.lensora.ai.ui.camera
 import android.Manifest
 import android.content.Context
 import android.content.pm.PackageManager
+import android.graphics.RectF
 import android.net.Uri
 import android.os.Build
 import android.util.Log
@@ -13,21 +14,23 @@ import android.widget.Toast
 import androidx.activity.compose.rememberLauncherForActivityResult
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.compose.animation.AnimatedContent
-import androidx.compose.animation.fadeIn
-import androidx.compose.animation.fadeOut
-import androidx.compose.animation.togetherWith
 import androidx.compose.animation.core.FastOutSlowInEasing
 import androidx.compose.animation.core.Spring
 import androidx.compose.animation.core.animateFloatAsState
 import androidx.compose.animation.core.spring
 import androidx.compose.animation.core.tween
+import androidx.compose.animation.fadeIn
+import androidx.compose.animation.fadeOut
+import androidx.compose.animation.togetherWith
 import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.Canvas
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
+import androidx.compose.foundation.gestures.awaitEachGesture
+import androidx.compose.foundation.gestures.awaitFirstDown
+import androidx.compose.foundation.gestures.calculateZoom
 import androidx.compose.foundation.gestures.detectTapGestures
-import androidx.compose.foundation.gestures.detectTransformGestures
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -50,14 +53,11 @@ import androidx.compose.material.icons.outlined.PhotoCamera
 import androidx.compose.material.icons.outlined.PhotoLibrary
 import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonDefaults
-import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
-import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
-import android.graphics.RectF
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.DisposableEffect
 import androidx.compose.runtime.LaunchedEffect
@@ -70,27 +70,31 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
-import androidx.compose.ui.geometry.CornerRadius
 import androidx.compose.ui.geometry.Offset
+import androidx.compose.ui.geometry.Rect
 import androidx.compose.ui.geometry.Size
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.drawscope.Stroke
 import androidx.compose.ui.graphics.graphicsLayer
+import androidx.compose.ui.hapticfeedback.HapticFeedbackType
+import androidx.compose.ui.input.pointer.PointerEventPass
 import androidx.compose.ui.input.pointer.pointerInput
 import androidx.compose.ui.layout.ContentScale
+import androidx.compose.ui.layout.boundsInRoot
+import androidx.compose.ui.layout.onGloballyPositioned
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.LocalHapticFeedback
-import androidx.compose.ui.hapticfeedback.HapticFeedbackType
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.core.content.ContextCompat
 import coil.compose.AsyncImage
-import com.lensora.ai.ai.AiPlanner
 import com.lensora.ai.ai.SceneClassifier
 import com.lensora.ai.camera.CameraController
 import com.lensora.ai.camera.CameraMode
 import com.lensora.ai.data.GalleryRepository
+import com.lensora.ai.ui.components.CameraSwipeDecision
+import com.lensora.ai.ui.components.ZoomTransformMath
 import com.lensora.ai.ui.theme.CharcoalSurface
 import com.lensora.ai.ui.theme.ColorMutedGray
 import com.lensora.ai.ui.theme.ColorWhite
@@ -102,14 +106,13 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.isActive
 import kotlinx.coroutines.withContext
-import java.text.SimpleDateFormat
-import java.util.Date
 import java.util.Locale
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun CameraScreen(
     onOpenQuickView: () -> Unit = {},
+    onNavigateToStudio: () -> Unit = {},
 ) {
     val context = LocalContext.current
     var hasCameraPermission by remember {
@@ -166,15 +169,13 @@ fun CameraScreen(
 
         var recentPhotos by remember { mutableStateOf<List<Uri>>(emptyList()) }
 
-        // Dynamic VN-Style Timestamp State
-        var currentTimeString by remember { mutableStateOf("") }
-        LaunchedEffect(Unit) {
-            val sdf = SimpleDateFormat("HH:mm:ss", Locale.US)
-            while (isActive) {
-                currentTimeString = sdf.format(Date())
-                delay(1000)
-            }
-        }
+        // Measured UI Exclusion Bounds for Swipe Gesture Evaluator
+        var gestureBoxBoundsInRoot by remember { mutableStateOf<Rect?>(null) }
+        var topBarBounds by remember { mutableStateOf<Rect?>(null) }
+        var aiBadgeBounds by remember { mutableStateOf<Rect?>(null) }
+        var zoomPillsBounds by remember { mutableStateOf<Rect?>(null) }
+        var carouselBounds by remember { mutableStateOf<Rect?>(null) }
+        var shutterRowBounds by remember { mutableStateOf<Rect?>(null) }
 
         // Persisted UI preferences restoration
         var selectedMode by remember {
@@ -190,6 +191,7 @@ fun CameraScreen(
         // Pro Mode Manual Exposure State
         var proIsoValue by remember { mutableIntStateOf(400) }
         var proShutterNs by remember { mutableStateOf(4_000_000L) } // 1/250s
+        var proEvValue by remember { mutableFloatStateOf(0.0f) }
         var isRawEnabled by remember { mutableStateOf(cameraPrefs.getBoolean("raw_dng_enabled", false)) }
         var isZebrasEnabled by remember { mutableStateOf(false) }
         var isPeakingEnabled by remember { mutableStateOf(false) }
@@ -233,18 +235,20 @@ fun CameraScreen(
             }
         }
 
-        val display = if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.R) {
-            context.display
-        } else {
-            @Suppress("DEPRECATION")
-            (context.getSystemService(Context.WINDOW_SERVICE) as? WindowManager)?.defaultDisplay
-        }
+        var sensorRotationDegrees by remember { mutableIntStateOf(0) }
 
-        val deviceRotationDegrees = when (display?.rotation) {
-            Surface.ROTATION_90 -> 90
-            Surface.ROTATION_180 -> 180
-            Surface.ROTATION_270 -> 270
-            else -> 0
+        DisposableEffect(context) {
+            val orientationListener = object : android.view.OrientationEventListener(context) {
+                override fun onOrientationChanged(orientation: Int) {
+                    sensorRotationDegrees = ZoomTransformMath.snapSensorDegreesToSurfaceRotation(orientation, sensorRotationDegrees)
+                }
+            }
+            if (orientationListener.canDetectOrientation()) {
+                orientationListener.enable()
+            }
+            onDispose {
+                orientationListener.disable()
+            }
         }
 
         // Shutter Timer Countdown Tick Effect
@@ -255,7 +259,7 @@ fun CameraScreen(
                 countdownRemaining = next
                 if (next == 0) {
                     cameraController.takePicture(
-                        displayRotationDegrees = deviceRotationDegrees,
+                        displayRotationDegrees = sensorRotationDegrees,
                         isRawEnabled = isRawEnabled && selectedMode == CameraMode.PRO,
                         vibePreset = VibeState.selectedVibe.name,
                         onPhotoSaved = { uri, msg ->
@@ -375,18 +379,81 @@ fun CameraScreen(
             // Animated Focus Ring Overlay
             FocusRingOverlay(tapOffset = focusTapOffset)
 
-            // Transparent Gesture Layer for Pinch-to-Zoom & Tap-to-Focus
+            // Transparent Unified Gesture Layer for Pinch-to-Zoom, Tap-to-Focus & Horizontal Tab Swipe Gesture
             Box(
                 modifier = Modifier
                     .fillMaxSize()
+                    .onGloballyPositioned { coordinates ->
+                        gestureBoxBoundsInRoot = coordinates.boundsInRoot()
+                    }
                     .pointerInput(Unit) {
-                        detectTransformGestures { _, _, zoomChange, _ ->
-                            currentZoomRatio = (currentZoomRatio * zoomChange).coerceIn(1.0f, 10.0f)
-                            cameraController.setZoomRatio(currentZoomRatio)
-                            selectedZoom = if (currentZoomRatio % 1f == 0f) {
-                                "${currentZoomRatio.toInt()}x"
-                            } else {
-                                String.format(Locale.US, "%.1fx", currentZoomRatio)
+                        awaitPointerEventScope {
+                            while (true) {
+                                val down = awaitFirstDown(pass = PointerEventPass.Initial)
+                                var dragStartLocal = down.position
+                                var totalDx = 0f
+                                var totalDy = 0f
+                                var maxPointerCount = 1
+
+                                val boxOffset = gestureBoxBoundsInRoot?.topLeft ?: Offset.Zero
+                                val dragStartInRoot = dragStartLocal + boxOffset
+
+                                val screenWidthPx = size.width.toFloat()
+                                val screenHeightPx = size.height.toFloat()
+                                val threshold15Px = screenWidthPx * 0.15f
+
+                                Log.d("SwipeDbg", "Down: local=($dragStartLocal), root=($dragStartInRoot), screenSize=($screenWidthPx x $screenHeightPx), 15%Threshold=$threshold15Px")
+                                Log.d("SwipeDbg", "Rects - TopBar: $topBarBounds, AiBadge: $aiBadgeBounds, ZoomPills: $zoomPillsBounds, Carousel: $carouselBounds, Shutter: $shutterRowBounds")
+                                Log.d("SwipeDbg", "InTopBar: ${topBarBounds?.contains(dragStartInRoot)}, InAiBadge: ${aiBadgeBounds?.contains(dragStartInRoot)}, InPills: ${zoomPillsBounds?.contains(dragStartInRoot)}, InCarousel: ${carouselBounds?.contains(dragStartInRoot)}, InShutter: ${shutterRowBounds?.contains(dragStartInRoot)}")
+
+                                while (true) {
+                                    val event = awaitPointerEvent(pass = PointerEventPass.Initial)
+                                    val currentPointerCount = event.changes.size
+                                    if (currentPointerCount > maxPointerCount) {
+                                        maxPointerCount = currentPointerCount
+                                    }
+
+                                    if (currentPointerCount >= 2) {
+                                        val zoomChange = event.calculateZoom()
+                                        if (zoomChange != 1.0f) {
+                                            currentZoomRatio = (currentZoomRatio * zoomChange).coerceIn(1.0f, 10.0f)
+                                            cameraController.setZoomRatio(currentZoomRatio)
+                                            selectedZoom = if (currentZoomRatio % 1f == 0f) {
+                                                "${currentZoomRatio.toInt()}x"
+                                            } else {
+                                                String.format(Locale.US, "%.1fx", currentZoomRatio)
+                                            }
+                                        }
+                                    } else if (currentPointerCount == 1 && maxPointerCount == 1) {
+                                        val change = event.changes.firstOrNull()
+                                        if (change != null && change.pressed) {
+                                            totalDx += (change.position.x - change.previousPosition.x)
+                                            totalDy += (change.position.y - change.previousPosition.y)
+                                            if (kotlin.math.abs(totalDx) > (1.5f * kotlin.math.abs(totalDy)) && totalDx < -80f) {
+                                                change.consume()
+                                            }
+                                        }
+                                    }
+
+                                    if (event.changes.all { !it.pressed }) {
+                                        val excludedRects = listOfNotNull(topBarBounds, aiBadgeBounds, zoomPillsBounds, carouselBounds, shutterRowBounds)
+                                        val decision = ZoomTransformMath.evaluateCameraSwipeGesture(
+                                            startX = dragStartInRoot.x,
+                                            startY = dragStartInRoot.y,
+                                            totalDx = totalDx,
+                                            totalDy = totalDy,
+                                            pointerCount = maxPointerCount,
+                                            screenWidth = screenWidthPx,
+                                            screenHeight = screenHeightPx,
+                                            excludedRects = excludedRects,
+                                        )
+                                        Log.d("SwipeDbg", "End: totalDx=$totalDx, totalDy=$totalDy, maxPointers=$maxPointerCount, decision=$decision")
+                                        if (decision == CameraSwipeDecision.NAVIGATE_NEXT_TAB) {
+                                            onNavigateToStudio()
+                                        }
+                                        break
+                                    }
+                                }
                             }
                         }
                     }
@@ -403,7 +470,7 @@ fun CameraScreen(
                     },
             )
 
-            // Top Overlays Column: Top Bar -> Timestamp Pill -> AI Badge (Stacked cleanly to clear status bar / cutout and eliminate overlap at all font scales)
+            // Top Overlays Column: Top Bar -> AI Badge (Stacked cleanly to clear status bar / cutout and eliminate overlap at all font scales)
             Column(
                 modifier = Modifier
                     .align(Alignment.TopCenter)
@@ -452,26 +519,10 @@ fun CameraScreen(
                     onSettingsClick = {
                         Toast.makeText(context, "Camera Settings", Toast.LENGTH_SHORT).show()
                     },
+                    modifier = Modifier.onGloballyPositioned { coordinates ->
+                        topBarBounds = coordinates.boundsInRoot()
+                    },
                 )
-
-                if (currentTimeString.isNotEmpty()) {
-                    Box(
-                        modifier = Modifier
-                            .padding(top = 2.dp, bottom = 4.dp)
-                            .clip(RoundedCornerShape(6.dp))
-                            .background(Color(0xFF131313).copy(alpha = 0.65f))
-                            .border(width = 1.dp, color = Color(0xFF00E5FF).copy(alpha = 0.4f), shape = RoundedCornerShape(6.dp))
-                            .padding(horizontal = 10.dp, vertical = 4.dp),
-                    ) {
-                        Text(
-                            text = "LENSORA • $currentTimeString",
-                            color = Color(0xFF00E5FF),
-                            fontSize = 11.sp,
-                            fontWeight = FontWeight.Bold,
-                            letterSpacing = 1.1.sp,
-                        )
-                    }
-                }
 
                 val badgeText = if (isRecordingVideo) {
                     val mins = recordingSeconds / 60
@@ -488,6 +539,9 @@ fun CameraScreen(
 
                 AiBadge(
                     statusText = badgeText,
+                    modifier = Modifier.onGloballyPositioned { coordinates ->
+                        aiBadgeBounds = coordinates.boundsInRoot()
+                    },
                 )
             }
 
@@ -534,6 +588,7 @@ fun CameraScreen(
                     ProModeControls(
                         isoValue = proIsoValue,
                         shutterSpeedNs = proShutterNs,
+                        evValue = proEvValue,
                         isRawEnabled = isRawEnabled,
                         isZebrasEnabled = isZebrasEnabled,
                         isPeakingEnabled = isPeakingEnabled,
@@ -544,6 +599,10 @@ fun CameraScreen(
                         onShutterSpeedChanged = { shutterNs ->
                             proShutterNs = shutterNs
                             cameraController.setManualExposure(proIsoValue, shutterNs)
+                        },
+                        onEvChanged = { ev ->
+                            proEvValue = ev
+                            cameraController.setExposureCompensation(ev)
                         },
                         onRawToggled = { raw ->
                             isRawEnabled = raw
@@ -580,7 +639,11 @@ fun CameraScreen(
                         cameraController.setZoomRatio(ratio)
                         Toast.makeText(context, "Zoom: $level", Toast.LENGTH_SHORT).show()
                     },
-                    modifier = Modifier.padding(bottom = 12.dp),
+                    modifier = Modifier
+                        .padding(bottom = 12.dp)
+                        .onGloballyPositioned { coordinates ->
+                            zoomPillsBounds = coordinates.boundsInRoot()
+                        },
                 )
 
                 // Horizontal Scrollable Camera Mode Carousel
@@ -605,14 +668,20 @@ fun CameraScreen(
                     },
                     modifier = Modifier
                         .fillMaxWidth()
-                        .padding(bottom = 12.dp),
+                        .padding(bottom = 12.dp)
+                        .onGloballyPositioned { coordinates ->
+                            carouselBounds = coordinates.boundsInRoot()
+                        },
                 )
 
                 // Shutter Controls Row (Gallery Thumbnail + Shutter Button + Camera Flip Button)
                 Row(
                     modifier = Modifier
                         .fillMaxWidth()
-                        .padding(horizontal = 32.dp),
+                        .padding(horizontal = 32.dp)
+                        .onGloballyPositioned { coordinates ->
+                            shutterRowBounds = coordinates.boundsInRoot()
+                        },
                     horizontalArrangement = Arrangement.SpaceBetween,
                     verticalAlignment = Alignment.CenterVertically,
                 ) {
@@ -703,7 +772,7 @@ fun CameraScreen(
                                         } else {
                                             cameraController.startVideoRecording(
                                                 hasAudioPermission = hasAudioPermission,
-                                                displayRotationDegrees = deviceRotationDegrees,
+                                                displayRotationDegrees = sensorRotationDegrees,
                                                 onRecordingStarted = {
                                                     isRecordingVideo = true
                                                     Toast.makeText(context, "Recording started...", Toast.LENGTH_SHORT).show()
@@ -719,7 +788,7 @@ fun CameraScreen(
                                             countdownRemaining = timerMode.seconds
                                         } else if (countdownRemaining == 0) {
                                             cameraController.takePicture(
-                                                displayRotationDegrees = deviceRotationDegrees,
+                                                displayRotationDegrees = sensorRotationDegrees,
                                                 isRawEnabled = isRawEnabled && selectedMode == CameraMode.PRO,
                                                 vibePreset = VibeState.selectedVibe.name,
                                                 onPhotoSaved = { uri, msg ->

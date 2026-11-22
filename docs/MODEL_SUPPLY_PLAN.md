@@ -1,7 +1,7 @@
-# Neural Model Supply Chain Audit & Remediation Plan - Step 65b
+# Neural Model Supply Chain Audit & Remediation Plan - Step 65
 
 **Audit Date**: 2026-11-18
-**Mode**: READ-ONLY Model Supply Chain Plan (No production code modifications applied)
+**Mode**: Step 65 Applied (Manifest Schema v2, Pure JVM Parser, ModelManager Existence Guards, Downloader Checks, and Settings UI Applied)
 
 ---
 
@@ -87,3 +87,12 @@
 
 ## 4. Scene classifier caveat
 The ImageNet MobileNet model (`mobilenet_v1_1.0_224.tflite`) classifies general ImageNet objects (1000 categories) and is NOT a scene classification model. Do NOT alias or rename `mobilenet_v1_1.0_224.tflite` to `scene_classifier.tflite`. The loader in `SceneClassifier.kt` must treat missing `scene_classifier.tflite` as unavailable and fall back gracefully to the color-brightness heuristic pass.
+
+---
+
+## 5. Step M1 / M1b Model DLC Manifest Resolution (Applied & Verified)
+
+In Step M1, real TFLite neural model binaries were hosted on GitHub Releases (`models-v1`) and configured in `assets/manifest.json`:
+- `scene_classifier.tflite`: Places365 ResNet-18 FP16 (`places_fp16.tflite`), SHA-256 `8eb6c7ee5ec21be435d6d11f24bd68e13199bb457ff4c01fb07bde213f289d39`. Download & SHA-256 verification passed on Redmi device.
+- `real_esrgan_v2.tflite`: Real-ESRGAN general x4v3 float32 (`real_esrgan_general_x4v3.tflite`), SHA-256 `47dbfe34c3492e6f7f7fb2b0ed99794e8e41215c2177821f03e0f5304e4b9846`. Download & contract check passed.
+

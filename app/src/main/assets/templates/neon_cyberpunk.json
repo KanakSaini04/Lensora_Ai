@@ -1,0 +1,26 @@
+{
+  "id": "template_neon_cyberpunk_916",
+  "name": "Neon Cyberpunk 9:16",
+  "aspect": "NINE_SIXTEEN",
+  "musicAsset": "audio/synthwave.mp3",
+  "slots": [
+    {
+      "durationMs": 2000,
+      "vibePreset": "CINEMATIC",
+      "transitionIn": "GLITCH",
+      "text": "NEON CITY"
+    },
+    {
+      "durationMs": 2500,
+      "vibePreset": "LEICA",
+      "transitionIn": "SLIDE",
+      "text": "SHADOW PROTOCOL"
+    },
+    {
+      "durationMs": 3000,
+      "vibePreset": "CINEMATIC",
+      "transitionIn": "ZOOM",
+      "text": "FUTURE VISION"
+    }
+  ]
+}

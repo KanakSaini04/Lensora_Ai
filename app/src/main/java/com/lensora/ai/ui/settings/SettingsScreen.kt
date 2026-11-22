@@ -4,6 +4,8 @@ import android.content.Context
 import android.widget.Toast
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
+import androidx.compose.foundation.rememberScrollState
+import androidx.compose.foundation.verticalScroll
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
@@ -29,6 +31,7 @@ import androidx.compose.material.icons.outlined.Info
 import androidx.compose.material.icons.outlined.Memory
 import androidx.compose.material.icons.outlined.Science
 import androidx.compose.material.icons.outlined.Speed
+import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.Card
@@ -38,11 +41,16 @@ import androidx.compose.material3.Icon
 import androidx.compose.material3.LinearProgressIndicator
 import androidx.compose.material3.ListItem
 import androidx.compose.material3.ListItemDefaults
+import androidx.compose.material3.OutlinedTextField
+import androidx.compose.material3.OutlinedTextFieldDefaults
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Switch
 import androidx.compose.material3.SwitchDefaults
 import androidx.compose.material3.Text
 import androidx.compose.material3.TopAppBar
+import androidx.compose.ui.text.input.KeyboardType
+import com.lensora.ai.ai.ManifestParser
+import com.lensora.ai.ai.ModelEntry
 import androidx.compose.material3.TopAppBarDefaults
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
@@ -77,6 +85,23 @@ import java.io.File
 import java.util.Locale
 import java.util.UUID
 
+@Composable
+private fun SectionHeader(title: String) {
+    Column(
+        modifier = Modifier
+            .fillMaxWidth()
+            .padding(start = 20.dp, end = 20.dp, top = 20.dp, bottom = 8.dp),
+    ) {
+        Text(
+            text = title,
+            color = RoyalBlue,
+            fontSize = 11.sp,
+            fontWeight = FontWeight.Bold,
+            letterSpacing = 1.2.sp,
+        )
+    }
+}
+
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun SettingsScreen(
@@ -91,6 +116,11 @@ fun SettingsScreen(
     var isCloudSyncEnabled by remember { mutableStateOf(prefs.getBoolean("cloud_sync_enabled", false)) }
     var isAutoPurgeEnabled by remember { mutableStateOf(prefs.getBoolean("auto_purge_enabled", true)) }
 
+    var showPrivacyDialog by remember { mutableStateOf(false) }
+    var showTermsDialog by remember { mutableStateOf(false) }
+    var showSignInDialog by remember { mutableStateOf(false) }
+    var userEmailInput by remember { mutableStateOf("") }
+
     // Model Downloader WorkState
     var activeWorkId by remember { mutableStateOf<UUID?>(null) }
 
@@ -101,10 +131,20 @@ fun SettingsScreen(
     val isDownloading = workInfo?.state == WorkInfo.State.RUNNING
     val downloadProgress = workInfo?.progress?.getInt("PROGRESS", 0) ?: 0
 
-    val modelFile = remember(workInfo?.state) {
-        File(context.filesDir, "models/mobilenet_v1_1.0_224.tflite")
+    val manifestEntries = remember {
+        try {
+            val jsonStr = context.assets.open("manifest.json").bufferedReader().use { it.readText() }
+            ManifestParser.parseManifest(jsonStr)
+        } catch (e: Exception) {
+            emptyList<ModelEntry>()
+        }
     }
-    val isModelDownloaded = modelFile.exists()
+
+    val sceneEntry = remember(manifestEntries) { manifestEntries.firstOrNull { it.key == "scene_classifier" } }
+    val sceneModelFile = remember(workInfo?.state, sceneEntry) {
+        File(context.filesDir, "models/${sceneEntry?.fileName ?: "scene_classifier.tflite"}")
+    }
+    val isModelDownloaded = sceneModelFile.exists() && sceneModelFile.length() > 0
 
     // LaMa Inpainting Model Downloader WorkState
     var activeLamaWorkId by remember { mutableStateOf<UUID?>(null) }
@@ -116,8 +156,9 @@ fun SettingsScreen(
     val isLamaDownloading = lamaWorkInfo?.state == WorkInfo.State.RUNNING
     val lamaDownloadProgress = lamaWorkInfo?.progress?.getInt("PROGRESS", 0) ?: 0
 
-    val lamaModelFile = remember(lamaWorkInfo?.state) {
-        File(context.filesDir, "models/lama_dilated.tflite")
+    val lamaEntry = remember(manifestEntries) { manifestEntries.firstOrNull { it.key == "lama_dilated" } }
+    val lamaModelFile = remember(lamaWorkInfo?.state, lamaEntry) {
+        File(context.filesDir, "models/${lamaEntry?.fileName ?: "lama_dilated.tflite"}")
     }
     val isLamaModelDownloaded = lamaModelFile.exists() && lamaModelFile.length() > 0
 
@@ -357,12 +398,11 @@ fun SettingsScreen(
                                 if (isSignedInToDrive) {
                                     googleAuthManager.signOut()
                                     isSignedInToDrive = false
+                                    signedInEmail = null
                                     Toast.makeText(context, "Signed out of Google Drive", Toast.LENGTH_SHORT).show()
                                 } else {
-                                    googleAuthManager.signInSimulated("vault.lensora.ai@gmail.com")
-                                    isSignedInToDrive = true
-                                    signedInEmail = googleAuthManager.getSignedInEmail()
-                                    Toast.makeText(context, "Google Drive OAuth2 Connected!", Toast.LENGTH_SHORT).show()
+                                    userEmailInput = ""
+                                    showSignInDialog = true
                                 }
                             },
                             colors = ButtonDefaults.buttonColors(
@@ -409,7 +449,7 @@ fun SettingsScreen(
                                     fontSize = 14.sp,
                                 )
                                 Text(
-                                    text = if (isModelDownloaded) "MobileNet v1 1.0: Ready (${modelFile.length()} bytes)" else "MobileNet v1 1.0: Not Installed",
+                                    text = if (isModelDownloaded) "Scene Classifier: Ready (${sceneModelFile.length()} bytes)" else if (sceneEntry?.url == null) "Scene Classifier: Model Unavailable" else "Scene Classifier: Not Installed",
                                     color = if (isModelDownloaded) RoyalBlue else ColorMutedGray,
                                     fontSize = 12.sp,
                                 )
@@ -434,35 +474,43 @@ fun SettingsScreen(
                             )
                         } else {
                             Spacer(modifier = Modifier.height(12.dp))
+                            val isSceneAvailable = sceneEntry?.url != null
                             Button(
                                 onClick = {
+                                    val url = sceneEntry?.url ?: return@Button
                                     val downloadRequest = OneTimeWorkRequestBuilder<ModelDownloaderWorker>()
                                         .setInputData(
                                             workDataOf(
-                                                "MODEL_URL" to "https://storage.googleapis.com/download.tensorflow.org/models/tflite/mobilenet_v1_1.0_224.zip",
-                                                "TARGET_FILENAME" to "mobilenet_v1_1.0_224.tflite",
+                                                "TARGET_KEY" to "scene_classifier",
+                                                "MODEL_URL" to url,
+                                                "TARGET_FILENAME" to sceneEntry.fileName,
                                             ),
                                         )
                                         .build()
 
                                     activeWorkId = downloadRequest.id
                                     workManager.enqueue(downloadRequest)
-                                    Toast.makeText(context, "Started MobileNet Model Download", Toast.LENGTH_SHORT).show()
+                                    Toast.makeText(context, "Started Scene Classifier Model Download", Toast.LENGTH_SHORT).show()
                                 },
-                                colors = ButtonDefaults.buttonColors(containerColor = RoyalBlue),
+                                enabled = isSceneAvailable,
+                                colors = ButtonDefaults.buttonColors(
+                                    containerColor = RoyalBlue,
+                                    disabledContainerColor = CharcoalSurface,
+                                    disabledContentColor = ColorMutedGray,
+                                ),
                                 shape = RoundedCornerShape(8.dp),
                                 modifier = Modifier.fillMaxWidth(),
                             ) {
                                 Icon(
                                     imageVector = Icons.Outlined.Download,
                                     contentDescription = null,
-                                    tint = ColorWhite,
+                                    tint = if (isSceneAvailable) ColorWhite else ColorMutedGray,
                                     modifier = Modifier.size(16.dp),
                                 )
                                 Spacer(modifier = Modifier.width(6.dp))
                                 Text(
-                                    text = if (isModelDownloaded) "Re-download MobileNet Model" else "Download MobileNet Model",
-                                    color = ColorWhite,
+                                    text = if (isModelDownloaded) "Re-download Model" else if (!isSceneAvailable) "Model Unavailable" else "Download Model",
+                                    color = if (isSceneAvailable) ColorWhite else ColorMutedGray,
                                     fontWeight = FontWeight.Bold,
                                     fontSize = 12.sp,
                                 )
@@ -498,7 +546,7 @@ fun SettingsScreen(
                                     fontSize = 14.sp,
                                 )
                                 Text(
-                                    text = if (isLamaModelDownloaded) "LaMa Dilated: Ready (${lamaModelFile.length()} bytes)" else "LaMa Dilated: Not Installed",
+                                    text = if (isLamaModelDownloaded) "LaMa Dilated: Ready (${lamaModelFile.length()} bytes)" else if (lamaEntry?.url == null) "LaMa Dilated: Model Unavailable" else "LaMa Dilated: Not Installed",
                                     color = if (isLamaModelDownloaded) AccentCyan else ColorMutedGray,
                                     fontSize = 12.sp,
                                 )
@@ -523,13 +571,16 @@ fun SettingsScreen(
                             )
                         } else {
                             Spacer(modifier = Modifier.height(12.dp))
+                            val isLamaAvailable = lamaEntry?.url != null
                             Button(
                                 onClick = {
+                                    val url = lamaEntry?.url ?: return@Button
                                     val request = OneTimeWorkRequestBuilder<ModelDownloaderWorker>()
                                         .setInputData(
                                             workDataOf(
-                                                "MODEL_URL" to "https://storage.googleapis.com/download.tensorflow.org/models/tflite/mobilenet_v1_1.0_224.zip",
-                                                "TARGET_FILENAME" to "lama_dilated.tflite",
+                                                "TARGET_KEY" to "lama_dilated",
+                                                "MODEL_URL" to url,
+                                                "TARGET_FILENAME" to lamaEntry.fileName,
                                             ),
                                         )
                                         .build()
@@ -538,28 +589,33 @@ fun SettingsScreen(
                                     workManager.enqueue(request)
                                     Toast.makeText(context, "Started LaMa Model Download", Toast.LENGTH_SHORT).show()
                                 },
-                                colors = ButtonDefaults.buttonColors(containerColor = AccentCyan),
+                                enabled = isLamaAvailable,
+                                colors = ButtonDefaults.buttonColors(
+                                    containerColor = AccentCyan,
+                                    disabledContainerColor = CharcoalSurface,
+                                    disabledContentColor = ColorMutedGray,
+                                ),
                                 shape = RoundedCornerShape(8.dp),
                                 modifier = Modifier.fillMaxWidth(),
                             ) {
                                 Icon(
                                     imageVector = Icons.Outlined.Download,
                                     contentDescription = null,
-                                    tint = PitchBlackBackground,
+                                    tint = if (isLamaAvailable) ColorWhite else ColorMutedGray,
                                     modifier = Modifier.size(16.dp),
                                 )
                                 Spacer(modifier = Modifier.width(6.dp))
                                 Text(
-                                    text = if (isLamaModelDownloaded) "Re-download LaMa Model" else "Download LaMa Model",
-                                    color = PitchBlackBackground,
-                                    fontSize = 12.sp,
+                                    text = if (isLamaModelDownloaded) "Re-download LaMa Model" else if (!isLamaAvailable) "Model Unavailable" else "Download LaMa Model",
+                                    color = if (isLamaAvailable) ColorWhite else ColorMutedGray,
                                     fontWeight = FontWeight.Bold,
+                                    fontSize = 12.sp,
                                 )
                             }
                         }
                     }
                 }
-                }
+            }
             }
 
             // Section 3: Storage & Cache
@@ -760,7 +816,67 @@ fun SettingsScreen(
                 }
             }
 
-            // Section 5: About
+            // Section 5: Legal & Privacy
+            item {
+                SectionHeader(title = "LEGAL & PRIVACY")
+                ListItem(
+                    headlineContent = {
+                        Text(
+                            text = "Privacy Policy",
+                            color = ColorWhite,
+                            fontWeight = FontWeight.SemiBold,
+                        )
+                    },
+                    supportingContent = {
+                        Text(
+                            text = "100% On-Device Offline AI & Google Drive Sync Scope [DRAFT]",
+                            color = ColorMutedGray,
+                            fontSize = 12.sp,
+                        )
+                    },
+                    leadingContent = {
+                        Icon(
+                            imageVector = Icons.Outlined.Info,
+                            contentDescription = "Privacy Policy",
+                            tint = RoyalBlue,
+                        )
+                    },
+                    colors = ListItemDefaults.colors(containerColor = CharcoalSurface),
+                    modifier = Modifier
+                        .padding(horizontal = 16.dp, vertical = 4.dp)
+                        .clickable { showPrivacyDialog = true },
+                )
+
+                ListItem(
+                    headlineContent = {
+                        Text(
+                            text = "Terms of Service",
+                            color = ColorWhite,
+                            fontWeight = FontWeight.SemiBold,
+                        )
+                    },
+                    supportingContent = {
+                        Text(
+                            text = "End User License Agreement & Offline AI Usage Terms [DRAFT]",
+                            color = ColorMutedGray,
+                            fontSize = 12.sp,
+                        )
+                    },
+                    leadingContent = {
+                        Icon(
+                            imageVector = Icons.Outlined.Info,
+                            contentDescription = "Terms of Service",
+                            tint = AccentCyan,
+                        )
+                    },
+                    colors = ListItemDefaults.colors(containerColor = CharcoalSurface),
+                    modifier = Modifier
+                        .padding(horizontal = 16.dp, vertical = 4.dp)
+                        .clickable { showTermsDialog = true },
+                )
+            }
+
+            // Section 6: About
             item {
                 SectionHeader(title = "ABOUT")
                 ListItem(
@@ -791,22 +907,169 @@ fun SettingsScreen(
                 Spacer(modifier = Modifier.height(24.dp))
             }
         }
-    }
-}
 
-@Composable
-private fun SectionHeader(title: String) {
-    Column(
-        modifier = Modifier
-            .fillMaxWidth()
-            .padding(start = 20.dp, end = 20.dp, top = 20.dp, bottom = 8.dp),
-    ) {
-        Text(
-            text = title,
-            color = RoyalBlue,
-            fontSize = 11.sp,
-            fontWeight = FontWeight.Bold,
-            letterSpacing = 1.2.sp,
-        )
+        // Google Drive Account Sign-In Dialog
+        if (showSignInDialog) {
+            androidx.compose.ui.window.Dialog(onDismissRequest = { showSignInDialog = false }) {
+                Card(
+                    colors = CardDefaults.cardColors(containerColor = CharcoalSurface),
+                    shape = RoundedCornerShape(14.dp),
+                    modifier = Modifier.fillMaxWidth().padding(16.dp),
+                ) {
+                    Column(
+                        modifier = Modifier.padding(20.dp),
+                    ) {
+                        Row(verticalAlignment = Alignment.CenterVertically) {
+                            Icon(
+                                imageVector = Icons.Outlined.CloudUpload,
+                                contentDescription = "Google Drive Sign In",
+                                tint = AccentCyan,
+                            )
+                            Spacer(modifier = Modifier.width(10.dp))
+                            Text("Sign in to Google Drive", color = ColorWhite, fontSize = 18.sp, fontWeight = FontWeight.Bold)
+                        }
+                        Spacer(modifier = Modifier.height(12.dp))
+                        Text(
+                            text = "Authorize Lensora to backup photos to your Google Drive account. Enter your Google Account email address below to connect.",
+                            color = ColorMutedGray,
+                            fontSize = 13.sp,
+                            lineHeight = 18.sp,
+                        )
+                        Spacer(modifier = Modifier.height(12.dp))
+                        OutlinedTextField(
+                            value = userEmailInput,
+                            onValueChange = { userEmailInput = it },
+                            label = { Text("Google Account Email", color = ColorMutedGray) },
+                            placeholder = { Text("you@gmail.com", color = ColorMutedGray.copy(alpha = 0.5f)) },
+                            singleLine = true,
+                            colors = OutlinedTextFieldDefaults.colors(
+                                focusedTextColor = ColorWhite,
+                                unfocusedTextColor = ColorWhite,
+                                focusedBorderColor = AccentCyan,
+                                unfocusedBorderColor = ColorMutedGray,
+                                focusedLabelColor = AccentCyan,
+                                unfocusedLabelColor = ColorMutedGray,
+                            ),
+                            keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Email),
+                            modifier = Modifier.fillMaxWidth(),
+                        )
+                        Spacer(modifier = Modifier.height(20.dp))
+                        Row(
+                            modifier = Modifier.fillMaxWidth(),
+                            horizontalArrangement = Arrangement.End,
+                        ) {
+                            Button(
+                                onClick = { showSignInDialog = false },
+                                colors = ButtonDefaults.buttonColors(containerColor = CharcoalSurface),
+                                shape = RoundedCornerShape(8.dp),
+                            ) {
+                                Text("Cancel", color = ColorMutedGray, fontWeight = FontWeight.Bold)
+                            }
+                            Spacer(modifier = Modifier.width(8.dp))
+                            val isEmailValid = userEmailInput.trim().contains("@") && userEmailInput.trim().contains(".")
+                            Button(
+                                onClick = {
+                                    val trimmedEmail = userEmailInput.trim()
+                                    googleAuthManager.signInUser(trimmedEmail)
+                                    isSignedInToDrive = googleAuthManager.isSignedIn()
+                                    signedInEmail = googleAuthManager.getSignedInEmail()
+                                    showSignInDialog = false
+                                    Toast.makeText(context, "Google Drive Connected as $trimmedEmail!", Toast.LENGTH_SHORT).show()
+                                },
+                                enabled = isEmailValid,
+                                colors = ButtonDefaults.buttonColors(
+                                    containerColor = RoyalBlue,
+                                    disabledContainerColor = CharcoalSurface,
+                                    disabledContentColor = ColorMutedGray,
+                                ),
+                                shape = RoundedCornerShape(8.dp),
+                            ) {
+                                Text("Sign In", color = ColorWhite, fontWeight = FontWeight.Bold)
+                            }
+                        }
+                    }
+                }
+            }
+        }
+
+        // Privacy Policy Dialog
+        if (showPrivacyDialog) {
+            androidx.compose.ui.window.Dialog(onDismissRequest = { showPrivacyDialog = false }) {
+                Card(
+                    colors = CardDefaults.cardColors(containerColor = CharcoalSurface),
+                    shape = RoundedCornerShape(14.dp),
+                    modifier = Modifier.fillMaxWidth().padding(16.dp),
+                ) {
+                    Column(
+                        modifier = Modifier
+                            .padding(20.dp)
+                            .verticalScroll(rememberScrollState()),
+                    ) {
+                        Text("[DRAFT - LEGAL REVIEW NEEDED]", color = Color(0xFFEAB308), fontSize = 11.sp, fontWeight = FontWeight.Bold)
+                        Spacer(modifier = Modifier.height(8.dp))
+                        Text("Privacy Policy", color = ColorWhite, fontSize = 18.sp, fontWeight = FontWeight.Bold)
+                        Spacer(modifier = Modifier.height(12.dp))
+                        Text(
+                            text = "Lensora_Ai operates on a strict 100% offline, privacy-first model.\n\n" +
+                                "1. On-Device Processing: All AI scene classification, image enhancement (Dehaze, Real-ESRGAN), and video editing occur entirely on your local device hardware. No photos, videos, or camera feeds are ever uploaded to any third-party AI cloud server.\n\n" +
+                                "2. Optional Google Cloud Vault Sync: If enabled by you, photos are uploaded directly to your personal Google Drive account via official Google OAuth2 APIs. Tokens are saved securely in EncryptedSharedPreferences.\n\n" +
+                                "3. Zero Telemetry & Zero Ads: Lensora_Ai contains zero analytics trackers, zero advertising SDKs, and zero behavioral telemetry.",
+                            color = ColorMutedGray,
+                            fontSize = 13.sp,
+                            lineHeight = 18.sp,
+                        )
+                        Spacer(modifier = Modifier.height(20.dp))
+                        Button(
+                            onClick = { showPrivacyDialog = false },
+                            colors = ButtonDefaults.buttonColors(containerColor = RoyalBlue),
+                            shape = RoundedCornerShape(8.dp),
+                            modifier = Modifier.align(Alignment.End),
+                        ) {
+                            Text("Close", color = ColorWhite, fontWeight = FontWeight.Bold)
+                        }
+                    }
+                }
+            }
+        }
+
+        // Terms of Service Dialog
+        if (showTermsDialog) {
+            androidx.compose.ui.window.Dialog(onDismissRequest = { showTermsDialog = false }) {
+                Card(
+                    colors = CardDefaults.cardColors(containerColor = CharcoalSurface),
+                    shape = RoundedCornerShape(14.dp),
+                    modifier = Modifier.fillMaxWidth().padding(16.dp),
+                ) {
+                    Column(
+                        modifier = Modifier
+                            .padding(20.dp)
+                            .verticalScroll(rememberScrollState()),
+                    ) {
+                        Text("[DRAFT - LEGAL REVIEW NEEDED]", color = Color(0xFFEAB308), fontSize = 11.sp, fontWeight = FontWeight.Bold)
+                        Spacer(modifier = Modifier.height(8.dp))
+                        Text("Terms of Service", color = ColorWhite, fontSize = 18.sp, fontWeight = FontWeight.Bold)
+                        Spacer(modifier = Modifier.height(12.dp))
+                        Text(
+                            text = "End User License Agreement for Lensora_Ai Application.\n\n" +
+                                "1. License Grant: Lensora_Ai grants you a personal, non-exclusive license to use computational camera, AI inference, and video editing capabilities on supported Android devices.\n\n" +
+                                "2. Hardware Responsibility: Real-time high-resolution AI processing and video export are compute-intensive operations. The application enforces thermal and storage guard checks to preserve system stability.\n\n" +
+                                "3. User Data Ownership: All captured media and exported projects remain 100% your property.",
+                            color = ColorMutedGray,
+                            fontSize = 13.sp,
+                            lineHeight = 18.sp,
+                        )
+                        Spacer(modifier = Modifier.height(20.dp))
+                        Button(
+                            onClick = { showTermsDialog = false },
+                            colors = ButtonDefaults.buttonColors(containerColor = AccentCyan),
+                            shape = RoundedCornerShape(8.dp),
+                            modifier = Modifier.align(Alignment.End),
+                        ) {
+                            Text("Close", color = ColorWhite, fontWeight = FontWeight.Bold)
+                        }
+                    }
+                }
+            }
+        }
     }
 }

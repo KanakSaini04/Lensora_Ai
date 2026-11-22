@@ -1,3 +1,20 @@
 <resources>
     <string name="app_name">Lensora_Ai</string>
+    <string name="no_photos_found">No photos found</string>
+    <string name="no_media_for_filter">No media found for active filter</string>
+    <string name="fit">Fit</string>
+    <string name="feather">Feather</string>
+    <string name="opacity">Opacity</string>
+    <string name="hold_to_compare">Hold to Compare</string>
+    <string name="erase">Erase</string>
+    <string name="restore">Restore</string>
+    <string name="reset_edits">Reset</string>
+    <string name="filmstrip">FILMSTRIP</string>
+    <string name="video_unavailable">Video Unavailable</string>
+    <string name="unable_to_play_video">Unable to play video file</string>
+    <string name="play">Play</string>
+    <string name="pause">Pause</string>
+    <string name="mute">Mute</string>
+    <string name="unmute">Unmute</string>
+    <string name="badge_video">VIDEO</string>
 </resources>

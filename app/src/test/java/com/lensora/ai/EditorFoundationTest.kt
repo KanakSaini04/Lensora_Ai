@@ -110,6 +110,50 @@ class EditorFoundationTest {
     }
 
     @Test
+    fun testCreateProjectFromTemplate() {
+        val sampleJson = """
+            {
+              "id": "template_urban_vlog_916",
+              "name": "Urban Vlog Beat 9:16",
+              "aspect": "NINE_SIXTEEN",
+              "musicAsset": "audio/vlog_beat.mp3",
+              "slots": [
+                {
+                  "durationMs": 2500,
+                  "vibePreset": "CINEMATIC",
+                  "transitionIn": "FADE",
+                  "text": "MORNING VIBES"
+                },
+                {
+                  "durationMs": 3000,
+                  "vibePreset": "ROYAL_GOLD",
+                  "transitionIn": "SLIDE",
+                  "text": "CITY EXPLORATION"
+                }
+              ]
+            }
+        """.trimIndent()
+
+        val parsedTemplate = TemplateLoader.parseTemplateJson(sampleJson)
+        assertNotNull(parsedTemplate)
+
+        val project = TemplateLoader.createProjectFromTemplate(
+            template = parsedTemplate!!,
+            pickedUris = listOf("content://media/1", "content://media/2"),
+        )
+
+        assertNotNull(project)
+        assertEquals("Urban Vlog Beat 9:16", project.name)
+        assertEquals(AspectRatio.NINE_SIXTEEN, project.aspect)
+        assertEquals(2, project.clips.size)
+        assertEquals("content://media/1", project.clips[0].sourceUri)
+        assertEquals(2500L, project.clips[0].durationMs)
+        assertEquals("CINEMATIC", project.clips[0].vibePreset)
+        assertEquals(TransitionType.FADE, project.clips[0].transitionIn)
+        assertTrue(project.validate())
+    }
+
+    @Test
     fun testModelValidationRules() {
         val validClip = Clip(
             id = "c1",

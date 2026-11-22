@@ -1,5 +1,6 @@
 package com.lensora.ai.ui.navigation
 
+import android.net.Uri
 import androidx.activity.compose.BackHandler
 import androidx.compose.animation.core.tween
 import androidx.compose.animation.fadeIn
@@ -27,10 +28,12 @@ import androidx.compose.ui.hapticfeedback.HapticFeedbackType
 import androidx.compose.ui.platform.LocalHapticFeedback
 import androidx.navigation.NavGraph.Companion.findStartDestination
 import androidx.navigation.NavHostController
+import androidx.navigation.NavType
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.currentBackStackEntryAsState
 import androidx.navigation.compose.rememberNavController
+import androidx.navigation.navArgument
 import com.lensora.ai.ui.camera.CameraScreen
 import com.lensora.ai.ui.gallery.GalleryScreen
 import com.lensora.ai.ui.gallery.QuickViewScreen
@@ -62,6 +65,11 @@ sealed class NavScreen(
 const val ROUTE_PROBE_LAB = "probe_lab"
 const val ROUTE_QUICK_VIEW = "quick_view"
 
+fun shouldShowBottomBarForRoute(route: String?): Boolean {
+    val isTopLevelRoute = NavScreen.items.any { it.route == route }
+    return isTopLevelRoute && route != NavScreen.Camera.route
+}
+
 @Composable
 fun AppNavigation(
     navController: NavHostController = rememberNavController(),
@@ -72,16 +80,26 @@ fun AppNavigation(
 
     val isTopLevelRoute = NavScreen.items.any { it.route == currentRoute }
 
-    // Predictive back handler for nested screens
+    // Predictive back handler for nested screens & secondary tabs
     if (!isTopLevelRoute && currentRoute != null) {
         BackHandler {
             navController.popBackStack()
+        }
+    } else if (isTopLevelRoute && currentRoute != NavScreen.Camera.route) {
+        BackHandler {
+            navController.navigate(NavScreen.Camera.route) {
+                popUpTo(navController.graph.findStartDestination().id) {
+                    saveState = true
+                }
+                launchSingleTop = true
+                restoreState = true
+            }
         }
     }
 
     Scaffold(
         bottomBar = {
-            if (isTopLevelRoute) {
+            if (shouldShowBottomBarForRoute(currentRoute)) {
                 NavigationBar(
                     containerColor = CharcoalSurface,
                     contentColor = ColorWhite,
@@ -145,13 +163,23 @@ fun AppNavigation(
             composable(NavScreen.Camera.route) {
                 CameraScreen(
                     onOpenQuickView = { navController.navigate(ROUTE_QUICK_VIEW) },
+                    onNavigateToStudio = {
+                        navController.navigate(NavScreen.Studio.route) {
+                            popUpTo(navController.graph.findStartDestination().id) {
+                                saveState = true
+                            }
+                            launchSingleTop = true
+                            restoreState = true
+                        }
+                    },
                 )
             }
             composable(NavScreen.Studio.route) { StudioScreen() }
             composable(NavScreen.Gallery.route) {
                 GalleryScreen(
-                    onPhotoClick = { _, _ ->
-                        navController.navigate(ROUTE_QUICK_VIEW)
+                    onPhotoClick = { uri, filterName ->
+                        val encodedUri = Uri.encode(uri.toString())
+                        navController.navigate("$ROUTE_QUICK_VIEW?initialUri=$encodedUri&filter=$filterName")
                     },
                 )
             }
@@ -166,8 +194,26 @@ fun AppNavigation(
                     onNavigateBack = { navController.popBackStack() },
                 )
             }
-            composable(ROUTE_QUICK_VIEW) {
+            composable(
+                route = "$ROUTE_QUICK_VIEW?initialUri={initialUri}&filter={filter}",
+                arguments = listOf(
+                    navArgument("initialUri") {
+                        type = NavType.StringType
+                        nullable = true
+                        defaultValue = null
+                    },
+                    navArgument("filter") {
+                        type = NavType.StringType
+                        nullable = true
+                        defaultValue = null
+                    },
+                ),
+            ) { backStackEntry ->
+                val initialUri = backStackEntry.arguments?.getString("initialUri")
+                val filter = backStackEntry.arguments?.getString("filter")
                 QuickViewScreen(
+                    initialUri = initialUri,
+                    filterName = filter,
                     onNavigateBack = { navController.popBackStack() },
                 )
             }

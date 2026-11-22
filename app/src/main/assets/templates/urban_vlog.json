@@ -1,0 +1,26 @@
+{
+  "id": "template_urban_vlog_916",
+  "name": "Urban Vlog Beat 9:16",
+  "aspect": "NINE_SIXTEEN",
+  "musicAsset": "audio/vlog_beat.mp3",
+  "slots": [
+    {
+      "durationMs": 2500,
+      "vibePreset": "CINEMATIC",
+      "transitionIn": "FADE",
+      "text": "MORNING VIBES"
+    },
+    {
+      "durationMs": 3000,
+      "vibePreset": "ROYAL_GOLD",
+      "transitionIn": "SLIDE",
+      "text": "CITY EXPLORATION"
+    },
+    {
+      "durationMs": 2000,
+      "vibePreset": "CYAN_PULSE",
+      "transitionIn": "ZOOM",
+      "text": "NIGHT LIGHTS"
+    }
+  ]
+}
