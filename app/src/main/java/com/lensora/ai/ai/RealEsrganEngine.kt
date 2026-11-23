@@ -77,7 +77,7 @@ object RealEsrganEngine {
         return true
     }
 
-    fun createInterpreter(modelFile: File): EsrganInterpreter {
+    fun createInterpreter(modelFile: File, forceCpu: Boolean = false): EsrganInterpreter {
         val testInput = createInputBuffer()
         val numPixels = TILE_IN_SIZE * TILE_IN_SIZE
         for (i in 0 until numPixels) {
@@ -101,6 +101,11 @@ object RealEsrganEngine {
             Log.w(TAG, "CPU warm-up failed: ${cpuEx.message}")
             try { cpuInterpreter?.close() } catch (_: Throwable) {}
             throw cpuEx
+        }
+
+        if (forceCpu) {
+            Log.i(TAG, "Real-ESRGAN explicitly forced to CPU (4 threads)")
+            return EsrganInterpreter(cpuInterpreter, null, false)
         }
 
         val compat = CompatibilityList()
