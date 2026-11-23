@@ -79,11 +79,14 @@ If two rules clash, or a rule clashes with my prompt: STOP and ask. Do not choos
 - Back behavior: back from a secondary tab returns to the start tab; Predictive Back only if added with my OK (manifest change).
 
 ## 8. Run and device policy
+- After EVERY change: build, install, launch on the emulator, open the affected screen, paste `adb -s emulator-5554 logcat -d -s AndroidRuntime:E`. Label every result **EMULATOR** or **DEVICE**.
+- Use the physical device only when the prompt says `DEVICE REQUIRED: yes`. If it is not connected: STOP and tell me.
+- Camera2 hardware behavior (HAL, lenses, RAW, video, thermal, GPU speed, HyperOS kills) cannot be verified on the emulator: **NOT VERIFIED on device**.
+- The emulator may be locked: wake and unlock it with the PIN given in the prompt (never store the PIN anywhere).
 - **Default Device (EMULATOR)**: The virtual device (`Medium_Phone`, Android 16 / API 35/36, `emulator-5554`) is the DEFAULT test device. You may start and manage it yourself. Always pass `-s emulator-5554` when running `adb` commands (as multiple devices may be connected).
 - **Physical Device (REDMI)**: The physical Redmi Note 13 Pro 5G (`5ceab3e6`) is the owner's daily phone. Use it ONLY for capabilities the emulator cannot verify (Camera2 HAL, RAW, video recording, thermal behavior, HyperOS task killer) and for ONE final confirmation before merging a UI feature.
 - **Redmi Access Protocol**: Before touching the Redmi device, you MUST send a chat message: `"I need the Redmi for <what>, about <N> minutes. Reply READY."`, then STOP and wait for owner approval. When finished, say `"Redmi free"`. Never touch the Redmi without asking first.
 - **Result Labeling**: Every test/verification result MUST be labeled **EMULATOR** or **DEVICE**. A UI feature is merged only after all criteria are verified on the EMULATOR AND one final DEVICE confirmation (requested via the protocol above).
-- **Logcat**: After EVERY change: build, install, launch on the emulator, open the affected screen, paste `adb -s emulator-5554 logcat -d -s AndroidRuntime:E`.
 
 ## 9. Report format (final message & reply.md, always)
 - **`reply.md` File**: Create or OVERWRITE `reply.md` at repo root at the end of every task (never append). Include Status, Goal & acceptance criteria matrix, Design/Root cause summary, What changed list, Evidence (tests, device, Break-It), Risks/rollback, and Docs audit.
