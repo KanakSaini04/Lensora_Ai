@@ -104,9 +104,11 @@ class AiProcessorService : Service() {
             Log.e(tag, "Error starting foreground service notification", e)
         }
 
+        val downscaleFactor = intent.getFloatExtra("DOWNSCALE_FACTOR", 0.5f)
+
         serviceScope.launch {
             try {
-                executeRealImageEnhancementPipeline(photoUriStr, sceneTypeStr, evOffset, vibePreset, isHighRes)
+                executeRealImageEnhancementPipeline(photoUriStr, sceneTypeStr, evOffset, vibePreset, isHighRes, downscaleFactor)
             } catch (e: Exception) {
                 if (e is kotlinx.coroutines.CancellationException) throw e
                 Log.e(tag, "Unhandled exception in AiProcessorService image enhancement pass", e)
@@ -124,6 +126,7 @@ class AiProcessorService : Service() {
         evOffset: Float,
         vibePreset: VibePreset,
         isHighRes: Boolean,
+        downscaleFactor: Float = 0.5f,
     ) {
         Log.i(tag, "Executing L3 Real Image-to-Image AI Enhancement & LUT Pipeline in Foreground Service for $photoUriStr")
         val startTime = System.currentTimeMillis()
@@ -178,6 +181,9 @@ class AiProcessorService : Service() {
                 if (enhancementModelFile != null && enhancementModelFile.exists()) {
                     try {
                         val candidateObj = com.lensora.ai.ai.RealEsrganEngine.createInterpreter(enhancementModelFile)
+                        val provider = com.lensora.ai.ai.InterpreterTensorInfoProvider(candidateObj.interpreter)
+                        val contractStatus = com.lensora.ai.ai.ModelContractChecker.checkContract(enhancementModelFile, com.lensora.ai.ai.ModelContracts.REAL_ESRGAN_V2, provider)
+                        Log.i(tag, "ModelContractChecker Real-ESRGAN v2 Status: $contractStatus")
                         esrganInterpreterObj = candidateObj
                         usedImageToImageModel = true
                         Log.i(tag, "Loaded Image-to-Image AI Model: ${enhancementModelFile.name} (${enhancementModelFile.length()} bytes) [Backend: ${if (candidateObj.usingGpu) "GPU" else "CPU"}]")
@@ -204,10 +210,10 @@ class AiProcessorService : Service() {
                 }
                 if (fullSourceBitmap != null) {
                     try {
-                        Log.i(tag, "Executing 50% pre-downscale Real-ESRGAN super-resolution pass in Service (~50 MP target) [Backend: ${if (activeEsrganObj.usingGpu) "GPU" else "CPU"}]")
+                        Log.i(tag, "Executing Real-ESRGAN super-resolution pass in Service (downscaleFactor=$downscaleFactor) [Backend: ${if (activeEsrganObj.usingGpu) "GPU" else "CPU"}]")
                         processedBitmap = com.lensora.ai.ai.RealEsrganEngine.runSuperResolutionPipeline(
                             sourceBitmap = fullSourceBitmap,
-                            downscaleFactor = 0.5f,
+                            downscaleFactor = downscaleFactor,
                             interpreter = activeEsrganObj.interpreter,
                             validator = validator,
                             colorMatrix = colorMatrix,

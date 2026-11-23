@@ -21,3 +21,6 @@ secrets.properties
 camera_dump*.xml
 studio_dump*.xml
 real_test_photo.jpg
+photo_12_5mp.jpg
+upscaled_photo.jpg
+upscaled_photo_4x.jpg
