@@ -1,3 +1,9 @@
+## [Unreleased] - Step R1: Rulebook Update - Section 12 Quality Bar (2026-11-23)
+
+### Documentation
+- **Rulebook Update - Section 12 Quality Bar (Step R1)**:
+  - Updated `GEMINI_RULES.md` and `GEMINI.md` adding Section 12 Quality Bar rules, updated priority order line, updated Git rule, and updated Definition of Done. All 121 unit tests passing cleanly.
+
 ## [Unreleased] - Step Z12d-fix2: Correct Z12d-fix Commit & Handoff Accuracy (2026-11-22)
 
 ### Documentation

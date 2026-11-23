@@ -5,10 +5,10 @@
 > Rules for this file: every fact must come from the repo, a test run or a device/emulator check. Unknown = **NOT VERIFIED**. No secrets, tokens, keystores, PINs or personal data.
 
 ## 0. Status block (update every step)
-- **Last updated**: 2026-11-22
-- **Branch / HEAD**: `step-Z12d-docs`
-- **Last completed step**: Step Z12e - Record Z5 Device Verification in Documentation
-- **In progress**: Step Z12e verification & handoff
+- **Last updated**: 2026-11-23
+- **Branch / HEAD**: `docs/quality-rules`
+- **Last completed step**: Step R1 - Rulebook Update (Section 12 Quality Bar & Merge Gates)
+- **In progress**: Step R1 PR creation & merge to dev
 - **Unit tests**: 121 passed, 0 skipped, 0 failed across 21 test classes
 - **Baseline APK size**: 94494604 bytes
 - **Last emulator check**: `emulator-5554` (`Medium_Phone`), 2026-11-20 (App launches cleanly, Google Drive Sign-In dialog functioning, 121 unit tests passing); **Last physical-device (Redmi) check**: VERIFIED on device by owner (2026-11-22) for Z5 (eraser drawing at 100/146/406/800% zoom, mid-stroke 2nd finger, Gallery pan), Z7 (portrait lock & EXIF orientation), Z8 (video recording start), Z10 (video thumbnails, badges, duration pills), Z10b (video Home pause, initial duration, tap controls), Z11 (Studio filmstrip photos only), Z12 (localized title count strings). NOT VERIFIED: Z6 and features not explicitly tested.
