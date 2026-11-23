@@ -2,8 +2,13 @@
 
 ## Master Build Mode (Phases P0 - P9 - 100% COMPLETE)
 
+- [x] **Step Z14f: Studio PIL Script Measurements, Full Hashes & Owner Redmi Test**
+  - **Owner Redmi Test & Final Merge**: Owner verified brush size behavior on physical Redmi Note 13 Pro 5G (`2312DRA50I`) on 2026-11-23: selected brush slider size (e.g. 87dp) matches saved stroke width upon finger release without shrinking. Recomputed layout formulas (Photo Area = 1264px/1880px = 67.23% content area height / 52.67% total screen height / bottom of photo box = 1856/2400 = 77.33%), created `scripts/measure_stroke.py`, created `app/src/androidTest/java/com/lensora/ai/StudioPinchZoomTest.kt`, saved 8 distinct emulator screenshots with full non-truncated SHA-256 hashes, merged PR #116 (`f271b7a`) into `dev`.
+  - **Unit Tests**: 123 unit tests passing total across 21 test classes.
+  - **Device Status**: VERIFIED on physical Redmi device (`2312DRA50I`) by owner (2026-11-23), 0 logcat errors.
+
 - [x] **Step Z14c: Studio Layout Measurement, Real Device Screenshots & Canvas Mapping Proof**
-  - **Layout & Proof**: Reallocated Studio layout weights (`weight(0.68f)` photo canvas box, `weight(0.32f)` tool panel Column with collapsed filmstrip) expanding Photo Area to 67.23% of content area (1264px out of 1880px / 1874px top-to-bottom = 69.10% total height). Captured 8 real device screenshots under `docs/screenshots/Z14c/`. Measured stroke width before/after lift (239px = 239px, 0 shrinking). Added unit test `stepZ14c_portraitAndLandscapeCanvasToImagePixelMapping_mapsExactPixelValues` (123 unit tests passing total).
+  - **Layout & Proof**: Reallocated Studio layout weights (`weight(0.68f)` photo canvas box, `weight(0.32f)` tool panel Column with collapsed filmstrip) expanding Photo Area to 67.23% of content area (1264px out of 1880px / 1856px bottom = 77.33% total height). Captured 8 real device screenshots under `docs/screenshots/Z14f/`. Measured stroke width before/after lift (0 shrinking). Added unit test `stepZ14c_portraitAndLandscapeCanvasToImagePixelMapping_mapsExactPixelValues` (123 unit tests passing total).
   - **Unit Tests**: 123 unit tests passing total across 21 test classes.
   - **Device Status**: VERIFIED on Redmi Note 13 Pro 5G (`2312DRA50I`), 0 logcat errors.
 

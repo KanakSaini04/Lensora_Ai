@@ -6,12 +6,12 @@
 
 ## 0. Status block (update every step)
 - **Last updated**: 2026-11-23
-- **Branch / HEAD**: `step-Z14c-studio-proof`
-- **Last completed step**: Step Z14c - Studio Layout Measurement & Device Proof
-- **In progress**: Step Z14c PR creation & merge to dev
+- **Branch / HEAD**: `dev`
+- **Last completed step**: Step Z14f - Studio PIL Script Measurements, Full Hashes & Owner Redmi Test
+- **In progress**: None (Step Z14f merged via PR #116)
 - **Unit tests**: 123 passed, 0 skipped, 0 failed across 21 test classes
 - **Baseline APK size**: 94494604 bytes
-- **Last emulator check**: `emulator-5554` (`Medium_Phone`), 2026-11-20 (App launches cleanly, Google Drive Sign-In dialog functioning, 123 unit tests passing); **Last physical-device (Redmi) check**: VERIFIED on device (2026-11-23) for Z14c (photo canvas area 67.23% height, 8 screenshots under docs/screenshots/Z14c/, stroke width 239px before/after lift, portrait/landscape 1:1 canvas-to-image mapping), Z14, Z5, Z7, Z8, Z10, Z10b, Z11, Z12. NOT VERIFIED: Z6 and features not explicitly tested.
+- **Last emulator check**: `emulator-5554` (`Medium_Phone`), 2026-11-23 (App launches cleanly, 8 distinct Z14f screenshots captured under docs/screenshots/Z14f/ with full SHA-256 hashes, 123 unit tests passing); **Last physical-device (Redmi) check**: VERIFIED on device by owner (2026-11-23) for Z14/Z14f (Eraser brush slider selected, slow stroke drawn, width constant upon finger release with 0 shrinking), Z14c (photo canvas area 67.23% content height), Z14, Z5, Z7, Z8, Z10, Z10b, Z11, Z12. NOT VERIFIED: Z6 and features not explicitly tested.
 
 ## 1. Boot order for a new AI
 1. `GEMINI.md` (coding-agent rules & Section 10 Run/Device policy)

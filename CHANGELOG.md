@@ -1,3 +1,13 @@
+## [Unreleased] - Step Z14f: Studio PIL Script Measurements, Full Hashes & Owner Redmi Test (2026-11-23)
+
+### Fixed & Verified
+- **Studio Owner Redmi Test & Final Merge (Step Z14f)**:
+  - Physical Redmi Note 13 Pro 5G (`2312DRA50I`) verified by owner (2026-11-23): big brush slider selected, single slow stroke drawn, width stays constant upon finger lift with 0 shrinking.
+  - Recomputed layout math: Photo Area = 1264px/1880px = 67.23% content area height (1264px/2400px = 52.67% total height; bottom of photo box = 1856/2400 = 77.33%).
+  - Added `scripts/measure_stroke.py` PIL stroke measurement script and `StudioPinchZoomTest.kt` in `app/src/androidTest`.
+  - Saved 8 distinct emulator screenshots with full non-truncated 64-character SHA-256 hashes under `docs/screenshots/Z14f/`.
+  - PR #116 merged into `dev` (merge commit `f271b7a`). 123 unit tests passing.
+
 ## [Unreleased] - Step Z14c: Studio Layout Measurement & Device Proof (2026-11-23)
 
 ### Fixed
