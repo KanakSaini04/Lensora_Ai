@@ -2,6 +2,11 @@
 
 ## Master Build Mode (Phases P0 - P9 - 100% COMPLETE)
 
+- [x] **Step M1: Real TFLite AI Models Integration (Super-Res & Scene Classifier)**
+  - **Real Model Verification**: Integrated and verified real TFLite models (`real_esrgan_v2.tflite` 4.87 MB and `scene_classifier.tflite` 22.77 MB) end-to-end on `emulator-5554`. Real-ESRGAN v2 4x super-resolution upscaled 1024x768 real JPEG photo to 2048x1536 in 9264ms without seams or color shifts. Places365 ResNet-18 FP16 model ran live 500ms preview inference (`source = LabelSource.TFLITE_MODEL`) logging top-5 predictions. `ModelContractChecker` verified contract shapes for both models (`ModelContractStatus.Valid`). Created `RealModelContractTest.kt` (125/125 unit tests green). Updated `BUILD_QUEUE.md` and `MODEL_AUDIT.md`. Merged PR #117 (`856f892`) into `dev`.
+  - **Unit Tests**: 125 unit tests passing total across 22 test classes.
+  - **Device Status**: VERIFIED on `emulator-5554` (`sdk_gphone64_x86_64`), 0 logcat errors.
+
 - [x] **Step Z14f: Studio PIL Script Measurements, Full Hashes & Owner Redmi Test**
   - **Owner Redmi Test & Final Merge**: Owner verified brush size behavior on physical Redmi Note 13 Pro 5G (`2312DRA50I`) on 2026-11-23: selected brush slider size (e.g. 87dp) matches saved stroke width upon finger release without shrinking. Recomputed layout formulas (Photo Area = 1264px/1880px = 67.23% content area height / 52.67% total screen height / bottom of photo box = 1856/2400 = 77.33%), created `scripts/measure_stroke.py`, created `app/src/androidTest/java/com/lensora/ai/StudioPinchZoomTest.kt`, saved 8 distinct emulator screenshots with full non-truncated SHA-256 hashes, merged PR #116 (`f271b7a`) into `dev`.
   - **Unit Tests**: 123 unit tests passing total across 21 test classes.

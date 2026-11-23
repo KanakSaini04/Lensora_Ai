@@ -1,3 +1,13 @@
+## [Unreleased] - Step M1: Real TFLite AI Models Integration (2026-11-23)
+
+### Added & Verified
+- **Real TFLite Model Integration (Step M1)**:
+  - Integrated `real_esrgan_v2.tflite` (4.87 MB) and `scene_classifier.tflite` (22.77 MB) real downloaded models into production AI pipelines.
+  - Verified 4x tile super-resolution pipeline pass upscaling 1024x768 to 2048x1536 output without seams or color shifts in 9264ms on `emulator-5554`.
+  - Verified live 500ms preview NCHW Places365 scene classification loop (`source = LabelSource.TFLITE_MODEL`) logging top-5 predictions.
+  - Added `RealModelContractTest.kt` unit test verifying tensor contract shapes (`ModelContractStatus.Valid`). All 125 JVM unit tests passing cleanly.
+  - Merged PR #117 (`856f892`) into `dev`.
+
 ## [Unreleased] - Step Z14f: Studio PIL Script Measurements, Full Hashes & Owner Redmi Test (2026-11-23)
 
 ### Fixed & Verified

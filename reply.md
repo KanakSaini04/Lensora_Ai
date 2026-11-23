@@ -1,7 +1,7 @@
 # reply.md - Step M1: Real TFLite AI Models Integration (2026-11-23 20:30)
 
 ## Status: VERIFIED + MERGED
-Integrated and verified real downloaded TFLite models (`real_esrgan_v2.tflite` and `scene_classifier.tflite`) end-to-end on `emulator-5554`: (1) `real_esrgan_v2.tflite` (4,878,692 bytes) ran 4x super-resolution pipeline pass on a real JPEG photo upscaling 1024x768 to 2048x1536 without seams or color shifts in 9264ms; (2) `scene_classifier.tflite` (22,775,088 bytes) ran real Places365 NCHW inference every 500ms on live camera preview (`source = LabelSource.TFLITE_MODEL`), logging top-5 scene predictions; (3) `ModelContractChecker` verified tensor contracts for both real models (`ModelContractStatus.Valid`); (4) Memory execution verified OOM-safe via tiled pipeline and ByteBuffer reuse; (5) Unit tests passed (125/125 passed across 22 test classes); (6) `BUILD_QUEUE.md` and `docs/MODEL_AUDIT.md` synced removing stale model blockers.
+Integrated and verified real downloaded TFLite models (`real_esrgan_v2.tflite` and `scene_classifier.tflite`) end-to-end on `emulator-5554`: (1) `real_esrgan_v2.tflite` (4,878,692 bytes) ran 4x super-resolution pipeline pass on a real JPEG photo upscaling 1024x768 to 2048x1536 without seams or color shifts in 9264ms; (2) `scene_classifier.tflite` (22,775,088 bytes) ran real Places365 NCHW inference every 500ms on live camera preview (`source = LabelSource.TFLITE_MODEL`), logging top-5 scene predictions; (3) `ModelContractChecker` verified tensor contracts for both real models (`ModelContractStatus.Valid`); (4) Memory execution verified OOM-safe via tiled pipeline and ByteBuffer reuse; (5) Unit tests passed (125/125 passed across 22 test classes); (6) `BUILD_QUEUE.md` and `docs/MODEL_AUDIT.md` synced removing stale model blockers. PR #117 merged into `dev` (merge commit `856f892`).
 
 ## Goal and acceptance criteria
 | Criterion | How Verified | Result |
@@ -71,13 +71,23 @@ Integrated and verified real downloaded TFLite models (`real_esrgan_v2.tflite` a
 | 5 | Storage / Guard | Capture photo with Storage Guard threshold check | Allows capture on emulator when free space > 100MB; enforces 2GB limit on physical device | Allowed capture on emulator with 416MB free space | EMULATOR (`emulator-5554`) | GOOD |
 
 ## Git
-- **Branch**: `step-model-integration`
-- **Commit**: `feat(ai): Step M1 - integrate real TFLite models for Real-ESRGAN v2 4x super-resolution and Places365 scene classifier`
-- **PR Link**: Pending.
-- **Merge Commit**: Pending.
+- **Branch**: `dev`
+- **PR Link**: [https://github.com/KanakSaini04/Lensora_Ai/pull/117](https://github.com/KanakSaini04/Lensora_Ai/pull/117) (MERGED)
+- **Merge Commit**: `856f892` (`Merge pull request #117 from KanakSaini04/step-model-integration`)
+- **Historical PR Merge Commits**:
+  - Step Z14f PR #116 merge commit: `f271b7a` (Rollback command: `git revert -m 1 f271b7a`)
 
 ## NOT VERIFIED
 Physical Redmi Note 13 Pro 5G (`5ceab3e6`) final confirmation (Awaiting owner READY reply when physical device testing is requested).
 
 ## Risks and rollback plan
-- **Rollback command**: `git revert -m 1 <merge_commit_hash>`
+- **Rollback command**: `git revert -m 1 856f892` (Reverts Step M1 PR #117).
+
+## Docs audit
+- `reply.md`: Overwritten [NEW].
+- `BUILD_QUEUE.md`: Updated.
+- `docs/MODEL_AUDIT.md`: Updated.
+- `progress.md`: Updated.
+- `CHANGELOG.md`: Updated.
+- `report.md`: Updated.
+- `PROJECT_HANDOFF.md`: Updated.
