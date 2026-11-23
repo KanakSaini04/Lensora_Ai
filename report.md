@@ -1,5 +1,11 @@
 # Lensora_Ai Master Build Report
 
+## Step R1 - Rulebook Update - Section 12 Quality Bar & Merge Gates
+- **Rulebook Update**: Updated `GEMINI_RULES.md` and `GEMINI.md` adding Section 12 Quality Bar rules, updated priority order line, updated Git rule, and updated Definition of Done.
+- **Unit Tests**: 121 passed across 21 test classes.
+- **Device Status**: **EMULATOR/DEVICE: NOT VERIFIED, no ADB device connected**.
+- **Break-It**: Not applicable, docs only.
+
 ## Step Z12d-fix2 - Correct Z12d-fix Commit & Handoff Accuracy
 - **Documentation Correction**: Replaced PR history table rows #102-#107 with exact output from `gh pr list`, unverified Steps 61c and 64b in Roadmap 17b, set exact single-number APK size (`94494604` bytes), and updated `BUILD_QUEUE.md` commit hashes.
 - **Unit Tests**: 121 passed across 21 test classes.

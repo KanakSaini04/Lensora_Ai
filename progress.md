@@ -2,6 +2,11 @@
 
 ## Master Build Mode (Phases P0 - P9 - 100% COMPLETE)
 
+- [x] **Step R1: Rulebook Update - Section 12 Quality Bar & Merge Gates**
+  - **Rulebook Update**: Updated `GEMINI_RULES.md` and `GEMINI.md` adding Section 12 Quality Bar, updated priority order line, updated Git rule (merge allowed for step branches after Section 12 gates pass), and updated Definition of Done.
+  - **Unit Tests**: 121 unit tests passing total across 21 test classes.
+  - **Device Status**: NOT VERIFIED on device (`DEVICE REQUIRED: no`).
+
 - [x] **Step Z12d-fix2: Correct Z12d-fix Commit & Handoff Accuracy**
   - **Handoff & PR Table Corrections**: Replaced PR history table rows #102-#107 with exact output from `gh pr list`, unverified Steps 61c and 64b in Roadmap 17b, set exact single-number APK size (`94494604` bytes), updated `BUILD_QUEUE.md` commit hashes, and updated `PROJECT_HANDOFF.md`.
   - **Unit Tests**: 121 unit tests passing total across 21 test classes.

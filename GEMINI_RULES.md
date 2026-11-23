@@ -2,7 +2,7 @@
 
 **Read this file AND `agent.md` at the start of EVERY task and prompt. Then read `PROJECT_HANDOFF.md`.**
 Merged from the generic Android rulebook (`Neccessary/GEMINI_RULES.md`, kept as reference) and the Lensora evidence rules. Where they differ, THIS file wins.
-**Priority:** Safety (2) > Honesty and evidence (5) > Project locks (0) > Behavior (1) > Workflow and testing (3, 4) > Standards (6, 7).
+**Priority:** Safety (2) > Quality bar (12) and Honesty (5) > Project locks (0) > Behavior (1) > Workflow (3, 4) > Standards (6, 7).
 If two rules clash, or a rule clashes with my prompt: STOP and ask. Do not choose silently.
 
 ---
@@ -28,7 +28,7 @@ If two rules clash, or a rule clashes with my prompt: STOP and ask. Do not choos
 - Do NOT change gradle files, `libs.versions.toml`, dependency/plugin/SDK versions, ProGuard/R8, `AndroidManifest.xml`, package name, Room schema/DB version, signing or `google-services.json` UNLESS the prompt's task requires it. If it does, state exactly what changed. If not stated in the prompt, ask first.
 - Never touch keystores, `local.properties`, tokens, PINs or personal data. Never hardcode secrets. Never add analytics/ads or send user data off-device.
 - Never move or restructure existing packages. Never touch generated files (`build/`, `.idea/`).
-- **Git:** work ONLY on your step branch. Commit and push to that branch, open a PR. Never push to `main` or `dev`, never force-push, `reset --hard`, rebase, or delete branches/tags. **Never merge a PR that touches `.kt`/`.gradle`/manifest.** Docs-only PRs (`.md`, `docs/screenshots/*.png`) with passing tests/build may be merged by you.
+- **Git:** work ONLY on your step branch. You may push your own step branch, open a PR into dev, and merge it into dev yourself only after the section 12 gates pass. Never push to main, never force-push, never reset --hard or rebase, never delete branches other than your own merged step branch. The owner updates main.
 - Before a change touching more than 3 files, or any DB/manifest/navigation/DI/build change: tell me to checkpoint, and give a one-line rollback plan.
 - One task, one purpose. Never mix unrelated changes.
 
@@ -104,9 +104,20 @@ If two rules clash, or a rule clashes with my prompt: STOP and ask. Do not choos
 - [ ] Follows sections 0-8; no secrets, debug code or placeholder content
 - [ ] Docs synced (section 3); minimal diff; commit message and PR provided
 - [ ] I was told honestly about every risk and everything left undone
+- [ ] Owner does not need to find any bug; section 12 gates all passed.
 
 ## 11. Launch gate (before any "ready to launch" claim)
 Custom adaptive/monochrome icon, SplashScreen API, Privacy Policy and Terms (in-app and public URL, drafted from what the app really collects, flagged for my legal review), custom domain/support email, all debug/test/placeholder content removed, no fake metrics, release build checked (R8 on, no debug logs, no secrets), all tests passing. If anything is missing, list it and do not mark launch-ready.
+
+## 12. Quality bar (owner's rule, very high priority)
+- Quality over quantity. One fully working feature beats many features with bugs. A feature with known bugs is never acceptable. If a feature cannot be made bug-free, do not ship it: leave it out or hide it behind a SOON badge, and say why.
+- One feature at a time. Finish it, verify it on the device, merge it, then start the next. No parallel half-built features.
+- The owner must not have to find bugs. The owner only reviews finished, verified work. Never ask the owner to test something you can test yourself on the Redmi (adb -s 5ceab3e6; an emulator may also be connected). Automate what you can (adb input, uiautomator, screenshots, logcat) and look at the results yourself.
+- Goal-driven work: the owner gives the goal and acceptance criteria (what), you research and choose the how. Work like a senior engineer who owns the feature.
+- Stale-value check (every Compose change): review every long-lived block (pointerInput(Unit), LaunchedEffect(Unit), remember lambdas, callbacks stored in objects) for captured values that can change (sizes, scale, mode, flags). Use rememberUpdatedState or proper keys. Add a test or device check for it.
+- Merge gates. A change is merged only when ALL are true: all acceptance criteria verified on the device, unit tests pass, Break-It (10+ real attacks) verdict GOOD, docs honest, no known bug left. If anything is unverified, do not merge; report exactly what remains.
+- If a bug survives 3 real fix attempts: stop, restore the last working state (git revert or abandon the branch), and report. Do not ship a workaround.
+- Report back to the owner only when the work is merged and verified (or when you are truly blocked). Report: root cause, what changed, evidence per acceptance criterion, PR link, merge commit, anything NOT VERIFIED, risks.
 
 ---
 **Golden rule: when unsure, ask. Do less, not more. Never break working code. Build exactly what was asked, test it, attack it, prove it, and tell the truth.**
