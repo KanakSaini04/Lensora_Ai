@@ -1,3 +1,9 @@
+## [Unreleased] - Step R2: Add reply.md Review File (2026-11-23)
+
+### Documentation
+- **Add Primary Single-File Review Report (`reply.md`) (Step R2)**:
+  - Created `reply.md` at repo root, updated rulebooks (`GEMINI_RULES.md`, `GEMINI.md`, `agent.md`) mandating task overwrite rule, and updated project documentation. All 121 unit tests passing cleanly.
+
 ## [Unreleased] - Step R1: Rulebook Update - Section 12 Quality Bar (2026-11-23)
 
 ### Documentation

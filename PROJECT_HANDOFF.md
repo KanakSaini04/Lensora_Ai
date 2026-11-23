@@ -50,6 +50,7 @@
 | `GEMINI.md` | [GEMINI.md](https://github.com/KanakSaini04/Lensora_Ai/blob/dev/GEMINI.md) | Coding agent Karpathy-style rules & Section 10 Run and Device Policy. |
 | `progress.md` | [progress.md](https://github.com/KanakSaini04/Lensora_Ai/blob/dev/progress.md) | Chronological step log tracking all completed development phases. |
 | `CHANGELOG.md` | [CHANGELOG.md](https://github.com/KanakSaini04/Lensora_Ai/blob/dev/CHANGELOG.md) | Version changelog grouped by release steps. |
+| `reply.md` | [reply.md](https://github.com/KanakSaini04/Lensora_Ai/blob/dev/reply.md) | Single-file owner review report overwritten at the end of every task. |
 | `report.md` | [report.md](https://github.com/KanakSaini04/Lensora_Ai/blob/dev/report.md) | Verification report & physical device audit logs. |
 | `docs/MODEL_AUDIT.md` | [docs/MODEL_AUDIT.md](https://github.com/KanakSaini04/Lensora_Ai/blob/dev/docs/MODEL_AUDIT.md) | Audit matrix for TFLite models, tensor shapes, and tile dimensions. |
 | `docs/MODEL_SUPPLY_PLAN.md` | [docs/MODEL_SUPPLY_PLAN.md](https://github.com/KanakSaini04/Lensora_Ai/blob/dev/docs/MODEL_SUPPLY_PLAN.md) | DLC model downloader supply chain map & remediation plan. |
