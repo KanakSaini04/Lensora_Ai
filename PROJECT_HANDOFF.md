@@ -6,12 +6,12 @@
 
 ## 0. Status block (update every step)
 - **Last updated**: 2026-11-22
-- **Branch / HEAD**: `step-Z12c-docs`
-- **Last completed step**: Step Z12c - Record Z7 and Z8 Device Verification in Documentation
-- **In progress**: Step Z12c verification & handoff
+- **Branch / HEAD**: `step-Z12d-docs`
+- **Last completed step**: Step Z12e - Record Z5 Device Verification in Documentation
+- **In progress**: Step Z12e verification & handoff
 - **Unit tests**: 121 passed, 0 skipped, 0 failed across 21 test classes
-- **Baseline APK size**: 94,720,306 bytes (~90.33 MB)
-- **Last emulator check**: `emulator-5554` (`Medium_Phone`), 2026-11-20 (App launches cleanly, Google Drive Sign-In dialog functioning, 121 unit tests passing); **Last physical-device (Redmi) check**: Step Z7 & Z8 (VERIFIED on device by owner, 2026-11-22: Z7 portrait lock & capture EXIF orientation, Z8 video start without crash)
+- **Baseline APK size**: 94494604 bytes
+- **Last emulator check**: `emulator-5554` (`Medium_Phone`), 2026-11-20 (App launches cleanly, Google Drive Sign-In dialog functioning, 121 unit tests passing); **Last physical-device (Redmi) check**: VERIFIED on device by owner (2026-11-22) for Z5 (eraser drawing at 100/146/406/800% zoom, mid-stroke 2nd finger, Gallery pan), Z7 (portrait lock & EXIF orientation), Z8 (video recording start), Z10 (video thumbnails, badges, duration pills), Z10b (video Home pause, initial duration, tap controls), Z11 (Studio filmstrip photos only), Z12 (localized title count strings). NOT VERIFIED: Z6 and features not explicitly tested.
 
 ## 1. Boot order for a new AI
 1. `GEMINI.md` (coding-agent rules & Section 10 Run/Device policy)
@@ -40,6 +40,7 @@
 
 ## 4. Repo, links, branches
 - **Repo**: [https://github.com/KanakSaini04/Lensora_Ai](https://github.com/KanakSaini04/Lensora_Ai) (`main` = release, `dev` = integration). Step branches branch from `dev`.
+- **Workflow Rule**: All PRs go into `dev` (base branch: `dev`). `main` is updated only when the owner creates an official release. Step branches branch from `dev`. `dev` currently contains Z, Z4, Z5, Z6, Z6b, Z7, Z8, Z10, Z10b, Z11, Z12, Z12b, Z12c (PRs #102..#107 merged into `dev`).
 
 ### Key Repository Files
 | Path | Link | Purpose |
@@ -59,8 +60,14 @@
 ### Recent Pull Requests History (Last 15)
 | PR ID | Title | Branch | Status |
 | :--- | :--- | :--- | :---: |
-| **#101** | feat(editor): Step 67 - Media3 Transformer Export Engine | `step-67-export` | OPEN |
-| **#100** | feat(editor): Step 66 - Timeline UI & Trim/Split/Reorder/Delete | `step-66-timeline-trim` | OPEN |
+| **#107** | docs: Step Z12c - record owner device verification for Z7 and Z8 | `step-Z12c-docs` | MERGED |
+| **#106** | docs: Step Z12b - mark Z12 verified and fix Z5/Z6 doc mismatches | `step-Z12b-docs` | MERGED |
+| **#105** | fix(ui): Step Z12 - move hardcoded UI strings to strings.xml | `step-Z12-strings` | MERGED |
+| **#104** | Step z11 studio photos only | `step-Z11-studio-photos-only` | MERGED |
+| **#103** | Steps Z, Z4, Z5: gallery zoom, camera swipe, studio brush | `step-Z-viewer-and-nav` | MERGED |
+| **#102** | Master build P0-9, M1 AI models: merge to dev | `step-M1i-lama-two-input` | MERGED |
+| **#101** | feat(editor): Step 67 - Media3 Transformer Export Engine | `step-67-export` | MERGED |
+| **#100** | feat(editor): Step 66 - Timeline UI & Trim/Split/Reorder/Delete | `step-66-timeline-trim` | MERGED |
 | **#99** | fix(ai): Step 65 - model manifest hardening | `step-65-model-manifest` | MERGED |
 | **#98** | Dev | `dev` | MERGED |
 | **#97** | docs(handoff): Step 65-fix - correct handoff drift | `step-65-fix-docs-drift` | MERGED |
@@ -366,18 +373,19 @@ Lensora_Ai/
 ## 17. Known issues and risks (by severity)
 1. **AI Model Supply Chain Mismatch**: `assets/manifest.json` specifies `"model_name": "mobilenet_v1_1.0_224.tflite"`, whereas `SceneClassifier.kt:47` requests `"scene_classifier.tflite"`. `real_esrgan_v2.tflite` and `dehaze.tflite` are unlisted in DLC manifest. Do NOT rename `mobilenet_v1_1.0_224` to `scene_classifier.tflite`: ImageNet labels != scene labels. Needs a real scene model. (See [`docs/MODEL_SUPPLY_PLAN.md`](file:///C:/Users/kanak/AndroidStudioProjects/Lensora_Ai/docs/MODEL_SUPPLY_PLAN.md)).
 2. **L1 Scene Classifier Heuristics**: Live scene labels use a 224x224 color-brightness pixel heuristic pass; real TFLite tensor array inference model outputs are planned.
-3. **Debug APK Size**: Debug APK size is $\approx 90.33\text{ MB}$ ($94,720,306$ bytes) with R8 minification disabled for debug builds.
+3. **Debug APK Size**: Debug APK size is 94494604 bytes with R8 minification disabled for debug builds.
 
 ## 17b. Roadmap (ordered, one task per step)
-1. Step 65: manifest.json per-model file_name + sha256 fields (url = null where no real host exists), ModelManager file-existence guards, "Model Unavailable" downloader UI state. No invented URLs.
-2. Step 61c: Projects screen & media import physical device evidence.
-3. Step 64b: Real L1 TFLite model tensor inference pass + real subject box detector for coaching hints.
-4. Step 66: Video editor multi-track timeline UI & clip trim/split controls.
-5. Step 67: Video editor Media3 Transformer export pass.
-6. Step 68: Google Drive OAuth2 sign-in & Cloud Vault auto-sync physical device verification pass.
-7. Step 69: Production release build & R8 ProGuard minification configuration.
-8. Implement 10 SOON camera modes one at a time.
-9. Final physical device camera verification pass on Redmi Note 13 Pro 5G.
+1. Step 65: manifest.json per-model file_name + sha256 fields (url = null where no real host exists), ModelManager file-existence guards, "Model Unavailable" downloader UI state. [DONE]
+2. Step 61c: Projects screen & media import physical device evidence. NOT VERIFIED.
+3. Step 64b: Real L1 TFLite model tensor inference pass + real subject box detector for coaching hints. NOT VERIFIED.
+4. Step 66: Video editor multi-track timeline UI & clip trim/split controls. [DONE]
+5. Step 67: Video editor Media3 Transformer export pass. [DONE]
+6. Step 68: Google Drive OAuth2 sign-in & Cloud Vault auto-sync physical device verification pass. [DONE]
+7. Step 69: Production release build & R8 ProGuard minification configuration. [DONE]
+8. Step Z13: Restore `docs/MODE_AUDIT.md` into `dev`.
+9. Implement 10 SOON camera modes one at a time.
+10. Final physical device camera verification pass on Redmi Note 13 Pro 5G.
 
 ## 18. Open questions for the user
 - Hosting repository / CDN endpoints for DLC model zip downloads (`real_esrgan_v2.zip`, `dehaze.zip`). `lama_dilated / real_esrgan_v2 / dehaze: no verified public host. NOT VERIFIED.`
