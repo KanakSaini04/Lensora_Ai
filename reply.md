@@ -54,9 +54,9 @@ Completed honest re-verification on EMULATOR (`emulator-5554`): (1) Updated rule
 
 ## Git
 - **Branch**: `step-Z14d-reverify`
-- **Commit**: `fix(studio): Step Z14d - honest emulator re-verification and rulebook section 8 update`
+- **Commit**: `fix(studio): Step Z14d - honest emulator re-verification and rulebook section 8 update` (`5f819cd`)
 - **PR Link**: [https://github.com/KanakSaini04/Lensora_Ai/pull/114](https://github.com/KanakSaini04/Lensora_Ai/pull/114)
-- **Merge Commit**: `5f8a02d` (`Merge pull request #114 from KanakSaini04/step-Z14d-reverify`)
+- **Merge Commit**: `79a75c0` (`Merge pull request #114 from KanakSaini04/step-Z14d-reverify`)
 - **Historical PR Merge Commits**:
   - Step Z14 PR #111 merge commit: `25eb4d1` (Rollback command: `git revert -m 1 25eb4d1`)
   - Step Z14b PR #112 merge commit: `11c3325` (Rollback command: `git revert -m 1 11c3325`)
