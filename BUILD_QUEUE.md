@@ -62,7 +62,9 @@
 | Z12 | Move hardcoded UI strings to `strings.xml` | None | DONE | c1bad89 | 121 tests pass, VERIFIED on device (owner, 2026-11-22) | Extracted Back, Quick View, and Gallery strings to strings.xml |
 | Z12b | Documentation sync pass & Z12 device verification | None | DONE | 23023b6 | 121 tests pass, docs only | Recorded owner device verification for Z12; aligned Z5/Z6 doc statuses |
 | Z12c | Documentation sync pass & Z7/Z8 device verification | None | DONE | 53eef65 | 121 tests pass, docs only | Recorded owner device verification for Z7 and Z8 |
-| Z12d | Full documentation alignment & open items sync pass | None | DONE | step-Z12d-docs | 121 tests pass, docs only | Synchronized progress.md, BUILD_QUEUE.md, CHANGELOG.md, report.md, HANDOFF |
+| Z12d | Full documentation alignment & open items sync pass | None | DONE | 02ba5e6 | 121 tests pass, docs only | Synchronized progress.md, BUILD_QUEUE.md, CHANGELOG.md, report.md, HANDOFF |
+| Z12d-fix | PR history and APK size update | None | DONE | e488bd4 | 121 tests pass, docs only | Updated PR table, APK size, and dev contents line |
+| Z12d-fix2 | Correct Z12d-fix commit, unverify 61c/64b, fix PR table | None | DONE | 4173873 | 121 tests pass, docs only | Replaced PR table rows #102-#107, unverified 61c/64b, corrected APK size |
 
 ## DECISIONS
 - 2026-11-18: Initialized master build queue from docs/MASTER_BUILD_PROMPT.md.

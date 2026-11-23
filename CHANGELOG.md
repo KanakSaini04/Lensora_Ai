@@ -1,3 +1,9 @@
+## [Unreleased] - Step Z12d-fix2: Correct Z12d-fix Commit & Handoff Accuracy (2026-11-22)
+
+### Documentation
+- **Handoff Accuracy & PR Table Corrections (Step Z12d-fix2)**:
+  - Replaced PR history table rows #102-#107 with exact output, unverified Steps 61c and 64b in Roadmap 17b, corrected baseline APK size (`94494604` bytes), and updated `BUILD_QUEUE.md` commit hashes. All 121 unit tests passing cleanly.
+
 ## [Unreleased] - Step Z12d: Documentation Sync Pass (2026-11-22)
 
 ### Documentation

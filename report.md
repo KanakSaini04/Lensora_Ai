@@ -1,5 +1,11 @@
 # Lensora_Ai Master Build Report
 
+## Step Z12d-fix2 - Correct Z12d-fix Commit & Handoff Accuracy
+- **Documentation Correction**: Replaced PR history table rows #102-#107 with exact output from `gh pr list`, unverified Steps 61c and 64b in Roadmap 17b, set exact single-number APK size (`94494604` bytes), and updated `BUILD_QUEUE.md` commit hashes.
+- **Unit Tests**: 121 passed across 21 test classes.
+- **Device Status**: **EMULATOR/DEVICE: NOT VERIFIED, no ADB device connected**.
+- **Break-It**: Not applicable, docs only. This step consists entirely of documentation corrections and contains no executable application or library code changes.
+
 ## Step Z12d - Documentation Alignment & Sync Pass
 - **Documentation Sync**: Aligned `progress.md`, `BUILD_QUEUE.md`, `CHANGELOG.md`, `PROJECT_HANDOFF.md`, and `report.md` with PR #104..#107 merge history, recorded owner physical device verification statuses for Z7, Z8, Z10, Z10b, Z11, Z12, and documented open UI string and filter items.
 - **Unit Tests**: 121 passed across 21 test classes.
