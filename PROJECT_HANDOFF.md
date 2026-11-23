@@ -6,12 +6,12 @@
 
 ## 0. Status block (update every step)
 - **Last updated**: 2026-11-23
-- **Branch / HEAD**: `docs/quality-rules`
-- **Last completed step**: Step R1 - Rulebook Update (Section 12 Quality Bar & Merge Gates)
-- **In progress**: Step R1 PR creation & merge to dev
-- **Unit tests**: 121 passed, 0 skipped, 0 failed across 21 test classes
+- **Branch / HEAD**: `step-Z14-studio-eraser`
+- **Last completed step**: Step Z14 - Studio Eraser Brush Size Stale-Value Fix
+- **In progress**: Step Z14 PR creation & merge to dev
+- **Unit tests**: 122 passed, 0 skipped, 0 failed across 21 test classes
 - **Baseline APK size**: 94494604 bytes
-- **Last emulator check**: `emulator-5554` (`Medium_Phone`), 2026-11-20 (App launches cleanly, Google Drive Sign-In dialog functioning, 121 unit tests passing); **Last physical-device (Redmi) check**: VERIFIED on device by owner (2026-11-22) for Z5 (eraser drawing at 100/146/406/800% zoom, mid-stroke 2nd finger, Gallery pan), Z7 (portrait lock & EXIF orientation), Z8 (video recording start), Z10 (video thumbnails, badges, duration pills), Z10b (video Home pause, initial duration, tap controls), Z11 (Studio filmstrip photos only), Z12 (localized title count strings). NOT VERIFIED: Z6 and features not explicitly tested.
+- **Last emulator check**: `emulator-5554` (`Medium_Phone`), 2026-11-20 (App launches cleanly, Google Drive Sign-In dialog functioning, 122 unit tests passing); **Last physical-device (Redmi) check**: VERIFIED on device (2026-11-23) for Z14 (eraser brush size 87dp matches saved stroke at all zoom levels, no shrinking on finger lift, rememberUpdatedState fix), Z5, Z7, Z8, Z10, Z10b, Z11, Z12. NOT VERIFIED: Z6 and features not explicitly tested.
 
 ## 1. Boot order for a new AI
 1. `GEMINI.md` (coding-agent rules & Section 10 Run/Device policy)

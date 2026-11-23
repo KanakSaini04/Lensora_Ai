@@ -68,6 +68,7 @@ import androidx.compose.runtime.mutableIntStateOf
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
+import androidx.compose.runtime.rememberUpdatedState
 import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
@@ -517,6 +518,11 @@ private fun StudioPhotoContent(
 
                     // Interactive Mask Canvas Layer (Only active when Eraser is selected and Hold-to-Compare is released)
                     if (isEraserModeActive && !isComparePressed) {
+                        val currentBrushSizeDp by rememberUpdatedState(brushSizeDp)
+                        val currentScale by rememberUpdatedState(scale)
+                        val currentDensity by rememberUpdatedState(density)
+                        val currentIsEraseMode by rememberUpdatedState(isEraseModeActiveState)
+
                         val localCanvasStrokeWidth = ZoomTransformMath.calculateLocalCanvasBrushWidthPx(
                             screenDp = brushSizeDp,
                             density = density,
@@ -541,11 +547,15 @@ private fun StudioPhotoContent(
                                             if (pointerCount >= 2) {
                                                 // End stroke immediately when 2+ pointers touch down
                                                 if (activePoints.isNotEmpty()) {
-                                                    val localRadiusPx = localCanvasStrokeWidth / 2f
+                                                    val localRadiusPx = ZoomTransformMath.calculateLocalCanvasBrushWidthPx(
+                                                        screenDp = currentBrushSizeDp,
+                                                        density = currentDensity,
+                                                        scale = currentScale,
+                                                    ) / 2f
                                                     viewModel.addStroke(
                                                         StudioStroke(
                                                             points = activePoints,
-                                                            isEraseMode = isEraseModeActiveState,
+                                                            isEraseMode = currentIsEraseMode,
                                                             radiusCanvasPx = localRadiusPx,
                                                         ),
                                                     )
@@ -566,11 +576,15 @@ private fun StudioPhotoContent(
 
                                             if (event.changes.all { !it.pressed }) {
                                                 if (activePoints.isNotEmpty()) {
-                                                    val localRadiusPx = localCanvasStrokeWidth / 2f
+                                                    val localRadiusPx = ZoomTransformMath.calculateLocalCanvasBrushWidthPx(
+                                                        screenDp = currentBrushSizeDp,
+                                                        density = currentDensity,
+                                                        scale = currentScale,
+                                                    ) / 2f
                                                     viewModel.addStroke(
                                                         StudioStroke(
                                                             points = activePoints,
-                                                            isEraseMode = isEraseModeActiveState,
+                                                            isEraseMode = currentIsEraseMode,
                                                             radiusCanvasPx = localRadiusPx,
                                                         ),
                                                     )

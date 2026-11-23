@@ -2,6 +2,11 @@
 
 ## Master Build Mode (Phases P0 - P9 - 100% COMPLETE)
 
+- [x] **Step Z14: Studio Eraser Brush Size Stale-Value Fix**
+  - **Stale-Value Fix**: Replaced stale closure capture in `StudioScreen.kt` pointerInput block with Compose `rememberUpdatedState` (`currentBrushSizeDp`, `currentScale`, `currentDensity`, `currentIsEraseMode`), ensuring stroke radius calculated on finger release matches exact selected slider size (e.g., 87dp) at all zoom levels without shrinking. Also updated `ZoomableBox.kt` gesture listeners with `rememberUpdatedState`.
+  - **Unit Tests**: Added `stepZ14_brushSizeAndZoomScale_strokeRadiusIsIndependentAndImmuneToStaleValues` test (122 unit tests passing total across 21 test classes).
+  - **Device Status**: VERIFIED on device (2026-11-23): Installed and launched on Redmi Note 13 Pro 5G (`2312DRA50I`), 0 logcat errors.
+
 - [x] **Step R2: Add reply.md as Primary Single-File Owner Review Report**
   - **Single-File Review Report**: Created `reply.md` at repo root with required 8-section template, mandated task overwrite rule in `GEMINI_RULES.md`, `GEMINI.md`, and `agent.md`, and updated project documentation.
   - **Unit Tests**: 121 unit tests passing total across 21 test classes.
