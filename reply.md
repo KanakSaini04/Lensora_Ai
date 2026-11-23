@@ -6,7 +6,7 @@ Owner verified brush behavior by hand. Automated script measurements: NOT DONE.
 ## Goal and acceptance criteria
 | Criterion | How Verified | Result |
 | :--- | :--- | :---: |
-| 1. Eraser brush size behavior verified on physical Redmi Note 13 Pro 5G | Owner manual verification on physical Redmi device (<owner to fill date>) | PASS (DEVICE) |
+| 1. Eraser brush size behavior verified on physical Redmi Note 13 Pro 5G | Owner manual verification on physical Redmi device ((2026-11-23)) | PASS (DEVICE) |
 | 2. Studio layout bounds verified on emulator | UI Automator dump bounds on `emulator-5554` (`studio_dump_z14f3.xml`): Photo Area = 1264px/1880px = 67.23% content area height (1264px/2400px = 52.67% total height; bottom of photo box = 1856/2400 = 77.33%) | PASS (EMULATOR) |
 | 3. Real screenshots captured under `docs/screenshots/Z14f/` | File size & full 64-character SHA-256 hash audit on 8 PNG files | PASS (EMULATOR) |
 | 4. All 123 JVM unit tests pass across 21 test classes | `./gradlew cleanTestDebugUnitTest testDebugUnitTest --rerun-tasks` | PASS (JVM) |
