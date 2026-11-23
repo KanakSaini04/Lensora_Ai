@@ -1,3 +1,9 @@
+## [Unreleased] - Step Z14c: Studio Layout Measurement & Device Proof (2026-11-23)
+
+### Fixed
+- **Studio Layout Measurement & Device Proof (Step Z14c)**:
+  - Reallocated Studio layout weights to expand photo canvas box to 67.23% of content area (1264px out of 1880px / 1874px top-to-bottom = 69.10% total height). Captured 8 real device screenshots under `docs/screenshots/Z14c/`. Added portrait and landscape canvas-to-image mapping unit test `stepZ14c_portraitAndLandscapeCanvasToImagePixelMapping_mapsExactPixelValues` (123 unit tests passing total).
+
 ## [Unreleased] - Step Z14: Studio Eraser Brush Size Stale-Value Fix (2026-11-23)
 
 ### Fixed

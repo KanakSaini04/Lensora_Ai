@@ -503,4 +503,43 @@ class PhotoZoomAndNavigationTest {
             assertEquals(initialBrushSizeDp * density, screenSpaceWidth, 0.01f)
         }
     }
+
+    @Test
+    fun stepZ14c_portraitAndLandscapeCanvasToImagePixelMapping_mapsExactPixelValues() {
+        val containerSize = Size(1080f, 1264f) // Studio Photo Canvas Box bounds
+
+        // 1. Portrait Real Photo (1080 x 1920)
+        val portraitImageSize = Size(1080f, 1920f)
+        // Top-left corner of rendered image inside container
+        val portraitTopLeft = ZoomTransformMath.mapCanvasLocalPointToImagePixel(Offset(184.5f, 0f), containerSize, portraitImageSize)
+        assertEquals(0f, portraitTopLeft.x, 0.1f)
+        assertEquals(0f, portraitTopLeft.y, 0.1f)
+
+        // Center of rendered portrait image inside container
+        val portraitCenter = ZoomTransformMath.mapCanvasLocalPointToImagePixel(Offset(540f, 632f), containerSize, portraitImageSize)
+        assertEquals(540f, portraitCenter.x, 0.1f)
+        assertEquals(960f, portraitCenter.y, 0.1f)
+
+        // Bottom-right corner of rendered portrait image
+        val portraitBottomRight = ZoomTransformMath.mapCanvasLocalPointToImagePixel(Offset(895.5f, 1264f), containerSize, portraitImageSize)
+        assertEquals(1080f, portraitBottomRight.x, 0.1f)
+        assertEquals(1920f, portraitBottomRight.y, 0.1f)
+
+        // 2. Landscape Real Photo (1920 x 1080)
+        val landscapeImageSize = Size(1920f, 1080f)
+        // Top-left corner of rendered landscape image inside container
+        val landscapeTopLeft = ZoomTransformMath.mapCanvasLocalPointToImagePixel(Offset(0f, 328.25f), containerSize, landscapeImageSize)
+        assertEquals(0f, landscapeTopLeft.x, 0.1f)
+        assertEquals(0f, landscapeTopLeft.y, 0.1f)
+
+        // Center of rendered landscape image inside container
+        val landscapeCenter = ZoomTransformMath.mapCanvasLocalPointToImagePixel(Offset(540f, 632f), containerSize, landscapeImageSize)
+        assertEquals(960f, landscapeCenter.x, 0.1f)
+        assertEquals(540f, landscapeCenter.y, 0.1f)
+
+        // Bottom-right corner of rendered landscape image
+        val landscapeBottomRight = ZoomTransformMath.mapCanvasLocalPointToImagePixel(Offset(1080f, 935.75f), containerSize, landscapeImageSize)
+        assertEquals(1920f, landscapeBottomRight.x, 0.1f)
+        assertEquals(1080f, landscapeBottomRight.y, 0.1f)
+    }
 }

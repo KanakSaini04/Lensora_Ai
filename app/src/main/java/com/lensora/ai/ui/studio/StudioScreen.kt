@@ -196,7 +196,7 @@ private fun StudioPhotoContent(
     var isExporting by remember { mutableStateOf(false) }
     var isErasingWithAi by remember { mutableStateOf(false) }
     var inpaintedBitmap by remember { mutableStateOf<Bitmap?>(null) }
-    var isFilmstripExpanded by rememberSaveable { mutableStateOf(true) }
+    var isFilmstripExpanded by rememberSaveable { mutableStateOf(false) }
     var isComparePressed by remember { mutableStateOf(false) }
 
     // Brush state variables
@@ -449,7 +449,7 @@ private fun StudioPhotoContent(
             Box(
                 modifier = Modifier
                     .fillMaxWidth()
-                    .weight(0.65f)
+                    .weight(0.68f)
                     .background(Color(0xFF0A0A0A))
                     .onSizeChanged { canvasSize = it.toSize() },
                 contentAlignment = Alignment.Center,
@@ -696,18 +696,20 @@ private fun StudioPhotoContent(
                 }
             }
 
-            // 2. MIDDLE SECTION: Collapsible Filmstrip Queue Row
+            // 2. BOTTOM SECTION: Filmstrip Queue & Editing Tool Panels
             Column(
                 modifier = Modifier
                     .fillMaxWidth()
-                    .background(CharcoalSurface),
+                    .weight(0.32f)
+                    .background(PitchBlackBackground)
+                    .padding(horizontal = 16.dp, vertical = 4.dp),
             ) {
-                // Header with Collapse/Expand Toggle
+                // Collapsible Filmstrip Queue Header
                 Row(
                     modifier = Modifier
                         .fillMaxWidth()
                         .clickable { isFilmstripExpanded = !isFilmstripExpanded }
-                        .padding(horizontal = 12.dp, vertical = 4.dp),
+                        .padding(vertical = 2.dp),
                     horizontalArrangement = Arrangement.SpaceBetween,
                     verticalAlignment = Alignment.CenterVertically,
                 ) {
@@ -722,13 +724,13 @@ private fun StudioPhotoContent(
                         imageVector = if (isFilmstripExpanded) Icons.Outlined.ExpandMore else Icons.Outlined.ExpandLess,
                         contentDescription = "Toggle Filmstrip",
                         tint = ColorMutedGray,
-                        modifier = Modifier.size(18.dp),
+                        modifier = Modifier.size(16.dp),
                     )
                 }
 
                 AnimatedVisibility(visible = isFilmstripExpanded) {
                     LazyRow(
-                        contentPadding = PaddingValues(horizontal = 12.dp, vertical = 6.dp),
+                        contentPadding = PaddingValues(vertical = 4.dp),
                         horizontalArrangement = Arrangement.spacedBy(8.dp),
                     ) {
                         if (photoUris.isNotEmpty()) {
@@ -736,10 +738,10 @@ private fun StudioPhotoContent(
                                 val isSelected = selectedPhotoIndex == index
                                 Box(
                                     modifier = Modifier
-                                        .size(50.dp)
+                                        .size(46.dp)
                                         .clip(RoundedCornerShape(8.dp))
                                         .border(
-                                            width = if (isSelected) 2.5.dp else 1.dp,
+                                            width = if (isSelected) 2.dp else 1.dp,
                                             color = if (isSelected) RoyalBlue else Color.Transparent,
                                             shape = RoundedCornerShape(8.dp),
                                         )
@@ -762,16 +764,8 @@ private fun StudioPhotoContent(
                         }
                     }
                 }
-            }
 
-            // 3. BOTTOM SECTION (~35% Height): Editing Tool Panels
-            Column(
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .weight(0.35f)
-                    .background(PitchBlackBackground)
-                    .padding(horizontal = 16.dp, vertical = 6.dp),
-            ) {
+                Spacer(modifier = Modifier.height(4.dp))
                 // Bottom Tool Category Tabs (Light, Color, Eraser, Crop)
                 Row(
                     modifier = Modifier
