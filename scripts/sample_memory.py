@@ -1,18 +1,18 @@
 import subprocess
 import time
 import re
-import os
+import sys
 
-def sample_meminfo_during_run(adb_path, photo_uri):
+def sample_meminfo_during_run(adb_path, device_id, photo_uri):
     # 1. Start foreground service
     start_cmd = [
-        adb_path, "-s", "emulator-5554", "shell", "am", "start-foreground-service",
+        adb_path, "-s", device_id, "shell", "am", "start-foreground-service",
         "-n", "com.lensora.ai/.service.AiProcessorService",
         "--es", "PHOTO_URI", photo_uri,
         "--ez", "IS_HIGH_RES", "true"
     ]
     subprocess.run(start_cmd, capture_output=True, text=True)
-    print(f"Triggered AiProcessorService for {photo_uri}")
+    print(f"Triggered AiProcessorService on [{device_id}] for {photo_uri}")
 
     time.sleep(2)
 
@@ -22,8 +22,7 @@ def sample_meminfo_during_run(adb_path, photo_uri):
     count = 0
 
     while True:
-        # Check meminfo
-        mem_cmd = [adb_path, "-s", "emulator-5554", "shell", "dumpsys", "meminfo", "com.lensora.ai"]
+        mem_cmd = [adb_path, "-s", device_id, "shell", "dumpsys", "meminfo", "com.lensora.ai"]
         res = subprocess.run(mem_cmd, capture_output=True, text=True)
         out = res.stdout
 
@@ -45,8 +44,7 @@ def sample_meminfo_during_run(adb_path, photo_uri):
             samples.append((pss, rss))
             print(f"[Sample #{count}] PSS: {pss} kB ({pss/1024.0:.1f} MB) | RSS: {rss} kB ({rss/1024.0:.1f} MB)")
 
-        # Check if service finished in logcat
-        log_cmd = [adb_path, "-s", "emulator-5554", "logcat", "-d", "-s", "AiProcessorService:V"]
+        log_cmd = [adb_path, "-s", device_id, "logcat", "-d", "-s", "AiProcessorService:V"]
         log_res = subprocess.run(log_cmd, capture_output=True, text=True)
         if "AiProcessorService destroyed" in log_res.stdout or "Processing finished in" in log_res.stdout:
             print("AiProcessorService completion detected in logcat.")
@@ -54,12 +52,14 @@ def sample_meminfo_during_run(adb_path, photo_uri):
 
         time.sleep(2)
 
-    print("\n--- MEMORY SAMPLING SUMMARY ---")
+    print("\n--- REDMI MEMORY SAMPLING SUMMARY ---")
+    print(f"Device:             {device_id}")
     print(f"Total Samples Taken: {count}")
     print(f"Peak TOTAL PSS:     {max_pss} kB ({max_pss/1024.0:.1f} MB)")
     print(f"Peak TOTAL RSS:     {max_rss} kB ({max_rss/1024.0:.1f} MB)")
 
 if __name__ == "__main__":
     adb = r"C:\Users\kanak\AppData\Local\Android\Sdk\platform-tools\adb.exe"
+    dev_id = sys.argv[1] if len(sys.argv) > 1 else "adb-5ceab3e6-1ROl7m._adb-tls-connect._tcp"
     uri = "file:///data/data/com.lensora.ai/files/photo_12_5mp.jpg"
-    sample_meminfo_during_run(adb, uri)
+    sample_meminfo_during_run(adb, dev_id, uri)

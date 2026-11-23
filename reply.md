@@ -33,11 +33,15 @@ This report summarizes the verified resolution of all Step M1 final cleanup task
 - **Test Image**: 12.5 Megapixel ($4080 \times 3060$ pixels, `photo_12_5mp.jpg`).
 - **Upscaled Output**: **8160 x 6120 pixels (~50 Megapixels)**.
 - **Sampling Protocol**: `dumpsys meminfo com.lensora.ai` sampled every 2 seconds via `scripts/sample_memory.py`.
-- **Sampling Results**:
+- **EMULATOR Results (`Medium_Phone`, emulator-5554)**:
   - **Total Samples Taken**: **110 samples** (sampled across 220 seconds / 3.5 minutes of continuous execution).
   - **Peak TOTAL PSS**: **842,489 kB (~822.7 MB)**.
   - **Peak TOTAL RSS**: **852,128 kB (~832.2 MB)**.
-- **Memory Safety**: 100% OOM-safe with zero allocation failures or process crashes.
+- **DEVICE Results (Redmi Note 13 Pro 5G, adb-5ceab3e6)**:
+  - **Total Samples Taken**: **187 samples** (sampled across 374 seconds / 6.2 minutes of continuous execution).
+  - **Peak TOTAL PSS**: **589,702 kB (~575.9 MB)**.
+  - **Peak TOTAL RSS**: **690,284 kB (~674.1 MB)**.
+  - **HyperOS Stability**: 100% OOM-safe with zero allocation failures or process kills by HyperOS task killer.
 
 ---
 
