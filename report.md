@@ -1,7 +1,7 @@
 # Lensora_Ai Master Build Report
 
 ## Step M1 - Real TFLite AI Models Integration (Super-Res & Scene Classifier)
-- **Real Model Verification**: Integrated and verified real TFLite models (`real_esrgan_v2.tflite` 4.87 MB and `scene_classifier.tflite` 22.77 MB) end-to-end on `emulator-5554` and physical Redmi Note 13 Pro 5G. Real-ESRGAN v2 2x net super-resolution upscaled 1024x768 real JPEG photo to 2048x1536 and 12.5MP photo $4080 \times 3060 \rightarrow 8160 \times 6120$ (~50MP output). Emulator telemetry: 110 samples, peak RAM 822.7 MB PSS / 832.2 MB RSS in 172s. Physical Redmi device telemetry: 187 samples over 6.2 minutes, peak RAM 575.9 MB PSS / 674.1 MB RSS with zero process kills by HyperOS task killer. Places365 ResNet-18 FP16 model ran live 500ms preview inference (`source = LabelSource.TFLITE_MODEL`) logging top-5 predictions. `ModelContractChecker` verified contract shapes for both models (`ModelContractStatus.Valid`). Added Toast + persistent completion notifications for missing model fallbacks. Created `RealModelContractTest.kt` (125/125 unit tests green). Updated `BUILD_QUEUE.md` and `MODEL_AUDIT.md`. Merged PR #118 & #119 into `dev`.
+- **Real Model Verification**: Integrated and verified real TFLite models (`real_esrgan_v2.tflite` 4.88 MB and `scene_classifier.tflite` 22.78 MB) end-to-end on `emulator-5554` and physical Redmi Note 13 Pro 5G. Real-ESRGAN v2 2x net super-resolution upscaled 1024x768 real JPEG photo to 2048x1536 and 12.5MP photo $4080 \times 3060 \rightarrow 8160 \times 6120$ (~50MP output). Emulator telemetry: 110 samples, peak RAM 822.7 MB PSS / 832.2 MB RSS in 172s. Physical Redmi device telemetry: 187 samples over 6.2 minutes, peak RAM 560.9 MB PSS / 587.4 MB RSS with zero process kills by HyperOS task killer. Places365 ResNet-18 FP16 model ran live 500ms preview inference (`source = LabelSource.TFLITE_MODEL`) logging top-5 predictions. `ModelContractChecker` verified contract shapes for both models (`ModelContractStatus.Valid`). Added Toast + persistent completion notifications for missing model fallbacks. Created `RealModelContractTest.kt` (125/125 unit tests green). Updated `BUILD_QUEUE.md` and `MODEL_AUDIT.md`. Merged PR #118 & #119 into `dev`.
 - **Unit Tests**: 125 passed across 22 test classes.
 - **Device Status**: **VERIFIED on `emulator-5554` AND physical Redmi Note 13 Pro 5G (`2312DRA50I`)**: 0 logcat errors, 0 OOM errors.
 - **Break-It**: 5 real attacks recorded, verdict **GOOD**.
@@ -298,7 +298,7 @@ Device results in these tables have not been confirmed by the owner.
     - Indoor: #63 `bow_window/indoor` 0.3176, #45 `bathroom` 0.1048, #303 `shower` 0.0447, #240 `nursery` 0.0356, #343 `utility_room` 0.0265.
     - Outdoor: #127 `driveway` 0.4162, #216 `loading_dock` 0.3113, #4 `alley` 0.0547, #170 `hangar/outdoor` 0.0369, #311 `stable` 0.0272.
     - Both scene predictions mapped to `✨ AI: Auto` at ~205-218 ms/frame.
-  - **NOT VERIFIED on device**: Peak RAM during pass (agent-measured during separate pass: 720,169 KB Total PSS / 379,300 KB Native Heap), EV/vibe filter output, normal PHOTO capture skipping 50 MP pass, OOM fallback, rapid mode switch.
+  - **NOT VERIFIED on device**: Peak RAM during pass (agent-measured during separate pass: 720.2 MB Total PSS / 379.3 MB Native Heap), EV/vibe filter output, normal PHOTO capture skipping 50 MP pass, OOM fallback, rapid mode switch.
 
 ## Step M1c / M1e - Real AI Models Pipeline Hardening
 - **Code Changes**:
