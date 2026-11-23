@@ -22,6 +22,7 @@ import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.layout.navigationBarsPadding
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
@@ -439,6 +440,7 @@ private fun StudioPhotoContent(
             modifier = Modifier
                 .fillMaxSize()
                 .padding(innerPadding)
+                .navigationBarsPadding()
                 .background(PitchBlackBackground),
         ) {
             // 1. TOP SECTION (~65% Height): Main Photo Canvas Area
@@ -819,6 +821,7 @@ private fun StudioPhotoContent(
                 Column(
                     modifier = Modifier
                         .fillMaxWidth()
+                        .padding(bottom = 16.dp)
                         .verticalScroll(rememberScrollState()),
                 ) {
                     when (selectedToolCategory) {
