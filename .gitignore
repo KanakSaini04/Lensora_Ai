@@ -17,3 +17,7 @@ secrets.properties
 *.keystore
 /Claude/
 /Claude_review.zip
+*.tflite
+camera_dump*.xml
+studio_dump*.xml
+real_test_photo.jpg

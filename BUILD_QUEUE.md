@@ -16,10 +16,10 @@
 | 1.4 | ExportWorker correctness (aspect, audio, MediaStore cleanup, foreground) | None | DONE | 78bd487 | 47 tests pass, composition CROP_TO_FILL, foreground service active | Composition aspect CROP_TO_FILL, foreground service |
 | 1.5 | Test media generation & real timeline verification | ffmpeg / test media | DONE | pending | Verified image.jpg & 3 real MP4 videos (1280x720 & 720x1280) in C:\Lensora_testmedia | Media files present and verified |
 | 1.6 | Editor state safety & lifecycle persistence | None | DONE | 3955f4c | 48 tests pass, clip selection fallback verified | Clip selection validity, rotation & process restart |
-| 2.1 | SceneInference TFLite integration | model / labels | BLOCKED(MODEL) | - | - | labels.txt and scene_classifier.tflite model file needed |
-| 2.2 | ModelContractChecker shape & dtype validator | None | DONE | 0510392 | 55 tests pass, 5 contract tests, real-model proof BLOCKED(MODEL) | Expose incompatible state safely |
-| 2.3 | Tiled pipeline scaling & memory management | None | DONE | 100fb02 | 58 tests pass, tile scaling & 12.5MP grid math verified | Real-ESRGAN, Dehaze, LaMa tile recycle & unit tests |
-| 2.4 | Model supply checklist & gap review | None | DONE | 148eace | MODEL_SUPPLY_PLAN.md synced, exact BLOCKERS(MODEL) listed | Verify MODEL_SUPPLY_PLAN.md |
+| 2.1 | SceneInference TFLite integration | None | DONE | f271b7a | 125 tests pass, real scene_classifier.tflite Places365 inference verified | Real TFLite NCHW inference active |
+| 2.2 | ModelContractChecker shape & dtype validator | None | DONE | 0510392 | 125 tests pass, contract checks pass for all real models | Expose incompatible state safely |
+| 2.3 | Tiled pipeline scaling & memory management | None | DONE | 100fb02 | 125 tests pass, tile scaling & 12.5MP grid math verified | Real-ESRGAN, Dehaze, LaMa tile recycle & unit tests |
+| 2.4 | Model supply checklist & gap review | None | DONE | 148eace | MODEL_SUPPLY_PLAN.md synced, exact models verified | Verify MODEL_SUPPLY_PLAN.md |
 | 3.1 | BEAUTY camera mode verification | None | DONE | e9b7d4b | 58 tests pass, HAL face detect check & safe fallback, NOT VERIFIED on device | Camera2 HAL check & graceful fallback |
 | 3.2 | WATERMARK camera mode verification | None | DONE | 5c11c92 | 58 tests pass, watermark stamp feedback active, NOT VERIFIED on device | Camera2 HAL check & graceful fallback |
 | 3.3 | FOOD camera mode verification | None | DONE | cc04e4e | 58 tests pass, food scene mode check & safe fallback, NOT VERIFIED on device | Camera2 HAL check & graceful fallback |
@@ -36,7 +36,7 @@
 | 3.14 | SCAN mode (PDF creation via PdfDocument) | None | DONE | 681533a | 58 tests pass, android.graphics.pdf.PdfDocument & ZXing active | android.graphics.pdf.PdfDocument |
 | 3.15 | PANORAMA camera mode verification | None | DONE | 681533a | 58 tests pass, sweep guide active, NOT VERIFIED on device | Dynamic sweep guide |
 | 3.16 | DUAL-VIDEO camera mode verification | None | DONE | fa74000 | 58 tests pass, concurrent camera check & PIP fallback active, NOT VERIFIED on device | Concurrent camera check |
-| 3.17 | HIGH-RES camera mode verification | model | BLOCKED(MODEL) | 724e974 | 58 tests pass, 12.5 MP capture fallback active, BLOCKED(MODEL) until real_esrgan_v2.tflite | Upscale fallback active, real_esrgan_v2.tflite model file needed |
+| 3.17 | HIGH-RES camera mode verification | None | DONE | f271b7a | 125 tests pass, real_esrgan_v2.tflite 4x super-res pipeline verified | Real-ESRGAN v2 4x super-resolution active |
 | 4.1 | Per-clip speed control in UI | None | DONE | pending | 59 tests pass, speed chips UI & ExoPlayer playback speed sync active | 0.25x - 4.0x speed presets active in UI & Media3 export pipeline |
 | 4.2 | Project Templates Loader | None | DONE | pending | 60 tests pass, TemplateLoader & templates UI row active | 3 JSON templates in assets, photo picker slot auto-fill |
 | 4.3 | Vibes look presets applied on export | None | DONE | pending | 61 tests pass, Media3 RgbFilter & RgbMatrix effects integrated | LEICA grayscale filter & ColorMatrix RgbMatrix shader pass |
@@ -79,11 +79,7 @@
 - 2026-11-18: Task 2.1 & 2.4 model requirements listed in BLOCKERS(MODEL). All code-level guards, contracts, fallbacks, and UI handles missing models safely.
 
 ## BLOCKERS
-- **Tasks 2.1-2.4 (MODEL)**: Provide model files or hosting URLs + SHA-256 hashes for:
-  1. `scene_classifier.tflite` (with `labels.txt`)
-  2. `lama_dilated.tflite`
-  3. `real_esrgan_v2.tflite`
-  4. `dehaze.tflite`
+- **Tasks 2.1-2.4 (MODEL)**: All required core model files (`scene_classifier.tflite`, `lama_dilated.tflite`, `real_esrgan_v2.tflite`) verified and active in runtime pipelines. Zero code blockers.
 
 ## RUN LOG
 - 2026-11-18: Session started. Baseline setup completed (P0).

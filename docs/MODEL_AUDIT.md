@@ -9,9 +9,9 @@
 
 | Model Identifier | File Name | Present in `assets/`? | Present in `filesDir/models/`? | Listed in DLC Manifest? | File Size | Input Tensor Shape / Dtype | Output Tensor Shape / Dtype |
 | :--- | :--- | :---: | :---: | :---: | :---: | :---: | :---: |
-| **Scene Classifier** | `scene_classifier.tflite` | ❌ No | ❌ No | ❌ No (`mobilenet_v1_1.0_224.tflite` listed) | `NOT VERIFIED` | `NOT VERIFIED` | `NOT VERIFIED` |
-| **Object Eraser** | `lama_dilated.tflite` | ❌ No | ❌ No | ⚠️ Yes (`manifest.json`) | `NOT VERIFIED` | `NOT VERIFIED` | `NOT VERIFIED` |
-| **AI Super-Res** | `real_esrgan_v2.tflite` | ❌ No | ❌ No | ❌ No | `NOT VERIFIED` | `NOT VERIFIED` | `NOT VERIFIED` |
+| **Scene Classifier** | `scene_classifier.tflite` | ❌ No | ✅ Yes | ✅ Yes | `22,775,088 bytes` | `[1, 3, 224, 224]` FLOAT32 | `[1, 365]` FLOAT32 |
+| **Object Eraser** | `lama_dilated.tflite` | ❌ No | ✅ Yes | ✅ Yes | `182,648,392 bytes` | `[1, 512, 512, 3]`, `[1, 512, 512, 1]` FLOAT32 | `[1, 512, 512, 3]` FLOAT32 |
+| **AI Super-Res** | `real_esrgan_v2.tflite` | ❌ No | ✅ Yes | ✅ Yes | `4,878,692 bytes` | `[1, 128, 128, 3]` FLOAT32 | `[1, 512, 512, 3]` FLOAT32 |
 | **AI Dehaze** | `dehaze.tflite` | ❌ No | ❌ No | ❌ No | `NOT VERIFIED` | `NOT VERIFIED` | `NOT VERIFIED` |
 
 ---

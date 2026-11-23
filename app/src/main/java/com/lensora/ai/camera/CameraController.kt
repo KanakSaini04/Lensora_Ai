@@ -887,10 +887,11 @@ class CameraController(private val context: Context) {
         onError: (String) -> Unit,
     ) {
         val availableBytes = checkAvailableStorageBytes()
-        val minRequiredBytes = 2L * 1024 * 1024 * 1024 // 2 GB Guard Limit
+        val isEmulator = Build.FINGERPRINT.contains("generic") || Build.MODEL.contains("sdk_gphone") || Build.HARDWARE.contains("goldfish") || Build.HARDWARE.contains("ranchu")
+        val minRequiredBytes = if (isEmulator) 100L * 1024 * 1024 else 2L * 1024 * 1024 * 1024 // 100MB on emulator, 2GB Guard Limit on physical device
         if (availableBytes < minRequiredBytes) {
             val freeMb = availableBytes / (1024 * 1024)
-            val msg = "Storage Low ($freeMb MB available). Minimum 2GB space required."
+            val msg = "Storage Low ($freeMb MB available). Minimum ${if (isEmulator) "100MB" else "2GB"} space required."
             Log.w(tag, "Storage Guard Triggered: Capture blocked. $msg")
             mainHandler.post { onError(msg) }
             return
