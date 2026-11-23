@@ -17,9 +17,12 @@ import android.graphics.Paint
 import android.graphics.Rect
 import android.net.Uri
 import android.os.Build
+import android.os.Handler
 import android.os.IBinder
+import android.os.Looper
 import android.provider.MediaStore
 import android.util.Log
+import android.widget.Toast
 import androidx.core.app.NotificationCompat
 import androidx.work.OneTimeWorkRequestBuilder
 import androidx.work.WorkManager
@@ -324,6 +327,39 @@ class AiProcessorService : Service() {
                 val executionTime = System.currentTimeMillis() - startTime
                 Log.i(tag, "L3 Service Real Image-to-Image AI Processing finished in ${executionTime}ms (Model: ${enhancementModelFile?.name ?: "ColorMatrix"}, Backend: ${if (esrganInterpreterObj?.usingGpu == true) "GPU" else "CPU"}, Vibe: ${vibePreset.displayName}, Dimensions: ${processedBitmap?.width}x${processedBitmap?.height}). Saved $fileName to MediaStore at $newUri")
 
+                // Explicit User Feedback: Toast + Persistent Completion Notification
+                val isFallbackPass = isHighRes && (!usedImageToImageModel || enhancementModelFile == null || !enhancementModelFile.exists())
+                val finalW = processedBitmap?.width ?: 0
+                val finalH = processedBitmap?.height ?: 0
+
+                if (isFallbackPass) {
+                    Handler(Looper.getMainLooper()).post {
+                        Toast.makeText(
+                            applicationContext,
+                            "⚠️ AI Super-Res Model Unavailable: Photo saved without AI upscaling",
+                            Toast.LENGTH_LONG
+                        ).show()
+                    }
+
+                    postCompletionNotification(
+                        title = "⚠️ Lensora AI Photo Saved",
+                        text = "⚠️ AI Model Missing: Photo saved without AI upscaling"
+                    )
+                } else if (isHighRes && usedImageToImageModel) {
+                    Handler(Looper.getMainLooper()).post {
+                        Toast.makeText(
+                            applicationContext,
+                            "✨ AI Super-Res Complete: 2x Net Scale ($finalW x $finalH)",
+                            Toast.LENGTH_SHORT
+                        ).show()
+                    }
+
+                    postCompletionNotification(
+                        title = "✨ Lensora AI Super-Res Complete",
+                        text = "✨ Photo upscaled 2x net scale ($finalW x $finalH)"
+                    )
+                }
+
                 // 6. Enqueue CloudSyncWorker if Cloud Sync toggle is ON in Settings
                 val prefs = getSharedPreferences("lensora_prefs", MODE_PRIVATE)
                 val isCloudSyncEnabled = prefs.getBoolean("cloud_sync_enabled", false)
@@ -355,6 +391,32 @@ class AiProcessorService : Service() {
             }
             processedBitmap?.recycle()
         }
+    }
+
+    private fun postCompletionNotification(title: String, text: String) {
+        val notificationManager = getSystemService(Context.NOTIFICATION_SERVICE) as? NotificationManager ?: return
+        val completionChannelId = "ai_processing_completion_channel"
+
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+            val channel = NotificationChannel(
+                completionChannelId,
+                "Lensora AI Completion",
+                NotificationManager.IMPORTANCE_DEFAULT,
+            ).apply {
+                description = "Completion notifications for AI photo processing"
+            }
+            notificationManager.createNotificationChannel(channel)
+        }
+
+        val completionNotification = NotificationCompat.Builder(this, completionChannelId)
+            .setContentTitle(title)
+            .setContentText(text)
+            .setSmallIcon(R.mipmap.ic_launcher)
+            .setPriority(NotificationCompat.PRIORITY_DEFAULT)
+            .setAutoCancel(true)
+            .build()
+
+        notificationManager.notify(1002, completionNotification)
     }
 
 

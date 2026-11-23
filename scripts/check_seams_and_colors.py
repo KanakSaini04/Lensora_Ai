@@ -21,8 +21,10 @@ def analyze_seams_and_colors(input_path, output_path, tile_core_out=448):
     print(f"OUTPUT DIMENSIONS: {out_w} x {out_h} (Net scale: {scale_x:.2f}x width, {scale_y:.2f}x height)")
 
     # 1. Color Shift Analysis: Compute average RGB channels
-    in_pixels = list(in_img.getdata())
-    out_pixels = list(out_img.getdata())
+    get_data = getattr(in_img, "get_flattened_data", in_img.getdata)
+    get_out_data = getattr(out_img, "get_flattened_data", out_img.getdata)
+    in_pixels = list(get_data())
+    out_pixels = list(get_out_data())
 
     avg_in_r = sum(p[0] for p in in_pixels) / float(len(in_pixels))
     avg_in_g = sum(p[1] for p in in_pixels) / float(len(in_pixels))

@@ -119,9 +119,9 @@ class AiProcessorWorker(
 
             val activeEsrganObj = esrganInterpreterObj
             if (isHighRes && esrganValid && activeEsrganObj != null) {
-                // 3. Attempt 50% pre-downscale pass (50% input -> 4x tile SR -> ~50 MP output)
+                // 3. Attempt 50% pre-downscale pass (50% input -> 4x tile SR -> 2x net output scale)
                 try {
-                    Log.i(tag, "Executing 50% pre-downscale Real-ESRGAN 4x super-resolution pass (~50 MP target) [Backend: ${if (activeEsrganObj.usingGpu) "GPU" else "CPU"}]")
+                    Log.i(tag, "Executing Real-ESRGAN 2x net super-resolution pass (50% pre-downscale, 4x tile scale) [Backend: ${if (activeEsrganObj.usingGpu) "GPU" else "CPU"}]")
                     processedBitmap = RealEsrganEngine.runSuperResolutionPipeline(
                         sourceBitmap = fullSourceBitmap,
                         downscaleFactor = 0.5f,

@@ -36,7 +36,7 @@
 | 3.14 | SCAN mode (PDF creation via PdfDocument) | None | DONE | 681533a | 58 tests pass, android.graphics.pdf.PdfDocument & ZXing active | android.graphics.pdf.PdfDocument |
 | 3.15 | PANORAMA camera mode verification | None | DONE | 681533a | 58 tests pass, sweep guide active, NOT VERIFIED on device | Dynamic sweep guide |
 | 3.16 | DUAL-VIDEO camera mode verification | None | DONE | fa74000 | 58 tests pass, concurrent camera check & PIP fallback active, NOT VERIFIED on device | Concurrent camera check |
-| 3.17 | HIGH-RES camera mode verification | None | DONE | f271b7a | 125 tests pass, real_esrgan_v2.tflite 4x super-res pipeline verified | Real-ESRGAN v2 4x super-resolution active |
+| 3.17 | HIGH-RES camera mode verification | None | DONE | ac45f02 | 125 tests pass, real_esrgan_v2.tflite 2x net super-res pass (4x tile scale) verified, peak RAM 445 MB PSS | Real-ESRGAN v2 2x net super-resolution active |
 | 4.1 | Per-clip speed control in UI | None | DONE | pending | 59 tests pass, speed chips UI & ExoPlayer playback speed sync active | 0.25x - 4.0x speed presets active in UI & Media3 export pipeline |
 | 4.2 | Project Templates Loader | None | DONE | pending | 60 tests pass, TemplateLoader & templates UI row active | 3 JSON templates in assets, photo picker slot auto-fill |
 | 4.3 | Vibes look presets applied on export | None | DONE | pending | 61 tests pass, Media3 RgbFilter & RgbMatrix effects integrated | LEICA grayscale filter & ColorMatrix RgbMatrix shader pass |

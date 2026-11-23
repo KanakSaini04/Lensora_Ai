@@ -331,7 +331,7 @@ Lensora_Ai/
 
 ### a. Completed, Tested & Verified (83 Unit Tests Passing)
 - **Google Drive Auth Sign-In Fix**: Fixed `GoogleAuthManager.kt` so `getSignedInEmail()` returns `null` when signed out. Added interactive Google Account Sign-In Dialog in `SettingsScreen.kt` allowing users to connect their account (verified with `kanaksaini07330@gmail.com`).
-- **Real-ESRGAN v2 4x Super-Res Engine**: Added 8px tile overlap (`TILE_PAD=8`, `TILE_CORE=112`, `CROP_OFFSET=32`) eliminating tile border seams on 50 MP outputs (266 tiles for $1530 \times 2040$ input $\rightarrow$ $6120 \times 8160$ output).
+- **Real-ESRGAN v2 2x Net Super-Res Engine**: Added 8px tile overlap (`TILE_PAD=8`, `TILE_CORE=112`, `CROP_OFFSET=32`) eliminating tile border seams on 50 MP outputs (266 tiles for $1530 \times 2040$ input $\rightarrow$ $6120 \times 8160$ output via 4x model tile scale + 50% pre-downscale).
 - **TFLite GPU Delegate & CPU Fallback**: Implemented GPU delegate acceleration with warm-up inference validation ($\le 0.02$ mean abs diff vs CPU, range `[-0.05, 1.05]`), split tile timing telemetry, and multi-threaded CPU (`setNumThreads(4)` with XNNPACK) fallback.
 - **Emulator Camera Crash Fix**: Added dynamic `cameraId` fallback in `CameraController.kt` iterating over `cameraManager.cameraIdList` to select valid camera ID 1 when camera ID 0 is unsupported on emulators.
 
