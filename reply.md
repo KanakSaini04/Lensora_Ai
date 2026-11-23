@@ -47,9 +47,9 @@ Completed all 4 acceptance criteria for Step Z14b: (1) Eraser brush size selecte
 
 ## Git
 - **Branch**: `step-Z14b-studio-complete`
-- **Commit**: `fix(studio): Step Z14b - complete layout, gesture stale-value, and mask alignment fix`
+- **Commit**: `fix(studio): Step Z14b - complete layout, gesture stale-value, and mask alignment fix` (`1325fb6`)
 - **PR Link**: [https://github.com/KanakSaini04/Lensora_Ai/pull/112](https://github.com/KanakSaini04/Lensora_Ai/pull/112)
-- **Merge Commit**: `8a05c3d` (`Merge pull request #112 from KanakSaini04/step-Z14b-studio-complete`)
+- **Merge Commit**: `11c3325` (`Merge pull request #112 from KanakSaini04/step-Z14b-studio-complete`)
 
 ## NOT VERIFIED
 None. All 4 acceptance criteria verified on physical Redmi Note 13 Pro 5G and JVM unit test suite.
