@@ -23,6 +23,7 @@ import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableFloatStateOf
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
+import androidx.compose.runtime.rememberUpdatedState
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -235,29 +236,34 @@ fun ZoomableBox(
     var pan by remember { mutableStateOf(Offset.Zero) }
     var containerSize by remember { mutableStateOf(Size.Zero) }
 
+    val currentOnScaleChanged by rememberUpdatedState(onScaleChanged)
+    val currentMaxScale by rememberUpdatedState(maxScale)
+    val currentIsStudio by rememberUpdatedState(isStudio)
+    val currentIsDrawToolActive by rememberUpdatedState(isDrawToolActive)
+
     LaunchedEffect(resetKey) {
         scale = 1.0f
         pan = Offset.Zero
-        onScaleChanged(1.0f)
+        currentOnScaleChanged(1.0f)
     }
 
     Box(
         modifier = modifier
             .fillMaxSize()
             .onSizeChanged { containerSize = it.toSize() }
-            .pointerInput(resetKey, isDrawToolActive) {
+            .pointerInput(resetKey, currentIsDrawToolActive) {
                 detectTapGestures(
                     onDoubleTap = {
-                        if (!isDrawToolActive) {
+                        if (!currentIsDrawToolActive) {
                             val newScale = ZoomTransformMath.toggleDoubleTapScale(scale)
                             scale = newScale
                             pan = if (newScale == 1.0f) Offset.Zero else pan
-                            onScaleChanged(newScale)
+                            currentOnScaleChanged(newScale)
                         }
                     },
                 )
             }
-            .pointerInput(resetKey, isStudio, isDrawToolActive) {
+            .pointerInput(resetKey, currentIsStudio, currentIsDrawToolActive) {
                 awaitEachGesture {
                     while (true) {
                         val event = awaitPointerEvent()
@@ -265,18 +271,18 @@ fun ZoomableBox(
                         val mode = ZoomTransformMath.decideTouchMode(
                             pointerCount = pointerCount,
                             scale = scale,
-                            isDrawToolActive = isDrawToolActive,
-                            isStudio = isStudio,
+                            isDrawToolActive = currentIsDrawToolActive,
+                            isStudio = currentIsStudio,
                         )
 
                         if (mode == TouchMode.ZOOM_PAN) {
                             val zoomChange = event.calculateZoom()
                             val panChange = event.calculatePan()
-                            val newScale = ZoomTransformMath.calculateScale(scale, zoomChange, maxScale = maxScale)
+                            val newScale = ZoomTransformMath.calculateScale(scale, zoomChange, maxScale = currentMaxScale)
                             val newPan = ZoomTransformMath.calculateClampedPan(pan, panChange, newScale, containerSize)
                             scale = newScale
                             pan = newPan
-                            onScaleChanged(newScale)
+                            currentOnScaleChanged(newScale)
                         } else if (mode == TouchMode.PAN) {
                             val panChange = event.calculatePan()
                             val newPan = ZoomTransformMath.calculateClampedPan(pan, panChange, scale, containerSize)

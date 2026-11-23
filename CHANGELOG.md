@@ -1,3 +1,9 @@
+## [Unreleased] - Step Z14: Studio Eraser Brush Size Stale-Value Fix (2026-11-23)
+
+### Fixed
+- **Studio Eraser Brush Size Stale-Value Fix (Step Z14)**:
+  - Fixed bug where stroke radius shrank from selected slider value (e.g., 87dp) to initial 30dp default upon finger lift. Used Compose `rememberUpdatedState` in `StudioScreen.kt` and `ZoomableBox.kt` so long-lived gesture handlers evaluate live brush size and scale values on stroke commit. Added unit test `stepZ14_brushSizeAndZoomScale_strokeRadiusIsIndependentAndImmuneToStaleValues` (122 unit tests passing total).
+
 ## [Unreleased] - Step R2: Add reply.md Review File (2026-11-23)
 
 ### Documentation

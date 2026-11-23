@@ -1,5 +1,11 @@
 # Lensora_Ai Master Build Report
 
+## Step Z14 - Studio Eraser Brush Size Stale-Value Fix
+- **Stale-Value Fix**: Replaced stale closure capture in `StudioScreen.kt` pointerInput block with Compose `rememberUpdatedState` (`currentBrushSizeDp`, `currentScale`, `currentDensity`, `currentIsEraseMode`), ensuring stroke radius calculated on finger release matches exact selected slider size (e.g., 87dp) at all zoom levels without shrinking.
+- **Unit Tests**: 122 passed across 21 test classes (added `stepZ14_brushSizeAndZoomScale_strokeRadiusIsIndependentAndImmuneToStaleValues`).
+- **Device Status**: **VERIFIED on Redmi Note 13 Pro 5G (`2312DRA50I`)**: App launched cleanly, 0 logcat errors, stroke width remains constant upon finger release at 1.0x, 1.46x, 4.06x, and 8.0x zoom levels.
+- **Break-It**: 10 real attacks run, verdict **GOOD**.
+
 ## Step R2 - Add reply.md as Primary Single-File Owner Review Report
 - **Single-File Review Report**: Created `reply.md` at repo root with required 8-section template, mandated task overwrite rule in `GEMINI_RULES.md`, `GEMINI.md`, and `agent.md`, and updated project documentation.
 - **Unit Tests**: 121 passed across 21 test classes.
