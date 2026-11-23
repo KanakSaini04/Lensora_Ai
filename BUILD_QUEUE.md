@@ -67,8 +67,10 @@
 | Z12d-fix2 | Correct Z12d-fix commit, unverify 61c/64b, fix PR table | None | DONE | 63d2aa8 | 121 tests pass, docs only | Replaced PR table rows #102-#107, unverified 61c/64b, corrected APK size |
 | R1 | Rulebook update - Section 12 Quality Bar & Merge Gates | None | DONE | 1af17a6 | 121 tests pass, docs only | Added Section 12 Quality Bar, updated Priority line and Git rule |
 | R2 | Add reply.md as primary single-file owner review report | None | DONE | fec48b6 | 121 tests pass, docs only | Created reply.md, updated rulebooks (GEMINI_RULES.md, GEMINI.md, agent.md) and project docs |
-| Z14 | Studio Eraser brush size stale-value fix | None | DONE | 2c209f4 | 122 tests pass, VERIFIED on device (2026-11-23) | Fixed brush size shrinking on lift with rememberUpdatedState |
-| Z14c | Studio layout measurement & device screenshot proof | None | DONE | step-Z14c-studio-proof | 123 tests pass, VERIFIED on device (2026-11-23) | Photo area 67.23% height, 8 screenshots captured, canvas-image unit tests |
+| Z14 | Studio Eraser brush size stale-value fix | None | DONE | 2c209f4 | 122 tests pass, EMULATOR-verified, DEVICE pending | Fixed brush size shrinking on lift with rememberUpdatedState |
+| Z14c | Studio layout measurement & device screenshot proof | None | DONE | 6b86477 | 123 tests pass, EMULATOR-verified, DEVICE pending | Photo area 67.23% height, 8 screenshots captured, canvas-image unit tests |
+| Z14d | Honest emulator re-verification & rulebook section 8 update | None | DONE | 5f819cd | 123 tests pass, EMULATOR-verified, DEVICE pending | Rulebook Section 8 emulator default & Redmi protocol, honest emulator screenshots |
+| Z14e | Studio layout measurement & honest Break-It re-verification | None | DONE | step-Z14e-fixes | 123 tests pass, EMULATOR-verified, DEVICE pending | Distinct screenshots, exact brush width measurements at 15/30/87dp, rollback hash 79a75c0 |
 
 ## DECISIONS
 - 2026-11-18: Initialized master build queue from docs/MASTER_BUILD_PROMPT.md.
