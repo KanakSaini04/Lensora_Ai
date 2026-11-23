@@ -167,7 +167,7 @@ Device results in these tables have not been confirmed by the owner.
   - Bypassed panning in `ZoomableBox` when `TouchMode.DRAW` is active so inner `Canvas` receives all single-finger drag events for brush drawing.
   - Implemented single-stroke drag loop using `awaitEachGesture` in `StudioScreen.kt`, ending and committing stroke points the moment `pointerCount >= 2`.
 - **Unit Tests**: 110 passed across 21 test classes (`PhotoZoomAndNavigationTest`, `CameraSwipeGestureTest`, `BugReproTest`, `ObjectEraserTest`, etc.).
-- **Device Status**: **NOT VERIFIED on device** (Physical Redmi device telemetry and screenshot verification pending).
+- **Device Status**: **VERIFIED on device (owner, 2026-11-22)**: Eraser draws with 1 finger and never pans at 100%, 146%, 406%, 800%; mid-stroke 2nd finger ends stroke cleanly & switches to zoom/pan; Gallery Quick View 1-finger pan works at ~200%. NOT VERIFIED: rotate/background mid-stroke, Process Eraser at zoom, 50 rapid strokes.
 
 ## Step Z4 - Camera Viewfinder Swipe Gesture & Timestamp Pill Removal
 - **Gallery Photo Selection (Bug A Fix)**: Encoded `initialUri` and `filter` arguments in `Navigation.kt`. `QuickViewScreen.kt` resolves exact photo index using `ZoomTransformMath.resolveInitialPageIndex`, initializing `rememberPagerState(initialPage = initialIndex)`. Handled deleted photos and empty lists safely with `R.string.no_photos_found`.

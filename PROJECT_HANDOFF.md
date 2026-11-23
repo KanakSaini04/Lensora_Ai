@@ -7,11 +7,11 @@
 ## 0. Status block (update every step)
 - **Last updated**: 2026-11-22
 - **Branch / HEAD**: `step-Z12d-docs`
-- **Last completed step**: Step Z12d-fix2 - Handoff Accuracy & PR Table Corrections
-- **In progress**: Step Z12d-fix2 verification & handoff
+- **Last completed step**: Step Z12e - Record Z5 Device Verification in Documentation
+- **In progress**: Step Z12e verification & handoff
 - **Unit tests**: 121 passed, 0 skipped, 0 failed across 21 test classes
 - **Baseline APK size**: 94494604 bytes
-- **Last emulator check**: `emulator-5554` (`Medium_Phone`), 2026-11-20 (App launches cleanly, Google Drive Sign-In dialog functioning, 121 unit tests passing); **Last physical-device (Redmi) check**: VERIFIED on device by owner (2026-11-22) for Z7 (portrait lock & EXIF orientation), Z8 (video recording start), Z10 (video thumbnails, badges, duration pills), Z10b (video Home pause, initial duration, tap controls), Z11 (Studio filmstrip photos only), Z12 (localized title count strings). NOT VERIFIED: Z5, Z6, and features not explicitly tested.
+- **Last emulator check**: `emulator-5554` (`Medium_Phone`), 2026-11-20 (App launches cleanly, Google Drive Sign-In dialog functioning, 121 unit tests passing); **Last physical-device (Redmi) check**: VERIFIED on device by owner (2026-11-22) for Z5 (eraser drawing at 100/146/406/800% zoom, mid-stroke 2nd finger, Gallery pan), Z7 (portrait lock & EXIF orientation), Z8 (video recording start), Z10 (video thumbnails, badges, duration pills), Z10b (video Home pause, initial duration, tap controls), Z11 (Studio filmstrip photos only), Z12 (localized title count strings). NOT VERIFIED: Z6 and features not explicitly tested.
 
 ## 1. Boot order for a new AI
 1. `GEMINI.md` (coding-agent rules & Section 10 Run/Device policy)
