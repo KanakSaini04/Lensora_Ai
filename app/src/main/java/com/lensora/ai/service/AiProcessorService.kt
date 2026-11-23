@@ -137,22 +137,39 @@ class AiProcessorService : Service() {
             val resolver = contentResolver
 
             // 1. Memory Shield: BitmapRegionDecoder (no full image decode into RAM)
-            val decoder = resolver.openInputStream(inputUri)?.use { inputStream ->
-                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.S) {
-                    BitmapRegionDecoder.newInstance(inputStream)
-                } else {
-                    @Suppress("DEPRECATION")
-                    BitmapRegionDecoder.newInstance(inputStream, false)
+            var imgWidth = 0
+            var imgHeight = 0
+
+            val decoder: BitmapRegionDecoder? = try {
+                resolver.openInputStream(inputUri)?.use { inputStream ->
+                    if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.S) {
+                        BitmapRegionDecoder.newInstance(inputStream)
+                    } else {
+                        @Suppress("DEPRECATION")
+                        BitmapRegionDecoder.newInstance(inputStream, false)
+                    }
                 }
+            } catch (e: Exception) {
+                Log.w(tag, "BitmapRegionDecoder initialization failed for $photoUriStr: ${e.localizedMessage}")
+                null
             }
 
-            if (decoder == null) {
-                Log.w(tag, "Failed to initialize BitmapRegionDecoder for $photoUriStr")
+            if (decoder != null) {
+                imgWidth = decoder.width
+                imgHeight = decoder.height
+            } else {
+                val boundsOpts = BitmapFactory.Options().apply { inJustDecodeBounds = true }
+                resolver.openInputStream(inputUri)?.use { inputStream ->
+                    BitmapFactory.decodeStream(inputStream, null, boundsOpts)
+                }
+                imgWidth = boundsOpts.outWidth
+                imgHeight = boundsOpts.outHeight
+            }
+
+            if (imgWidth <= 0 || imgHeight <= 0) {
+                Log.w(tag, "Invalid image dimensions ($imgWidth x $imgHeight) for $photoUriStr")
                 return
             }
-
-            val imgWidth = decoder.width
-            val imgHeight = decoder.height
 
             // 2. Select Real Image-to-Image AI Enhancement Model ONLY when isHighRes is true
             var enhancementModelFile: File? = null
@@ -254,7 +271,7 @@ class AiProcessorService : Service() {
                         val bottom = (top + tileSize).coerceAtMost(imgHeight)
                         val rect = Rect(left, top, right, bottom)
 
-                        val rawTileBitmap = decoder.decodeRegion(rect, null)
+                        val rawTileBitmap = decoder?.decodeRegion(rect, null)
                         if (rawTileBitmap != null) {
                             try {
                                 canvas.drawBitmap(rawTileBitmap, left.toFloat(), top.toFloat(), paint)
