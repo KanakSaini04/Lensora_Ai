@@ -1,4 +1,4 @@
-# reply.md - Step Z14f: Studio Screen Review Status (2026-11-23 17:45)
+# reply.md - Step Z14f: Studio Screen Review Status (2026-11-23 18:00)
 
 ## Status: PARTIAL (EMULATOR-verified, DEVICE pending owner READY)
 Owner verified brush behavior by hand. Automated script measurements: NOT DONE.
@@ -7,7 +7,7 @@ Owner verified brush behavior by hand. Automated script measurements: NOT DONE.
 | Criterion | How Verified | Result |
 | :--- | :--- | :---: |
 | 1. Eraser brush size behavior verified on physical Redmi Note 13 Pro 5G | Owner manual verification on physical Redmi device (<owner to fill date>) | PASS (DEVICE) |
-| 2. Studio layout bounds verified on emulator | UI Automator dump bounds on `emulator-5554` (`studio_dump_z14f3.xml`): Photo Area = 1264px/1880px = 67.23% content area height (52.67% total height / 61.96% top-to-bottom) | PASS (EMULATOR) |
+| 2. Studio layout bounds verified on emulator | UI Automator dump bounds on `emulator-5554` (`studio_dump_z14f3.xml`): Photo Area = 1264px/1880px = 67.23% content area height (1264px/2400px = 52.67% total height; bottom of photo box = 1856/2400 = 77.33%) | PASS (EMULATOR) |
 | 3. Real screenshots captured under `docs/screenshots/Z14f/` | File size & full 64-character SHA-256 hash audit on 8 PNG files | PASS (EMULATOR) |
 | 4. All 123 JVM unit tests pass across 21 test classes | `./gradlew cleanTestDebugUnitTest testDebugUnitTest --rerun-tasks` | PASS (JVM) |
 
@@ -23,6 +23,7 @@ In `StudioScreen.kt`, `Canvas` previously used `pointerInput(Unit)` with key `Un
 
 ## Evidence
 - **Unit tests**: 123 passed, 0 skipped, 0 failed across 21 test classes (`./gradlew cleanTestDebugUnitTest testDebugUnitTest --rerun-tasks`).
+- **Android Tests**: `./gradlew compileDebugAndroidTestKotlin` `BUILD SUCCESSFUL` (`androidTest: compiled, NOT RUN`).
 - **Device verification (EMULATOR)**: Installed and launched on `emulator-5554` (`sdk_gphone64_x86_64`, Android 16 / API 35/36). Logcat `AndroidRuntime:E` output: `(empty)`.
 - **Full Non-Truncated 64-Character SHA-256 Hashes, File Sizes & Descriptions (EMULATOR)**:
   1. `landscape_photo_mask.png` | 120950 bytes | SHA256: `E57B2317FDEC481FE2F0FB72D2B027487FD809F702E7776C25CD1AFAB9572FFF`: Landscape real photo (1920x1080) with vertical red mask overlay on `emulator-5554`.
@@ -63,7 +64,7 @@ In `StudioScreen.kt`, `Canvas` previously used `pointerInput(Unit)` with key `Un
 - Automated script pixel measurements: NOT DONE.
 
 ## Risks and rollback plan
-- **Rollback command**: `git revert -m 1 79a75c0` (Reverts Step Z14d PR #114).
+- **Rollback command**: after merge: git revert -m 1 <PR #116 merge hash>
 
 ## Docs audit
 - `reply.md`: Overwritten [NEW].
