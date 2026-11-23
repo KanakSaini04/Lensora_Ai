@@ -84,17 +84,19 @@ If two rules clash, or a rule clashes with my prompt: STOP and ask. Do not choos
 - Camera2 hardware behavior (HAL, lenses, RAW, video, thermal, GPU speed, HyperOS kills) cannot be verified on the emulator: **NOT VERIFIED on device**.
 - The emulator may be locked: wake and unlock it with the PIN given in the prompt (never store the PIN anywhere). Never start, restart or reconfigure the emulator yourself.
 
-## 9. Report format (final message, always)
-1. `Rules loaded. Task understood as: ...` (start of the task)
-2. **Changed:** files, one line each, plus assumptions
-3. **Verified:** pasted output (tests, build, grep, logcat, screenshots with a one-line description)
-4. **Break-It:** attacks run, verdict GOOD / NOT GOOD
-5. **NOT verified**
-6. **Problems found** (including unrelated ones, unfixed)
-7. **How to try it manually** + **Risks / rollback** (big changes)
-8. **Docs audit**
-9. **Commit message** (one line) and PR link
-10. **Done / Not done / Needs my decision**, then `Next step: ...`
+## 9. Report format (final message & reply.md, always)
+- **`reply.md` File**: Create or OVERWRITE `reply.md` at repo root at the end of every task (never append). Include Status, Goal & acceptance criteria matrix, Design/Root cause summary, What changed list, Evidence (tests, device, Break-It), Risks/rollback, and Docs audit.
+- **Final Message Format**:
+  1. `Rules loaded. Task understood as: ...` (start of the task)
+  2. **Changed:** files, one line each, plus assumptions
+  3. **Verified:** pasted output (tests, build, grep, logcat, screenshots with a one-line description)
+  4. **Break-It:** attacks run, verdict GOOD / NOT GOOD
+  5. **NOT verified**
+  6. **Problems found** (including unrelated ones, unfixed)
+  7. **How to try it manually** + **Risks / rollback** (big changes)
+  8. **Docs audit**
+  9. **Commit message** (one line) and PR link
+  10. **Done / Not done / Needs my decision**, then `Next step: ...`
 
 ## 10. Definition of Done (ALL true before saying "done")
 - [ ] Does exactly what was asked, end to end, no stubbed or faked parts
