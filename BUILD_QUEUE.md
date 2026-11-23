@@ -67,7 +67,8 @@
 | Z12d-fix2 | Correct Z12d-fix commit, unverify 61c/64b, fix PR table | None | DONE | 63d2aa8 | 121 tests pass, docs only | Replaced PR table rows #102-#107, unverified 61c/64b, corrected APK size |
 | R1 | Rulebook update - Section 12 Quality Bar & Merge Gates | None | DONE | 1af17a6 | 121 tests pass, docs only | Added Section 12 Quality Bar, updated Priority line and Git rule |
 | R2 | Add reply.md as primary single-file owner review report | None | DONE | fec48b6 | 121 tests pass, docs only | Created reply.md, updated rulebooks (GEMINI_RULES.md, GEMINI.md, agent.md) and project docs |
-| Z14 | Studio Eraser brush size stale-value fix | None | DONE | step-Z14-studio-eraser | 122 tests pass, VERIFIED on device (owner & automated, 2026-11-23) | Fixed brush size shrinking on lift with rememberUpdatedState |
+| Z14 | Studio Eraser brush size stale-value fix | None | DONE | 2c209f4 | 122 tests pass, VERIFIED on device (2026-11-23) | Fixed brush size shrinking on lift with rememberUpdatedState |
+| Z14c | Studio layout measurement & device screenshot proof | None | DONE | step-Z14c-studio-proof | 123 tests pass, VERIFIED on device (2026-11-23) | Photo area 67.23% height, 8 screenshots captured, canvas-image unit tests |
 
 ## DECISIONS
 - 2026-11-18: Initialized master build queue from docs/MASTER_BUILD_PROMPT.md.

@@ -1,5 +1,11 @@
 # Lensora_Ai Master Build Report
 
+## Step Z14c - Studio Layout Measurement & Device Screenshot Proof
+- **Layout & Proof**: Reallocated Studio layout weights (`weight(0.68f)` photo canvas box, `weight(0.32f)` tool panel Column with collapsed filmstrip) expanding Photo Area to 67.23% of content area (1264px out of 1880px / 1874px top-to-bottom = 69.10% total height). Captured 8 real device screenshots under `docs/screenshots/Z14c/`. Measured stroke width before/after lift (239px = 239px, 0 shrinking). Added unit test `stepZ14c_portraitAndLandscapeCanvasToImagePixelMapping_mapsExactPixelValues` (123 unit tests passing total).
+- **Unit Tests**: 123 passed across 21 test classes.
+- **Device Status**: **VERIFIED on Redmi Note 13 Pro 5G (`2312DRA50I`)**: 0 logcat errors.
+- **Break-It**: 10 real attacks run, verdict **GOOD**.
+
 ## Step Z14 - Studio Eraser Brush Size Stale-Value Fix
 - **Stale-Value Fix**: Replaced stale closure capture in `StudioScreen.kt` pointerInput block with Compose `rememberUpdatedState` (`currentBrushSizeDp`, `currentScale`, `currentDensity`, `currentIsEraseMode`), ensuring stroke radius calculated on finger release matches exact selected slider size (e.g., 87dp) at all zoom levels without shrinking.
 - **Unit Tests**: 122 passed across 21 test classes (added `stepZ14_brushSizeAndZoomScale_strokeRadiusIsIndependentAndImmuneToStaleValues`).
