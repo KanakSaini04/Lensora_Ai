@@ -108,10 +108,11 @@ class AiProcessorService : Service() {
         }
 
         val downscaleFactor = intent.getFloatExtra("DOWNSCALE_FACTOR", 0.5f)
+        val forceCpu = intent.getBooleanExtra("FORCE_CPU", false)
 
         serviceScope.launch {
             try {
-                executeRealImageEnhancementPipeline(photoUriStr, sceneTypeStr, evOffset, vibePreset, isHighRes, downscaleFactor)
+                executeRealImageEnhancementPipeline(photoUriStr, sceneTypeStr, evOffset, vibePreset, isHighRes, downscaleFactor, forceCpu)
             } catch (e: Exception) {
                 if (e is kotlinx.coroutines.CancellationException) throw e
                 Log.e(tag, "Unhandled exception in AiProcessorService image enhancement pass", e)
@@ -130,6 +131,7 @@ class AiProcessorService : Service() {
         vibePreset: VibePreset,
         isHighRes: Boolean,
         downscaleFactor: Float = 0.5f,
+        forceCpu: Boolean = false,
     ) {
         Log.i(tag, "Executing L3 Real Image-to-Image AI Enhancement & LUT Pipeline in Foreground Service for $photoUriStr")
         val startTime = System.currentTimeMillis()
@@ -183,7 +185,7 @@ class AiProcessorService : Service() {
                 enhancementModelFile = modelManager.getEnhancementModelFile()
                 if (enhancementModelFile != null && enhancementModelFile.exists()) {
                     try {
-                        val candidateObj = com.lensora.ai.ai.RealEsrganEngine.createInterpreter(enhancementModelFile)
+                        val candidateObj = com.lensora.ai.ai.RealEsrganEngine.createInterpreter(enhancementModelFile, forceCpu)
                         val provider = com.lensora.ai.ai.InterpreterTensorInfoProvider(candidateObj.interpreter)
                         val contractStatus = com.lensora.ai.ai.ModelContractChecker.checkContract(enhancementModelFile, com.lensora.ai.ai.ModelContracts.REAL_ESRGAN_V2, provider)
                         Log.i(tag, "ModelContractChecker Real-ESRGAN v2 Status: $contractStatus")
