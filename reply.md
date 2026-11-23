@@ -54,9 +54,9 @@ Completed all 5 requirements for Step Z14c: (1) Reallocated Studio layout weight
 
 ## Git
 - **Branch**: `step-Z14c-studio-proof`
-- **Commit**: `fix(studio): Step Z14c - studio layout measurement and device proof`
+- **Commit**: `fix(studio): Step Z14c - studio layout measurement and device proof` (`6b86477`)
 - **PR Link**: [https://github.com/KanakSaini04/Lensora_Ai/pull/113](https://github.com/KanakSaini04/Lensora_Ai/pull/113)
-- **Merge Commit**: `22e1189` (`Merge pull request #113 from KanakSaini04/step-Z14c-studio-proof`)
+- **Merge Commit**: `b9475a7` (`Merge pull request #113 from KanakSaini04/step-Z14c-studio-proof`)
 - **Historical PR Merge Commits**:
   - Step Z14 PR #111 merge commit: `25eb4d1` (Rollback command: `git revert -m 1 25eb4d1`)
   - Step Z14b PR #112 merge commit: `11c3325` (Rollback command: `git revert -m 1 11c3325`)
@@ -65,7 +65,7 @@ Completed all 5 requirements for Step Z14c: (1) Reallocated Studio layout weight
 None. All 4 acceptance criteria verified on physical Redmi Note 13 Pro 5G and JVM unit test suite.
 
 ## Risks and rollback plan
-- **Rollback command**: `git revert -m 1 22e1189` (Reverts Step Z14c PR #113).
+- **Rollback command**: `git revert -m 1 b9475a7` (Reverts Step Z14c PR #113).
 
 ## Docs audit
 - `reply.md`: Overwritten [NEW].
