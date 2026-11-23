@@ -64,7 +64,7 @@
 | Z12c | Documentation sync pass & Z7/Z8 device verification | None | DONE | 53eef65 | 121 tests pass, docs only | Recorded owner device verification for Z7 and Z8 |
 | Z12d | Full documentation alignment & open items sync pass | None | DONE | 02ba5e6 | 121 tests pass, docs only | Synchronized progress.md, BUILD_QUEUE.md, CHANGELOG.md, report.md, HANDOFF |
 | Z12d-fix | PR history and APK size update | None | DONE | e488bd4 | 121 tests pass, docs only | Updated PR table, APK size, and dev contents line |
-| Z12d-fix2 | Correct Z12d-fix commit, unverify 61c/64b, fix PR table | None | DONE | 4173873 | 121 tests pass, docs only | Replaced PR table rows #102-#107, unverified 61c/64b, corrected APK size |
+| Z12d-fix2 | Correct Z12d-fix commit, unverify 61c/64b, fix PR table | None | DONE | 63d2aa8 | 121 tests pass, docs only | Replaced PR table rows #102-#107, unverified 61c/64b, corrected APK size |
 
 ## DECISIONS
 - 2026-11-18: Initialized master build queue from docs/MASTER_BUILD_PROMPT.md.
