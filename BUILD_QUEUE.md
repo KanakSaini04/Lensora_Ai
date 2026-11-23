@@ -36,7 +36,7 @@
 | 3.14 | SCAN mode (PDF creation via PdfDocument) | None | DONE | 681533a | 58 tests pass, android.graphics.pdf.PdfDocument & ZXing active | android.graphics.pdf.PdfDocument |
 | 3.15 | PANORAMA camera mode verification | None | DONE | 681533a | 58 tests pass, sweep guide active, NOT VERIFIED on device | Dynamic sweep guide |
 | 3.16 | DUAL-VIDEO camera mode verification | None | DONE | fa74000 | 58 tests pass, concurrent camera check & PIP fallback active, NOT VERIFIED on device | Concurrent camera check |
-| 3.17 | HIGH-RES camera mode verification | None | DONE | ac45f02 | 125 tests pass, real_esrgan_v2.tflite 2x net super-res pass (4x tile scale) verified, peak RAM 445 MB PSS | Real-ESRGAN v2 2x net super-resolution active |
+| 3.17 | HIGH-RES camera mode verification | None | DONE | ac45f02 | 125 tests pass, real_esrgan_v2.tflite 2x net super-res pass (4x tile scale) verified, peak RAM 560.9 MB PSS | Real-ESRGAN v2 2x net super-resolution active |
 | 4.1 | Per-clip speed control in UI | None | DONE | pending | 59 tests pass, speed chips UI & ExoPlayer playback speed sync active | 0.25x - 4.0x speed presets active in UI & Media3 export pipeline |
 | 4.2 | Project Templates Loader | None | DONE | pending | 60 tests pass, TemplateLoader & templates UI row active | 3 JSON templates in assets, photo picker slot auto-fill |
 | 4.3 | Vibes look presets applied on export | None | DONE | pending | 61 tests pass, Media3 RgbFilter & RgbMatrix effects integrated | LEICA grayscale filter & ColorMatrix RgbMatrix shader pass |
@@ -45,11 +45,11 @@
 | 5.1 | Cloud Vault Drive OAuth & Upload code review | None | DONE | pending | 64 tests pass, docs/DRIVE_SETUP.md created | EncryptedSharedPreferences, Wi-Fi UNMETERED constraint, SHA-256 upload safety |
 | 5.2 | Real sign-in and upload | USER | DONE | e6c16dd | Real Client ID configured in GoogleAuthManager.kt | `995311552607-8m80t248j7871pcaa4pf625glhpc7377.apps.googleusercontent.com` |
 | 6.1 | R8 Release hardening (releaseTest build type) | None | DONE | pending | releaseTest build type assembled with R8 & shrinkResources | ProGuard rules configured for Hilt, TFLite, Media3, Serialization |
-| 6.2 | Memory dumpsys leak analysis | None | DONE | pending | dumpsys meminfo logged: Java Heap 20.9MB, Native Heap 26.3MB, Total PSS 239.6MB | 1 Activity, 6 AppContexts, zero leak across mode switches |
+| 6.2 | Memory dumpsys leak analysis | None | DONE | pending | dumpsys meminfo logged: Java Heap 20.9 MB, Native Heap 26.3 MB, Total PSS 239.6 MB | 1 Activity, 6 AppContexts, zero leak across mode switches |
 | 7.1 | Feature-wide Break-It test suite | None | DONE | pending | 64 tests pass, report.md updated with feature group attack suites | 25+ attacks recorded across Camera, Gallery, Studio, Models, Vibes |
 | 7.2 | In-app Privacy Policy & Terms drafts | None | DONE | pending | SettingsScreen legal section & scrollable dialog views active | Flagged [DRAFT - LEGAL REVIEW NEEDED], Obsidian Royal theme tokens |
 | 8.1 | Documentation sync pass | None | DONE | pending | README, HANDOFF, progress, CHANGELOG, report synced | Final master documentation sync |
-| 9.1 | Redmi Note 13 Pro physical device verification | USER | DONE | pending | Installed & verified on 2312DRA50I, Total PSS 147.5MB, 0 logcat crashes | Physical device audit protocol passed |
+| 9.1 | Redmi Note 13 Pro physical device verification | USER | DONE | pending | Installed & verified on 2312DRA50I, Total PSS 147.5 MB, 0 logcat crashes | Physical device audit protocol passed |
 | Z | Gallery photo selection, ZoomableBox, Quick View top bar, Camera bottom bar | None | DONE | step-Z-viewer-and-nav | 96 tests pass, NOT VERIFIED on device (pending manual proof) | Combined Z1 + Z2 Quick View overlay + Z3 bottom bar |
 | Z4 | Camera viewfinder swipe to Studio, timestamp pill removal | None | DONE | 1c4060b | 109 tests pass, verified on Redmi Note 13 Pro 5G (2312DRA50I) | Viewfinder swipe to Studio active, timestamp pill removed |
 | Z5 | Studio Eraser brush drawing at all zoom levels | None | DONE | 5f85e7d | 110 tests pass, VERIFIED on device (owner, 2026-11-22) at 100/146/406/800%, mid-stroke 2nd finger, Gallery pan OK | TouchMode.DRAW evaluator active |
