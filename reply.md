@@ -73,9 +73,9 @@
 
 ## Git Information
 - **Branch**: `dev`
-- **PR Link**: Pending PR
-- **Merge Commit**: Pending
-- **Rollback Command**: `git revert -m 1 <merge_commit_hash>`
+- **PR Link**: PR #124 (`https://github.com/KanakSaini04/Lensora_Ai/pull/124`)
+- **Merge Commit**: `4d1d14d`
+- **Rollback Command**: `git revert -m 1 4d1d14d`
 
 ---
 
