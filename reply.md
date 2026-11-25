@@ -109,9 +109,9 @@
 
 ## Git Information
 - **Branch**: `dev`
-- **PR Link**: PR #121 (`https://github.com/KanakSaini04/Lensora_Ai/pull/121`)
-- **Merge Commit**: `1a0d134`
-- **Rollback Command**: `git checkout dev; git reset --hard 1a0d134`
+- **PR Link**: PR #122 (`https://github.com/KanakSaini04/Lensora_Ai/pull/122`)
+- **Merge Commit**: `e4c41a8`
+- **Rollback Command**: `git revert -m 1 e4c41a8`
 
 ---
 
