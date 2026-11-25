@@ -229,10 +229,12 @@ fun GalleryScreen(
                                         )
                                     }
 
-                                    // Type Badge (VIDEO, RAW, EDITED)
+                                    // Type Badge (VIDEO, RAW, ULTRA-RES, EDITED)
+                                    val isAiUpscaled = item.displayName.startsWith("LENSORA_AI_PROCESSED_", ignoreCase = true)
                                     val badgeText = when {
                                         item.isVideo -> "VIDEO"
                                         item.isRaw -> "RAW"
+                                        isAiUpscaled -> "✨ ULTRA-RES"
                                         item.isEdited -> "EDITED"
                                         else -> null
                                     }
@@ -254,7 +256,7 @@ fun GalleryScreen(
                                         ) {
                                             Text(
                                                 text = badgeText,
-                                                color = if (badgeText == "EDITED") PitchBlackBackground else ColorWhite,
+                                                color = if (badgeText == "EDITED" || badgeText == "✨ ULTRA-RES") PitchBlackBackground else ColorWhite,
                                                 fontSize = 8.sp,
                                                 fontWeight = FontWeight.Bold,
                                             )
