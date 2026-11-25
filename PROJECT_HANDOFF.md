@@ -8,10 +8,10 @@
 - **Last updated**: 2026-11-24
 - **Branch / HEAD**: `dev`
 - **Last completed step**: Step M1 - Real TFLite AI Models Integration (Super-Res & Scene Classifier)
-- **In progress**: None (Step M1 evidence verification completed)
+- **In progress**: None (Step M1 evidence correction & thread safety fix completed)
 - **Unit tests**: 125 passed, 0 skipped, 0 failed across 22 test classes
 - **Baseline APK size**: 94494604 bytes
-- **Last emulator check**: `emulator-5554` (`Medium_Phone`), 2026-11-24 (App launches cleanly, `real_esrgan_v2.tflite` 4x super-res upscaled 1024x768 photo to 2048x1536 in 9264ms, `scene_classifier.tflite` Places365 live NCHW inference active with top-5 predictions logged every 500ms, 125 unit tests passing); **Last physical-device (Redmi) check**: VERIFIED on device (2026-11-24) for Step M1 12.5MP output SHA-256 match `43E3124055541005C9D64FBACBEB4BFDC47C7A1C745A841063B2AF73444E84A0`, seam/color check PASS, real fallback logcat timestamp `11-24 01:23:04.888` (3.97s duration), and dumpsys battery reset (58%).
+- **Last emulator check**: `emulator-5554` (`Medium_Phone`), 2026-11-24 (App launches cleanly, `real_esrgan_v2.tflite` 2x net super-res pass generated distinct 12.5MP output `FD19E5E77A6F1B2AE20E7AD17BB122057A0875E8A28F96B4A6FBB16FFD14ECB1`, seam/color check PASS, video recording start/stop verified on main thread without Toast crashes, 125 unit tests passing); **Last physical-device (Redmi) check**: VERIFIED on device (2026-11-24) for Step M1 12.5MP output `43E3124055541005C9D64FBACBEB4BFDC47C7A1C745A841063B2AF73444E84A0`, seam/color check PASS, real fallback logcat timestamp `11-24 01:23:04.888` (3.97s duration), and dumpsys battery reset (58%).
 
 ## 1. Boot order for a new AI
 1. `GEMINI.md` (coding-agent rules & Section 10 Run/Device policy)

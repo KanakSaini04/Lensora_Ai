@@ -67,7 +67,10 @@ class ModelManager(
         }
 
         val otherModels = modelsDir.listFiles { _, name ->
-            name.endsWith(".tflite", ignoreCase = true) && !name.contains("mobilenet", ignoreCase = true)
+            name.endsWith(".tflite", ignoreCase = true) &&
+            !name.contains("mobilenet", ignoreCase = true) &&
+            !name.contains("scene_classifier", ignoreCase = true) &&
+            !name.contains("lama", ignoreCase = true)
         }
         return otherModels?.firstOrNull { ModelFileGuard.isUsable(it) }
     }

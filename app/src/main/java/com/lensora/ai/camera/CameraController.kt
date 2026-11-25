@@ -28,6 +28,7 @@ import android.provider.MediaStore
 import android.util.Log
 import android.util.Range
 import android.view.Surface
+import androidx.core.content.ContextCompat
 import androidx.work.Data
 import androidx.work.OneTimeWorkRequestBuilder
 import androidx.work.WorkManager
@@ -307,7 +308,7 @@ class CameraController(private val context: Context) {
             val sessionConfig = SessionConfiguration(
                 SessionConfiguration.SESSION_REGULAR,
                 outputs,
-                Executors.newSingleThreadExecutor(),
+                ContextCompat.getMainExecutor(context),
                 object : CameraCaptureSession.StateCallback() {
                     override fun onConfigured(session: CameraCaptureSession) {
                         captureSession = session
@@ -828,7 +829,7 @@ class CameraController(private val context: Context) {
             val sessionConfig = SessionConfiguration(
                 SessionConfiguration.SESSION_REGULAR,
                 outputs,
-                Executors.newSingleThreadExecutor(),
+                ContextCompat.getMainExecutor(context),
                 object : CameraCaptureSession.StateCallback() {
                     override fun onConfigured(session: CameraCaptureSession) {
                         captureSession = session
