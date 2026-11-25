@@ -183,6 +183,9 @@ fun QuickViewScreen(
                     )
                 }
                 Spacer(modifier = Modifier.width(8.dp))
+                val currentItem = mediaItems.firstOrNull { it.uri.toString() == decodedInitialUri } ?: mediaItems.firstOrNull()
+                val isAiUpscaled = currentItem?.displayName?.startsWith("LENSORA_AI_PROCESSED_", ignoreCase = true) == true
+
                 val titleText = if (mediaItems.isNotEmpty()) {
                     stringResource(R.string.quick_view_title_count, mediaItems.size)
                 } else {
@@ -194,6 +197,25 @@ fun QuickViewScreen(
                     fontWeight = FontWeight.Bold,
                     fontSize = 18.sp,
                 )
+
+                if (isAiUpscaled) {
+                    Spacer(modifier = Modifier.width(12.dp))
+                    Box(
+                        modifier = Modifier
+                            .background(
+                                color = androidx.compose.ui.graphics.Color(0xFF00E5FF),
+                                shape = androidx.compose.foundation.shape.RoundedCornerShape(12.dp),
+                            )
+                            .padding(horizontal = 8.dp, vertical = 4.dp),
+                    ) {
+                        Text(
+                            text = "✨ ULTRA-RES (2x Scale)",
+                            color = PitchBlackBackground,
+                            fontSize = 10.sp,
+                            fontWeight = FontWeight.Bold,
+                        )
+                    }
+                }
             }
         }
     }
