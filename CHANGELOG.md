@@ -1,12 +1,14 @@
-## [Unreleased] - Step M1: Real TFLite AI Models Integration (2026-11-23)
+## [Unreleased] - Step M1: Real TFLite AI Models Integration (2026-11-24)
 
 ### Added & Verified
-- **Real TFLite Model Integration (Step M1)**:
-  - Integrated `real_esrgan_v2.tflite` (4.88 MB) and `scene_classifier.tflite` (22.78 MB) real downloaded models into production AI pipelines.
-  - Verified 4x tile super-resolution pipeline pass upscaling 1024x768 to 2048x1536 output without seams or color shifts in 9264ms on `emulator-5554`.
-  - Verified live 500ms preview NCHW Places365 scene classification loop (`source = LabelSource.TFLITE_MODEL`) logging top-5 predictions.
+- **Real TFLite Model Integration & Evidence Correction (Step M1)**:
+  - Integrated `real_esrgan_v2.tflite` (4.88 MB) and `scene_classifier.tflite` (22.78 MB) real models into production AI pipelines.
+  - Verified 2x net super-resolution pass producing distinct 12.5MP outputs on `emulator-5554` (`FD19E5E77A6F1B2AE20E7AD17BB122057A0875E8A28F96B4A6FBB16FFD14ECB1`, 310,902 bytes, `LENSORA_AI_PROCESSED_1795531037191.jpg`) and Redmi Note 13 Pro 5G (`43E3124055541005C9D64FBACBEB4BFDC47C7A1C745A841063B2AF73444E84A0`, 920,092 bytes, `LENSORA_AI_PROCESSED_1795461414182.jpg`) without seams or color shifts (Python seam check PASS on both).
+  - Fixed video recording background-thread Toast crash by configuring `SessionConfiguration` state callbacks with `ContextCompat.getMainExecutor(context)` and wrapping UI callbacks on `mainHandler`. Verified video recording start & stop on `emulator-5554` (0 logcat errors).
+  - Researched TFLite warm-up logcat error: confirmed `cpuInterpreter.run(testInput, cpuOutput)` runs cleanly in normal execution, and `Cannot copy to a TensorFlowLite tensor (serving_default_args_0)` occurs strictly when `real_esrgan_v2.tflite` is replaced by a 0-byte/corrupt file during missing-model fallback testing.
+  - Standardized memory metrics across all documentation files to decimal MB ($1\text{ MB} = 1,000,000\text{ bytes} = 1,000\text{ kB}$).
   - Added `RealModelContractTest.kt` unit test verifying tensor contract shapes (`ModelContractStatus.Valid`). All 125 JVM unit tests passing cleanly.
-  - Merged PR #117 (`856f892`) into `dev`.
+  - Merged PR #118, #119, #121 into `dev`.
 
 ## [Unreleased] - Step Z14f: Studio PIL Script Measurements, Full Hashes & Owner Redmi Test (2026-11-23)
 
