@@ -263,7 +263,7 @@ Device results in these tables have not been confirmed by the owner.
   - Corrected `README.md` and `PROJECT_HANDOFF.md` hardware acceleration claims to specify that LaMa object inpainting uses `GpuDelegate()` while Real-ESRGAN v2 uses multi-threaded CPU (`setNumThreads(4)` with XNNPACK) with GPU delegate validation fallback.
 - **Unit Tests**: 83 passed (`GoogleAuthManagerTest`, `RealEsrganEngineTest`, `CameraControllerModeTest`, `SceneLabelMapTest`, `NchwConverterTest`, `ModelContractCheckerTest`).
 - **Known Issues**:
-  - Video recording Toast crash: `"Can't toast on a thread that has not called Looper.prepare()"` at `CameraScreen.kt:719` triggered from `CameraController.kt:798` (`startVideoRecording` `onConfigured` callback on background thread); pending resolution in a future step.
+  - Video recording Toast crash: **RESOLVED in Step M1**. Dispatched all UI callbacks via `ContextCompat.getMainExecutor(context)` and `mainHandler` on the Main Thread. Tested on `emulator-5554` with 0 runtime errors.
 
 | # | Layer | Attack | Expected | Actual | Environment | Verdict |
 |---|---|---|---|---|---|---|
