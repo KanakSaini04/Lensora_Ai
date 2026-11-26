@@ -241,8 +241,8 @@ Lensora_Ai/
 | **✨ AI AUTO** | `WORKING (Step 62c)` | `CameraScreen.kt` / `SceneClassifier.kt` | 2 FPS / 500 ms scene classification loop. |
 | **📷 PHOTO** | `WORKING (Step 37)` | `CameraController.kt:takePicture()` | 12.5MP capture with atomic `.tmp` journal. |
 | **👤 PORTRAIT** | `WORKING (Step 37)` | `CameraController.kt:setCameraMode()` | EV `+0.3` boost + continuous auto-focus. |
-| **📹 VIDEO** | `WORKING (Step 60)` | `CameraController.kt:startRecording()` | `TEMPLATE_RECORD` session with MediaRecorder. |
-| **🎬 CINEMATIC** | `WORKING (Step 37)` | `CameraScreen.kt` | 2.39:1 letterboxing + safe 24fps target range. |
+| **📹 VIDEO** | `ALLOWED (advertised, not device-tested)` | `CameraController.kt:startRecording()` | `TEMPLATE_RECORD` session with MediaRecorder surface binding + HAL-advertised AE FPS ranges (`[7, 30]`, `[14, 30]`, `[30, 30]`). |
+| **🎬 CINEMATIC** | `ALLOWED (advertised, not device-tested)` | `CameraScreen.kt` | 2.39:1 letterboxing + HAL-advertised AE FPS ranges (`[12, 24]`, `[24, 24]`). |
 | **🎛️ PRO** | `WORKING (Step 37)` | `CameraController.kt:setManualExposure()` | ISO 100–3200, Shutter 1/1000s–1s, Zebras, Peaking. |
 | **✨ ASTRO** | `IMPLEMENTED - NOT VERIFIED` | `CameraController.kt` | Infinity focus lock (`0.0f`) + 30s exposure. |
 | **🔍 PRO MACRO** | `IMPLEMENTED - NOT VERIFIED` | `CameraController.kt` | Minimum focus distance lock. |
@@ -369,6 +369,7 @@ Lensora_Ai/
 ## 16. Current status
 - **Working (with evidence)**: Camera2 preview/capture engine, Obsidian Royal 5-tab UI, Mode carousel auto-scroll, 6 core active camera modes, LaMa GPU object eraser, ProjectImporter with 2GB Storage Guard & MimeTypeMap whitelist, ProjectRepository orphan sweep, `prepare_claude_review.ps1` tooling, 21/21 passed unit tests across 6 test classes, 0 runtime crashes.
 - **Implemented, NOT verified**: Astrophotography, Pro Macro, High-Res upscale, Night Vision noise reduction, Document scan PDF export, Google Drive OAuth2 upload on physical device.
+- **Advertised-only modes (NOT VERIFIED on device)**: PORTRAIT, VIDEO, CINEMATIC, BEAUTY, FOOD, SLOW-MOTION, NIGHT VISION, ASTRO, DEEP SKY, PANORAMA.
 - **Broken / blocked**: None.
 
 ## 17. Known issues and risks (by severity)
