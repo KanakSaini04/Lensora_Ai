@@ -1,0 +1,246 @@
+{
+  "timestampIso": "2026-11-25T17:20:30Z",
+  "deviceInfo": {
+    "manufacturer": "Google",
+    "model": "sdk_gphone64_x86_64",
+    "brand": "google",
+    "device": "emu64xa",
+    "hardware": "ranchu",
+    "board": "goldfish_x86_64",
+    "fingerprint": "google\/sdk_gphone64_x86_64\/emu64xa:16\/BE4B.251210.005\/14574095:user\/release-keys",
+    "androidRelease": "16",
+    "sdkInt": 36
+  },
+  "concurrentCameras": [
+    [
+      "1"
+    ]
+  ],
+  "cameras": [
+    {
+      "cameraId": "1",
+      "lensFacing": "FRONT",
+      "hardwareLevel": "FULL",
+      "focalLengthsMm": [
+        4.38
+      ],
+      "aperturesF": [
+        1.73
+      ],
+      "sensorPhysicalSizeMm": "5.6448x4.2336",
+      "pixelArraySize": "1920x1440",
+      "minFocusDistanceDiopters": 10.204082,
+      "hyperfocalDistanceMeters": "0.10",
+      "capabilities": [
+        "BACKWARD_COMPATIBLE",
+        "READ_SENSOR_SETTINGS",
+        "MANUAL_SENSOR",
+        "BURST_CAPTURE",
+        "MANUAL_POST_PROCESSING",
+        "LOGICAL_MULTI_CAMERA",
+        "PRIVATE_REPROCESSING",
+        "CAPABILITY_16",
+        "YUV_REPROCESSING",
+        "RAW_SENSOR",
+        "CAPABILITY_17",
+        "CAPABILITY_18",
+        "CAPABILITY_19",
+        "CAPABILITY_20"
+      ],
+      "outputResolutionsJpeg": [
+        "1920x1440",
+        "1920x1080",
+        "1920x960",
+        "1600x1200",
+        "1440x1080",
+        "1280x960",
+        "1280x720",
+        "1024x768",
+        "800x600",
+        "720x480",
+        "640x480",
+        "640x360",
+        "352x288",
+        "320x240"
+      ],
+      "outputResolutionsYuv": [
+        "1920x1440",
+        "1920x1080",
+        "1920x960",
+        "1600x1200",
+        "1440x1080",
+        "1280x960",
+        "1280x720",
+        "1024x768",
+        "800x600",
+        "720x480",
+        "640x480",
+        "640x360",
+        "352x288",
+        "320x240",
+        "176x144"
+      ],
+      "outputResolutionsRaw": [
+        "1920x1440"
+      ],
+      "maxResolutionStreamJpeg": [
+        "6048x4024"
+      ],
+      "aeFpsRanges": [
+        "[15, 15]",
+        "[7, 30]",
+        "[15, 30]",
+        "[30, 30]"
+      ],
+      "isoSensitivityRange": "100 - 1000",
+      "exposureTimeRangeMs": "0.014 ms - 10319.0 ms",
+      "exposureCompensation": "-24..24 (step 1\/6)",
+      "faceDetectModes": [
+        "OFF",
+        "SIMPLE",
+        "FULL"
+      ],
+      "sceneModes": [
+        "DISABLED",
+        "SCENE_1",
+        "ACTION",
+        "PORTRAIT",
+        "LANDSCAPE",
+        "NIGHT",
+        "SCENE_6",
+        "THEATRE",
+        "BEACH",
+        "SNOW",
+        "SUNSET",
+        "FIREWORKS",
+        "SPORTS",
+        "PARTY",
+        "CANDLELIGHT",
+        "HDR"
+      ],
+      "effectModes": [
+        "OFF"
+      ],
+      "awbModes": [
+        "AUTO",
+        "INCANDESCENT",
+        "FLUORESCENT",
+        "WARM_FLUORESCENT",
+        "DAYLIGHT",
+        "CLOUDY_DAYLIGHT",
+        "TWILIGHT",
+        "SHADE",
+        "OFF"
+      ],
+      "opticalStabilizationModes": [
+        "OFF"
+      ],
+      "videoStabilizationModes": [
+        "OFF"
+      ],
+      "extensionsSupported": [],
+      "logicalMultiCamera": {
+        "isLogicalMultiCamera": true,
+        "physicalSubCameraIds": [
+          "4",
+          "5"
+        ],
+        "subCameraOpenTestResults": [
+          {
+            "subCameraId": "4",
+            "accessibilityStatus": "BLOCKED_BY_HAL",
+            "errorMessage": "Sub-camera disconnected by HAL during open test"
+          },
+          {
+            "subCameraId": "5",
+            "accessibilityStatus": "BLOCKED_BY_HAL",
+            "errorMessage": "CAMERA_DISCONNECTED (2): validateConnectLocked:1784: No camera device with ID \"5\" available"
+          }
+        ]
+      }
+    },
+    {
+      "cameraId": "10",
+      "lensFacing": "BACK",
+      "hardwareLevel": "LIMITED",
+      "focalLengthsMm": [
+        1
+      ],
+      "aperturesF": [
+        1.4,
+        2,
+        2.8,
+        4,
+        5.6,
+        8,
+        11,
+        16
+      ],
+      "sensorPhysicalSizeMm": "2.56x1.92",
+      "pixelArraySize": "1280x960",
+      "minFocusDistanceDiopters": 0.1,
+      "hyperfocalDistanceMeters": "10.00",
+      "capabilities": [
+        "BACKWARD_COMPATIBLE",
+        "RAW_SENSOR",
+        "READ_SENSOR_SETTINGS"
+      ],
+      "outputResolutionsJpeg": [
+        "320x240",
+        "352x288",
+        "640x480",
+        "1280x720",
+        "1280x960"
+      ],
+      "outputResolutionsYuv": [
+        "320x240",
+        "352x288",
+        "640x480",
+        "1280x720",
+        "1280x960"
+      ],
+      "outputResolutionsRaw": [
+        "320x240",
+        "352x288",
+        "640x480",
+        "1280x720",
+        "1280x960"
+      ],
+      "maxResolutionStreamJpeg": [],
+      "aeFpsRanges": [
+        "[2, 15]",
+        "[15, 15]",
+        "[2, 30]",
+        "[30, 30]"
+      ],
+      "isoSensitivityRange": "25 - 1600",
+      "exposureTimeRangeMs": "0.050 ms - 500.0 ms",
+      "exposureCompensation": "-6..6 (step 1\/2)",
+      "faceDetectModes": [
+        "OFF"
+      ],
+      "sceneModes": [
+        "DISABLED"
+      ],
+      "effectModes": [
+        "OFF"
+      ],
+      "awbModes": [
+        "OFF",
+        "AUTO"
+      ],
+      "opticalStabilizationModes": [
+        "OFF"
+      ],
+      "videoStabilizationModes": [
+        "OFF"
+      ],
+      "extensionsSupported": [],
+      "logicalMultiCamera": {
+        "isLogicalMultiCamera": false,
+        "physicalSubCameraIds": [],
+        "subCameraOpenTestResults": []
+      }
+    }
+  ]
+}
