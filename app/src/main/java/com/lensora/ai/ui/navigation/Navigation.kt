@@ -172,6 +172,9 @@ fun AppNavigation(
                             restoreState = true
                         }
                     },
+                    onOpenSettings = {
+                        navController.navigate(NavScreen.Settings.route)
+                    },
                 )
             }
             composable(NavScreen.Studio.route) { StudioScreen() }

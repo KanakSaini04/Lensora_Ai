@@ -1,0 +1,300 @@
+{
+  "timestampIso": "2026-11-26T14:33:28Z",
+  "deviceInfo": {
+    "manufacturer": "Xiaomi",
+    "model": "2312DRA50I",
+    "brand": "Redmi",
+    "device": "garnet",
+    "hardware": "qcom",
+    "board": "garnet",
+    "fingerprint": "Redmi\/garnet_in\/garnet:16\/BP2A.250605.031.A3\/OS3.0.301.0.WNRINXM:user\/release-keys",
+    "androidRelease": "16",
+    "sdkInt": 36
+  },
+  "concurrentCameras": [],
+  "cameras": [
+    {
+      "cameraId": "0",
+      "lensFacing": "BACK",
+      "hardwareLevel": "LEVEL_3",
+      "focalLengthsMm": [
+        6.19
+      ],
+      "aperturesF": [
+        1.65
+      ],
+      "sensorPhysicalSizeMm": "9.1392x6.8544",
+      "pixelArraySize": "4080x3060",
+      "minFocusDistanceDiopters": 10,
+      "hyperfocalDistanceMeters": "0.10",
+      "capabilities": [
+        "BACKWARD_COMPATIBLE",
+        "CONSTRAINED_HIGH_SPEED_VIDEO",
+        "RAW_SENSOR",
+        "YUV_REPROCESSING",
+        "PRIVATE_REPROCESSING",
+        "READ_SENSOR_SETTINGS",
+        "MANUAL_SENSOR",
+        "BURST_CAPTURE",
+        "MANUAL_POST_PROCESSING"
+      ],
+      "outputResolutionsJpeg": [
+        "4080x3060",
+        "3060x3060",
+        "3840x2160",
+        "4080x1832",
+        "2304x1296",
+        "1728x1728",
+        "1920x1440",
+        "2304x1040",
+        "1920x1080",
+        "1440x1080",
+        "1280x960",
+        "1280x720",
+        "960x720",
+        "800x600",
+        "864x480",
+        "720x480",
+        "640x480",
+        "352x288",
+        "320x240",
+        "176x144"
+      ],
+      "outputResolutionsYuv": [
+        "4080x3060",
+        "3060x3060",
+        "3840x2160",
+        "4080x1832",
+        "2304x1296",
+        "1728x1728",
+        "1920x1440",
+        "2304x1040",
+        "1920x1080",
+        "1440x1080",
+        "1280x960",
+        "1280x720",
+        "960x720",
+        "800x600",
+        "864x480",
+        "720x480",
+        "640x480",
+        "352x288",
+        "320x240",
+        "176x144"
+      ],
+      "outputResolutionsRaw": [
+        "4080x3060"
+      ],
+      "maxResolutionStreamJpeg": [],
+      "aeFpsRanges": [
+        "[1, 5]",
+        "[5, 5]",
+        "[10, 10]",
+        "[14, 14]",
+        "[15, 15]",
+        "[12, 24]",
+        "[24, 24]",
+        "[7, 30]",
+        "[14, 30]",
+        "[30, 30]"
+      ],
+      "isoSensitivityRange": "50 - 3200",
+      "exposureTimeRangeMs": "0.083 ms - 1000.0 ms",
+      "exposureCompensation": "-24..24 (step 1\/6)",
+      "faceDetectModes": [
+        "OFF",
+        "SIMPLE"
+      ],
+      "sceneModes": [
+        "DISABLED",
+        "SCENE_1",
+        "ACTION",
+        "PORTRAIT",
+        "LANDSCAPE",
+        "NIGHT",
+        "SCENE_6",
+        "THEATRE",
+        "BEACH",
+        "SNOW",
+        "SUNSET",
+        "FIREWORKS",
+        "SPORTS",
+        "PARTY",
+        "CANDLELIGHT",
+        "HDR"
+      ],
+      "effectModes": [
+        "OFF",
+        "MONO",
+        "NEGATIVE",
+        "SOLARIZE",
+        "SEPIA",
+        "POSTERIZE",
+        "AQUA",
+        "BLACKBOARD",
+        "WHITEBOARD"
+      ],
+      "awbModes": [
+        "AUTO",
+        "INCANDESCENT",
+        "FLUORESCENT",
+        "WARM_FLUORESCENT",
+        "DAYLIGHT",
+        "CLOUDY_DAYLIGHT",
+        "TWILIGHT",
+        "SHADE",
+        "OFF"
+      ],
+      "opticalStabilizationModes": [
+        "OFF",
+        "ON"
+      ],
+      "videoStabilizationModes": [
+        "OFF",
+        "ON"
+      ],
+      "extensionsSupported": [],
+      "logicalMultiCamera": {
+        "isLogicalMultiCamera": false,
+        "physicalSubCameraIds": [],
+        "subCameraOpenTestResults": []
+      }
+    },
+    {
+      "cameraId": "1",
+      "lensFacing": "FRONT",
+      "hardwareLevel": "LEVEL_3",
+      "focalLengthsMm": [
+        3.27
+      ],
+      "aperturesF": [
+        2.45
+      ],
+      "sensorPhysicalSizeMm": "4.644864x3.483648",
+      "pixelArraySize": "2304x1728",
+      "minFocusDistanceDiopters": 0,
+      "hyperfocalDistanceMeters": "Infinity",
+      "capabilities": [
+        "BACKWARD_COMPATIBLE",
+        "CONSTRAINED_HIGH_SPEED_VIDEO",
+        "RAW_SENSOR",
+        "YUV_REPROCESSING",
+        "PRIVATE_REPROCESSING",
+        "READ_SENSOR_SETTINGS",
+        "MANUAL_SENSOR",
+        "BURST_CAPTURE",
+        "MANUAL_POST_PROCESSING"
+      ],
+      "outputResolutionsJpeg": [
+        "2304x1728",
+        "2304x1296",
+        "1728x1728",
+        "1920x1440",
+        "2304x1040",
+        "1920x1080",
+        "1440x1080",
+        "1280x960",
+        "1280x720",
+        "960x720",
+        "800x600",
+        "864x480",
+        "720x480",
+        "640x480",
+        "352x288",
+        "320x240",
+        "176x144"
+      ],
+      "outputResolutionsYuv": [
+        "2304x1728",
+        "2304x1296",
+        "1728x1728",
+        "1920x1440",
+        "2304x1040",
+        "1920x1080",
+        "1440x1080",
+        "1280x960",
+        "1280x720",
+        "960x720",
+        "800x600",
+        "864x480",
+        "720x480",
+        "640x480",
+        "352x288",
+        "320x240",
+        "176x144"
+      ],
+      "outputResolutionsRaw": [
+        "2304x1728"
+      ],
+      "maxResolutionStreamJpeg": [],
+      "aeFpsRanges": [
+        "[10, 10]",
+        "[15, 15]",
+        "[12, 24]",
+        "[24, 24]",
+        "[10, 30]",
+        "[30, 30]"
+      ],
+      "isoSensitivityRange": "50 - 801",
+      "exposureTimeRangeMs": "0.072 ms - 294.9 ms",
+      "exposureCompensation": "-24..24 (step 1\/6)",
+      "faceDetectModes": [
+        "OFF",
+        "SIMPLE"
+      ],
+      "sceneModes": [
+        "DISABLED",
+        "SCENE_1",
+        "ACTION",
+        "PORTRAIT",
+        "LANDSCAPE",
+        "NIGHT",
+        "SCENE_6",
+        "THEATRE",
+        "BEACH",
+        "SNOW",
+        "SUNSET",
+        "FIREWORKS",
+        "SPORTS",
+        "PARTY",
+        "CANDLELIGHT",
+        "HDR"
+      ],
+      "effectModes": [
+        "OFF",
+        "MONO",
+        "NEGATIVE",
+        "SOLARIZE",
+        "SEPIA",
+        "POSTERIZE",
+        "AQUA",
+        "BLACKBOARD",
+        "WHITEBOARD"
+      ],
+      "awbModes": [
+        "AUTO",
+        "INCANDESCENT",
+        "FLUORESCENT",
+        "WARM_FLUORESCENT",
+        "DAYLIGHT",
+        "CLOUDY_DAYLIGHT",
+        "TWILIGHT",
+        "SHADE",
+        "OFF"
+      ],
+      "opticalStabilizationModes": [
+        "OFF"
+      ],
+      "videoStabilizationModes": [
+        "OFF",
+        "ON"
+      ],
+      "extensionsSupported": [],
+      "logicalMultiCamera": {
+        "isLogicalMultiCamera": false,
+        "physicalSubCameraIds": [],
+        "subCameraOpenTestResults": []
+      }
+    }
+  ]
+}
