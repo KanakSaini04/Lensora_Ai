@@ -93,8 +93,8 @@ All statuses derived directly from real Redmi Note 13 Pro 5G (`2312DRA50I`, Andr
 ## Git Information
 - **Branch**: `dev`
 - **PR Link**: PR #126 (`https://github.com/KanakSaini04/Lensora_Ai/pull/126`)
-- **Merge Commit**: Pending PR #126
-- **Rollback Command**: `git revert -m 1 <merge_commit_hash>`
+- **Merge Commit**: `04ffe59`
+- **Rollback Command**: `git revert -m 1 04ffe59`
 
 ---
 
