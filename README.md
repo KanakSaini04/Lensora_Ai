@@ -98,8 +98,8 @@ The UI is built with the **Obsidian Royal** color palette:
 | **Core Modes** | **✨ AI AUTO** | `WORKING (Step 62c)` | Continuous auto-focus, live AI scene detection (2 FPS / 500 ms loop). |
 | | **📷 PHOTO** | `WORKING (Step 37)` | Standard 12.5MP still capture with atomic MediaStore `.tmp` journal. |
 | | **👤 PORTRAIT** | `WORKING (Step 37)` | Universal skin tone illumination EV `+0.3` boost + continuous auto-focus. |
-| | **📹 VIDEO** | `WORKING (Step 60)` | `TEMPLATE_RECORD` session with MediaRecorder surface binding. |
-| | **🎬 CINEMATIC** | `WORKING (Step 37)` | 2.39:1 pure black letterboxing + validated safe FPS target range (`Range(24, 24)` / `Range(15, 30)`). |
+| | **📹 VIDEO** | `ALLOWED (advertised, not device-tested)` | `TEMPLATE_RECORD` session with MediaRecorder surface binding + HAL-advertised AE FPS ranges (`[7, 30]`, `[14, 30]`, `[30, 30]`). |
+| | **🎬 CINEMATIC** | `ALLOWED (advertised, not device-tested)` | 2.39:1 pure black letterboxing + HAL-advertised AE FPS ranges (`[12, 24]`, `[24, 24]`). |
 | | **🎛️ PRO** | `WORKING (Step 37)` | Manual exposure controls (ISO 100–3200, Shutter 1/1000s–1s), RAW DNG toggle, Zebras, Focus Peaking. |
 | **Pro Tools** | **✨ ASTRO** | `IMPLEMENTED - NOT VERIFIED` | Infinity focus lock (`0.0f`) + 30s long exposure. |
 | | **🔍 PRO MACRO** | `IMPLEMENTED - NOT VERIFIED` | Minimum focus distance lock (`LENS_INFO_MINIMUM_FOCUS_DISTANCE`). |

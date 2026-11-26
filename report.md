@@ -974,7 +974,9 @@ The **Probe Lab** audits camera hardware capabilities at runtime without opening
 | :--- | :--- | :---: | :---: | :--- |
 | **P1** | 200MP Full-Res Sensor | `FAIL` | 113 ms | Max resolution exposed via standard Camera2 stream map is **12.5 MP (4080x3060)**. The 200MP sensor mode is binned by default to 12.5MP and full-res raw streams are unexposed by standard Camera2 HAL characteristics. Enforces 12.5MP capture + Real-ESRGAN AI upscale rule. |
 | **P2** | RAW Sensor Support | `PASS` | 6 ms | `REQUEST_AVAILABLE_CAPABILITIES_RAW` (`RAW_SENSOR`) is fully supported on Camera ID 0. |
-| **P3** | 24fps Cinema Target Rate | `PASS` | 5 ms | Target 24fps cinema capture is supported. Matching AE ranges: `[12, 24]`, `[24, 24]`, `[7, 30]`, `[14, 30]`. All exposed ranges: `[1, 5]`, `[5, 5]`, `[10, 10]`, `[14, 14]`, `[15, 15]`, `[12, 24]`, `[24, 24]`, `[7, 30]`, `[14, 30]`, `[30, 30]`. |
+| **P3** | 24fps Cinema Target Rate | `PASS` | 5 ms | Target 24fps cinema & video capture HAL-advertised (advertised, not device-tested). Cinematic AE FPS ranges: `[12, 24]`, `[24, 24]`; Video AE FPS ranges: `[7, 30]`, `[14, 30]`, `[30, 30]`. All exposed ranges: `[1, 5]`, `[5, 5]`, `[10, 10]`, `[14, 14]`, `[15, 15]`, `[12, 24]`, `[24, 24]`, `[7, 30]`, `[14, 30]`, `[30, 30]`. |
+
+> VIDEO and CINEMATIC: advertised only (advertised, not device-tested), NOT VERIFIED on device.
 
 ---
 
@@ -984,3 +986,12 @@ The **Probe Lab** audits camera hardware capabilities at runtime without opening
 - **Build Status**: `./gradlew assembleDebug` - **100% SUCCESS**.
 - **Logcat Crash Audit**: `adb logcat -d -s AndroidRuntime:E` - **0 Runtime Crashes (`AndroidRuntime:E`)**.
 - **Final Verdict**: **APPROVED FOR PHYSICAL DEPLOYMENT & PRODUCTION** 🎉.
+
+## Step 31b2 Break-It Table (5 Attacks)
+| # | Layer | Attack | Expected Result | Actual Result | Verdict |
+|---|---|---|---|---|---|
+| 1 | Docs | `git grep -n "NOT VERIFIED: None"; git grep -n "23 modes"` | 0 matches | 0 matches (exit code 1) | GOOD |
+| 2 | Docs | `git grep -c -i "device-tested" README.md report.md PROJECT_HANDOFF.md reply.md` | Hits in all 4 files | Hits in all 4 (README:2, report:2, HANDOFF:2, reply:3) | GOOD |
+| 3 | Git | `git diff --stat dev...HEAD` | .md files only | Only README.md, report.md, PROJECT_HANDOFF.md, reply.md modified | GOOD |
+| 4 | Probe | Verify VIDEO and CINEMATIC AE ranges match camera_probe_report.json | Cinematic: [12, 24], [24, 24]; Video: [7, 30], [14, 30], [30, 30] | Exact match with docs/probe/camera_probe_report.json | GOOD |
+| 5 | Encoding | UTF-8 no BOM check on edited .md files | Clean UTF-8 without BOM | Verified no byte order mark (35 32 / 35 32 / 35 32 / 80 82) | GOOD |
