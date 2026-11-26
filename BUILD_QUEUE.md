@@ -20,7 +20,8 @@
 | 2.2 | ModelContractChecker shape & dtype validator | None | DONE | 0510392 | 125 tests pass, contract checks pass for all real models | Expose incompatible state safely |
 | 2.3 | Tiled pipeline scaling & memory management | None | DONE | 100fb02 | 125 tests pass, tile scaling & 12.5MP grid math verified | Real-ESRGAN, Dehaze, LaMa tile recycle & unit tests |
 | 2.4 | Model supply checklist & gap review | None | DONE | 148eace | MODEL_SUPPLY_PLAN.md synced, exact models verified | Verify MODEL_SUPPLY_PLAN.md |
-| 3.1 | Camera Capability Probe & Hardware Audit | None | DONE | 8469b48 | 126 tests pass, camera_probe_report.json pulled to docs/probe/, 27-mode hardware audit table in reply.md | Camera2 HAL audit, logical sub-camera open test, 27-mode JSON field mapping |
+| 3.0 | Camera Capability Probe & Hardware Audit | None | DONE | 2e7138c | 126 tests pass (as recorded in PR #126), camera_probe_report.json pulled to docs/probe/, 27-mode hardware audit table in reply.md | Camera2 HAL audit, 27-mode JSON field mapping. Merge 04ffe59 (PR #126), docs sync ad47837. Evidence being corrected in Step 31b |
+| 3.1 | BEAUTY camera mode verification | None | DONE | e9b7d4b | 58 tests pass, HAL face detect check & safe fallback, NOT VERIFIED on device | Camera2 HAL check & graceful fallback |
 | 3.2 | WATERMARK camera mode verification | None | DONE | 5c11c92 | 58 tests pass, watermark stamp feedback active, NOT VERIFIED on device | Camera2 HAL check & graceful fallback |
 | 3.3 | FOOD camera mode verification | None | DONE | cc04e4e | 58 tests pass, food scene mode check & safe fallback, NOT VERIFIED on device | Camera2 HAL check & graceful fallback |
 | 3.4 | DOCUMENT camera mode verification | None | DONE | 681533a | 58 tests pass, edge mode high quality & text contrast profile active, NOT VERIFIED on device | Camera2 HAL check & graceful fallback |
@@ -36,7 +37,7 @@
 | 3.14 | SCAN mode (PDF creation via PdfDocument) | None | DONE | 681533a | 58 tests pass, android.graphics.pdf.PdfDocument & ZXing active | android.graphics.pdf.PdfDocument |
 | 3.15 | PANORAMA camera mode verification | None | DONE | 681533a | 58 tests pass, sweep guide active, NOT VERIFIED on device | Dynamic sweep guide |
 | 3.16 | DUAL-VIDEO camera mode verification | None | DONE | fa74000 | 58 tests pass, concurrent camera check & PIP fallback active, NOT VERIFIED on device | Concurrent camera check |
-| 3.17 | HIGH-RES camera mode verification | None | DONE | ac45f02 | 125 tests pass, non-blocking background 2x AI super-res pass with Channel job queue, progress notification, cancel action, tap-to-open intent, and Gallery ULTRA-RES badging | Real-ESRGAN v2 2x net super-resolution active |
+| 3.17 | HIGH-RES camera mode verification | None | DONE | b7a6a73 | 125 tests pass (count as recorded in b7a6a73, 2026-11-25), non-blocking background 2x AI super-res pass with Channel job queue, progress notification, cancel action, tap-to-open intent, and Gallery ULTRA-RES badging | Real-ESRGAN v2 2x net super-resolution active. Original fallback work 724e974 (2026-11-19, 58 tests, was BLOCKED(MODEL)); row text last edited in place by Step M1 |
 | 4.1 | Per-clip speed control in UI | None | DONE | pending | 59 tests pass, speed chips UI & ExoPlayer playback speed sync active | 0.25x - 4.0x speed presets active in UI & Media3 export pipeline |
 | 4.2 | Project Templates Loader | None | DONE | pending | 60 tests pass, TemplateLoader & templates UI row active | 3 JSON templates in assets, photo picker slot auto-fill |
 | 4.3 | Vibes look presets applied on export | None | DONE | pending | 61 tests pass, Media3 RgbFilter & RgbMatrix effects integrated | LEICA grayscale filter & ColorMatrix RgbMatrix shader pass |
