@@ -123,6 +123,10 @@ class SceneClassifier(
 
             if (interpreter != null) {
                 val active = interpreter!!
+                val provider = InterpreterTensorInfoProvider(active)
+                val modelFile = java.io.File(context.filesDir, "models/scene_classifier.tflite")
+                val contractStatus = ModelContractChecker.checkContract(modelFile, ModelContracts.SCENE_CLASSIFIER, provider)
+                Log.i(tag, "ModelContractChecker SceneClassifier Status: $contractStatus")
                 val inTensor = active.getInputTensor(0)
                 val outTensor = active.getOutputTensor(0)
                 Log.i(tag, "SceneClassifier TFLite model loaded successfully (${labels.size} Places365 classes). Tensor contract: Input shape=${inTensor.shape().contentToString()}, dtype=${inTensor.dataType()}; Output shape=${outTensor.shape().contentToString()}, dtype=${outTensor.dataType()}")

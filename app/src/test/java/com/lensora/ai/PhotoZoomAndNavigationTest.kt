@@ -448,4 +448,98 @@ class PhotoZoomAndNavigationTest {
         assertEquals("250%", ZoomTransformMath.formatZoomPercentage(2.5f))
         assertEquals("800%", ZoomTransformMath.formatZoomPercentage(8.0f))
     }
+
+    @Test
+    fun stepZ14_brushSizeAndZoomScale_strokeRadiusIsIndependentAndImmuneToStaleValues() {
+        val density = 2.75f // e.g., 440 dpi
+
+        // 1. Initial slider brush size 87dp at scale 1.0x
+        val initialBrushSizeDp = 87.0f
+        val localRadius87dp = ZoomTransformMath.calculateLocalCanvasBrushWidthPx(
+            screenDp = initialBrushSizeDp,
+            density = density,
+            scale = 1.0f,
+        ) / 2f
+        assertEquals((87.0f * density) / 2f, localRadius87dp, 0.001f) // 119.625 px
+
+        // Create stroke with 87dp radius
+        val stroke87dp = StudioStroke(
+            points = listOf(Offset(100f, 100f), Offset(200f, 200f)),
+            isEraseMode = true,
+            radiusCanvasPx = localRadius87dp,
+        )
+        assertEquals(localRadius87dp, stroke87dp.radiusCanvasPx, 0.001f)
+
+        // 2. Change slider brush size to 30dp (default)
+        val newBrushSizeDp = 30.0f
+        val localRadius30dp = ZoomTransformMath.calculateLocalCanvasBrushWidthPx(
+            screenDp = newBrushSizeDp,
+            density = density,
+            scale = 1.0f,
+        ) / 2f
+        assertEquals((30.0f * density) / 2f, localRadius30dp, 0.001f) // 41.25 px
+
+        // Verify existing stroke 87dp radius remains unchanged at 119.625 px (immune to stale slider state)
+        assertEquals((87.0f * density) / 2f, stroke87dp.radiusCanvasPx, 0.001f)
+
+        // 3. Create new stroke with 30dp radius
+        val stroke30dp = StudioStroke(
+            points = listOf(Offset(300f, 300f), Offset(400f, 400f)),
+            isEraseMode = true,
+            radiusCanvasPx = localRadius30dp,
+        )
+        assertEquals((30.0f * density) / 2f, stroke30dp.radiusCanvasPx, 0.001f)
+
+        // 4. Verify preview circle diameter matches saved stroke canvas width at scale 1.0x, 1.46x, 4.06x, 8.0x
+        val scaleList = listOf(1.0f, 1.46f, 4.06f, 8.0f)
+        for (scale in scaleList) {
+            val localWidthPx = ZoomTransformMath.calculateLocalCanvasBrushWidthPx(
+                screenDp = initialBrushSizeDp,
+                density = density,
+                scale = scale,
+            )
+            // Under graphicsLayer(scale = scale), the rendered screen width is localWidthPx * scale
+            val screenSpaceWidth = localWidthPx * scale
+            assertEquals(initialBrushSizeDp * density, screenSpaceWidth, 0.01f)
+        }
+    }
+
+    @Test
+    fun stepZ14c_portraitAndLandscapeCanvasToImagePixelMapping_mapsExactPixelValues() {
+        val containerSize = Size(1080f, 1264f) // Studio Photo Canvas Box bounds
+
+        // 1. Portrait Real Photo (1080 x 1920)
+        val portraitImageSize = Size(1080f, 1920f)
+        // Top-left corner of rendered image inside container
+        val portraitTopLeft = ZoomTransformMath.mapCanvasLocalPointToImagePixel(Offset(184.5f, 0f), containerSize, portraitImageSize)
+        assertEquals(0f, portraitTopLeft.x, 0.1f)
+        assertEquals(0f, portraitTopLeft.y, 0.1f)
+
+        // Center of rendered portrait image inside container
+        val portraitCenter = ZoomTransformMath.mapCanvasLocalPointToImagePixel(Offset(540f, 632f), containerSize, portraitImageSize)
+        assertEquals(540f, portraitCenter.x, 0.1f)
+        assertEquals(960f, portraitCenter.y, 0.1f)
+
+        // Bottom-right corner of rendered portrait image
+        val portraitBottomRight = ZoomTransformMath.mapCanvasLocalPointToImagePixel(Offset(895.5f, 1264f), containerSize, portraitImageSize)
+        assertEquals(1080f, portraitBottomRight.x, 0.1f)
+        assertEquals(1920f, portraitBottomRight.y, 0.1f)
+
+        // 2. Landscape Real Photo (1920 x 1080)
+        val landscapeImageSize = Size(1920f, 1080f)
+        // Top-left corner of rendered landscape image inside container
+        val landscapeTopLeft = ZoomTransformMath.mapCanvasLocalPointToImagePixel(Offset(0f, 328.25f), containerSize, landscapeImageSize)
+        assertEquals(0f, landscapeTopLeft.x, 0.1f)
+        assertEquals(0f, landscapeTopLeft.y, 0.1f)
+
+        // Center of rendered landscape image inside container
+        val landscapeCenter = ZoomTransformMath.mapCanvasLocalPointToImagePixel(Offset(540f, 632f), containerSize, landscapeImageSize)
+        assertEquals(960f, landscapeCenter.x, 0.1f)
+        assertEquals(540f, landscapeCenter.y, 0.1f)
+
+        // Bottom-right corner of rendered landscape image
+        val landscapeBottomRight = ZoomTransformMath.mapCanvasLocalPointToImagePixel(Offset(1080f, 935.75f), containerSize, landscapeImageSize)
+        assertEquals(1920f, landscapeBottomRight.x, 0.1f)
+        assertEquals(1080f, landscapeBottomRight.y, 0.1f)
+    }
 }

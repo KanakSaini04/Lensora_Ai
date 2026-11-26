@@ -28,6 +28,7 @@ import android.provider.MediaStore
 import android.util.Log
 import android.util.Range
 import android.view.Surface
+import androidx.core.content.ContextCompat
 import androidx.work.Data
 import androidx.work.OneTimeWorkRequestBuilder
 import androidx.work.WorkManager
@@ -307,7 +308,7 @@ class CameraController(private val context: Context) {
             val sessionConfig = SessionConfiguration(
                 SessionConfiguration.SESSION_REGULAR,
                 outputs,
-                Executors.newSingleThreadExecutor(),
+                ContextCompat.getMainExecutor(context),
                 object : CameraCaptureSession.StateCallback() {
                     override fun onConfigured(session: CameraCaptureSession) {
                         captureSession = session
@@ -596,7 +597,7 @@ class CameraController(private val context: Context) {
                     val mm = com.lensora.ai.ai.ModelManager(context)
                     val realEsrganFile = mm.getEnhancementModelFile()
                     if (realEsrganFile != null && com.lensora.ai.ai.ModelFileGuard.isUsable(realEsrganFile)) {
-                        onFeedback("🔍 High-Res: 12.5 MP Capture + Real-ESRGAN v2 Super-Res Active (50 MP Output)")
+                        onFeedback("🔍 High-Res: 12.5 MP Capture + Real-ESRGAN v2 2x Net Super-Res Active")
                     } else {
                         Log.i(tag, "Real-ESRGAN v2 model file missing. Safe 12.5 MP capture fallback.")
                         onFeedback("🔍 High-Res: 12.5 MP Capture Active (AI Super-Res Model Unavailable)")
@@ -828,7 +829,7 @@ class CameraController(private val context: Context) {
             val sessionConfig = SessionConfiguration(
                 SessionConfiguration.SESSION_REGULAR,
                 outputs,
-                Executors.newSingleThreadExecutor(),
+                ContextCompat.getMainExecutor(context),
                 object : CameraCaptureSession.StateCallback() {
                     override fun onConfigured(session: CameraCaptureSession) {
                         captureSession = session
@@ -887,10 +888,11 @@ class CameraController(private val context: Context) {
         onError: (String) -> Unit,
     ) {
         val availableBytes = checkAvailableStorageBytes()
-        val minRequiredBytes = 2L * 1024 * 1024 * 1024 // 2 GB Guard Limit
+        val isEmulator = Build.FINGERPRINT.contains("generic") || Build.MODEL.contains("sdk_gphone") || Build.HARDWARE.contains("goldfish") || Build.HARDWARE.contains("ranchu")
+        val minRequiredBytes = if (isEmulator) 100L * 1024 * 1024 else 2L * 1024 * 1024 * 1024 // 100MB on emulator, 2GB Guard Limit on physical device
         if (availableBytes < minRequiredBytes) {
             val freeMb = availableBytes / (1024 * 1024)
-            val msg = "Storage Low ($freeMb MB available). Minimum 2GB space required."
+            val msg = "Storage Low ($freeMb MB available). Minimum ${if (isEmulator) "100MB" else "2GB"} space required."
             Log.w(tag, "Storage Guard Triggered: Capture blocked. $msg")
             mainHandler.post { onError(msg) }
             return

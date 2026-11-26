@@ -134,11 +134,14 @@ fun ProbeLabScreen(
                             color = ColorMutedGray
                         )
                         Spacer(modifier = Modifier.height(16.dp))
+                        var exportStatusText by remember { mutableStateOf<String?>(null) }
+                        var isExporting by remember { mutableStateOf(false) }
+
                         Button(
                             onClick = {
                                 scope.launch {
                                     isLoading = true
-                                    delay(1000)
+                                    delay(500)
                                     runProbes()
                                     isLoading = false
                                 }
@@ -176,6 +179,62 @@ fun ProbeLabScreen(
                                     fontWeight = FontWeight.Bold
                                 )
                             }
+                        }
+
+                        Spacer(modifier = Modifier.height(12.dp))
+
+                        Button(
+                            onClick = {
+                                scope.launch {
+                                    isExporting = true
+                                    val result = com.lensora.ai.domain.probe.FullCameraProbeExporter().export(context)
+                                    isExporting = false
+                                    if (result.success) {
+                                        exportStatusText = "Exported to docs/probe/camera_probe_report.json"
+                                        android.widget.Toast.makeText(context, "Exported Camera Probe JSON successfully!", android.widget.Toast.LENGTH_LONG).show()
+                                    } else {
+                                        exportStatusText = "Export Error: ${result.errorMessage}"
+                                        android.widget.Toast.makeText(context, "Export Failed: ${result.errorMessage}", android.widget.Toast.LENGTH_LONG).show()
+                                    }
+                                }
+                            },
+                            enabled = !isExporting,
+                            colors = ButtonDefaults.buttonColors(
+                                containerColor = Color(0xFF00E5FF),
+                                disabledContainerColor = CharcoalSurface
+                            ),
+                            shape = RoundedCornerShape(8.dp),
+                            modifier = Modifier.fillMaxWidth()
+                        ) {
+                            if (isExporting) {
+                                CircularProgressIndicator(
+                                    modifier = Modifier.size(20.dp),
+                                    color = PitchBlackBackground,
+                                    strokeWidth = 2.dp
+                                )
+                                Spacer(modifier = Modifier.width(8.dp))
+                                Text(
+                                    text = "Exporting Probe JSON...",
+                                    color = PitchBlackBackground,
+                                    fontWeight = FontWeight.Bold
+                                )
+                            } else {
+                                Text(
+                                    text = "📄 Export Full Hardware Probe JSON",
+                                    color = PitchBlackBackground,
+                                    fontWeight = FontWeight.Bold
+                                )
+                            }
+                        }
+
+                        if (exportStatusText != null) {
+                            Spacer(modifier = Modifier.height(8.dp))
+                            Text(
+                                text = exportStatusText ?: "",
+                                fontSize = 11.sp,
+                                color = Color(0xFF00E5FF),
+                                fontWeight = FontWeight.Medium
+                            )
                         }
                     }
                 }

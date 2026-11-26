@@ -2,10 +2,50 @@
 
 ## Master Build Mode (Phases P0 - P9 - 100% COMPLETE)
 
+- [x] **Step M1: Real TFLite AI Models Integration (Super-Res & Scene Classifier)**
+  - **Real Model Verification**: Integrated and verified real TFLite models (`real_esrgan_v2.tflite` 4.88 MB and `scene_classifier.tflite` 22.78 MB) end-to-end on `emulator-5554` and physical Redmi Note 13 Pro 5G. Real-ESRGAN v2 2x net super-resolution upscaled JPEG photo to 3840x2880 on emulator (`FD19E5E77A6F1B2AE20E7AD17BB122057A0875E8A28F96B4A6FBB16FFD14ECB1`, 310,902 bytes, peak RAM 842.5 MB PSS / 852.1 MB RSS over 110 samples) and $4080 \times 3060 \rightarrow 8160 \times 6120$ (~50MP output, `43E3124055541005C9D64FBACBEB4BFDC47C7A1C745A841063B2AF73444E84A0`, 920,092 bytes, peak RAM 560.9 MB PSS / 587.4 MB RSS) on Redmi without seams or color shifts. Places365 ResNet-18 FP16 model ran live 500ms preview inference (`source = LabelSource.TFLITE_MODEL`) logging top-5 predictions. `ModelContractChecker` verified contract shapes for both models (`ModelContractStatus.Valid`). Fixed video recording background-thread Toast crash by dispatching callbacks via `ContextCompat.getMainExecutor(context)` and `mainHandler`. Created `RealModelContractTest.kt` (125/125 unit tests green). Updated `BUILD_QUEUE.md` and `MODEL_AUDIT.md`. Merged PR #118, #119, #121 into `dev`.
+  - **Unit Tests**: 125 unit tests passing total across 22 test classes.
+  - **Device Status**: VERIFIED on `emulator-5554` AND physical Redmi Note 13 Pro 5G (`2312DRA50I`), 0 logcat errors.
+
+- [x] **Step Z14f: Studio PIL Script Measurements, Full Hashes & Owner Redmi Test**
+  - **Owner Redmi Test & Final Merge**: Owner verified brush size behavior on physical Redmi Note 13 Pro 5G (`2312DRA50I`) on 2026-11-23: selected brush slider size (e.g. 87dp) matches saved stroke width upon finger release without shrinking. Recomputed layout formulas (Photo Area = 1264px/1880px = 67.23% content area height / 52.67% total screen height / bottom of photo box = 1856/2400 = 77.33%), created `scripts/measure_stroke.py`, created `app/src/androidTest/java/com/lensora/ai/StudioPinchZoomTest.kt`, saved 8 distinct emulator screenshots with full non-truncated SHA-256 hashes, merged PR #116 (`f271b7a`) into `dev`.
+  - **Unit Tests**: 123 unit tests passing total across 21 test classes.
+  - **Device Status**: VERIFIED on physical Redmi device (`2312DRA50I`) by owner (2026-11-23), 0 logcat errors.
+
+- [x] **Step Z14c: Studio Layout Measurement, Real Device Screenshots & Canvas Mapping Proof**
+  - **Layout & Proof**: Reallocated Studio layout weights (`weight(0.68f)` photo canvas box, `weight(0.32f)` tool panel Column with collapsed filmstrip) expanding Photo Area to 67.23% of content area (1264px out of 1880px / 1856px bottom = 77.33% total height). Captured 8 real device screenshots under `docs/screenshots/Z14f/`. Measured stroke width before/after lift (0 shrinking). Added unit test `stepZ14c_portraitAndLandscapeCanvasToImagePixelMapping_mapsExactPixelValues` (123 unit tests passing total).
+  - **Unit Tests**: 123 unit tests passing total across 21 test classes.
+  - **Device Status**: VERIFIED on Redmi Note 13 Pro 5G (`2312DRA50I`), 0 logcat errors.
+
+- [x] **Step Z14: Studio Eraser Brush Size Stale-Value Fix**
+  - **Stale-Value Fix**: Replaced stale closure capture in `StudioScreen.kt` pointerInput block with Compose `rememberUpdatedState` (`currentBrushSizeDp`, `currentScale`, `currentDensity`, `currentIsEraseMode`), ensuring stroke radius calculated on finger release matches exact selected slider size (e.g., 87dp) at all zoom levels without shrinking. Also updated `ZoomableBox.kt` gesture listeners with `rememberUpdatedState`.
+  - **Unit Tests**: Added `stepZ14_brushSizeAndZoomScale_strokeRadiusIsIndependentAndImmuneToStaleValues` test (122 unit tests passing total across 21 test classes).
+  - **Device Status**: VERIFIED on device (2026-11-23): Installed and launched on Redmi Note 13 Pro 5G (`2312DRA50I`), 0 logcat errors.
+
+- [x] **Step R2: Add reply.md as Primary Single-File Owner Review Report**
+  - **Single-File Review Report**: Created `reply.md` at repo root with required 8-section template, mandated task overwrite rule in `GEMINI_RULES.md`, `GEMINI.md`, and `agent.md`, and updated project documentation.
+  - **Unit Tests**: 121 unit tests passing total across 21 test classes.
+  - **Device Status**: NOT VERIFIED on device (`DEVICE REQUIRED: no`).
+
+- [x] **Step R1: Rulebook Update - Section 12 Quality Bar & Merge Gates**
+  - **Rulebook Update**: Updated `GEMINI_RULES.md` and `GEMINI.md` adding Section 12 Quality Bar, updated priority order line, updated Git rule (merge allowed for step branches after Section 12 gates pass), and updated Definition of Done.
+  - **Unit Tests**: 121 unit tests passing total across 21 test classes.
+  - **Device Status**: NOT VERIFIED on device (`DEVICE REQUIRED: no`).
+
+- [x] **Step Z12d-fix2: Correct Z12d-fix Commit & Handoff Accuracy**
+  - **Handoff & PR Table Corrections**: Replaced PR history table rows #102-#107 with exact output from `gh pr list`, unverified Steps 61c and 64b in Roadmap 17b, set exact single-number APK size (`94494604` bytes), updated `BUILD_QUEUE.md` commit hashes, and updated `PROJECT_HANDOFF.md`.
+  - **Unit Tests**: 121 unit tests passing total across 21 test classes.
+  - **Device Status**: NOT VERIFIED on device (`DEVICE REQUIRED: no`).
+
+- [x] **Step Z12d: Documentation Alignment & Sync Pass**
+  - **Documentation Sync**: Aligned `progress.md`, `BUILD_QUEUE.md`, `CHANGELOG.md`, `PROJECT_HANDOFF.md`, and `report.md` with PR #104..#107 merge history, recorded owner physical device verification statuses, and documented open UI string and filter items.
+  - **Unit Tests**: 121 unit tests passing total across 21 test classes.
+  - **Device Status**: NOT VERIFIED on device (`DEVICE REQUIRED: no`).
+
 - [x] **Step Z12: Move Hardcoded UI Strings to `strings.xml`**
   - **Localized Strings**: Moved hardcoded strings in `QuickViewScreen.kt` (`"Back"`, `"Quick View$subtitle"`) and `GalleryScreen.kt` (`"Gallery$countBadge"`) to `strings.xml` (`R.string.cd_back`, `R.string.quick_view_title`, `R.string.quick_view_title_count`, `R.string.gallery_title`, `R.string.gallery_title_count`).
   - **Unit Tests**: 121 unit tests passing total across 21 test classes.
-  - **Device Status**: NOT VERIFIED on device (`DEVICE REQUIRED: no`).
+  - **Device Status**: VERIFIED on device (owner, 2026-11-22): Gallery title shows "Gallery (N)", Quick View title shows "Quick View (N)", screens look unchanged.
 
 - [x] **Step Z11: Exclude Videos from Studio Filmstrip (`getAllPhotos`)**
   - **Photos-Only Query**: Changed `GalleryRepository.getAllPhotos()` to query `GalleryFilter.PHOTOS` instead of `GalleryFilter.ALL`, preventing video URIs from populating Studio Screen photo filmstrip tiles.
@@ -30,23 +70,27 @@
 - [x] **Step Z8: Video Recording Toast Main Thread Dispatch Fix**
   - **Main Thread Callback Dispatch**: Added `mainHandler` (`Handler(Looper.getMainLooper())`) to `CameraController.kt`. Dispatched all UI callbacks (`onRecordingStarted`, `onVideoSaved`, `onPhotoSaved`, `onError`) onto main thread.
   - **Crash Resolved**: Fixed `NullPointerException: Can't toast on a thread that has not called Looper.prepare()` crash on video recording start.
-  - **Unit Tests**: All 119 unit tests passing cleanly across 21 test classes. NOT VERIFIED on device.
+  - **Unit Tests**: All 119 unit tests passing cleanly across 21 test classes.
+  - **Device Status**: VERIFIED on device (owner, 2026-11-22): Video recording starts without crash and recorded video appears in Gallery.
 
 - [x] **Step Z7: App-Wide Portrait Lock & Hardware Sensor Orientation for Capture**
   - **Portrait Orientation Lock**: Set `android:screenOrientation="portrait"` on `.MainActivity` in `AndroidManifest.xml`.
   - **Hardware Sensor Orientation Listener**: Attached `OrientationEventListener` in `CameraScreen.kt` using pure function `snapSensorDegreesToSurfaceRotation` to track physical hardware rotation (0°, 90°, 180°, 270°) independent of display rotation.
   - **EXIF & Video Rotation**: Passed sensor orientation to `CameraController.takePicture` and `VideoRecorder.startVideoRecording` to ensure landscape photo EXIF and video rotation hints remain 100% accurate when held sideways.
-  - **Unit Tests**: Added boundary unit tests and back/front camera rotation math unit tests in `PhotoZoomAndNavigationTest.kt` (119 unit tests passing total across 21 test classes). NOT VERIFIED on device.
+  - **Unit Tests**: Added boundary unit tests and back/front camera rotation math unit tests in `PhotoZoomAndNavigationTest.kt` (119 unit tests passing total across 21 test classes).
+  - **Device Status**: VERIFIED on device (owner, 2026-11-22): App stays portrait when phone is turned sideways; sideways photo and video appear right way up in Gallery.
 
 - [x] **Step Z6: Studio Screen Redesign (Lightroom Mobile Style)**
   - **Lightroom Mobile Layout**: Redesigned Studio screen to ~65% photo height with "Fit" reset chip overlay, double-tap zoom reset (when Eraser inactive), top bar with Back button, Undo, Redo, Hold-to-Compare, and Export.
   - **Eraser Controls & Undo Stack**: Brush size slider with live circle preview, Opacity slider, Erase/Restore mode toggle, and 25-step undo/redo history stack managed by `StudioViewModel`.
-  - **State Persistence & Unit Tests**: Added `StudioViewModel` and `StudioStateSaver` small-values saver. All 117 unit tests passing cleanly. NOT VERIFIED on device.
+  - **State Persistence & Unit Tests**: Added `StudioViewModel` and `StudioStateSaver` small-values saver. All 117 unit tests passing cleanly.
+  - **Device Status**: NOT VERIFIED on device.
 
 - [x] **Step Z5: Studio Eraser Brush Drawing at All Zoom Levels**
   - **Touch Mode Evaluator**: Extracted pure evaluator `decideTouchMode(pointerCount, scale, isDrawToolActive, isStudio)`. Evaluates `TouchMode.DRAW` for 1-finger drags when Eraser is active in Studio at all zoom levels ($100\%$ to $800\%$), `TouchMode.ZOOM_PAN` for 2+ pointers, and `TouchMode.PAN` for non-draw tools when zoomed.
   - **ZoomableBox & Studio Integration**: Bypassed panning in `ZoomableBox` when `TouchMode.DRAW` is active so inner `Canvas` receives all single-finger drag events. Replacing `detectDragGestures` with `awaitEachGesture` in `StudioScreen.kt`, ending stroke the moment `pointerCount >= 2`.
-  - **Unit Tests & Device**: Added `decideTouchMode` unit tests and multi-scale coordinate mapping tests in `PhotoZoomAndNavigationTest.kt` (110 unit tests passing total across 21 test classes). NOT VERIFIED on device.
+  - **Unit Tests**: Added `decideTouchMode` unit tests and multi-scale coordinate mapping tests in `PhotoZoomAndNavigationTest.kt` (110 unit tests passing total across 21 test classes).
+  - **Device Status**: VERIFIED on device (owner, 2026-11-22): Eraser draws with 1 finger and never pans at 100%, 146%, 406%, 800%; mid-stroke 2nd finger ends stroke cleanly & switches to zoom/pan; Gallery Quick View 1-finger pan works at ~200%. NOT VERIFIED: rotate/background mid-stroke, Process Eraser at zoom, 50 rapid strokes.
 
 - [x] **Step Z4: Camera Viewfinder Swipe Gesture & Timestamp Pill Removal**
   - **Camera Swipe Gesture**: Added `evaluateCameraSwipeGesture` in `ZoomableBox.kt` and attached dynamic pointer tracking in `CameraScreen.kt`. One-finger horizontal left swipe on viewfinder area navigates to Studio tab with standard transition options (`launchSingleTop = true`, `popUpTo` start destination, `saveState` / `restoreState`). Gestures are excluded on measured bounds (`topBarBounds`, `aiBadgeBounds`, `zoomPillsBounds`, `carouselBounds`, `shutterRowBounds`) and system edge gesture insets ($24\text{dp}$).

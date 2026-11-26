@@ -113,6 +113,7 @@ import java.util.Locale
 fun CameraScreen(
     onOpenQuickView: () -> Unit = {},
     onNavigateToStudio: () -> Unit = {},
+    onOpenSettings: () -> Unit = {},
 ) {
     val context = LocalContext.current
     var hasCameraPermission by remember {
@@ -517,7 +518,7 @@ fun CameraScreen(
                         ).show()
                     },
                     onSettingsClick = {
-                        Toast.makeText(context, "Camera Settings", Toast.LENGTH_SHORT).show()
+                        onOpenSettings()
                     },
                     modifier = Modifier.onGloballyPositioned { coordinates ->
                         topBarBounds = coordinates.boundsInRoot()

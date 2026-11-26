@@ -22,6 +22,7 @@ import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.layout.navigationBarsPadding
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
@@ -68,6 +69,7 @@ import androidx.compose.runtime.mutableIntStateOf
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
+import androidx.compose.runtime.rememberUpdatedState
 import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
@@ -194,7 +196,7 @@ private fun StudioPhotoContent(
     var isExporting by remember { mutableStateOf(false) }
     var isErasingWithAi by remember { mutableStateOf(false) }
     var inpaintedBitmap by remember { mutableStateOf<Bitmap?>(null) }
-    var isFilmstripExpanded by rememberSaveable { mutableStateOf(true) }
+    var isFilmstripExpanded by rememberSaveable { mutableStateOf(false) }
     var isComparePressed by remember { mutableStateOf(false) }
 
     // Brush state variables
@@ -438,6 +440,7 @@ private fun StudioPhotoContent(
             modifier = Modifier
                 .fillMaxSize()
                 .padding(innerPadding)
+                .navigationBarsPadding()
                 .background(PitchBlackBackground),
         ) {
             // 1. TOP SECTION (~65% Height): Main Photo Canvas Area
@@ -446,7 +449,7 @@ private fun StudioPhotoContent(
             Box(
                 modifier = Modifier
                     .fillMaxWidth()
-                    .weight(0.65f)
+                    .weight(0.68f)
                     .background(Color(0xFF0A0A0A))
                     .onSizeChanged { canvasSize = it.toSize() },
                 contentAlignment = Alignment.Center,
@@ -517,6 +520,11 @@ private fun StudioPhotoContent(
 
                     // Interactive Mask Canvas Layer (Only active when Eraser is selected and Hold-to-Compare is released)
                     if (isEraserModeActive && !isComparePressed) {
+                        val currentBrushSizeDp by rememberUpdatedState(brushSizeDp)
+                        val currentScale by rememberUpdatedState(scale)
+                        val currentDensity by rememberUpdatedState(density)
+                        val currentIsEraseMode by rememberUpdatedState(isEraseModeActiveState)
+
                         val localCanvasStrokeWidth = ZoomTransformMath.calculateLocalCanvasBrushWidthPx(
                             screenDp = brushSizeDp,
                             density = density,
@@ -541,11 +549,15 @@ private fun StudioPhotoContent(
                                             if (pointerCount >= 2) {
                                                 // End stroke immediately when 2+ pointers touch down
                                                 if (activePoints.isNotEmpty()) {
-                                                    val localRadiusPx = localCanvasStrokeWidth / 2f
+                                                    val localRadiusPx = ZoomTransformMath.calculateLocalCanvasBrushWidthPx(
+                                                        screenDp = currentBrushSizeDp,
+                                                        density = currentDensity,
+                                                        scale = currentScale,
+                                                    ) / 2f
                                                     viewModel.addStroke(
                                                         StudioStroke(
                                                             points = activePoints,
-                                                            isEraseMode = isEraseModeActiveState,
+                                                            isEraseMode = currentIsEraseMode,
                                                             radiusCanvasPx = localRadiusPx,
                                                         ),
                                                     )
@@ -566,11 +578,15 @@ private fun StudioPhotoContent(
 
                                             if (event.changes.all { !it.pressed }) {
                                                 if (activePoints.isNotEmpty()) {
-                                                    val localRadiusPx = localCanvasStrokeWidth / 2f
+                                                    val localRadiusPx = ZoomTransformMath.calculateLocalCanvasBrushWidthPx(
+                                                        screenDp = currentBrushSizeDp,
+                                                        density = currentDensity,
+                                                        scale = currentScale,
+                                                    ) / 2f
                                                     viewModel.addStroke(
                                                         StudioStroke(
                                                             points = activePoints,
-                                                            isEraseMode = isEraseModeActiveState,
+                                                            isEraseMode = currentIsEraseMode,
                                                             radiusCanvasPx = localRadiusPx,
                                                         ),
                                                     )
@@ -680,18 +696,20 @@ private fun StudioPhotoContent(
                 }
             }
 
-            // 2. MIDDLE SECTION: Collapsible Filmstrip Queue Row
+            // 2. BOTTOM SECTION: Filmstrip Queue & Editing Tool Panels
             Column(
                 modifier = Modifier
                     .fillMaxWidth()
-                    .background(CharcoalSurface),
+                    .weight(0.32f)
+                    .background(PitchBlackBackground)
+                    .padding(horizontal = 16.dp, vertical = 4.dp),
             ) {
-                // Header with Collapse/Expand Toggle
+                // Collapsible Filmstrip Queue Header
                 Row(
                     modifier = Modifier
                         .fillMaxWidth()
                         .clickable { isFilmstripExpanded = !isFilmstripExpanded }
-                        .padding(horizontal = 12.dp, vertical = 4.dp),
+                        .padding(vertical = 2.dp),
                     horizontalArrangement = Arrangement.SpaceBetween,
                     verticalAlignment = Alignment.CenterVertically,
                 ) {
@@ -706,13 +724,13 @@ private fun StudioPhotoContent(
                         imageVector = if (isFilmstripExpanded) Icons.Outlined.ExpandMore else Icons.Outlined.ExpandLess,
                         contentDescription = "Toggle Filmstrip",
                         tint = ColorMutedGray,
-                        modifier = Modifier.size(18.dp),
+                        modifier = Modifier.size(16.dp),
                     )
                 }
 
                 AnimatedVisibility(visible = isFilmstripExpanded) {
                     LazyRow(
-                        contentPadding = PaddingValues(horizontal = 12.dp, vertical = 6.dp),
+                        contentPadding = PaddingValues(vertical = 4.dp),
                         horizontalArrangement = Arrangement.spacedBy(8.dp),
                     ) {
                         if (photoUris.isNotEmpty()) {
@@ -720,10 +738,10 @@ private fun StudioPhotoContent(
                                 val isSelected = selectedPhotoIndex == index
                                 Box(
                                     modifier = Modifier
-                                        .size(50.dp)
+                                        .size(46.dp)
                                         .clip(RoundedCornerShape(8.dp))
                                         .border(
-                                            width = if (isSelected) 2.5.dp else 1.dp,
+                                            width = if (isSelected) 2.dp else 1.dp,
                                             color = if (isSelected) RoyalBlue else Color.Transparent,
                                             shape = RoundedCornerShape(8.dp),
                                         )
@@ -746,16 +764,8 @@ private fun StudioPhotoContent(
                         }
                     }
                 }
-            }
 
-            // 3. BOTTOM SECTION (~35% Height): Editing Tool Panels
-            Column(
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .weight(0.35f)
-                    .background(PitchBlackBackground)
-                    .padding(horizontal = 16.dp, vertical = 6.dp),
-            ) {
+                Spacer(modifier = Modifier.height(4.dp))
                 // Bottom Tool Category Tabs (Light, Color, Eraser, Crop)
                 Row(
                     modifier = Modifier
@@ -805,6 +815,7 @@ private fun StudioPhotoContent(
                 Column(
                     modifier = Modifier
                         .fillMaxWidth()
+                        .padding(bottom = 16.dp)
                         .verticalScroll(rememberScrollState()),
                 ) {
                     when (selectedToolCategory) {

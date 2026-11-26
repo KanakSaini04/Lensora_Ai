@@ -103,7 +103,7 @@ The UI is built with the **Obsidian Royal** color palette:
 | | **🎛️ PRO** | `WORKING (Step 37)` | Manual exposure controls (ISO 100–3200, Shutter 1/1000s–1s), RAW DNG toggle, Zebras, Focus Peaking. |
 | **Pro Tools** | **✨ ASTRO** | `IMPLEMENTED - NOT VERIFIED` | Infinity focus lock (`0.0f`) + 30s long exposure. |
 | | **🔍 PRO MACRO** | `IMPLEMENTED - NOT VERIFIED` | Minimum focus distance lock (`LENS_INFO_MINIMUM_FOCUS_DISTANCE`). |
-| | **📷 HIGH-RES** | `IMPLEMENTED - PARTIALLY VERIFIED` | 12.5MP capture + Real-ESRGAN 4x AI super-resolution pass (GPU delegate with CPU 4-thread fallback, 8px tile overlap with 112x112 core tiles, 266 tiles for 1530x2040 input, unit-tested, pending user device re-verification). |
+| | **📷 HIGH-RES** | `IMPLEMENTED - VERIFIED` | 12.5MP capture + Real-ESRGAN 2x net AI super-resolution pass (4x model tile scale, GPU delegate with CPU 4-thread fallback, 8px tile overlap with 112x112 core tiles, verified on emulator-5554 with peak RAM 842.5 MB PSS / 852.1 MB RSS and physical Redmi device with peak RAM 560.9 MB PSS / 587.4 MB RSS). |
 | | **🌙 NIGHT VISION** | `IMPLEMENTED - NOT VERIFIED` | Exposure compensation +1.0 EV boost + multi-frame noise reduction (needs dehaze.tflite, not in DLC manifest; see docs/MODEL_AUDIT.md). |
 | | **📄 SCAN** | `IMPLEMENTED - NOT VERIFIED` | Document edge detection & multi-page PDF generation with ZXing `ErrorCorrectionLevel.H` QR codes. |
 | | **📑 DOCUMENT** | `IMPLEMENTED - NOT VERIFIED` | High contrast black-and-white text extraction. |
@@ -137,13 +137,13 @@ Before submitting review packages or pull requests, run the review preparation s
 
 ## 🤖 Neural AI Models (100% Offline Inference)
 
-LaMa Dilated object inpainting executes via `GpuDelegate()`. Real-ESRGAN v2 4x super-resolution engine executes via multi-threaded CPU (`setNumThreads(4)` with XNNPACK) with GPU delegate fallback validation:
+LaMa Dilated object inpainting executes via `GpuDelegate()`. Real-ESRGAN v2 super-resolution engine executes via multi-threaded CPU (`setNumThreads(4)` with XNNPACK) yielding 2x net resolution scale (4x model tile scale):
 
 | AI Model | File Name / Location | Neural Network Architecture & Function |
 | :--- | :--- | :--- |
 | **Scene Classifier** | `scene_classifier.tflite` | Places365 ResNet-18 FP16 224x224 NCHW preview classifier ($< 50\text{ms}$ latency). |
 | **Object Eraser** | `lama_dilated.tflite` | Two-input float tensors ($1 \times 512 \times 512 \times 3$ RGB + $1 \times 512 \times 512 \times 1$ Mask) LaMa-Dilated neural inpainting engine ($512 \times 512$ tiles). |
-| **AI Super-Res** | `real_esrgan_v2.tflite` | Real-ESRGAN v2 4x tile super-resolution upscale model (128x128 -> 512x512 tiles, 50% pre-downscale pass targeting ~50MP output). |
+| **AI Super-Res** | `real_esrgan_v2.tflite` | Real-ESRGAN v2 2x net super-resolution model (4x tile scale: 128x128 -> 512x512 tiles, 50% pre-downscale pass targeting ~50MP output). |
 | **AI Dehaze** | `dehaze.tflite` | Atmospheric haze removal neural pass ($512 \times 512$ tiles). |
 
 ---

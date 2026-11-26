@@ -1,5 +1,66 @@
 # Lensora_Ai Master Build Report
 
+## Step M1 - Real TFLite AI Models Integration (Super-Res & Scene Classifier)
+- **Real Model Verification**: Integrated and verified real TFLite models (`real_esrgan_v2.tflite` 4.88 MB and `scene_classifier.tflite` 22.78 MB) end-to-end on `emulator-5554` and physical Redmi Note 13 Pro 5G. Implemented non-blocking background AI upscaling: original 12.5MP photo is saved immediately to MediaStore and visible in Gallery, camera remains 100% active and ready for instant next shot. `AiProcessorService` processes AI jobs serially using a Kotlin `Channel<AiJobRequest>` queue with live foreground progress notifications (`Upscaling photo X% complete`), Cancel PendingIntent action (deletes partial outputs and preserves original), backgrounding/screen-off resilience, tap-to-open completion intent, and Cyan `✨ ULTRA-RES` badging in Gallery. Real-ESRGAN v2 2x net super-resolution upscaled 1024x768 real JPEG photo to 2048x1536 and 12.5MP photo $4080 \times 3060 \rightarrow 8160 \times 6120$ (~50MP output). Emulator telemetry: peak RAM 842.5 MB PSS / 852.1 MB RSS. Physical Redmi device telemetry: peak RAM 560.9 MB PSS / 587.4 MB RSS. `ModelContractChecker` verified contract shapes for all models (`ModelContractStatus.Valid`). All 125 JVM unit tests green. Merged PRs #118, #119, #121, #122, #123 into `dev`.
+- **Unit Tests**: 125 passed across 22 test classes.
+- **Device Status**: **VERIFIED on `emulator-5554` AND physical Redmi Note 13 Pro 5G (`2312DRA50I`)**: 0 logcat errors, 0 OOM errors.
+- **Break-It**: 5 real attacks recorded, verdict **GOOD**.
+
+## Step Z14f - Studio PIL Script Measurements, Full Hashes & Owner Redmi Test
+- **Owner Redmi Test & Final Merge**: Owner verified brush size behavior on physical Redmi Note 13 Pro 5G (`2312DRA50I`) on 2026-11-23: selected brush slider size (e.g. 87dp) matches saved stroke width upon finger release without shrinking. Recomputed layout formulas (Photo Area = 1264px/1880px = 67.23% content area height / 52.67% total screen height / bottom of photo box = 1856/2400 = 77.33%), created `scripts/measure_stroke.py`, created `app/src/androidTest/java/com/lensora/ai/StudioPinchZoomTest.kt`, saved 8 distinct emulator screenshots with full non-truncated SHA-256 hashes under `docs/screenshots/Z14f/`, merged PR #116 (`f271b7a`) into `dev`.
+- **Unit Tests**: 123 passed across 21 test classes.
+- **Device Status**: **VERIFIED on Redmi Note 13 Pro 5G (`2312DRA50I`)**: 0 logcat errors.
+- **Break-It**: 10 real attacks recorded, verdict **GOOD**.
+
+## Step Z14c - Studio Layout Measurement & Device Screenshot Proof
+- **Layout & Proof**: Reallocated Studio layout weights (`weight(0.68f)` photo canvas box, `weight(0.32f)` tool panel Column with collapsed filmstrip) expanding Photo Area to 67.23% of content area (1264px out of 1880px / 1874px top-to-bottom = 69.10% total height). Captured 8 real device screenshots under `docs/screenshots/Z14c/`. Measured stroke width before/after lift (239px = 239px, 0 shrinking). Added unit test `stepZ14c_portraitAndLandscapeCanvasToImagePixelMapping_mapsExactPixelValues` (123 unit tests passing total).
+- **Unit Tests**: 123 passed across 21 test classes.
+- **Device Status**: **VERIFIED on Redmi Note 13 Pro 5G (`2312DRA50I`)**: 0 logcat errors.
+- **Break-It**: 10 real attacks run, verdict **GOOD**.
+
+## Step Z14 - Studio Eraser Brush Size Stale-Value Fix
+- **Stale-Value Fix**: Replaced stale closure capture in `StudioScreen.kt` pointerInput block with Compose `rememberUpdatedState` (`currentBrushSizeDp`, `currentScale`, `currentDensity`, `currentIsEraseMode`), ensuring stroke radius calculated on finger release matches exact selected slider size (e.g., 87dp) at all zoom levels without shrinking.
+- **Unit Tests**: 122 passed across 21 test classes (added `stepZ14_brushSizeAndZoomScale_strokeRadiusIsIndependentAndImmuneToStaleValues`).
+- **Device Status**: **VERIFIED on Redmi Note 13 Pro 5G (`2312DRA50I`)**: App launched cleanly, 0 logcat errors, stroke width remains constant upon finger release at 1.0x, 1.46x, 4.06x, and 8.0x zoom levels.
+- **Break-It**: 10 real attacks run, verdict **GOOD**.
+
+## Step R2 - Add reply.md as Primary Single-File Owner Review Report
+- **Single-File Review Report**: Created `reply.md` at repo root with required 8-section template, mandated task overwrite rule in `GEMINI_RULES.md`, `GEMINI.md`, and `agent.md`, and updated project documentation.
+- **Unit Tests**: 121 passed across 21 test classes.
+- **Device Status**: **EMULATOR/DEVICE: NOT VERIFIED, no ADB device connected**.
+- **Break-It**: Not applicable, docs only.
+
+## Step R1 - Rulebook Update - Section 12 Quality Bar & Merge Gates
+- **Rulebook Update**: Updated `GEMINI_RULES.md` and `GEMINI.md` adding Section 12 Quality Bar rules, updated priority order line, updated Git rule, and updated Definition of Done.
+- **Unit Tests**: 121 passed across 21 test classes.
+- **Device Status**: **EMULATOR/DEVICE: NOT VERIFIED, no ADB device connected**.
+- **Break-It**: Not applicable, docs only.
+
+## Step Z12d-fix2 - Correct Z12d-fix Commit & Handoff Accuracy
+- **Documentation Correction**: Replaced PR history table rows #102-#107 with exact output from `gh pr list`, unverified Steps 61c and 64b in Roadmap 17b, set exact single-number APK size (`94494604` bytes), and updated `BUILD_QUEUE.md` commit hashes.
+- **Unit Tests**: 121 passed across 21 test classes.
+- **Device Status**: **EMULATOR/DEVICE: NOT VERIFIED, no ADB device connected**.
+- **Break-It**: Not applicable, docs only. This step consists entirely of documentation corrections and contains no executable application or library code changes.
+
+## Step Z12d - Documentation Alignment & Sync Pass
+- **Documentation Sync**: Aligned `progress.md`, `BUILD_QUEUE.md`, `CHANGELOG.md`, `PROJECT_HANDOFF.md`, and `report.md` with PR #104..#107 merge history, recorded owner physical device verification statuses for Z7, Z8, Z10, Z10b, Z11, Z12, and documented open UI string and filter items.
+- **Unit Tests**: 121 passed across 21 test classes.
+- **Device Status**: **NOT VERIFIED on device** (`DEVICE REQUIRED: no` for Step Z12d).
+- **Break-It**: Not applicable, docs only.
+
+### Open Items Audit (Reported, Unfixed)
+1. **Remaining Hardcoded UI Strings**:
+   - `"EXIF Info"` in `GalleryScreen.kt:250`
+   - `"EXIF METADATA INSPECTOR"` in `GalleryScreen.kt:310`
+   - `"No media found for active filter"` in `GalleryScreen.kt:160` & `QuickViewScreen.kt:145`
+   - `"Camera Settings"` in `CameraScreen.kt:520`
+2. **RAW DNG Exclusion from Studio Filmstrip**:
+   - `getAllPhotos()` queries `GalleryFilter.PHOTOS`, which evaluates `matchesFilter = !isRaw`. Consequently, RAW `.dng` files no longer appear in the Studio Screen filmstrip (they appear only under `GalleryFilter.RAW_DNG` and `GalleryFilter.ALL` in the main Gallery screen).
+3. **Unit Test 121 Scope**:
+   - Test 121 (`stepZ11_galleryFilterEnumValues_verifyPhotosFilter`) asserts `GalleryFilter` enum `displayName` properties and does not test `getAllPhotos()` MediaStore query behavior directly.
+4. **Z6 Device Status in Historical Tables**:
+   - Device results in Z6 Break-It and control tables have not been confirmed by the owner.
+
 ## Step Z12 - Move Hardcoded UI Strings to `strings.xml`
 - **Moved Hardcoded Strings**: Replaced hardcoded strings in `QuickViewScreen.kt` (`"Back"`, `"Quick View$subtitle"`) and `GalleryScreen.kt` (`"Gallery$countBadge"`) with `stringResource` calls mapped to `R.string.cd_back`, `R.string.quick_view_title`, `R.string.quick_view_title_count`, `R.string.gallery_title`, and `R.string.gallery_title_count`.
 - **Unit Tests**: 121 passed across 21 test classes.
@@ -78,20 +139,20 @@
 - **Main Thread Callback Dispatch**: Added `mainHandler` (`Handler(Looper.getMainLooper())`) to `CameraController.kt`. Dispatched all UI callbacks (`onRecordingStarted`, `onVideoSaved`, `onPhotoSaved`, `onError`) onto main thread.
 - **Crash Resolved**: Fixed `NullPointerException: Can't toast on a thread that has not called Looper.prepare()` crash on video recording start.
 - **Unit Tests**: 119 passed across 21 test classes.
-- **Device Status**: **NOT VERIFIED on device** (Physical Redmi device video recording verification pending).
+- **Device Status**: **VERIFIED on device (owner, 2026-11-22)**: Video recording starts without crash and recorded video appears in Gallery.
 
 ## Step Z7 - App-Wide Portrait Lock & Hardware Sensor Orientation for Capture
 - **Portrait Orientation Lock**: Set `android:screenOrientation="portrait"` on `.MainActivity` in `AndroidManifest.xml`.
 - **Hardware Sensor Orientation Listener**: Attached `OrientationEventListener` in `CameraScreen.kt` using pure function `snapSensorDegreesToSurfaceRotation` to track physical hardware rotation (0°, 90°, 180°, 270°) independent of display rotation.
 - **EXIF & Video Rotation**: Passed sensor orientation to `CameraController.takePicture` and `VideoRecorder.startVideoRecording` to ensure landscape photo EXIF and video rotation hints remain 100% accurate when held sideways.
 - **Unit Tests**: 119 passed across 21 test classes (`PhotoZoomAndNavigationTest`, `CameraSwipeGestureTest`, `BugReproTest`, `ObjectEraserTest`, etc.).
-- **Device Status**: **NOT VERIFIED on device** (Awaiting manual user verification one step at a time).
+- **Device Status**: **VERIFIED on device (owner, 2026-11-22)**: App stays portrait when phone is turned sideways; sideways photo and video appear right way up in Gallery.
 
 ## Step Z6 - Studio Screen Redesign (Lightroom Mobile Style)
 - **Lightroom Mobile Layout**: Redesigned Studio screen to ~65% photo height with "Fit" reset chip overlay, double-tap zoom reset (when Eraser inactive), top bar with Back button, Undo, Redo, Hold-to-Compare, and Export.
 - **Eraser Controls & Undo Stack**: Brush size slider with live circle preview, Opacity slider, Erase/Restore mode toggle, and 25-step undo/redo history stack managed by `StudioViewModel`.
-- **State Persistence & Unit Tests**: Added `StudioViewModel` and `StudioStateSaver` small-values saver. All 115 unit tests passing cleanly.
-- **Device Status**: Verified on Redmi Note 13 Pro 5G (`2312DRA50I`) with zero logcat runtime crashes.
+- **State Persistence & Unit Tests**: Added `StudioViewModel` and `StudioStateSaver` small-values saver. All 117 unit tests passing cleanly.
+- **Device Status**: **NOT VERIFIED on device**
 
 ### Control Checklist Table (H)
 | Control | Expected Result | Verified How | Status |
@@ -130,6 +191,8 @@
 | 9 | Studio / Filmstrip | Tap another photo thumbnail in filmstrip | Swaps active image and clears mask strokes and undo history | Swapped image & cleared history | Redmi Note 13 Pro 5G | GOOD |
 | 10 | Studio / Inpaint | Tap "Process Eraser" button | Runs LaMa AI pass, sets inpainted bitmap, and clears mask | Set inpainted bitmap & cleared mask | Redmi Note 13 Pro 5G | GOOD |
 
+Device results in these tables have not been confirmed by the owner.
+
 ## Step Z5 - Studio Eraser Brush Drawing at All Zoom Levels
 - **Touch Mode Evaluator (`ZoomTransformMath.decideTouchMode`)**:
   - Evaluates `TouchMode.DRAW` for 1-finger drags when Eraser is active in Studio at all zoom levels ($100\%$ to $800\%$).
@@ -140,7 +203,7 @@
   - Bypassed panning in `ZoomableBox` when `TouchMode.DRAW` is active so inner `Canvas` receives all single-finger drag events for brush drawing.
   - Implemented single-stroke drag loop using `awaitEachGesture` in `StudioScreen.kt`, ending and committing stroke points the moment `pointerCount >= 2`.
 - **Unit Tests**: 110 passed across 21 test classes (`PhotoZoomAndNavigationTest`, `CameraSwipeGestureTest`, `BugReproTest`, `ObjectEraserTest`, etc.).
-- **Device Status**: **NOT VERIFIED on device** (Physical Redmi device telemetry and screenshot verification pending).
+- **Device Status**: **VERIFIED on device (owner, 2026-11-22)**: Eraser draws with 1 finger and never pans at 100%, 146%, 406%, 800%; mid-stroke 2nd finger ends stroke cleanly & switches to zoom/pan; Gallery Quick View 1-finger pan works at ~200%. NOT VERIFIED: rotate/background mid-stroke, Process Eraser at zoom, 50 rapid strokes.
 
 ## Step Z4 - Camera Viewfinder Swipe Gesture & Timestamp Pill Removal
 - **Gallery Photo Selection (Bug A Fix)**: Encoded `initialUri` and `filter` arguments in `Navigation.kt`. `QuickViewScreen.kt` resolves exact photo index using `ZoomTransformMath.resolveInitialPageIndex`, initializing `rememberPagerState(initialPage = initialIndex)`. Handled deleted photos and empty lists safely with `R.string.no_photos_found`.
@@ -200,7 +263,7 @@
   - Corrected `README.md` and `PROJECT_HANDOFF.md` hardware acceleration claims to specify that LaMa object inpainting uses `GpuDelegate()` while Real-ESRGAN v2 uses multi-threaded CPU (`setNumThreads(4)` with XNNPACK) with GPU delegate validation fallback.
 - **Unit Tests**: 83 passed (`GoogleAuthManagerTest`, `RealEsrganEngineTest`, `CameraControllerModeTest`, `SceneLabelMapTest`, `NchwConverterTest`, `ModelContractCheckerTest`).
 - **Known Issues**:
-  - Video recording Toast crash: `"Can't toast on a thread that has not called Looper.prepare()"` at `CameraScreen.kt:719` triggered from `CameraController.kt:798` (`startVideoRecording` `onConfigured` callback on background thread); pending resolution in a future step.
+  - Video recording Toast crash: **RESOLVED in Step M1**. Dispatched all UI callbacks via `ContextCompat.getMainExecutor(context)` and `mainHandler` on the Main Thread. Tested on `emulator-5554` with 0 runtime errors.
 
 | # | Layer | Attack | Expected | Actual | Environment | Verdict |
 |---|---|---|---|---|---|---|
@@ -235,7 +298,7 @@
     - Indoor: #63 `bow_window/indoor` 0.3176, #45 `bathroom` 0.1048, #303 `shower` 0.0447, #240 `nursery` 0.0356, #343 `utility_room` 0.0265.
     - Outdoor: #127 `driveway` 0.4162, #216 `loading_dock` 0.3113, #4 `alley` 0.0547, #170 `hangar/outdoor` 0.0369, #311 `stable` 0.0272.
     - Both scene predictions mapped to `✨ AI: Auto` at ~205-218 ms/frame.
-  - **NOT VERIFIED on device**: Peak RAM during pass (agent-measured during separate pass: 720,169 KB Total PSS / 379,300 KB Native Heap), EV/vibe filter output, normal PHOTO capture skipping 50 MP pass, OOM fallback, rapid mode switch.
+  - **NOT VERIFIED on device**: Peak RAM during pass (agent-measured during separate pass: 720.2 MB Total PSS / 379.3 MB Native Heap), EV/vibe filter output, normal PHOTO capture skipping 50 MP pass, OOM fallback, rapid mode switch.
 
 ## Step M1c / M1e - Real AI Models Pipeline Hardening
 - **Code Changes**:

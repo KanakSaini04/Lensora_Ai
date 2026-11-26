@@ -1,3 +1,73 @@
+## [Unreleased] - Step M1: Real TFLite AI Models Integration (2026-11-24)
+
+### Added & Verified
+- **Real TFLite Model Integration & Evidence Correction (Step M1)**:
+  - Integrated `real_esrgan_v2.tflite` (4.88 MB) and `scene_classifier.tflite` (22.78 MB) real models into production AI pipelines.
+  - Verified 2x net super-resolution pass producing distinct 12.5MP outputs on `emulator-5554` (`FD19E5E77A6F1B2AE20E7AD17BB122057A0875E8A28F96B4A6FBB16FFD14ECB1`, 310,902 bytes, `LENSORA_AI_PROCESSED_1795531037191.jpg`) and Redmi Note 13 Pro 5G (`43E3124055541005C9D64FBACBEB4BFDC47C7A1C745A841063B2AF73444E84A0`, 920,092 bytes, `LENSORA_AI_PROCESSED_1795461414182.jpg`) without seams or color shifts (Python seam check PASS on both).
+  - Fixed video recording background-thread Toast crash by configuring `SessionConfiguration` state callbacks with `ContextCompat.getMainExecutor(context)` and wrapping UI callbacks on `mainHandler`. Verified video recording start & stop on `emulator-5554` (0 logcat errors).
+  - Researched TFLite warm-up logcat error: confirmed `cpuInterpreter.run(testInput, cpuOutput)` runs cleanly in normal execution, and `Cannot copy to a TensorFlowLite tensor (serving_default_args_0)` occurs strictly when `real_esrgan_v2.tflite` is replaced by a 0-byte/corrupt file during missing-model fallback testing.
+  - Standardized memory metrics across all documentation files to decimal MB ($1\text{ MB} = 1,000,000\text{ bytes} = 1,000\text{ kB}$).
+  - Added `RealModelContractTest.kt` unit test verifying tensor contract shapes (`ModelContractStatus.Valid`). All 125 JVM unit tests passing cleanly.
+  - Merged PR #118, #119, #121 into `dev`.
+
+## [Unreleased] - Step Z14f: Studio PIL Script Measurements, Full Hashes & Owner Redmi Test (2026-11-23)
+
+### Fixed & Verified
+- **Studio Owner Redmi Test & Final Merge (Step Z14f)**:
+  - Physical Redmi Note 13 Pro 5G (`2312DRA50I`) verified by owner (2026-11-23): big brush slider selected, single slow stroke drawn, width stays constant upon finger lift with 0 shrinking.
+  - Recomputed layout math: Photo Area = 1264px/1880px = 67.23% content area height (1264px/2400px = 52.67% total height; bottom of photo box = 1856/2400 = 77.33%).
+  - Added `scripts/measure_stroke.py` PIL stroke measurement script and `StudioPinchZoomTest.kt` in `app/src/androidTest`.
+  - Saved 8 distinct emulator screenshots with full non-truncated 64-character SHA-256 hashes under `docs/screenshots/Z14f/`.
+  - PR #116 merged into `dev` (merge commit `f271b7a`). 123 unit tests passing.
+
+## [Unreleased] - Step Z14c: Studio Layout Measurement & Device Proof (2026-11-23)
+
+### Fixed
+- **Studio Layout Measurement & Device Proof (Step Z14c)**:
+  - Reallocated Studio layout weights to expand photo canvas box to 67.23% of content area (1264px out of 1880px / 1874px top-to-bottom = 69.10% total height). Captured 8 real device screenshots under `docs/screenshots/Z14c/`. Added portrait and landscape canvas-to-image mapping unit test `stepZ14c_portraitAndLandscapeCanvasToImagePixelMapping_mapsExactPixelValues` (123 unit tests passing total).
+
+## [Unreleased] - Step Z14: Studio Eraser Brush Size Stale-Value Fix (2026-11-23)
+
+### Fixed
+- **Studio Eraser Brush Size Stale-Value Fix (Step Z14)**:
+  - Fixed bug where stroke radius shrank from selected slider value (e.g., 87dp) to initial 30dp default upon finger lift. Used Compose `rememberUpdatedState` in `StudioScreen.kt` and `ZoomableBox.kt` so long-lived gesture handlers evaluate live brush size and scale values on stroke commit. Added unit test `stepZ14_brushSizeAndZoomScale_strokeRadiusIsIndependentAndImmuneToStaleValues` (122 unit tests passing total).
+
+## [Unreleased] - Step R2: Add reply.md Review File (2026-11-23)
+
+### Documentation
+- **Add Primary Single-File Review Report (`reply.md`) (Step R2)**:
+  - Created `reply.md` at repo root, updated rulebooks (`GEMINI_RULES.md`, `GEMINI.md`, `agent.md`) mandating task overwrite rule, and updated project documentation. All 121 unit tests passing cleanly.
+
+## [Unreleased] - Step R1: Rulebook Update - Section 12 Quality Bar (2026-11-23)
+
+### Documentation
+- **Rulebook Update - Section 12 Quality Bar (Step R1)**:
+  - Updated `GEMINI_RULES.md` and `GEMINI.md` adding Section 12 Quality Bar rules, updated priority order line, updated Git rule, and updated Definition of Done. All 121 unit tests passing cleanly.
+
+## [Unreleased] - Step Z12d-fix2: Correct Z12d-fix Commit & Handoff Accuracy (2026-11-22)
+
+### Documentation
+- **Handoff Accuracy & PR Table Corrections (Step Z12d-fix2)**:
+  - Replaced PR history table rows #102-#107 with exact output, unverified Steps 61c and 64b in Roadmap 17b, corrected baseline APK size (`94494604` bytes), and updated `BUILD_QUEUE.md` commit hashes. All 121 unit tests passing cleanly.
+
+## [Unreleased] - Step Z12d: Documentation Sync Pass (2026-11-22)
+
+### Documentation
+- **Documentation Alignment & Sync Pass (Step Z12d)**:
+  - Synchronized `progress.md`, `BUILD_QUEUE.md`, `CHANGELOG.md`, `report.md`, and `PROJECT_HANDOFF.md` with PR #104..#107 merge history and owner physical device verification records. All 121 unit tests passing cleanly.
+
+## [Unreleased] - Step Z12c: Record Z7 & Z8 Device Verification (2026-11-22)
+
+### Documentation
+- **Record Z7 & Z8 Device Verification (Step Z12c)**:
+  - Recorded owner physical device verification on Redmi Note 13 Pro 5G for Z7 (portrait orientation lock and EXIF capture orientation) and Z8 (video recording start without crash).
+
+## [Unreleased] - Step Z12b: Documentation Sync & Z12 Device Verification (2026-11-22)
+
+### Documentation
+- **Documentation Sync & Z12 Verification (Step Z12b)**:
+  - Recorded owner physical device verification for Z12 title count strings and aligned Z5/Z6 status metrics across documentation files.
+
 ## [Unreleased] - Step Z12: Move Hardcoded UI Strings to `strings.xml` (2026-11-22)
 
 ### Fixed
@@ -24,7 +94,7 @@
 
 ### Fixed
 - **Video Recording Toast Main Thread Fix (Step Z8)**:
-  - `CameraController.kt`: Dispatched all UI callbacks (`onRecordingStarted`, `onVideoSaved`, `onPhotoSaved`, `onError`) onto `Handler(Looper.getMainLooper())`. Resolved `NullPointerException: Can't toast on a thread that has not called Looper.prepare()` on video recording start. All 119 unit tests passing cleanly.
+  - `CameraController.kt`: Dispatched all UI callbacks (`onRecordingStarted`, `onVideoSaved`, `onPhotoSaved`, `onError`) onto `Handler(Looper.getMainLooper())`. Resolved `NullPointerException: Can't toast on a thread that has not called Looper.prepare()` on video recording start. All 119 unit tests passing. Verified on device (owner, 2026-11-22).
 
 ## [Unreleased] - Step Z7: App-Wide Portrait Lock & Hardware Sensor Orientation (2026-11-22)
 
@@ -33,7 +103,7 @@
   - `AndroidManifest.xml`: Locked `.MainActivity` to portrait mode (`android:screenOrientation="portrait"`).
   - `ZoomableBox.kt`: Created pure evaluator `snapSensorDegreesToSurfaceRotation` mapping sensor angles to 0°, 90°, 180°, 270° surface rotation values with `ORIENTATION_UNKNOWN` (-1) fallback handling.
   - `CameraScreen.kt`: Registered `OrientationEventListener` bound to screen lifecycle (`DisposableEffect`) to track physical device rotation independent of window display rotation.
-  - `PhotoZoomAndNavigationTest.kt`: Added boundary unit tests for `snapSensorDegreesToSurfaceRotation` and rotation math unit tests for back (sensor 90°) and front (sensor 270°) camera orientation formulas. All 119 unit tests passing cleanly.
+  - `PhotoZoomAndNavigationTest.kt`: Added boundary unit tests for `snapSensorDegreesToSurfaceRotation` and rotation math unit tests for back (sensor 90°) and front (sensor 270°) camera orientation formulas. All 119 unit tests passing. Verified on device (owner, 2026-11-22).
 
 ## [Unreleased] - Step Z6: Studio Screen Redesign (Lightroom Mobile Style) (2026-11-22)
 
