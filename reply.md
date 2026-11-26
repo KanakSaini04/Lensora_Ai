@@ -24,6 +24,6 @@ Rules loaded. Task understood as: Step 31b2 docs updates for VIDEO and CINEMATIC
 **Docs audit:** README.md (Updated), report.md (Updated), PROJECT_HANDOFF.md (Updated), reply.md (Created).
 
 **Commit message:** docs(probe): Step 31b2 - label Cinematic and Video as advertised, not device-tested
-**PR link:** PLACEHOLDER_PR_LINK | **Merge commit:** PLACEHOLDER_MERGE_HASH
+**PR link:** https://github.com/KanakSaini04/Lensora_Ai/pull/129 | **Merge commit:** 5a2171c
 
 **Done.** Next step: Step 31c
