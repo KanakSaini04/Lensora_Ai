@@ -62,6 +62,7 @@ val proToolsList = listOf(
     ModeItem("High-Res", Icons.Outlined.HighQuality),
     ModeItem("Astro", Icons.Outlined.Stars),
     ModeItem("Panorama", Icons.Outlined.Panorama),
+    ModeItem("Slow-Motion", Icons.Outlined.Videocam, isSoon = true),
     ModeItem("Tele-Cine", Icons.Outlined.Movie, isSoon = true),
     ModeItem("Pro Macro", Icons.Outlined.Camera),
     ModeItem("Time-Lapse", Icons.Outlined.Timelapse),

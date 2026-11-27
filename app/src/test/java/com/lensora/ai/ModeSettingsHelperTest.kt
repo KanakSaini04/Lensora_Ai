@@ -27,18 +27,20 @@ class ModeSettingsHelperTest {
     )
 
     @Test
-    fun astroMode_clampsExposureToHalMaxAndSetsInfinityFocus() {
+    fun astroMode_clampsExposureAndIsoToHalMaxAndSetsInfinityFocus() {
         val result = ModeSettingsHelper.calculateModeSettings("ASTRO", defaultCapabilities)
 
         assertEquals(CaptureRequest.CONTROL_AF_MODE_OFF, result.afMode)
         assertEquals(0.0f, result.focusDistance)
         assertEquals(CaptureRequest.CONTROL_AE_MODE_OFF, result.aeMode)
-        // Requested 30s (30_000_000_000L), clamped to HAL max (1_000_000_000L)
+        // Requested 30s (30_000_000_000L), clamped to HAL max (1_000_000_000L = 1000ms)
         assertEquals(1_000_000_000L, result.exposureTimeNs)
+        // Sets explicit ISO 3200 consistent with long exposure and probe range
+        assertEquals(3200, result.isoSensitivity)
     }
 
     @Test
-    fun astroMode_whenAeModeOffUnsupported_returnsNullAeAndExposure() {
+    fun astroMode_whenAeModeOffUnsupported_returnsNullAeExposureAndIso() {
         val capsNoAeOff = defaultCapabilities.copy(aeModes = intArrayOf(1))
         val result = ModeSettingsHelper.calculateModeSettings("ASTRO", capsNoAeOff)
 
@@ -46,6 +48,7 @@ class ModeSettingsHelperTest {
         assertEquals(0.0f, result.focusDistance)
         assertNull(result.aeMode)
         assertNull(result.exposureTimeNs)
+        assertNull(result.isoSensitivity)
     }
 
     @Test
@@ -163,14 +166,16 @@ class ModeSettingsHelperTest {
     fun slowMotionMode_returnsEmptyResult_andSendsNoFpsRangeOnStillCapture() {
         val result = ModeSettingsHelper.calculateModeSettings("SLOW-MOTION", defaultCapabilities)
 
-        assertNull(result.targetFpsRange)
+        assertNull(result.aeMode)
+        assertNull(result.exposureTimeNs)
     }
 
     @Test
     fun slowMotionMode_withNullCapabilities_returnsEmptyResult() {
         val result = ModeSettingsHelper.calculateModeSettings("SLOW-MOTION", CameraHalCapabilities())
 
-        assertNull(result.targetFpsRange)
+        assertNull(result.aeMode)
+        assertNull(result.exposureTimeNs)
     }
 
     @Test
@@ -182,7 +187,6 @@ class ModeSettingsHelperTest {
             val result = ModeSettingsHelper.calculateModeSettings(mode, emptyCaps)
             assertNull("mode $mode should have null aeMode", result.aeMode)
             assertNull("mode $mode should have null sceneMode", result.sceneMode)
-            assertNull("mode $mode should have null targetFpsRange", result.targetFpsRange)
         }
     }
 

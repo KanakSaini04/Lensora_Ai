@@ -89,8 +89,7 @@ data class ModeSettingsResult(
     val edgeMode: Int? = null,
     val controlMode: Int? = null,
     val sceneMode: Int? = null,
-    val cropRegion: HalRect? = null,
-    val targetFpsRange: HalRange<Int>? = null
+    val cropRegion: HalRect? = null
 )
 
 object ModeSettingsHelper {
@@ -127,16 +126,21 @@ object ModeSettingsHelper {
 
                 val supportsAeOff = caps.aeModes?.contains(CaptureRequest.CONTROL_AE_MODE_OFF) == true
                 val expRange = caps.exposureTimeRangeNs
+                val isoRange = caps.isoSensitivityRange
                 val aeMode = if (supportsAeOff && expRange != null) CaptureRequest.CONTROL_AE_MODE_OFF else null
                 val expTime = if (aeMode != null && expRange != null) {
                     30_000_000_000L.coerceIn(expRange.lower, expRange.upper)
+                } else null
+                val iso = if (aeMode != null && isoRange != null) {
+                    isoRange.upper.coerceIn(isoRange.lower, isoRange.upper)
                 } else null
 
                 ModeSettingsResult(
                     afMode = afMode,
                     focusDistance = focusDist,
                     aeMode = aeMode,
-                    exposureTimeNs = expTime
+                    exposureTimeNs = expTime,
+                    isoSensitivity = iso
                 )
             }
             "DEEP SKY", "DEEP_SKY" -> {
