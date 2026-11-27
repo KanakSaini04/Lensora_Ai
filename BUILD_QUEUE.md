@@ -26,12 +26,12 @@
 | 3.3 | FOOD camera mode verification | None | DONE | cc04e4e | 58 tests pass, food scene mode check & safe fallback, NOT VERIFIED on device | Camera2 HAL check & graceful fallback |
 | 3.4 | DOCUMENT camera mode verification | None | DONE | 681533a | 58 tests pass, edge mode high quality & text contrast profile active, NOT VERIFIED on device | Camera2 HAL check & graceful fallback |
 | 3.5 | TIME-LAPSE camera mode verification | None | DONE | 9500b1e | 58 tests pass, interval capture feedback active, NOT VERIFIED on device | Camera2 HAL check & graceful fallback |
-| 3.6 | SLOW-MOTION camera mode verification | None | DONE | e96a0f1 | 58 tests pass, constrained high-speed check & safe fallback, NOT VERIFIED on device | Camera2 HAL check & graceful fallback |
+| 3.6 | SLOW-MOTION camera mode verification | None | DONE | e96a0f1 | 58 tests pass, constrained high-speed check & safe fallback, NOT VERIFIED on device | Camera2 HAL check & graceful fallback (corrected in Step 31c4: SLOW-MOTION marked SOON) |
 | 3.7 | NIGHT VISION camera mode verification | None | DONE | 6685fa5 | 58 tests pass, night scene mode check & safe fallback, NOT VERIFIED on device | Camera2 HAL check & graceful fallback |
 | 3.8 | PRO MACRO camera mode verification | None | DONE | 6685fa5 | 58 tests pass, min focus distance HAL query & safe fallback, NOT VERIFIED on device | Camera2 HAL check & graceful fallback |
 | 3.9 | ULTRA MACRO camera mode verification | None | DONE | d5410d1 | 58 tests pass, 2x crop & min focus distance active, NOT VERIFIED on device | Camera2 HAL check & graceful fallback |
-| 3.10 | ASTRO camera mode verification | None | DONE | d5410d1 | 58 tests pass, infinity focus & 30s long exposure active, NOT VERIFIED on device | Camera2 HAL check & graceful fallback |
-| 3.11 | DEEP SKY camera mode verification | None | DONE | 228ceef | 58 tests pass, infinity focus & max ISO stacking active, NOT VERIFIED on device | Camera2 HAL check & graceful fallback |
+| 3.10 | ASTRO camera mode verification | None | DONE | d5410d1 | 58 tests pass, infinity focus & 30s long exposure active, NOT VERIFIED on device | Camera2 HAL check & graceful fallback (corrected in Step 31c4: 1s max exposure clamped by HAL) |
+| 3.11 | DEEP SKY camera mode verification | None | DONE | 228ceef | 58 tests pass, infinity focus & max ISO stacking active, NOT VERIFIED on device | Camera2 HAL check & graceful fallback (corrected in Step 31c4: no frame stacking in DEEP SKY) |
 | 3.12 | RAW DNG camera mode verification | None | DONE | a5d9443 | 58 tests pass, RAW_SENSOR check & safe fallback, NOT VERIFIED on device | Camera2 HAL check & graceful fallback |
 | 3.13 | Brand Looks (LEICA, ZEISS, HASSELBLAD, XMAGE, HARCOURT) | None | DONE | a5d9443 | 58 tests pass, color matrix vibe presets active | Color matrix profiles active |
 | 3.14 | SCAN mode (PDF creation via PdfDocument) | None | DONE | 681533a | 58 tests pass, android.graphics.pdf.PdfDocument & ZXing active | android.graphics.pdf.PdfDocument |
@@ -73,6 +73,11 @@
 | Z14d | Studio re-verification & rulebook section 8 policy update | None | DONE | 79a75c0 | 123 tests pass, VERIFIED on device (owner, 2026-11-23) | Section 8 rulebook update, honest emulator re-verification |
 | Z14e | Studio complete review & distinct screenshot hashes | None | DONE | 162541a | 123 tests pass, VERIFIED on device (owner, 2026-11-23) | Full 64-character SHA-256 hashes, distinct screenshot sizes |
 | Z14f | Studio PIL script measurements, full hashes & owner Redmi test | None | DONE | f271b7a | 123 tests pass, VERIFIED on device (owner, 2026-11-23) | PR #116 merged into dev, owner verified brush behavior on Redmi |
+| 31c | Apply mode settings to still capture request | None | AGENT-VERIFIED | 3c00630 | 141 tests pass, emulator verified | ModeSettingsHelper extraction, camera capabilities clamping |
+| OG | Owner verification gate & completion protocol | None | AGENT-VERIFIED | 6ea74c3 | 141 tests pass, docs only | GEMINI.md sections 13 & 14, agent.md rules 19-21 |
+| 31c2 | Fix unadvertised and wrong still-capture mode settings | None | AGENT-VERIFIED | 5149f4f | 145 tests pass, emulator verified | Removed barcode scene mode override and slow-mo FPS lock |
+| 31c3 | ASTRO exposure fix, honest SLOW-MOTION & HAL result proof | None | AGENT-VERIFIED | ed1c3f4 | 145 tests pass, emulator & Redmi verified | Smooth preview, ISO 3200, SLOW-MOTION SOON badge |
+| 31c4 | ASTRO / DEEP SKY / SLOW-MOTION honesty correction & HAL proof | None | AGENT-VERIFIED | pending | 150 tests pass, emulator & Redmi HAL proof verified | ISO 3200 clamped, formatModeFeedbackLabel, ControlMode/SceneMode logging |
 
 ## DECISIONS
 - 2026-11-18: Initialized master build queue from docs/MASTER_BUILD_PROMPT.md.

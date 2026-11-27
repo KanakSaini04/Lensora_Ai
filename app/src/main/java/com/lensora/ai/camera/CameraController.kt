@@ -414,11 +414,11 @@ class CameraController(private val context: Context) {
                 "NIGHT VISION", "NIGHT_VISION" -> {
                     onFeedback("🌙 Night Vision: Low-Light Sensitivity Boost Active")
                 }
-                "ASTRO" -> {
-                    onFeedback("✨ Astro: Locked Focus to Infinity & 30s Exposure")
-                }
-                "DEEP SKY", "DEEP_SKY" -> {
-                    onFeedback("🌌 Deep Sky: Infinity Focus & Max ISO Stacking Active")
+                "ASTRO", "DEEP SKY", "DEEP_SKY" -> {
+                    val caps = ModeSettingsHelper.extractCapabilities(cameraCharacteristics)
+                    val settings = ModeSettingsHelper.calculateModeSettings(modeName, caps)
+                    val label = ModeSettingsHelper.formatModeFeedbackLabel(modeName, settings)
+                    onFeedback(label)
                 }
                 "RAW DNG", "RAW_DNG" -> {
                     val caps = ModeSettingsHelper.extractCapabilities(cameraCharacteristics)
@@ -882,11 +882,14 @@ class CameraController(private val context: Context) {
                     val aeMode = result.get(CaptureResult.CONTROL_AE_MODE)
                     val afMode = result.get(CaptureResult.CONTROL_AF_MODE)
                     val edgeMode = result.get(CaptureResult.EDGE_MODE)
+                    val controlMode = result.get(CaptureResult.CONTROL_MODE)
+                    val sceneMode = result.get(CaptureResult.CONTROL_SCENE_MODE)
                     Log.i(
                         tag,
                         "L0 Still Capture HAL Result Proof: Mode=$activeAdvancedModeName, " +
                         "ExpTimeNs=$expNs (${expNs?.let { String.format(Locale.US, "%.2f ms", it / 1_000_000.0) } ?: "null"}), " +
-                        "ISO=$iso, AeMode=$aeMode, AfMode=$afMode, EdgeMode=$edgeMode"
+                        "ISO=$iso, AeMode=$aeMode, AfMode=$afMode, EdgeMode=$edgeMode, " +
+                        "ControlMode=$controlMode, SceneMode=$sceneMode"
                     )
                 }
             }, handler)

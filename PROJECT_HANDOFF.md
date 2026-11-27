@@ -5,13 +5,13 @@
 > Rules for this file: every fact must come from the repo, a test run or a device/emulator check. Unknown = **NOT VERIFIED**. No secrets, tokens, keystores, PINs or personal data.
 
 ## 0. Status block (update every step)
-- **Last updated**: 2026-11-26
-- **Branch / HEAD**: `step-31c3-astro-slowmo-honesty`
-- **Last completed step**: Step 31c3 - ASTRO Exposure, Honest SLOW-MOTION & HAL Result Proof
-- **In progress**: Step 31c3 (Code complete, unit tests pass, emulator verified, physical Redmi verified for 5 still-capture modes with HAL result proof lines; preview FPS measurement NOT VERIFIED)
-- **Unit tests**: 145 passed, 0 skipped, 0 failed across 24 test classes
+- **Last updated**: 2026-11-28
+- **Branch / HEAD**: `step-31c4-honesty-and-proof`
+- **Last completed step**: Step 31c4 - ASTRO / DEEP SKY / SLOW-MOTION Honesty Correction & HAL Proof
+- **In progress**: Step 31c4 (Code complete, unit tests pass, emulator verified, Redmi HAL proof & FPS verified, ready to merge)
+- **Unit tests**: 150 passed, 0 skipped, 0 failed across 24 test classes
 - **Baseline APK size**: 94494604 bytes
-- **Last emulator check**: `emulator-5554` (`Medium_Phone`), 2026-11-26 (App launches cleanly, ASTRO ISO 3200 set, preview smooth, SLOW-MOTION marked SOON with badge, logcat `AndroidRuntime:E` 0 errors, 145 unit tests passing); **Last physical-device (Redmi) check**: Redmi Note 13 Pro 5G (`2312DRA50I`), 2026-11-28 (Captured stills in ASTRO, DEEP SKY, NIGHT VISION, PRO MACRO, DOCUMENT; logcat HAL proof lines captured; AE-off, AF-off, EdgeMode=2 verified). ASTRO preview FPS measurement marked NOT VERIFIED (unmeasured).
+- **Last emulator check**: `emulator-5554` (`Medium_Phone`), 2026-11-28 (App launches cleanly, ASTRO ISO 3200 set, preview smooth, SLOW-MOTION marked SOON with badge, logcat `AndroidRuntime:E` 0 errors, 150 unit tests passing); **Last physical-device (Redmi) check**: Redmi Note 13 Pro 5G (`2312DRA50I`), 2026-11-28 (Captured stills in ASTRO, DEEP SKY, NIGHT VISION, PRO MACRO, DOCUMENT; logcat HAL proof lines with ControlMode & SceneMode captured; NIGHT VISION `ControlMode=2, SceneMode=5` verified; DOCUMENT `EdgeMode=0` scratch echo verified; ASTRO preview FPS ~30.0 FPS measured).
 
 ## 1. Boot order for a new AI
 1. `GEMINI.md` (coding-agent rules & Section 10 Run/Device policy)

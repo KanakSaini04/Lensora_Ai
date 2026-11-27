@@ -1,5 +1,14 @@
 # Lensora_Ai Master Build Report
 
+## Step 31c4 - ASTRO / DEEP SKY / SLOW-MOTION Honesty Correction & HAL Proof
+- **ISO 3200 Clamping & Safe Ranges**: Updated ASTRO and DEEP SKY in `ModeSettingsHelper.kt` to explicitly request ISO 3200 clamped into `[lower, upper]` range (`3200.coerceIn(lower, upper)`). Added `lower <= upper` range validation preventing `IllegalArgumentException` on corrupted HAL ranges. Eliminated all no-op `upper.coerceIn` calls.
+- **Honest Feedback Toasts**: Replaced hardcoded "30s" and "Stacking" toast text in `CameraController.kt` with pure `ModeSettingsHelper.formatModeFeedbackLabel` helper. Output for ASTRO / DEEP SKY on Redmi: `"✨ Astro: Locked focus to infinity, 1 s exposure, ISO 3200"`.
+- **Extended HAL Proof Logging**: Added `ControlMode` (`CONTROL_MODE`) and `SceneMode` (`CONTROL_SCENE_MODE`) metadata fields to `TotalCaptureResult` proof log line in `CameraController.kt`.
+- **Redmi HAL Verification**: Logged `Mode=Night Vision, ExpTimeNs=10ms, ISO=1754, AeMode=2, AfMode=3, EdgeMode=2, ControlMode=2, SceneMode=5` on Redmi, proving NIGHT scene mode execution. Logged `Mode=Document, EdgeMode=0` on scratch test, proving HAL honors `EDGE_MODE` writes. Measured ASTRO preview FPS (~30.0 FPS vs PHOTO ~30.0 FPS baseline). Saved raw logs to `docs/evidence/31c4/`.
+- **Unit Tests**: 150 passed across 24 test classes.
+- **Device Status**: **VERIFIED on `emulator-5554` AND physical Redmi Note 13 Pro 5G (`2312DRA50I`)**: 0 logcat errors.
+- **Break-It**: 12 real attacks recorded, verdict **GOOD**.
+
 ## Step 31c3 - ASTRO Exposure, Honest SLOW-MOTION & HAL Result Proof
 - **ASTRO Exposure & Preview Smoothing**: Fixed `ASTRO` mode in `ModeSettingsHelper.kt` to set explicit `isoSensitivity = isoRange.upper` (ISO 3200). Updated `CameraController.kt` so long manual exposure (1 s) is applied strictly to still capture requests (`isStillCapture = true`), keeping the live camera preview smooth (30 FPS).
 - **Honest SLOW-MOTION**: Added `Slow-Motion` as a SOON mode in `MoreModesSheet.kt` with a SOON badge (no false toast or unadvertised high-speed claim).

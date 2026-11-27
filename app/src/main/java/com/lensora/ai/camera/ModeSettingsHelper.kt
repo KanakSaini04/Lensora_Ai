@@ -127,12 +127,12 @@ object ModeSettingsHelper {
                 val supportsAeOff = caps.aeModes?.contains(CaptureRequest.CONTROL_AE_MODE_OFF) == true
                 val expRange = caps.exposureTimeRangeNs
                 val isoRange = caps.isoSensitivityRange
-                val aeMode = if (supportsAeOff && expRange != null) CaptureRequest.CONTROL_AE_MODE_OFF else null
-                val expTime = if (aeMode != null && expRange != null) {
+                val aeMode = if (supportsAeOff && expRange != null && expRange.lower <= expRange.upper) CaptureRequest.CONTROL_AE_MODE_OFF else null
+                val expTime = if (aeMode != null && expRange != null && expRange.lower <= expRange.upper) {
                     30_000_000_000L.coerceIn(expRange.lower, expRange.upper)
                 } else null
-                val iso = if (aeMode != null && isoRange != null) {
-                    isoRange.upper.coerceIn(isoRange.lower, isoRange.upper)
+                val iso = if (aeMode != null && isoRange != null && isoRange.lower <= isoRange.upper) {
+                    3200.coerceIn(isoRange.lower, isoRange.upper)
                 } else null
 
                 ModeSettingsResult(
@@ -151,12 +151,12 @@ object ModeSettingsHelper {
                 val supportsAeOff = caps.aeModes?.contains(CaptureRequest.CONTROL_AE_MODE_OFF) == true
                 val expRange = caps.exposureTimeRangeNs
                 val isoRange = caps.isoSensitivityRange
-                val aeMode = if (supportsAeOff && expRange != null) CaptureRequest.CONTROL_AE_MODE_OFF else null
-                val expTime = if (aeMode != null && expRange != null) {
+                val aeMode = if (supportsAeOff && expRange != null && expRange.lower <= expRange.upper) CaptureRequest.CONTROL_AE_MODE_OFF else null
+                val expTime = if (aeMode != null && expRange != null && expRange.lower <= expRange.upper) {
                     30_000_000_000L.coerceIn(expRange.lower, expRange.upper)
                 } else null
-                val iso = if (aeMode != null && isoRange != null) {
-                    isoRange.upper.coerceIn(isoRange.lower, isoRange.upper)
+                val iso = if (aeMode != null && isoRange != null && isoRange.lower <= isoRange.upper) {
+                    3200.coerceIn(isoRange.lower, isoRange.upper)
                 } else null
 
                 ModeSettingsResult(
@@ -177,7 +177,7 @@ object ModeSettingsHelper {
                 } else {
                     val supportsAeOff = caps.aeModes?.contains(CaptureRequest.CONTROL_AE_MODE_OFF) == true
                     val expRange = caps.exposureTimeRangeNs
-                    if (supportsAeOff && expRange != null) {
+                    if (supportsAeOff && expRange != null && expRange.lower <= expRange.upper) {
                         val expTime = 500_000_000L.coerceIn(expRange.lower, expRange.upper)
                         ModeSettingsResult(
                             aeMode = CaptureRequest.CONTROL_AE_MODE_OFF,
@@ -239,4 +239,26 @@ object ModeSettingsHelper {
             else -> ModeSettingsResult()
         }
     }
+
+    fun formatModeFeedbackLabel(modeName: String, settings: ModeSettingsResult): String {
+        val upperMode = modeName.uppercase(Locale.US)
+        val prefix = when (upperMode) {
+            "ASTRO" -> "✨ Astro: Locked focus to infinity"
+            "DEEP SKY", "DEEP_SKY" -> "🌌 Deep Sky: Locked focus to infinity"
+            else -> modeName
+        }
+        val expSec = settings.exposureTimeNs?.let { ns ->
+            val sec = ns / 1_000_000_000.0
+            if (sec >= 1.0 && sec == sec.toLong().toDouble()) {
+                "${sec.toLong()} s exposure"
+            } else {
+                String.format(Locale.US, "%.1f s exposure", sec)
+            }
+        }
+        val isoText = settings.isoSensitivity?.let { "ISO $it" }
+
+        val details = listOfNotNull(expSec, isoText).joinToString(", ")
+        return if (details.isNotEmpty()) "$prefix, $details" else prefix
+    }
 }
+

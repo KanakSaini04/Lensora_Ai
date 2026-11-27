@@ -1,0 +1,9 @@
+﻿
+11-28 02:44:05.707 21493 22791 I CameraController: L0 Still Capture HAL Result Proof: Mode=AUTO, ExpTimeNs=10000000 (10.00 ms), ISO=6423, AeMode=2, 
+AfMode=4, EdgeMode=2
+11-28 02:44:38.356 21493 22791 I CameraController: L0 Still Capture HAL Result Proof: Mode=AUTO, ExpTimeNs=10000000 (10.00 ms), ISO=4927, AeMode=2, 
+AfMode=4, EdgeMode=2
+11-28 02:45:11.418 21493 22791 I CameraController: L0 Still Capture HAL Result Proof: Mode=AUTO, ExpTimeNs=40000000 (40.00 ms), ISO=6400, AeMode=2, 
+AfMode=4, EdgeMode=2
+
+

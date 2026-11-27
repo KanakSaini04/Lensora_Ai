@@ -201,4 +201,60 @@ class ModeSettingsHelperTest {
         assertNull(resultPortrait.aeMode)
         assertNull(resultPro.aeMode)
     }
+
+    @Test
+    fun astroMode_whenIsoRangeHigherThan3200_clampsToLowerBound() {
+        val capsHighIso = defaultCapabilities.copy(isoSensitivityRange = HalRange(4000, 8000))
+        val result = ModeSettingsHelper.calculateModeSettings("ASTRO", capsHighIso)
+
+        assertEquals(4000, result.isoSensitivity)
+    }
+
+    @Test
+    fun astroMode_whenIsoRange50To6400_givesIso3200() {
+        val capsWideIso = defaultCapabilities.copy(isoSensitivityRange = HalRange(50, 6400))
+        val result = ModeSettingsHelper.calculateModeSettings("ASTRO", capsWideIso)
+
+        assertEquals(3200, result.isoSensitivity)
+    }
+
+    @Test
+    fun astroMode_whenInvertedHalRange_returnsNullAndDoesNotThrow() {
+        val capsInverted = defaultCapabilities.copy(
+            isoSensitivityRange = HalRange(6400, 100),
+            exposureTimeRangeNs = HalRange(1_000_000_000L, 1_000_000L)
+        )
+        val result = ModeSettingsHelper.calculateModeSettings("ASTRO", capsInverted)
+
+        assertEquals(CaptureRequest.CONTROL_AF_MODE_OFF, result.afMode)
+        assertEquals(0.0f, result.focusDistance)
+        assertNull(result.isoSensitivity)
+        assertNull(result.exposureTimeNs)
+    }
+
+    @Test
+    fun deepSkyMode_whenIsoRange50To6400_givesIso3200() {
+        val capsWideIso = defaultCapabilities.copy(isoSensitivityRange = HalRange(50, 6400))
+        val result = ModeSettingsHelper.calculateModeSettings("DEEP SKY", capsWideIso)
+
+        assertEquals(3200, result.isoSensitivity)
+    }
+
+    @Test
+    fun formatModeFeedbackLabel_returnsFormattedLabel() {
+        val settings1s = ModeSettingsHelper.calculateModeSettings("ASTRO", defaultCapabilities)
+        val labelAstro = ModeSettingsHelper.formatModeFeedbackLabel("ASTRO", settings1s)
+        val labelDeepSky = ModeSettingsHelper.formatModeFeedbackLabel("DEEP SKY", settings1s)
+
+        assertEquals("✨ Astro: Locked focus to infinity, 1 s exposure, ISO 3200", labelAstro)
+        assertEquals("🌌 Deep Sky: Locked focus to infinity, 1 s exposure, ISO 3200", labelDeepSky)
+
+        val settingsHalfSec = settings1s.copy(exposureTimeNs = 500_000_000L, isoSensitivity = 1600)
+        val labelHalfSec = ModeSettingsHelper.formatModeFeedbackLabel("ASTRO", settingsHalfSec)
+        assertEquals("✨ Astro: Locked focus to infinity, 0.5 s exposure, ISO 1600", labelHalfSec)
+
+        val settingsNullExp = settings1s.copy(exposureTimeNs = null, isoSensitivity = null)
+        val labelNullExp = ModeSettingsHelper.formatModeFeedbackLabel("ASTRO", settingsNullExp)
+        assertEquals("✨ Astro: Locked focus to infinity", labelNullExp)
+    }
 }
