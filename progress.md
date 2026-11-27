@@ -2,6 +2,11 @@
 
 ## Master Build Mode (Phases P0 - P9 - 100% COMPLETE)
 
+- [x] **Step OG: Owner Verification Gate & Completion Protocol Rules**
+  - **Owner Verification Gate & Completion Protocol**: Added Section 13 (Owner Verification Gate) and Section 14 (Completion Protocol) to `GEMINI.md`, updated Priority line and Section 9 (Self-contained `reply.md` with Reviewer verification block items a-i), updated `agent.md` with rules 19, 20, and 21, and added owner verification status banner line above 27-mode tables in `README.md` and `PROJECT_HANDOFF.md`.
+  - **Unit Tests**: 141 unit tests passing total across 23 test classes.
+  - **Device Status**: AGENT-VERIFIED (documentation only change, 0 production code changes, all Break-It attacks passed).
+
 - [x] **Step 31c: Apply Mode Settings to Still Capture Request**
   - **Mode Settings Verification**: Applied mode settings (`ASTRO`, `DEEP SKY`, `NIGHT VISION`, `BEAUTY`, `DOCUMENT`, `PRO MACRO`, `ULTRA MACRO`, `SLOW-MOTION`, `FOOD`) to still capture requests (`captureBuilder` in `CameraController.kt`). Extracted capabilities and clamping logic into `ModeSettingsHelper.kt` (`CameraHalCapabilities`, `HalRange`, `HalRect`, `ModeSettingsResult`). All values clamped to advertised HAL ranges (`exposureTimeRangeNs`, `isoSensitivityRange`, `minFocusDistanceDiopters`, `faceDetectModes`, `edgeModes`, `sceneModes`, `aeModes`, `afModes`, `activeArraySize`, `fpsRanges`). Standard `PHOTO`, `PORTRAIT`, `PRO` modes remain 100% unchanged.
   - **Unit Tests**: 141 unit tests passing total across 23 test classes (+15 tests in `ModeSettingsHelperTest.kt`).

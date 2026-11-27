@@ -236,6 +236,8 @@ Lensora_Ai/
 
 ## 8. Camera modes (27)
 
+> **No mode is OWNER-VERIFIED yet. Status labels below are agent claims only.**
+
 | Mode | Status | File + Function | Notes |
 | :--- | :---: | :--- | :--- |
 | **✨ AI AUTO** | `WORKING (Step 62c)` | `CameraScreen.kt` / `SceneClassifier.kt` | 2 FPS / 500 ms scene classification loop. |

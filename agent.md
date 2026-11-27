@@ -23,6 +23,9 @@
 16. Every step MUST include: documentation update, testing, code check, git commit, git push, and PR creation.
 17. Before every review request, run scripts/prepare_claude_review.ps1 -Step <name> and hand over Claude_review.zip. Never say a step is done without it.
 18. Gemini must read GEMINI.md and agent.md at the start of every task, overwrite reply.md at repo root at the end of every task, and use the GEMINI.md section 9 report format.
+19. Owner verification gate: features stay AGENT-VERIFIED until owner types "VERIFIED <feature>". Never write OWNER-VERIFIED, DONE or WORKING without that message.
+20. Completion protocol: build/test/run -> Break-It -> self-code-review -> compare AC & fix root cause -> repeat loop (max 3) -> update all docs.
+21. reply.md is overwritten every prompt, self-contained, and ends with the Reviewer verification block holding exact command outputs (items a to i).
 
 ## STYLE
 14. Short, clear answers. No long theory.

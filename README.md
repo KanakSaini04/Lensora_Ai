@@ -93,6 +93,8 @@ The UI is built with the **Obsidian Royal** color palette:
 
 ## 🎥 The 27 Camera Modes
 
+> **No mode is OWNER-VERIFIED yet. Status labels below are agent claims only.**
+
 | Category | Camera Mode | Status | Behavior & Tuning Specification |
 | :--- | :--- | :---: | :--- |
 | **Core Modes** | **✨ AI AUTO** | `WORKING (Step 62c)` | Continuous auto-focus, live AI scene detection (2 FPS / 500 ms loop). |
