@@ -1,0 +1,164 @@
+package com.lensora.ai
+
+import android.hardware.camera2.CameraCharacteristics
+import android.hardware.camera2.CaptureRequest
+import com.lensora.ai.camera.CameraHalCapabilities
+import com.lensora.ai.camera.HalRange
+import com.lensora.ai.camera.HalRect
+import com.lensora.ai.camera.ModeSettingsHelper
+import org.junit.Assert.assertEquals
+import org.junit.Assert.assertNull
+import org.junit.Test
+
+class ModeSettingsHelperTest {
+
+    private val defaultCapabilities = CameraHalCapabilities(
+        exposureTimeRangeNs = HalRange(83_000L, 1_000_000_000L), // 0.083ms to 1000ms
+        isoSensitivityRange = HalRange(50, 3200),
+        minFocusDistanceDiopters = 10.0f,
+        faceDetectModes = intArrayOf(0, CaptureRequest.STATISTICS_FACE_DETECT_MODE_SIMPLE),
+        edgeModes = intArrayOf(0, 1, CaptureRequest.EDGE_MODE_HIGH_QUALITY),
+        sceneModes = intArrayOf(0, CaptureRequest.CONTROL_SCENE_MODE_NIGHT, 16),
+        aeModes = intArrayOf(1, CaptureRequest.CONTROL_AE_MODE_OFF),
+        afModes = intArrayOf(1, CaptureRequest.CONTROL_AF_MODE_OFF),
+        activeArraySize = HalRect(0, 0, 4080, 3060),
+        capabilities = intArrayOf(CameraCharacteristics.REQUEST_AVAILABLE_CAPABILITIES_CONSTRAINED_HIGH_SPEED_VIDEO),
+        fpsRanges = listOf(HalRange(30, 30), HalRange(120, 120))
+    )
+
+    @Test
+    fun astroMode_clampsExposureToHalMaxAndSetsInfinityFocus() {
+        val result = ModeSettingsHelper.calculateModeSettings("ASTRO", defaultCapabilities)
+
+        assertEquals(CaptureRequest.CONTROL_AF_MODE_OFF, result.afMode)
+        assertEquals(0.0f, result.focusDistance)
+        assertEquals(CaptureRequest.CONTROL_AE_MODE_OFF, result.aeMode)
+        // Requested 30s (30_000_000_000L), clamped to HAL max (1_000_000_000L)
+        assertEquals(1_000_000_000L, result.exposureTimeNs)
+    }
+
+    @Test
+    fun astroMode_whenAeModeOffUnsupported_returnsNullAeAndExposure() {
+        val capsNoAeOff = defaultCapabilities.copy(aeModes = intArrayOf(1))
+        val result = ModeSettingsHelper.calculateModeSettings("ASTRO", capsNoAeOff)
+
+        assertEquals(CaptureRequest.CONTROL_AF_MODE_OFF, result.afMode)
+        assertEquals(0.0f, result.focusDistance)
+        assertNull(result.aeMode)
+        assertNull(result.exposureTimeNs)
+    }
+
+    @Test
+    fun deepSkyMode_clampsExposureAndIsoToHalRanges() {
+        val result = ModeSettingsHelper.calculateModeSettings("DEEP SKY", defaultCapabilities)
+
+        assertEquals(CaptureRequest.CONTROL_AF_MODE_OFF, result.afMode)
+        assertEquals(0.0f, result.focusDistance)
+        assertEquals(CaptureRequest.CONTROL_AE_MODE_OFF, result.aeMode)
+        assertEquals(1_000_000_000L, result.exposureTimeNs)
+        assertEquals(3200, result.isoSensitivity)
+    }
+
+    @Test
+    fun deepSkyMode_whenIsoRangeSmaller_clampsIsoToUpperBound() {
+        val capsSmallIso = defaultCapabilities.copy(isoSensitivityRange = HalRange(100, 1600))
+        val result = ModeSettingsHelper.calculateModeSettings("DEEP_SKY", capsSmallIso)
+
+        assertEquals(1600, result.isoSensitivity)
+    }
+
+    @Test
+    fun nightVisionMode_whenSceneModeAdvertised_usesSceneMode() {
+        val result = ModeSettingsHelper.calculateModeSettings("NIGHT VISION", defaultCapabilities)
+
+        assertEquals(CaptureRequest.CONTROL_MODE_USE_SCENE_MODE, result.controlMode)
+        assertEquals(CaptureRequest.CONTROL_SCENE_MODE_NIGHT, result.sceneMode)
+        assertNull(result.aeMode)
+        assertNull(result.exposureTimeNs)
+    }
+
+    @Test
+    fun nightVisionMode_whenSceneModeNotAdvertised_fallbacksToManualExposureClamped() {
+        val capsNoNightScene = defaultCapabilities.copy(sceneModes = intArrayOf(0))
+        val result = ModeSettingsHelper.calculateModeSettings("NIGHT_VISION", capsNoNightScene)
+
+        assertNull(result.controlMode)
+        assertEquals(CaptureRequest.CONTROL_AE_MODE_OFF, result.aeMode)
+        assertEquals(500_000_000L, result.exposureTimeNs)
+    }
+
+    @Test
+    fun beautyMode_whenFaceDetectAdvertised_setsSimpleFaceMode() {
+        val result = ModeSettingsHelper.calculateModeSettings("BEAUTY", defaultCapabilities)
+
+        assertEquals(CaptureRequest.STATISTICS_FACE_DETECT_MODE_SIMPLE, result.faceDetectMode)
+    }
+
+    @Test
+    fun beautyMode_whenFaceDetectNotAdvertised_returnsNull() {
+        val capsNoFace = defaultCapabilities.copy(faceDetectModes = intArrayOf(0))
+        val result = ModeSettingsHelper.calculateModeSettings("BEAUTY", capsNoFace)
+
+        assertNull(result.faceDetectMode)
+    }
+
+    @Test
+    fun documentMode_whenEdgeModeAdvertised_setsHighQualityEdgeMode() {
+        val result = ModeSettingsHelper.calculateModeSettings("DOCUMENT", defaultCapabilities)
+
+        assertEquals(CaptureRequest.EDGE_MODE_HIGH_QUALITY, result.edgeMode)
+    }
+
+    @Test
+    fun documentMode_whenEdgeModeNotAdvertised_returnsNull() {
+        val capsNoEdge = defaultCapabilities.copy(edgeModes = intArrayOf(0, 1))
+        val result = ModeSettingsHelper.calculateModeSettings("DOCUMENT", capsNoEdge)
+
+        assertNull(result.edgeMode)
+    }
+
+    @Test
+    fun proMacroMode_whenValidMinFocusDistance_setsMinFocus() {
+        val result = ModeSettingsHelper.calculateModeSettings("PRO MACRO", defaultCapabilities)
+
+        assertEquals(CaptureRequest.CONTROL_AF_MODE_OFF, result.afMode)
+        assertEquals(10.0f, result.focusDistance)
+    }
+
+    @Test
+    fun proMacroMode_whenZeroMinFocusDistance_returnsNull() {
+        val capsZeroFocus = defaultCapabilities.copy(minFocusDistanceDiopters = 0.0f)
+        val result = ModeSettingsHelper.calculateModeSettings("PRO_MACRO", capsZeroFocus)
+
+        assertNull(result.afMode)
+        assertNull(result.focusDistance)
+    }
+
+    @Test
+    fun ultraMacroMode_setsMinFocusAnd2xCropRegion() {
+        val result = ModeSettingsHelper.calculateModeSettings("ULTRA MACRO", defaultCapabilities)
+
+        assertEquals(CaptureRequest.CONTROL_AF_MODE_OFF, result.afMode)
+        assertEquals(10.0f, result.focusDistance)
+        assertEquals(HalRect(1020, 765, 3060, 2295), result.cropRegion)
+    }
+
+    @Test
+    fun slowMotionMode_whenHighSpeedSupported_returnsFpsRange() {
+        val result = ModeSettingsHelper.calculateModeSettings("SLOW-MOTION", defaultCapabilities)
+
+        assertEquals(HalRange(120, 120), result.targetFpsRange)
+    }
+
+    @Test
+    fun unlistedMode_returnsEmptyResult() {
+        val resultPhoto = ModeSettingsHelper.calculateModeSettings("PHOTO", defaultCapabilities)
+        val resultPortrait = ModeSettingsHelper.calculateModeSettings("PORTRAIT", defaultCapabilities)
+        val resultPro = ModeSettingsHelper.calculateModeSettings("PRO", defaultCapabilities)
+
+        assertNull(resultPhoto.aeMode)
+        assertNull(resultPhoto.exposureTimeNs)
+        assertNull(resultPortrait.aeMode)
+        assertNull(resultPro.aeMode)
+    }
+}
