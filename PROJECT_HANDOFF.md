@@ -6,12 +6,12 @@
 
 ## 0. Status block (update every step)
 - **Last updated**: 2026-11-26
-- **Branch / HEAD**: `step-31c-still-capture-settings`
-- **Last completed step**: Step 31c - Apply Mode Settings to Still Capture Request
-- **In progress**: None (Step 31c completed and verified)
-- **Unit tests**: 141 passed, 0 skipped, 0 failed across 23 test classes
+- **Branch / HEAD**: `step-31c2-mode-settings-fix`
+- **Last completed step**: Step 31c2 - Fix Unadvertised and Wrong Still-Capture Mode Settings
+- **In progress**: None (Step 31c2 completed and verified)
+- **Unit tests**: 145 passed, 0 skipped, 0 failed across 24 test classes
 - **Baseline APK size**: 94494604 bytes
-- **Last emulator check**: `emulator-5554` (`Medium_Phone`), 2026-11-26 (App launches cleanly, still photos captured in `ASTRO`, `PRO MACRO`, and `HIGH-RES` modes with mode settings applied to still capture builder, logcat `AndroidRuntime:E` 0 errors, 141 unit tests passing); **Last physical-device (Redmi) check**: Real Camera2 HAL hardware validation marked **NOT VERIFIED** for Step 31c (protocol request required).
+- **Last emulator check**: `emulator-5554` (`Medium_Phone`), 2026-11-26 (App launches cleanly, still photos captured in `FOOD`, `SLOW-MOTION`, `ASTRO`, `PRO MACRO` modes with mode settings clamped/filtered, logcat `AndroidRuntime:E` 0 errors, 145 unit tests passing); **Last physical-device (Redmi) check**: Real Camera2 HAL hardware validation marked **NOT VERIFIED** for Step 31c2 (awaiting owner READY protocol response).
 
 ## 1. Boot order for a new AI
 1. `GEMINI.md` (coding-agent rules & Section 10 Run/Device policy)

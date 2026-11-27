@@ -1,5 +1,11 @@
 # Lensora_Ai Master Build Report
 
+## Step 31c2 - Fix Unadvertised and Wrong Still-Capture Mode Settings
+- **Mode Settings Fix**: Corrected wrong still-capture settings in `ModeSettingsHelper.kt` merged in PR #130. Removed magic number `16` (`CONTROL_SCENE_MODE_BARCODE`) for `FOOD` mode (no scene override sent). Removed 120 FPS target range for `SLOW-MOTION` mode on still capture requests (no FPS range sent). Verified all remaining settings (`ASTRO`, `DEEP SKY`, `NIGHT VISION`, `BEAUTY`, `DOCUMENT`, `PRO MACRO`, `ULTRA MACRO`) against probe JSON capabilities and range clamping. Updated `CameraController.kt` feedback string.
+- **Unit Tests**: 145 passed across 24 test classes (+4 new tests in `ModeSettingsHelperTest.kt`).
+- **Device Status**: **VERIFIED on `emulator-5554`**: built, installed, launched, captured stills in `FOOD`, `SLOW-MOTION`, `ASTRO`, `PRO MACRO`, logcat `AndroidRuntime:E` 0 errors. Real Camera2 HAL hardware validation on physical Redmi marked **NOT VERIFIED** (awaiting owner READY protocol response).
+- **Break-It**: 10 real attacks recorded, verdict **GOOD**.
+
 ## Step OG - Owner Verification Gate & Completion Protocol Rules
 - **Owner Verification Gate & Completion Protocol**: Added Section 13 (Owner Verification Gate) and Section 14 (Completion Protocol) to `GEMINI.md`, updated Priority line and Section 9 (Self-contained `reply.md` with Reviewer verification block items a-i), updated `agent.md` with rules 19, 20, and 21, and added owner verification status banner line above 27-mode tables in `README.md` and `PROJECT_HANDOFF.md`.
 - **Unit Tests**: 141 passed across 23 test classes.

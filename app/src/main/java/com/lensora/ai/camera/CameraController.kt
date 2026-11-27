@@ -408,13 +408,7 @@ class CameraController(private val context: Context) {
                     onFeedback("⏱️ Time-Lapse: High-Speed Interval Frame Capture Active")
                 }
                 "SLOW-MOTION", "SLOW_MOTION" -> {
-                    val caps = ModeSettingsHelper.extractCapabilities(cameraCharacteristics)
-                    val settings = ModeSettingsHelper.calculateModeSettings(modeName, caps)
-                    if (settings.targetFpsRange != null) {
-                        onFeedback("🐢 Slow-Motion: ${settings.targetFpsRange.upper} FPS High-Speed Capture Active")
-                    } else {
-                        onFeedback("🐢 Slow-Motion: Safe Auto Fallback Active")
-                    }
+                    onFeedback("🐢 Slow-Motion: High-Speed Video Mode Active")
                 }
                 "NIGHT VISION", "NIGHT_VISION" -> {
                     onFeedback("🌙 Night Vision: Low-Light Sensitivity Boost Active")

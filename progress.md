@@ -2,6 +2,11 @@
 
 ## Master Build Mode (Phases P0 - P9 - 100% COMPLETE)
 
+- [x] **Step 31c2: Fix Unadvertised and Wrong Still-Capture Mode Settings**
+  - **Mode Settings Correction**: Fixed wrong still-capture settings in `ModeSettingsHelper.kt` merged in PR #130. Removed hardcoded magic number `16` (`CONTROL_SCENE_MODE_BARCODE`) for `FOOD` (no scene override sent). Removed 120 FPS target range for `SLOW-MOTION` on still capture requests (no FPS range sent). Verified every remaining setting (`ASTRO`, `DEEP SKY`, `NIGHT VISION`, `BEAUTY`, `DOCUMENT`, `PRO MACRO`, `ULTRA MACRO`) strictly checks HAL advertised capabilities (`aeModes`, `afModes`, `sceneModes`, `faceDetectModes`, `edgeModes`) and clamps numeric values to probe-advertised ranges. Updated `CameraController.kt` feedback string for SLOW-MOTION.
+  - **Unit Tests**: 145 unit tests passing total across 24 test classes (+4 new tests in `ModeSettingsHelperTest.kt` for normal, edge, null capabilities).
+  - **Device Status**: VERIFIED on `emulator-5554`: built, installed, launched, captured stills in `FOOD`, `SLOW-MOTION`, `ASTRO`, `PRO MACRO`, logcat `AndroidRuntime:E` 0 errors. Real Camera2 HAL behavior on physical Redmi marked **NOT VERIFIED** (awaiting owner READY protocol response).
+
 - [x] **Step OG: Owner Verification Gate & Completion Protocol Rules**
   - **Owner Verification Gate & Completion Protocol**: Added Section 13 (Owner Verification Gate) and Section 14 (Completion Protocol) to `GEMINI.md`, updated Priority line and Section 9 (Self-contained `reply.md` with Reviewer verification block items a-i), updated `agent.md` with rules 19, 20, and 21, and added owner verification status banner line above 27-mode tables in `README.md` and `PROJECT_HANDOFF.md`.
   - **Unit Tests**: 141 unit tests passing total across 23 test classes.
