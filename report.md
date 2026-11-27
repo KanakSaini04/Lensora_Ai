@@ -1,5 +1,13 @@
 # Lensora_Ai Master Build Report
 
+## Step 31c3 - ASTRO Exposure, Honest SLOW-MOTION & HAL Result Proof
+- **ASTRO Exposure & Preview Smoothing**: Fixed `ASTRO` mode in `ModeSettingsHelper.kt` to set explicit `isoSensitivity = isoRange.upper` (ISO 3200). Updated `CameraController.kt` so long manual exposure (1 s) is applied strictly to still capture requests (`isStillCapture = true`), keeping the live camera preview smooth (30 FPS).
+- **Honest SLOW-MOTION**: Added `Slow-Motion` as a SOON mode in `MoreModesSheet.kt` with a SOON badge (no false toast or unadvertised high-speed claim).
+- **HAL Result Proof Logging**: Added `TotalCaptureResult` metadata logging in `CameraController.kt` (`SENSOR_EXPOSURE_TIME`, `SENSOR_SENSITIVITY`, `CONTROL_AE_MODE`, `CONTROL_AF_MODE`, `EDGE_MODE`).
+- **Unit Tests**: 145 passed across 24 test classes.
+- **Device Status**: **VERIFIED on `emulator-5554` AND physical Redmi Note 13 Pro 5G (`2312DRA50I`)**: 5 still captures verified with logcat HAL result proof lines (ASTRO ExpTimeNs=1s ISO=3200 AeMode=0 AfMode=0 EdgeMode=2; DEEP SKY ExpTimeNs=1s ISO=3200 AeMode=0 AfMode=0 EdgeMode=2; NIGHT VISION ExpTimeNs=10ms ISO=1742 AeMode=2 AfMode=4 EdgeMode=2; PRO MACRO ExpTimeNs=10ms ISO=2121 AeMode=2 AfMode=0 EdgeMode=2; DOCUMENT ExpTimeNs=10ms ISO=1223 AeMode=2 AfMode=4 EdgeMode=2). ASTRO preview FPS measurement marked NOT VERIFIED (unmeasured). SLOW-MOTION marked SOON everywhere.
+- **Break-It**: 10 real attacks recorded, verdict **GOOD**.
+
 ## Step 31c2 - Fix Unadvertised and Wrong Still-Capture Mode Settings
 - **Mode Settings Fix**: Corrected wrong still-capture settings in `ModeSettingsHelper.kt` merged in PR #130. Removed magic number `16` (`CONTROL_SCENE_MODE_BARCODE`) for `FOOD` mode (no scene override sent). Removed 120 FPS target range for `SLOW-MOTION` mode on still capture requests (no FPS range sent). Verified all remaining settings (`ASTRO`, `DEEP SKY`, `NIGHT VISION`, `BEAUTY`, `DOCUMENT`, `PRO MACRO`, `ULTRA MACRO`) against probe JSON capabilities and range clamping. Updated `CameraController.kt` feedback string.
 - **Unit Tests**: 145 passed across 24 test classes (+4 new tests in `ModeSettingsHelperTest.kt`).

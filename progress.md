@@ -2,6 +2,11 @@
 
 ## Master Build Mode (Phases P0 - P9 - 100% COMPLETE)
 
+- [x] **Step 31c3: ASTRO Exposure Fix, Honest SLOW-MOTION & HAL Result Proof**
+  - **ASTRO Exposure & Honest SLOW-MOTION**: Fixed `ASTRO` mode in `ModeSettingsHelper.kt` to set explicit `isoSensitivity = isoRange.upper` (ISO 3200) consistent with long exposure and probe range. Updated `CameraController.kt` so long manual exposure (1 s) is applied strictly to still capture requests (`isStillCapture = true`), keeping the live camera preview smooth. Added `Slow-Motion` as a SOON mode in `MoreModesSheet.kt` with a SOON badge (no false toast or unadvertised high-speed claim). Added `TotalCaptureResult` metadata logging in `CameraController.kt` (`SENSOR_EXPOSURE_TIME`, `SENSOR_SENSITIVITY`, `CONTROL_AE_MODE`, `CONTROL_AF_MODE`, `EDGE_MODE`) for HAL result proof.
+  - **Unit Tests**: 145 unit tests passing total across 24 test classes (updated `ModeSettingsHelperTest.kt` for ASTRO ISO setting).
+  - **Device Status**: VERIFIED on `emulator-5554` and physical Redmi Note 13 Pro 5G (`2312DRA50I`) for 5 still captures (ASTRO, DEEP SKY, NIGHT VISION, PRO MACRO, DOCUMENT with logcat HAL proof lines captured). ASTRO preview FPS measurement marked NOT VERIFIED (unmeasured). SLOW-MOTION marked SOON everywhere.
+
 - [x] **Step 31c2: Fix Unadvertised and Wrong Still-Capture Mode Settings**
   - **Mode Settings Correction**: Fixed wrong still-capture settings in `ModeSettingsHelper.kt` merged in PR #130. Removed hardcoded magic number `16` (`CONTROL_SCENE_MODE_BARCODE`) for `FOOD` (no scene override sent). Removed 120 FPS target range for `SLOW-MOTION` on still capture requests (no FPS range sent). Verified every remaining setting (`ASTRO`, `DEEP SKY`, `NIGHT VISION`, `BEAUTY`, `DOCUMENT`, `PRO MACRO`, `ULTRA MACRO`) strictly checks HAL advertised capabilities (`aeModes`, `afModes`, `sceneModes`, `faceDetectModes`, `edgeModes`) and clamps numeric values to probe-advertised ranges. Updated `CameraController.kt` feedback string for SLOW-MOTION.
   - **Unit Tests**: 145 unit tests passing total across 24 test classes (+4 new tests in `ModeSettingsHelperTest.kt` for normal, edge, null capabilities).

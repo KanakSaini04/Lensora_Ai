@@ -6,12 +6,12 @@
 
 ## 0. Status block (update every step)
 - **Last updated**: 2026-11-26
-- **Branch / HEAD**: `step-31c2-mode-settings-fix`
-- **Last completed step**: Step 31c2 - Fix Unadvertised and Wrong Still-Capture Mode Settings
-- **In progress**: None (Step 31c2 completed and verified)
+- **Branch / HEAD**: `step-31c3-astro-slowmo-honesty`
+- **Last completed step**: Step 31c3 - ASTRO Exposure, Honest SLOW-MOTION & HAL Result Proof
+- **In progress**: Step 31c3 (Code complete, unit tests pass, emulator verified, physical Redmi verified for 5 still-capture modes with HAL result proof lines; preview FPS measurement NOT VERIFIED)
 - **Unit tests**: 145 passed, 0 skipped, 0 failed across 24 test classes
 - **Baseline APK size**: 94494604 bytes
-- **Last emulator check**: `emulator-5554` (`Medium_Phone`), 2026-11-26 (App launches cleanly, still photos captured in `FOOD`, `SLOW-MOTION`, `ASTRO`, `PRO MACRO` modes with mode settings clamped/filtered, logcat `AndroidRuntime:E` 0 errors, 145 unit tests passing); **Last physical-device (Redmi) check**: Real Camera2 HAL hardware validation marked **NOT VERIFIED** for Step 31c2 (awaiting owner READY protocol response).
+- **Last emulator check**: `emulator-5554` (`Medium_Phone`), 2026-11-26 (App launches cleanly, ASTRO ISO 3200 set, preview smooth, SLOW-MOTION marked SOON with badge, logcat `AndroidRuntime:E` 0 errors, 145 unit tests passing); **Last physical-device (Redmi) check**: Redmi Note 13 Pro 5G (`2312DRA50I`), 2026-11-28 (Captured stills in ASTRO, DEEP SKY, NIGHT VISION, PRO MACRO, DOCUMENT; logcat HAL proof lines captured; AE-off, AF-off, EdgeMode=2 verified). ASTRO preview FPS measurement marked NOT VERIFIED (unmeasured).
 
 ## 1. Boot order for a new AI
 1. `GEMINI.md` (coding-agent rules & Section 10 Run/Device policy)

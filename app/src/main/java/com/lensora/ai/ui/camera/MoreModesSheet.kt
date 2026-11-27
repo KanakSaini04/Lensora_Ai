@@ -61,7 +61,11 @@ data class ModeItem(
 val proToolsList = listOf(
     ModeItem("High-Res", Icons.Outlined.HighQuality),
     ModeItem("Astro", Icons.Outlined.Stars),
+    ModeItem("Deep Sky", Icons.Outlined.Stars),
+    ModeItem("Night Vision", Icons.Outlined.AutoAwesome),
+    ModeItem("Document", Icons.Outlined.PhotoCamera),
     ModeItem("Panorama", Icons.Outlined.Panorama),
+    ModeItem("Slow-Motion", Icons.Outlined.Videocam, isSoon = true),
     ModeItem("Tele-Cine", Icons.Outlined.Movie, isSoon = true),
     ModeItem("Pro Macro", Icons.Outlined.Camera),
     ModeItem("Time-Lapse", Icons.Outlined.Timelapse),

@@ -12,6 +12,7 @@ import android.hardware.camera2.CameraDevice
 import android.hardware.camera2.CameraManager
 import android.hardware.camera2.CameraMetadata
 import android.hardware.camera2.CaptureRequest
+import android.hardware.camera2.CaptureResult
 import android.hardware.camera2.DngCreator
 import android.hardware.camera2.TotalCaptureResult
 import android.hardware.camera2.params.MeteringRectangle
@@ -351,22 +352,25 @@ class CameraController(private val context: Context) {
         }
     }
 
-    private fun applyAdvancedModeToBuilder(builder: CaptureRequest.Builder, modeName: String) {
+    private fun applyAdvancedModeToBuilder(builder: CaptureRequest.Builder, modeName: String, isStillCapture: Boolean = false) {
         val caps = ModeSettingsHelper.extractCapabilities(cameraCharacteristics)
         val settings = ModeSettingsHelper.calculateModeSettings(modeName, caps)
 
         try {
             settings.controlMode?.let { builder.set(CaptureRequest.CONTROL_MODE, it) }
             settings.sceneMode?.let { builder.set(CaptureRequest.CONTROL_SCENE_MODE, it) }
-            settings.aeMode?.let { builder.set(CaptureRequest.CONTROL_AE_MODE, it) }
             settings.afMode?.let { builder.set(CaptureRequest.CONTROL_AF_MODE, it) }
-            settings.exposureTimeNs?.let { builder.set(CaptureRequest.SENSOR_EXPOSURE_TIME, it) }
-            settings.isoSensitivity?.let { builder.set(CaptureRequest.SENSOR_SENSITIVITY, it) }
             settings.focusDistance?.let { builder.set(CaptureRequest.LENS_FOCUS_DISTANCE, it) }
             settings.faceDetectMode?.let { builder.set(CaptureRequest.STATISTICS_FACE_DETECT_MODE, it) }
             settings.edgeMode?.let { builder.set(CaptureRequest.EDGE_MODE, it) }
             settings.cropRegion?.let { builder.set(CaptureRequest.SCALER_CROP_REGION, android.graphics.Rect(it.left, it.top, it.right, it.bottom)) }
-            settings.targetFpsRange?.let { builder.set(CaptureRequest.CONTROL_AE_TARGET_FPS_RANGE, android.util.Range(it.lower, it.upper)) }
+
+            // Long exposure & manual AE/ISO are applied to STILL CAPTURE requests only so preview stays smooth (30 FPS)
+            if (isStillCapture) {
+                settings.aeMode?.let { builder.set(CaptureRequest.CONTROL_AE_MODE, it) }
+                settings.exposureTimeNs?.let { builder.set(CaptureRequest.SENSOR_EXPOSURE_TIME, it) }
+                settings.isoSensitivity?.let { builder.set(CaptureRequest.SENSOR_SENSITIVITY, it) }
+            }
         } catch (e: Exception) {
             Log.w(tag, "Failed to set advanced mode settings for $modeName on CaptureRequest.Builder: ${e.message}", e)
         }
@@ -380,7 +384,7 @@ class CameraController(private val context: Context) {
 
         try {
             if (builder != null && session != null) {
-                applyAdvancedModeToBuilder(builder, modeName)
+                applyAdvancedModeToBuilder(builder, modeName, isStillCapture = false)
                 try {
                     session.setRepeatingRequest(builder.build(), null, backgroundHandler)
                 } catch (hardwareEx: Exception) {
@@ -406,9 +410,6 @@ class CameraController(private val context: Context) {
                 }
                 "TIME-LAPSE", "TIME_LAPSE" -> {
                     onFeedback("⏱️ Time-Lapse: High-Speed Interval Frame Capture Active")
-                }
-                "SLOW-MOTION", "SLOW_MOTION" -> {
-                    onFeedback("🐢 Slow-Motion: High-Speed Video Mode Active")
                 }
                 "NIGHT VISION", "NIGHT_VISION" -> {
                     onFeedback("🌙 Night Vision: Low-Light Sensitivity Boost Active")
@@ -792,7 +793,7 @@ class CameraController(private val context: Context) {
             captureBuilder.set(CaptureRequest.JPEG_ORIENTATION, jpegOrientation)
             applyFlashToBuilder(captureBuilder)
             applyCameraModeToBuilder(captureBuilder)
-            applyAdvancedModeToBuilder(captureBuilder, activeAdvancedModeName)
+            applyAdvancedModeToBuilder(captureBuilder, activeAdvancedModeName, isStillCapture = true)
 
             reader.setOnImageAvailableListener({ readerRef ->
                 val image = readerRef.acquireLatestImage() ?: return@setOnImageAvailableListener
@@ -876,7 +877,17 @@ class CameraController(private val context: Context) {
                     result: TotalCaptureResult
                 ) {
                     super.onCaptureCompleted(session, request, result)
-                    Log.i(tag, "L0 Still Capture completed successfully")
+                    val expNs = result.get(CaptureResult.SENSOR_EXPOSURE_TIME)
+                    val iso = result.get(CaptureResult.SENSOR_SENSITIVITY)
+                    val aeMode = result.get(CaptureResult.CONTROL_AE_MODE)
+                    val afMode = result.get(CaptureResult.CONTROL_AF_MODE)
+                    val edgeMode = result.get(CaptureResult.EDGE_MODE)
+                    Log.i(
+                        tag,
+                        "L0 Still Capture HAL Result Proof: Mode=$activeAdvancedModeName, " +
+                        "ExpTimeNs=$expNs (${expNs?.let { String.format(Locale.US, "%.2f ms", it / 1_000_000.0) } ?: "null"}), " +
+                        "ISO=$iso, AeMode=$aeMode, AfMode=$afMode, EdgeMode=$edgeMode"
+                    )
                 }
             }, handler)
 
