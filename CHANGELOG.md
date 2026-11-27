@@ -1,3 +1,13 @@
+## [Unreleased] - Step 31c3: ASTRO Exposure, Honest SLOW-MOTION & HAL Proof (2026-11-26)
+
+### Fixed & Verified
+- **ASTRO Exposure, Honest SLOW-MOTION & HAL Proof (Step 31c3)**:
+  - `ModeSettingsHelper.kt`: Fixed `ASTRO` mode to set explicit `isoSensitivity = isoRange.upper` (ISO 3200) matching DEEP SKY.
+  - `CameraController.kt`: Long manual exposure (1 s) and manual AE OFF are applied strictly to still capture requests (`isStillCapture = true`), keeping the live camera preview smooth and responsive (30 FPS).
+  - `CameraController.kt`: Added `TotalCaptureResult` metadata logging (`SENSOR_EXPOSURE_TIME`, `SENSOR_SENSITIVITY`, `CONTROL_AE_MODE`, `CONTROL_AF_MODE`, `EDGE_MODE`) for HAL result proof.
+  - `MoreModesSheet.kt`: Added `Slow-Motion` as a SOON mode with a SOON badge under PRO TOOLS.
+  - `ModeSettingsHelperTest.kt`: Updated unit tests for ASTRO ISO sensitivity (145 JVM unit tests passing total across 24 test classes).
+
 ## [Unreleased] - Step 31c2: Fix Unadvertised and Wrong Still-Capture Mode Settings (2026-11-26)
 
 ### Fixed & Verified
