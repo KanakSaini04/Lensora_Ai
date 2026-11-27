@@ -1,3 +1,13 @@
+## [Unreleased] - Step 31c2: Fix Unadvertised and Wrong Still-Capture Mode Settings (2026-11-26)
+
+### Fixed & Verified
+- **Fix Unadvertised & Wrong Still-Capture Mode Settings (Step 31c2)**:
+  - `ModeSettingsHelper.kt`: Removed hardcoded magic number `16` (`CONTROL_SCENE_MODE_BARCODE`) for `FOOD` mode (no scene override sent).
+  - `ModeSettingsHelper.kt`: Removed 120 FPS target range for `SLOW-MOTION` mode on still capture requests (no FPS range sent).
+  - `ModeSettingsHelper.kt`: Validated all remaining settings (`ASTRO`, `DEEP SKY`, `NIGHT VISION`, `BEAUTY`, `DOCUMENT`, `PRO MACRO`, `ULTRA MACRO`) against probe JSON capabilities and range clamping.
+  - `CameraController.kt`: Updated `SLOW-MOTION` toast feedback message.
+  - `ModeSettingsHelperTest.kt`: Added 4 unit tests for FOOD, SLOW-MOTION, and null capabilities across all modes (145 JVM unit tests passing total across 24 test classes).
+
 ## [Unreleased] - Step OG: Owner Verification Gate & Completion Protocol (2026-11-26)
 
 ### Documentation & Rules

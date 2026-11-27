@@ -232,28 +232,6 @@ object ModeSettingsHelper {
                     cropRegion = cropRect
                 )
             }
-            "SLOW-MOTION", "SLOW_MOTION" -> {
-                val supportsHighSpeed = caps.capabilities?.contains(
-                    CameraCharacteristics.REQUEST_AVAILABLE_CAPABILITIES_CONSTRAINED_HIGH_SPEED_VIDEO
-                ) == true
-                if (supportsHighSpeed && caps.fpsRanges != null) {
-                    val targetRange = caps.fpsRanges.firstOrNull { it.lower >= 120 || it.upper >= 120 }
-                    ModeSettingsResult(targetFpsRange = targetRange)
-                } else {
-                    ModeSettingsResult()
-                }
-            }
-            "FOOD" -> {
-                val supportsFoodScene = caps.sceneModes?.contains(16) == true
-                if (supportsFoodScene) {
-                    ModeSettingsResult(
-                        controlMode = CaptureRequest.CONTROL_MODE_USE_SCENE_MODE,
-                        sceneMode = 16
-                    )
-                } else {
-                    ModeSettingsResult()
-                }
-            }
             else -> ModeSettingsResult()
         }
     }

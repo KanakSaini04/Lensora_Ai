@@ -18,12 +18,12 @@ class ModeSettingsHelperTest {
         minFocusDistanceDiopters = 10.0f,
         faceDetectModes = intArrayOf(0, CaptureRequest.STATISTICS_FACE_DETECT_MODE_SIMPLE),
         edgeModes = intArrayOf(0, 1, CaptureRequest.EDGE_MODE_HIGH_QUALITY),
-        sceneModes = intArrayOf(0, CaptureRequest.CONTROL_SCENE_MODE_NIGHT, 16),
+        sceneModes = intArrayOf(0, CaptureRequest.CONTROL_SCENE_MODE_NIGHT),
         aeModes = intArrayOf(1, CaptureRequest.CONTROL_AE_MODE_OFF),
         afModes = intArrayOf(1, CaptureRequest.CONTROL_AF_MODE_OFF),
         activeArraySize = HalRect(0, 0, 4080, 3060),
         capabilities = intArrayOf(CameraCharacteristics.REQUEST_AVAILABLE_CAPABILITIES_CONSTRAINED_HIGH_SPEED_VIDEO),
-        fpsRanges = listOf(HalRange(30, 30), HalRange(120, 120))
+        fpsRanges = listOf(HalRange(30, 30))
     )
 
     @Test
@@ -144,10 +144,46 @@ class ModeSettingsHelperTest {
     }
 
     @Test
-    fun slowMotionMode_whenHighSpeedSupported_returnsFpsRange() {
+    fun foodMode_returnsEmptyResult_andSendsNoSceneOverride() {
+        val result = ModeSettingsHelper.calculateModeSettings("FOOD", defaultCapabilities)
+
+        assertNull(result.controlMode)
+        assertNull(result.sceneMode)
+    }
+
+    @Test
+    fun foodMode_withNullCapabilities_returnsEmptyResult() {
+        val result = ModeSettingsHelper.calculateModeSettings("FOOD", CameraHalCapabilities())
+
+        assertNull(result.controlMode)
+        assertNull(result.sceneMode)
+    }
+
+    @Test
+    fun slowMotionMode_returnsEmptyResult_andSendsNoFpsRangeOnStillCapture() {
         val result = ModeSettingsHelper.calculateModeSettings("SLOW-MOTION", defaultCapabilities)
 
-        assertEquals(HalRange(120, 120), result.targetFpsRange)
+        assertNull(result.targetFpsRange)
+    }
+
+    @Test
+    fun slowMotionMode_withNullCapabilities_returnsEmptyResult() {
+        val result = ModeSettingsHelper.calculateModeSettings("SLOW-MOTION", CameraHalCapabilities())
+
+        assertNull(result.targetFpsRange)
+    }
+
+    @Test
+    fun allModes_withNullCapabilities_returnEmptyResult() {
+        val emptyCaps = CameraHalCapabilities()
+        val modes = listOf("ASTRO", "DEEP SKY", "NIGHT VISION", "BEAUTY", "DOCUMENT", "PRO MACRO", "ULTRA MACRO", "SLOW-MOTION", "FOOD")
+
+        for (mode in modes) {
+            val result = ModeSettingsHelper.calculateModeSettings(mode, emptyCaps)
+            assertNull("mode $mode should have null aeMode", result.aeMode)
+            assertNull("mode $mode should have null sceneMode", result.sceneMode)
+            assertNull("mode $mode should have null targetFpsRange", result.targetFpsRange)
+        }
     }
 
     @Test
