@@ -1,0 +1,5 @@
+﻿
+11-28 03:13:47.571 24225 31572 I CameraController: L0 Still Capture HAL Result Proof: Mode=Document, ExpTimeNs=10000000 (10.00 ms), ISO=2057, 
+AeMode=2, AfMode=3, EdgeMode=0, ControlMode=1, SceneMode=1
+
+

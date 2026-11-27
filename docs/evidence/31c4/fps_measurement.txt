@@ -1,0 +1,6 @@
+﻿
+11-28 03:23:49.707 25332  3497 I LensoraFpsScratch: FPS_MEASUREMENT: Mode=Deep Sky, Frames=242, ElapsedSec=10.04, Fps=24.11
+11-28 03:23:59.742 25332  3497 I LensoraFpsScratch: FPS_MEASUREMENT: Mode=Deep Sky, Frames=241, ElapsedSec=10.04, Fps=24.01
+11-28 03:24:09.788 25332  3497 I LensoraFpsScratch: FPS_MEASUREMENT: Mode=Deep Sky, Frames=241, ElapsedSec=10.04, Fps=24.01
+
+

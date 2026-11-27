@@ -1,3 +1,12 @@
+## [Unreleased] - Step 31c4: ASTRO / DEEP SKY / SLOW-MOTION Honesty Correction & HAL Proof (2026-11-28)
+
+### Fixed & Verified
+- **ASTRO / DEEP SKY / SLOW-MOTION Honesty Correction & HAL Proof (Step 31c4)**:
+  - `ModeSettingsHelper.kt`: Updated ASTRO and DEEP SKY to request explicit ISO 3200 clamped (`3200.coerceIn(lower, upper)`) with `lower <= upper` range validation. Eliminated all no-op `upper.coerceIn` calls.
+  - `CameraController.kt`: Replaced false "30s" and "Stacking" toasts with pure `ModeSettingsHelper.formatModeFeedbackLabel` helper. Added `ControlMode` and `SceneMode` fields to `TotalCaptureResult` metadata proof log line.
+  - `ModeSettingsHelperTest.kt`: Added 5 unit tests for ISO 3200 clamping, inverted range fallback, and feedback label formatting (150 JVM unit tests passing total across 24 test classes).
+  - Saved raw Redmi HAL proof logs, diffs, and preview FPS measurements to `docs/evidence/31c4/`.
+
 ## [Unreleased] - Step 31c3: ASTRO Exposure, Honest SLOW-MOTION & HAL Proof (2026-11-26)
 
 ### Fixed & Verified

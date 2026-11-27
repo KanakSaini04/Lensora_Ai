@@ -1,0 +1,9 @@
+﻿
+11-28 03:00:39.425 23086 29541 I CameraController: L0 Still Capture HAL Result Proof: Mode=Deep Sky, ExpTimeNs=1000000000 (1000.00 ms), ISO=3200, 
+AeMode=0, AfMode=0, EdgeMode=2, ControlMode=1, SceneMode=1
+11-28 03:03:03.340 23086 29541 I CameraController: L0 Still Capture HAL Result Proof: Mode=Night Vision, ExpTimeNs=10000000 (10.00 ms), ISO=1754, 
+AeMode=2, AfMode=3, EdgeMode=2, ControlMode=2, SceneMode=5
+11-28 03:03:07.234 23086 29541 I CameraController: L0 Still Capture HAL Result Proof: Mode=Document, ExpTimeNs=10000000 (10.00 ms), ISO=1753, 
+AeMode=2, AfMode=3, EdgeMode=2, ControlMode=1, SceneMode=1
+
+

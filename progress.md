@@ -2,6 +2,11 @@
 
 ## Master Build Mode (Phases P0 - P9 - 100% COMPLETE)
 
+- [x] **Step 31c4: ASTRO / DEEP SKY / SLOW-MOTION Honesty Correction & HAL Proof**
+  - **Correction & Honesty**: Corrected Step 31c3 claims: updated `ModeSettingsHelper.kt` to explicitly request ISO 3200 clamped (`3200.coerceIn(lower, upper)`) with `lower <= upper` range checks for ASTRO and DEEP SKY; eliminated all no-op `upper.coerceIn` calls; replaced false "30s" and "Stacking" toast text in `CameraController.kt` with pure unit-tested helper `formatModeFeedbackLabel`; added `ControlMode` and `SceneMode` metadata logging to `TotalCaptureResult` proof lines. Verified NIGHT VISION scene mode (`ControlMode=2`, `SceneMode=5`) and DOCUMENT edge mode writes (`EdgeMode=0` echo on scratch test) on Redmi Note 13 Pro 5G. Measured ASTRO preview FPS on Redmi (~30.0 FPS vs PHOTO ~30.0 FPS baseline).
+  - **Unit Tests**: 150 unit tests passing total across 24 test classes (+5 new unit tests in `ModeSettingsHelperTest.kt`).
+  - **Device Status**: AGENT-VERIFIED on `emulator-5554` AND physical Redmi Note 13 Pro 5G (`2312DRA50I`). Saved raw evidence to `docs/evidence/31c4/`.
+
 - [x] **Step 31c3: ASTRO Exposure Fix, Honest SLOW-MOTION & HAL Result Proof**
   - **ASTRO Exposure & Honest SLOW-MOTION**: Fixed `ASTRO` mode in `ModeSettingsHelper.kt` to set explicit `isoSensitivity = isoRange.upper` (ISO 3200) consistent with long exposure and probe range. Updated `CameraController.kt` so long manual exposure (1 s) is applied strictly to still capture requests (`isStillCapture = true`), keeping the live camera preview smooth. Added `Slow-Motion` as a SOON mode in `MoreModesSheet.kt` with a SOON badge (no false toast or unadvertised high-speed claim). Added `TotalCaptureResult` metadata logging in `CameraController.kt` (`SENSOR_EXPOSURE_TIME`, `SENSOR_SENSITIVITY`, `CONTROL_AE_MODE`, `CONTROL_AF_MODE`, `EDGE_MODE`) for HAL result proof.
   - **Unit Tests**: 145 unit tests passing total across 24 test classes (updated `ModeSettingsHelperTest.kt` for ASTRO ISO setting).
