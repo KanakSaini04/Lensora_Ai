@@ -1,3 +1,13 @@
+## [Unreleased] - Step OG: Owner Verification Gate & Completion Protocol (2026-11-26)
+
+### Documentation & Rules
+- **Owner Verification Gate & Completion Protocol (Step OG)**:
+  - Added Section 13 (Owner Verification Gate) and Section 14 (Completion Protocol) to `GEMINI.md`.
+  - Updated Priority line in `GEMINI.md` to list Owner Verification Gate (13) first.
+  - Updated Section 9 in `GEMINI.md` mandating self-contained `reply.md` with Reviewer verification block items a-i.
+  - Added rules 19, 20, and 21 to `agent.md`.
+  - Added status banner line above 27-mode tables in `README.md` and `PROJECT_HANDOFF.md`.
+
 ## [Unreleased] - Step 31c: Apply Mode Settings to Still Capture Request (2026-11-26)
 
 ### Added & Verified

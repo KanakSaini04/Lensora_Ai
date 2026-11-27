@@ -2,7 +2,7 @@
 
 **Read this file AND `agent.md` at the start of EVERY task and prompt. Then read `PROJECT_HANDOFF.md`.**
 Merged from the generic Android rulebook (`Neccessary/GEMINI_RULES.md`, kept as reference) and the Lensora evidence rules. Where they differ, THIS file wins.
-**Priority:** Safety (2) > Quality bar (12) and Honesty (5) > Project locks (0) > Behavior (1) > Workflow (3, 4) > Standards (6, 7).
+**Priority:** Owner verification gate (13) > Safety (2) > Quality bar (12) and Honesty (5) > Project locks (0) > Behavior (1) > Workflow (3, 4) > Standards (6, 7).
 If two rules clash, or a rule clashes with my prompt: STOP and ask. Do not choose silently.
 
 ---
@@ -86,7 +86,17 @@ If two rules clash, or a rule clashes with my prompt: STOP and ask. Do not choos
 - **Logcat**: After EVERY change: build, install, launch on the emulator, open the affected screen, paste `adb -s emulator-5554 logcat -d -s AndroidRuntime:E`.
 
 ## 9. Report format (final message & reply.md, always)
-- **`reply.md` File**: Create or OVERWRITE `reply.md` at repo root at the end of every task (never append). Include Status, Goal & acceptance criteria matrix, Design/Root cause summary, What changed list, Evidence (tests, device, Break-It), Risks/rollback, and Docs audit.
+- **`reply.md` File**: Overwrite `reply.md` at repo root at the end of every prompt (never append). The owner forwards ONLY `Claude_review.zip` and `reply.md` to the reviewer. `reply.md` must be completely self-contained. Include Status, Goal & acceptance criteria matrix, Design/Root cause summary, What changed list, Evidence (tests, device, Break-It), Risks/rollback, Docs audit, and end with the mandatory "Reviewer verification block".
+- **Reviewer Verification Block**: `reply.md` MUST end with a "Reviewer verification block" holding real pasted output, each preceded by the exact command above it (never a summary):
+  a. `git branch --show-current`
+  b. `git diff --stat dev...HEAD` (taken before the merge)
+  c. After the merge: `git fetch; git log origin/dev --oneline -5`, plus the PR link and merge commit
+  d. Unit test totals from `app/build/test-results/testDebugUnitTest/*.xml`: classes, tests, failures, errors, skipped (a real sum, not the Gradle summary line)
+  e. `adb -s emulator-5554 logcat -d -s AndroidRuntime:E` (when code changed)
+  f. A grep for every claim like "removed X", "added Y" or "label Z exists", with its output
+  g. The Break-It table, with one real output line per attack
+  h. Acceptance criteria: one line each, with the evidence (file:line or the output above)
+  i. "Reviewer check requests": anything you could not verify, and every known gap
 - **Final Message Format**:
   1. `Rules loaded. Task understood as: ...` (start of the task)
   2. **Changed:** files, one line each, plus assumptions
@@ -121,6 +131,21 @@ Custom adaptive/monochrome icon, SplashScreen API, Privacy Policy and Terms (in-
 - Merge gates. A change is merged only when ALL are true: all acceptance criteria verified on the device, unit tests pass, Break-It (10+ real attacks) verdict GOOD, docs honest, no known bug left. If anything is unverified, do not merge; report exactly what remains.
 - If a bug survives 3 real fix attempts: stop, restore the last working state (git revert or abandon the branch), and report. Do not ship a workaround.
 - Report back to the owner only when the work is merged and verified (or when you are truly blocked). Report: root cause, what changed, evidence per acceptance criterion, PR link, merge commit, anything NOT VERIFIED, risks.
+
+## 13. Owner verification gate (highest priority)
+- **Status Ladder**: Features move through `IMPLEMENTED`, then `AGENT-VERIFIED` (all tests, attacks, and emulator checks pass), then `OWNER-VERIFIED`. Only `OWNER-VERIFIED` means done.
+- **Owner Authority**: Only the owner sets `OWNER-VERIFIED` by typing `"VERIFIED <feature>"` in chat. You never write `OWNER-VERIFIED`, `DONE`, or `WORKING` for a feature in any doc, PR, or report without that explicit message from the owner. Never say "done" in a report; say `AGENT-VERIFIED`.
+- **Owner Check List**: Every report ends with an "Owner check" list: at most 5 short steps for the owner to confirm the feature on the device, with the exact expected result for each.
+- **Merge & Fix Policy**: You may merge to `dev` after the Section 12 quality gates pass, but the feature stays `AGENT-VERIFIED`. If the owner reports it broken, fix it or revert it before starting any new feature.
+
+## 14. Completion protocol
+Every task follows this protocol:
+a. **Build, Test & Run**: Build the project, run unit tests, run on the emulator, and paste the Logcat error output (`adb -s emulator-5554 logcat -d -s AndroidRuntime:E`).
+b. **Break-It Attacks**: Perform Break-It attacks with real output (Section 4 minimums: 5 for small fix, 10 for step, 25 for finished feature). Find bugs on purpose.
+c. **Self-Code Review**: Review your own changed code for bugs, performance, and readability. Improve THAT code in this task. Report anything unrelated; do not fix unrelated code.
+d. **Acceptance Criteria Verification & Fix Loop**: Compare the result with every acceptance criterion. For each unmet criterion or broken attack, state what is still wanted and fix the root cause. A genuine fix only: no swallowed `catch`, no `@Suppress`, no `!!`, no special-casing tests, no weakened or ignored tests.
+e. **Fix Loop Iteration**: After any fix, repeat from step a. Maximum 3 loops. If something is still unmet after 3 loops, stop, revert or abandon the branch, and report exactly what remains.
+f. **Docs Synchronization**: Before reporting, update every doc: `progress.md`, `CHANGELOG.md`, `README.md` (if behavior changed), `PROJECT_HANDOFF.md`, `report.md`, and `reply.md`. Docs must match the code and the real test results.
 
 ---
 **Golden rule: when unsure, ask. Do less, not more. Never break working code. Build exactly what was asked, test it, attack it, prove it, and tell the truth.**
