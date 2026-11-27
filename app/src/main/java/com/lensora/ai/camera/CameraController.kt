@@ -351,27 +351,45 @@ class CameraController(private val context: Context) {
         }
     }
 
+    private fun applyAdvancedModeToBuilder(builder: CaptureRequest.Builder, modeName: String) {
+        val caps = ModeSettingsHelper.extractCapabilities(cameraCharacteristics)
+        val settings = ModeSettingsHelper.calculateModeSettings(modeName, caps)
+
+        try {
+            settings.controlMode?.let { builder.set(CaptureRequest.CONTROL_MODE, it) }
+            settings.sceneMode?.let { builder.set(CaptureRequest.CONTROL_SCENE_MODE, it) }
+            settings.aeMode?.let { builder.set(CaptureRequest.CONTROL_AE_MODE, it) }
+            settings.afMode?.let { builder.set(CaptureRequest.CONTROL_AF_MODE, it) }
+            settings.exposureTimeNs?.let { builder.set(CaptureRequest.SENSOR_EXPOSURE_TIME, it) }
+            settings.isoSensitivity?.let { builder.set(CaptureRequest.SENSOR_SENSITIVITY, it) }
+            settings.focusDistance?.let { builder.set(CaptureRequest.LENS_FOCUS_DISTANCE, it) }
+            settings.faceDetectMode?.let { builder.set(CaptureRequest.STATISTICS_FACE_DETECT_MODE, it) }
+            settings.edgeMode?.let { builder.set(CaptureRequest.EDGE_MODE, it) }
+            settings.cropRegion?.let { builder.set(CaptureRequest.SCALER_CROP_REGION, android.graphics.Rect(it.left, it.top, it.right, it.bottom)) }
+            settings.targetFpsRange?.let { builder.set(CaptureRequest.CONTROL_AE_TARGET_FPS_RANGE, android.util.Range(it.lower, it.upper)) }
+        } catch (e: Exception) {
+            Log.w(tag, "Failed to set advanced mode settings for $modeName on CaptureRequest.Builder: ${e.message}", e)
+        }
+    }
+
     fun setAdvancedMode(modeName: String, onFeedback: (String) -> Unit = {}) {
         advancedModeState.selectAdvancedMode(modeName)
         Log.i(tag, "Applying Advanced Camera Mode: $modeName")
         val builder = previewRequestBuilder
         val session = captureSession
-        val characteristics = cameraCharacteristics
 
         try {
+            if (builder != null && session != null) {
+                applyAdvancedModeToBuilder(builder, modeName)
+                try {
+                    session.setRepeatingRequest(builder.build(), null, backgroundHandler)
+                } catch (hardwareEx: Exception) {
+                    Log.w(tag, "Preview repeating request rejected by HAL for $modeName", hardwareEx)
+                }
+            }
+
             when (modeName.uppercase(Locale.US)) {
                 "BEAUTY" -> {
-                    if (builder != null && session != null) {
-                        try {
-                            val faceModes = characteristics?.get(CameraCharacteristics.STATISTICS_INFO_AVAILABLE_FACE_DETECT_MODES)
-                            if (faceModes != null && faceModes.contains(CameraCharacteristics.STATISTICS_FACE_DETECT_MODE_SIMPLE)) {
-                                builder.set(CaptureRequest.STATISTICS_FACE_DETECT_MODE, CaptureRequest.STATISTICS_FACE_DETECT_MODE_SIMPLE)
-                            }
-                            session.setRepeatingRequest(builder.build(), null, backgroundHandler)
-                        } catch (hardwareEx: Exception) {
-                            Log.w(tag, "Beauty face detection rejected by HAL. Safe Auto fallback.", hardwareEx)
-                        }
-                    }
                     VibeState.selectedVibe = VibePreset.ROYAL_GOLD
                     onFeedback("💄 Beauty: Soft Skin & Warm Tone Active")
                 }
@@ -379,30 +397,10 @@ class CameraController(private val context: Context) {
                     onFeedback("🏷️ Watermark: Lensora Computational Stamp Active")
                 }
                 "FOOD" -> {
-                    if (builder != null && session != null) {
-                        try {
-                            val sceneModes = characteristics?.get(CameraCharacteristics.CONTROL_AVAILABLE_SCENE_MODES)
-                            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.P && sceneModes != null && sceneModes.contains(16)) {
-                                builder.set(CaptureRequest.CONTROL_MODE, CaptureRequest.CONTROL_MODE_USE_SCENE_MODE)
-                                builder.set(CaptureRequest.CONTROL_SCENE_MODE, 16)
-                            }
-                            session.setRepeatingRequest(builder.build(), null, backgroundHandler)
-                        } catch (hardwareEx: Exception) {
-                            Log.w(tag, "Food scene mode rejected by HAL. Safe Auto fallback.", hardwareEx)
-                        }
-                    }
                     VibeState.selectedVibe = VibePreset.ROYAL_GOLD
                     onFeedback("🍱 Food: Warm Saturation & Micro-Contrast Active")
                 }
                 "DOCUMENT" -> {
-                    if (builder != null && session != null) {
-                        try {
-                            builder.set(CaptureRequest.EDGE_MODE, CaptureRequest.EDGE_MODE_HIGH_QUALITY)
-                            session.setRepeatingRequest(builder.build(), null, backgroundHandler)
-                        } catch (hardwareEx: Exception) {
-                            Log.w(tag, "Document edge enhancement rejected by HAL. Safe Auto fallback.", hardwareEx)
-                        }
-                    }
                     VibeState.selectedVibe = VibePreset.LEICA
                     onFeedback("📄 Document: High-Contrast Text Edge Enhancement Active")
                 }
@@ -410,148 +408,36 @@ class CameraController(private val context: Context) {
                     onFeedback("⏱️ Time-Lapse: High-Speed Interval Frame Capture Active")
                 }
                 "SLOW-MOTION", "SLOW_MOTION" -> {
-                    if (builder != null && session != null) {
-                        try {
-                            val capabilities = characteristics?.get(CameraCharacteristics.REQUEST_AVAILABLE_CAPABILITIES)
-                            val supportsHighSpeed = capabilities != null && capabilities.contains(CameraCharacteristics.REQUEST_AVAILABLE_CAPABILITIES_CONSTRAINED_HIGH_SPEED_VIDEO)
-
-                            if (supportsHighSpeed) {
-                                builder.set(CaptureRequest.CONTROL_AE_TARGET_FPS_RANGE, android.util.Range(120, 120))
-                                onFeedback("🐢 Slow-Motion: 120 FPS High-Speed Capture Active")
-                            } else {
-                                Log.w(tag, "Constrained high-speed video unsupported by HAL. Safe 60 FPS fallback.")
-                                onFeedback("🐢 Slow-Motion: High-Speed HAL Unsupported (Safe Fallback)")
-                            }
-                            session.setRepeatingRequest(builder.build(), null, backgroundHandler)
-                        } catch (hardwareEx: Exception) {
-                            Log.w(tag, "Slow-Motion target FPS range rejected by HAL. Safe Auto fallback.", hardwareEx)
-                            onFeedback("🐢 Slow-Motion: Safe Auto Fallback Active")
-                        }
+                    val caps = ModeSettingsHelper.extractCapabilities(cameraCharacteristics)
+                    val settings = ModeSettingsHelper.calculateModeSettings(modeName, caps)
+                    if (settings.targetFpsRange != null) {
+                        onFeedback("🐢 Slow-Motion: ${settings.targetFpsRange.upper} FPS High-Speed Capture Active")
                     } else {
-                        onFeedback("🐢 Slow-Motion Mode Selected")
+                        onFeedback("🐢 Slow-Motion: Safe Auto Fallback Active")
                     }
                 }
                 "NIGHT VISION", "NIGHT_VISION" -> {
-                    if (builder != null && session != null) {
-                        try {
-                            val sceneModes = characteristics?.get(CameraCharacteristics.CONTROL_AVAILABLE_SCENE_MODES)
-                            if (sceneModes != null && sceneModes.contains(CaptureRequest.CONTROL_SCENE_MODE_NIGHT)) {
-                                builder.set(CaptureRequest.CONTROL_MODE, CaptureRequest.CONTROL_MODE_USE_SCENE_MODE)
-                                builder.set(CaptureRequest.CONTROL_SCENE_MODE, CaptureRequest.CONTROL_SCENE_MODE_NIGHT)
-                            } else {
-                                val expRange = characteristics?.get(CameraCharacteristics.SENSOR_INFO_EXPOSURE_TIME_RANGE)
-                                val maxExp = expRange?.upper ?: 500_000_000L
-                                builder.set(CaptureRequest.CONTROL_AE_MODE, CaptureRequest.CONTROL_AE_MODE_OFF)
-                                builder.set(CaptureRequest.SENSOR_EXPOSURE_TIME, maxExp.coerceAtMost(500_000_000L))
-                            }
-                            session.setRepeatingRequest(builder.build(), null, backgroundHandler)
-                        } catch (hardwareEx: Exception) {
-                            Log.w(tag, "Night Vision exposure settings rejected by HAL. Safe Auto fallback.", hardwareEx)
-                        }
-                    }
                     onFeedback("🌙 Night Vision: Low-Light Sensitivity Boost Active")
                 }
                 "ASTRO" -> {
-                    if (builder != null && session != null) {
-                        try {
-                            builder.set(CaptureRequest.CONTROL_AF_MODE, CaptureRequest.CONTROL_AF_MODE_OFF)
-                            builder.set(CaptureRequest.LENS_FOCUS_DISTANCE, 0.0f) // Infinity focus
-
-                            val expRange = characteristics?.get(CameraCharacteristics.SENSOR_INFO_EXPOSURE_TIME_RANGE)
-                            val targetExposureNs = expRange?.upper ?: 30_000_000_000L // 30s or max HAL supported
-                            builder.set(CaptureRequest.CONTROL_AE_MODE, CaptureRequest.CONTROL_AE_MODE_OFF)
-                            builder.set(CaptureRequest.SENSOR_EXPOSURE_TIME, targetExposureNs.coerceAtMost(30_000_000_000L))
-
-                            session.setRepeatingRequest(builder.build(), null, backgroundHandler)
-                        } catch (hardwareEx: Exception) {
-                            Log.w(tag, "Astro hardware long exposure rejected by hardware/emulator. Safe Auto fallback.", hardwareEx)
-                            builder.set(CaptureRequest.CONTROL_MODE, CaptureRequest.CONTROL_MODE_AUTO)
-                            builder.set(CaptureRequest.CONTROL_AE_MODE, CaptureRequest.CONTROL_AE_MODE_ON)
-                            builder.set(CaptureRequest.CONTROL_AF_MODE, CaptureRequest.CONTROL_AF_MODE_CONTINUOUS_PICTURE)
-                            session.setRepeatingRequest(builder.build(), null, backgroundHandler)
-                        }
-                    }
                     onFeedback("✨ Astro: Locked Focus to Infinity & 30s Exposure")
                 }
                 "DEEP SKY", "DEEP_SKY" -> {
-                    if (builder != null && session != null) {
-                        try {
-                            builder.set(CaptureRequest.CONTROL_AF_MODE, CaptureRequest.CONTROL_AF_MODE_OFF)
-                            builder.set(CaptureRequest.LENS_FOCUS_DISTANCE, 0.0f)
-
-                            val expRange = characteristics?.get(CameraCharacteristics.SENSOR_INFO_EXPOSURE_TIME_RANGE)
-                            val targetExposureNs = expRange?.upper ?: 30_000_000_000L
-                            val isoRange = characteristics?.get(CameraCharacteristics.SENSOR_INFO_SENSITIVITY_RANGE)
-                            val maxIso = isoRange?.upper ?: 3200
-
-                            builder.set(CaptureRequest.CONTROL_AE_MODE, CaptureRequest.CONTROL_AE_MODE_OFF)
-                            builder.set(CaptureRequest.SENSOR_EXPOSURE_TIME, targetExposureNs.coerceAtMost(30_000_000_000L))
-                            builder.set(CaptureRequest.SENSOR_SENSITIVITY, maxIso)
-
-                            session.setRepeatingRequest(builder.build(), null, backgroundHandler)
-                        } catch (hardwareEx: Exception) {
-                            Log.w(tag, "Deep Sky exposure/ISO rejected by HAL. Safe Auto fallback.", hardwareEx)
-                        }
-                    }
                     onFeedback("🌌 Deep Sky: Infinity Focus & Max ISO Stacking Active")
                 }
                 "RAW DNG", "RAW_DNG" -> {
-                    if (builder != null && session != null) {
-                        try {
-                            val capabilities = characteristics?.get(CameraCharacteristics.REQUEST_AVAILABLE_CAPABILITIES)
-                            val supportsRaw = capabilities != null && capabilities.contains(CameraCharacteristics.REQUEST_AVAILABLE_CAPABILITIES_RAW)
-
-                            if (supportsRaw) {
-                                onFeedback("📸 RAW DNG: Uncompressed RAW_SENSOR Stream Active")
-                            } else {
-                                Log.w(tag, "RAW_SENSOR stream capability unsupported by HAL. Safe JPEG fallback.")
-                                onFeedback("📸 RAW DNG: RAW_SENSOR Unsupported (Safe JPEG Fallback)")
-                            }
-                        } catch (hardwareEx: Exception) {
-                            Log.w(tag, "RAW DNG query rejected by HAL. Safe Auto fallback.", hardwareEx)
-                            onFeedback("📸 RAW DNG: Safe Fallback Active")
-                        }
+                    val caps = ModeSettingsHelper.extractCapabilities(cameraCharacteristics)
+                    val supportsRaw = caps.capabilities?.contains(CameraCharacteristics.REQUEST_AVAILABLE_CAPABILITIES_RAW) == true
+                    if (supportsRaw) {
+                        onFeedback("📸 RAW DNG: Uncompressed RAW_SENSOR Stream Active")
                     } else {
-                        onFeedback("📸 RAW DNG Mode Selected")
+                        onFeedback("📸 RAW DNG: RAW_SENSOR Unsupported (Safe JPEG Fallback)")
                     }
                 }
                 "PRO MACRO", "PRO_MACRO" -> {
-                    if (builder != null && session != null) {
-                        try {
-                            val minFocusDist = characteristics?.get(CameraCharacteristics.LENS_INFO_MINIMUM_FOCUS_DISTANCE) ?: 10.0f
-                            builder.set(CaptureRequest.CONTROL_AF_MODE, CaptureRequest.CONTROL_AF_MODE_OFF)
-                            builder.set(CaptureRequest.LENS_FOCUS_DISTANCE, minFocusDist)
-
-                            session.setRepeatingRequest(builder.build(), null, backgroundHandler)
-                        } catch (hardwareEx: Exception) {
-                            Log.w(tag, "Macro hardware focus rejected by hardware/emulator. Safe Auto fallback.", hardwareEx)
-                            builder.set(CaptureRequest.CONTROL_MODE, CaptureRequest.CONTROL_MODE_AUTO)
-                            builder.set(CaptureRequest.CONTROL_AF_MODE, CaptureRequest.CONTROL_AF_MODE_CONTINUOUS_PICTURE)
-                            session.setRepeatingRequest(builder.build(), null, backgroundHandler)
-                        }
-                    }
                     onFeedback("🔍 Pro Macro: Minimum Focus Distance applied")
                 }
                 "ULTRA MACRO", "ULTRA_MACRO" -> {
-                    if (builder != null && session != null) {
-                        try {
-                            val minFocusDist = characteristics?.get(CameraCharacteristics.LENS_INFO_MINIMUM_FOCUS_DISTANCE) ?: 10.0f
-                            builder.set(CaptureRequest.CONTROL_AF_MODE, CaptureRequest.CONTROL_AF_MODE_OFF)
-                            builder.set(CaptureRequest.LENS_FOCUS_DISTANCE, minFocusDist)
-
-                            val activeArraySize = characteristics?.get(CameraCharacteristics.SENSOR_INFO_ACTIVE_ARRAY_SIZE)
-                            if (activeArraySize != null) {
-                                val cropWidth = activeArraySize.width() / 2
-                                val cropHeight = activeArraySize.height() / 2
-                                val left = (activeArraySize.width() - cropWidth) / 2
-                                val top = (activeArraySize.height() - cropHeight) / 2
-                                builder.set(CaptureRequest.SCALER_CROP_REGION, android.graphics.Rect(left, top, left + cropWidth, top + cropHeight))
-                            }
-                            session.setRepeatingRequest(builder.build(), null, backgroundHandler)
-                        } catch (hardwareEx: Exception) {
-                            Log.w(tag, "Ultra Macro hardware settings rejected by HAL. Safe Auto fallback.", hardwareEx)
-                        }
-                    }
                     onFeedback("🔬 Ultra Macro: 2x Magnification & Min Focus Distance Active")
                 }
                 "LEICA" -> {
@@ -911,6 +797,8 @@ class CameraController(private val context: Context) {
             captureBuilder.addTarget(reader.surface)
             captureBuilder.set(CaptureRequest.JPEG_ORIENTATION, jpegOrientation)
             applyFlashToBuilder(captureBuilder)
+            applyCameraModeToBuilder(captureBuilder)
+            applyAdvancedModeToBuilder(captureBuilder, activeAdvancedModeName)
 
             reader.setOnImageAvailableListener({ readerRef ->
                 val image = readerRef.acquireLatestImage() ?: return@setOnImageAvailableListener

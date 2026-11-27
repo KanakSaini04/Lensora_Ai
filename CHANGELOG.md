@@ -1,3 +1,13 @@
+## [Unreleased] - Step 31c: Apply Mode Settings to Still Capture Request (2026-11-26)
+
+### Added & Verified
+- **Mode Settings Applied to Still Capture Requests (Step 31c)**:
+  - Mode settings (`ASTRO`, `DEEP SKY`, `NIGHT VISION`, `BEAUTY`, `DOCUMENT`, `PRO MACRO`, `ULTRA MACRO`, `SLOW-MOTION`, `FOOD`) are now applied to the still-capture request builder (`captureBuilder` in `CameraController.kt`).
+  - Added `ModeSettingsHelper.kt` containing `CameraHalCapabilities`, `HalRange`, `HalRect`, `ModeSettingsResult`, and capability extraction & range clamping logic.
+  - Clamped exposure time, ISO sensitivity, focus distance, face detect mode, edge mode, scene mode, crop region, and target FPS range to advertised HAL ranges.
+  - Added 15 unit tests in `ModeSettingsHelperTest.kt` verifying normal, edge, unsupported HAL, and range clamping logic (141 unit tests passing total).
+  - Verified still captures on `emulator-5554` across 3 listed modes (`ASTRO`, `PRO MACRO`, `HIGH-RES`). Logcat `AndroidRuntime:E` 0 errors.
+
 ## [Unreleased] - Step M1: Real TFLite AI Models Integration (2026-11-24)
 
 ### Added & Verified

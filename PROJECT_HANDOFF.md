@@ -5,13 +5,13 @@
 > Rules for this file: every fact must come from the repo, a test run or a device/emulator check. Unknown = **NOT VERIFIED**. No secrets, tokens, keystores, PINs or personal data.
 
 ## 0. Status block (update every step)
-- **Last updated**: 2026-11-24
-- **Branch / HEAD**: `dev`
-- **Last completed step**: Step M1 - Real TFLite AI Models Integration (Super-Res & Scene Classifier)
-- **In progress**: None (Step M1 evidence correction & thread safety fix completed)
-- **Unit tests**: 125 passed, 0 skipped, 0 failed across 22 test classes
+- **Last updated**: 2026-11-26
+- **Branch / HEAD**: `step-31c-still-capture-settings`
+- **Last completed step**: Step 31c - Apply Mode Settings to Still Capture Request
+- **In progress**: None (Step 31c completed and verified)
+- **Unit tests**: 141 passed, 0 skipped, 0 failed across 23 test classes
 - **Baseline APK size**: 94494604 bytes
-- **Last emulator check**: `emulator-5554` (`Medium_Phone`), 2026-11-24 (App launches cleanly, `real_esrgan_v2.tflite` 2x net super-res pass generated distinct 12.5MP output `FD19E5E77A6F1B2AE20E7AD17BB122057A0875E8A28F96B4A6FBB16FFD14ECB1`, seam/color check PASS, video recording start/stop verified on main thread without Toast crashes, 125 unit tests passing); **Last physical-device (Redmi) check**: VERIFIED on device (2026-11-24) for Step M1 12.5MP output `43E3124055541005C9D64FBACBEB4BFDC47C7A1C745A841063B2AF73444E84A0`, seam/color check PASS, real fallback logcat timestamp `11-24 01:23:04.888` (3.97s duration), and dumpsys battery reset (58%).
+- **Last emulator check**: `emulator-5554` (`Medium_Phone`), 2026-11-26 (App launches cleanly, still photos captured in `ASTRO`, `PRO MACRO`, and `HIGH-RES` modes with mode settings applied to still capture builder, logcat `AndroidRuntime:E` 0 errors, 141 unit tests passing); **Last physical-device (Redmi) check**: Real Camera2 HAL hardware validation marked **NOT VERIFIED** for Step 31c (protocol request required).
 
 ## 1. Boot order for a new AI
 1. `GEMINI.md` (coding-agent rules & Section 10 Run/Device policy)
