@@ -1,0 +1,134 @@
+﻿Applications Memory Usage (in Kilobytes):
+Uptime: 2065059 Realtime: 2065059
+
+** MEMINFO in pid 9147 [com.lensora.ai] **
+                   Pss  Private  Private  SwapPss      Rss     Heap     Heap     Heap
+                 Total    Dirty    Clean    Dirty    Total     Size    Alloc     Free
+                ------   ------   ------   ------   ------   ------   ------   ------
+  Native Heap    14290    14260        4       31    15128    28244    21340     3082
+  Dalvik Heap     6047     6020        4      101     6648    10470     5235     5235
+ Dalvik Other    10592     4836        0        2    16604                           
+        Stack     1504     1504        0        0     1512                           
+       Ashmem      522        0        0        0     1640                           
+    Other dev       31        8       16        0      312                           
+     .so mmap     7267      324     3856       15    38912                           
+    .jar mmap     9229        0     5404        0    45468                           
+    .apk mmap    70145        0    69880        0    71040                           
+    .ttf mmap     1529        0     1324        0     1844                           
+    .dex mmap       31        0       16        0      852                           
+    .oat mmap      230        0      152        0     1748                           
+    .art mmap    12036     9012     2344      107    25024                           
+   Other mmap     3230        4      200        0     7096                           
+      Unknown      640      608       24        5     1104                           
+        TOTAL   137584    36576    83224      261   234932    38714    26575     8317
+ 
+ App Summary
+                       Pss(KB)                        Rss(KB)
+                        ------                         ------
+           Java Heap:    17376                          31672
+         Native Heap:    14260                          15128
+                Code:    81108                         171520
+               Stack:     1504                           1512
+            Graphics:        0                              0
+       Private Other:     5552
+              System:    17784
+             Unknown:                                   15100
+ 
+           TOTAL PSS:   137584            TOTAL RSS:   234932       TOTAL SWAP PSS:      261
+ 
+ Objects
+               Views:       11         ViewRootImpl:        1
+         AppContexts:        5           Activities:        1
+              Assets:       21        AssetManagers:        0
+       Local Binders:       28        Proxy Binders:       65
+       Parcel memory:       10         Parcel count:       40
+    Death Recipients:        2             WebViews:        0
+ 
+ Native Allocations
+                         Count                       Total(kB)
+                        ------                         ------
+    Other (malloced):      475                             43
+ Other (nonmalloced):       95                             69
+   Bitmap (malloced):       22                            515
+ 
+ SQL
+         MEMORY_USED:      246
+  PAGECACHE_OVERFLOW:       75          MALLOC_SIZE:       46
+ 
+ DATABASES
+      pgsz     dbsz   Lookaside(b) cache hits cache misses cache size  Dbname
+PER CONNECTION STATS
+         4      104            114     5    40     7  /data/user/0/com.lensora.ai/no_backup/androidx.work.workdb
+         4        8                    0     0     0    (attached) temp
+         4      104             28     1    14     2  /data/user/0/com.lensora.ai/no_backup/androidx.work.workdb (3)
+POOL STATS
+     cache hits  cache misses    cache size  Dbname
+              6            58             9  /data/user/0/com.lensora.ai/no_backup/androidx.work.workdb
+ 
+Applications Memory Usage (in Kilobytes):
+Uptime: 2097979 Realtime: 2097979
+
+** MEMINFO in pid 9147 [com.lensora.ai] **
+                   Pss  Private  Private  SwapPss      Rss     Heap     Heap     Heap
+                 Total    Dirty    Clean    Dirty    Total     Size    Alloc     Free
+                ------   ------   ------   ------   ------   ------   ------   ------
+  Native Heap    13419    13232      164     3972    14256    34916    23301     7589
+  Dalvik Heap    12979     7572     5304       55    13716    10286     5143     5143
+ Dalvik Other    10801     4568      256      122    17040                           
+        Stack     1164     1140       24      416     1172                           
+       Ashmem       10        0        0        0      604                           
+    Other dev       18        8        4        0      300                           
+     .so mmap     5149      316     2068       35    36088                           
+    .jar mmap     6587        0     3608        0    40512                           
+    .apk mmap    48118        0    47884        0    48960                           
+    .ttf mmap     1477        0     1292        0     1752                           
+    .dex mmap       47        0        0        0     1044                           
+    .oat mmap      125        0       24        0     1652                           
+    .art mmap     6799     3848     2196     5219    20952                           
+   Other mmap     3163        4       44        0     7116                           
+      Unknown      714      604      104       57     1176                           
+        TOTAL   120446    31292    62972     9876   206340    45202    28444    12732
+ 
+ App Summary
+                       Pss(KB)                        Rss(KB)
+                        ------                         ------
+           Java Heap:    13616                          34668
+         Native Heap:    13232                          14256
+                Code:    55268                         142032
+               Stack:     1140                           1172
+            Graphics:        0                              0
+       Private Other:    11008
+              System:    26182
+             Unknown:                                   14212
+ 
+           TOTAL PSS:   120446            TOTAL RSS:   206340       TOTAL SWAP PSS:     9876
+ 
+ Objects
+               Views:       11         ViewRootImpl:        1
+         AppContexts:        5           Activities:        1
+              Assets:       21        AssetManagers:        0
+       Local Binders:       66        Proxy Binders:       67
+       Parcel memory:       11         Parcel count:       46
+    Death Recipients:        1             WebViews:        0
+ 
+ Native Allocations
+                         Count                       Total(kB)
+                        ------                         ------
+    Other (malloced):      462                             42
+ Other (nonmalloced):      136                             88
+   Bitmap (malloced):       14                            122
+ 
+ SQL
+         MEMORY_USED:      246
+  PAGECACHE_OVERFLOW:       75          MALLOC_SIZE:       46
+ 
+ DATABASES
+      pgsz     dbsz   Lookaside(b) cache hits cache misses cache size  Dbname
+PER CONNECTION STATS
+         4      104            114     5    45     7  /data/user/0/com.lensora.ai/no_backup/androidx.work.workdb
+         4        8                    0     0     0    (attached) temp
+         4      104             28     1    17     2  /data/user/0/com.lensora.ai/no_backup/androidx.work.workdb (3)
+POOL STATS
+     cache hits  cache misses    cache size  Dbname
+              6            66             9  /data/user/0/com.lensora.ai/no_backup/androidx.work.workdb
+ 

@@ -1,0 +1,11 @@
+﻿
+11-28 16:11:34.001 14691 18982 I CameraController: L0 Still Capture HAL Result Proof: Mode=Night Vision, ExpTimeNs=1000000000 (1000.00 ms), 
+ISO=3200, AeMode=0, AfMode=0, EdgeMode=2
+11-28 16:11:35.095 14691 18982 I CameraController: L0 Still Capture HAL Result Proof: Mode=Night Vision, ExpTimeNs=40000000 (40.00 ms), ISO=6400, 
+AeMode=3, AfMode=4, EdgeMode=2
+11-28 16:11:37.284 14691 18982 I CameraController: L0 Still Capture HAL Result Proof: Mode=Pro Macro, ExpTimeNs=40000000 (40.00 ms), ISO=6414, 
+AeMode=3, AfMode=0, EdgeMode=2
+11-28 16:11:39.597 14691 18982 I CameraController: L0 Still Capture HAL Result Proof: Mode=High-Res, ExpTimeNs=40000000 (40.00 ms), ISO=6414, 
+AeMode=3, AfMode=4, EdgeMode=2
+
+

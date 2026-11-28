@@ -1,0 +1,291 @@
+﻿--------- beginning of main
+11-28 15:24:25.106   550  6352 D android.hardware.audio@7.1-impl.ranchu: TinyalsaSource::read:148 pcm_readi was late delivering frames, inserting 16000 us of silence
+11-28 15:24:25.112  1186  1327 D SatelliteController: iisInCarrierRoamingNbIotNtn: satellite is disabled
+11-28 15:24:25.113  1186  1327 D SatelliteController: getCarrierRoamingNtnConnectType: Falling back to global carrier config connect type: 0
+11-28 15:24:25.119   550  6355 W android.hardware.audio@7.1-impl.ranchu: pcmRead:221 pcm_readi failed with 'cannot read/write stream data: I/O error' (-1)
+11-28 15:24:25.119   550  6355 E android.hardware.audio@7.1-impl.ranchu: pcmRead:222 failure: -1
+11-28 15:24:25.122   550  6352 D android.hardware.audio@7.1-impl.ranchu: TinyalsaSource::read:148 pcm_readi was late delivering frames, inserting 16000 us of silence
+11-28 15:24:25.123   666  1035 E mapper.ranchu: getStandardMetadataImpl:886 failure: UNSUPPORTED: id=419: unexpected standardMetadataType=21
+11-28 15:24:25.138   550  6352 D android.hardware.audio@7.1-impl.ranchu: TinyalsaSource::read:148 pcm_readi was late delivering frames, inserting 16000 us of silence
+11-28 15:24:25.141   666  1035 E mapper.ranchu: getStandardMetadataImpl:886 failure: UNSUPPORTED: id=422: unexpected standardMetadataType=21
+11-28 15:24:25.154   550  6352 D android.hardware.audio@7.1-impl.ranchu: TinyalsaSource::read:148 pcm_readi was late delivering frames, inserting 16000 us of silence
+11-28 15:24:25.162  4361  5465 D SceneClassifier: AI Director Analysis: box=null, hint=null, label=Γ£¿ AI: Landscape, source=HEURISTIC_ENGINE in 8ms
+11-28 15:24:25.170   550  6352 D android.hardware.audio@7.1-impl.ranchu: TinyalsaSource::read:148 pcm_readi was late delivering frames, inserting 16000 us of silence
+11-28 15:24:25.177   666  1035 E mapper.ranchu: getStandardMetadataImpl:886 failure: UNSUPPORTED: id=423: unexpected standardMetadataType=21
+11-28 15:24:25.186   550  6352 D android.hardware.audio@7.1-impl.ranchu: TinyalsaSource::read:148 pcm_readi was late delivering frames, inserting 16000 us of silence
+11-28 15:24:25.202   550  6352 D android.hardware.audio@7.1-impl.ranchu: TinyalsaSource::read:148 pcm_readi was late delivering frames, inserting 16000 us of silence
+11-28 15:24:25.212   666  1035 E mapper.ranchu: getStandardMetadataImpl:886 failure: UNSUPPORTED: id=394: unexpected standardMetadataType=21
+11-28 15:24:25.218   550  6352 D android.hardware.audio@7.1-impl.ranchu: TinyalsaSource::read:148 pcm_readi was late delivering frames, inserting 16000 us of silence
+11-28 15:24:25.223   550  6355 W android.hardware.audio@7.1-impl.ranchu: pcmRead:221 pcm_readi failed with 'cannot read/write stream data: I/O error' (-1)
+11-28 15:24:25.224   550  6355 E android.hardware.audio@7.1-impl.ranchu: pcmRead:222 failure: -1
+11-28 15:24:25.235   550  6352 D android.hardware.audio@7.1-impl.ranchu: TinyalsaSource::read:148 pcm_readi was late delivering frames, inserting 16000 us of silence
+11-28 15:24:25.247   666  1035 E mapper.ranchu: getStandardMetadataImpl:886 failure: UNSUPPORTED: id=395: unexpected standardMetadataType=21
+11-28 15:24:25.250   550  6352 D android.hardware.audio@7.1-impl.ranchu: TinyalsaSource::read:148 pcm_readi was late delivering frames, inserting 16000 us of silence
+11-28 15:24:25.267   550  6352 D android.hardware.audio@7.1-impl.ranchu: TinyalsaSource::read:148 pcm_readi was late delivering frames, inserting 16000 us of silence
+11-28 15:24:25.286   550  6352 D android.hardware.audio@7.1-impl.ranchu: TinyalsaSource::read:148 pcm_readi was late delivering frames, inserting 16000 us of silence
+11-28 15:24:25.286   666   666 E mapper.ranchu: getStandardMetadataImpl:886 failure: UNSUPPORTED: id=396: unexpected standardMetadataType=21
+11-28 15:24:25.298   550  6352 D android.hardware.audio@7.1-impl.ranchu: TinyalsaSource::read:148 pcm_readi was late delivering frames, inserting 16000 us of silence
+11-28 15:24:25.317   550  6352 D android.hardware.audio@7.1-impl.ranchu: TinyalsaSource::read:148 pcm_readi was late delivering frames, inserting 16000 us of silence
+11-28 15:24:25.320   666   666 E mapper.ranchu: getStandardMetadataImpl:886 failure: UNSUPPORTED: id=424: unexpected standardMetadataType=21
+11-28 15:24:25.327   550  6355 W android.hardware.audio@7.1-impl.ranchu: pcmRead:221 pcm_readi failed with 'cannot read/write stream data: I/O error' (-1)
+11-28 15:24:25.327   550  6355 E android.hardware.audio@7.1-impl.ranchu: pcmRead:222 failure: -1
+11-28 15:24:25.329   550  6352 D android.hardware.audio@7.1-impl.ranchu: TinyalsaSource::read:148 pcm_readi was late delivering frames, inserting 16000 us of silence
+11-28 15:24:25.347   550  6352 D android.hardware.audio@7.1-impl.ranchu: TinyalsaSource::read:148 pcm_readi was late delivering frames, inserting 16000 us of silence
+11-28 15:24:25.359   666   666 E mapper.ranchu: getStandardMetadataImpl:886 failure: UNSUPPORTED: id=397: unexpected standardMetadataType=21
+11-28 15:24:25.363   550  6352 D android.hardware.audio@7.1-impl.ranchu: TinyalsaSource::read:148 pcm_readi was late delivering frames, inserting 16000 us of silence
+11-28 15:24:25.379   550  6352 D android.hardware.audio@7.1-impl.ranchu: TinyalsaSource::read:148 pcm_readi was late delivering frames, inserting 16000 us of silence
+11-28 15:24:25.394   666   666 E mapper.ranchu: getStandardMetadataImpl:886 failure: UNSUPPORTED: id=398: unexpected standardMetadataType=21
+11-28 15:24:25.395   550  6352 D android.hardware.audio@7.1-impl.ranchu: TinyalsaSource::read:148 pcm_readi was late delivering frames, inserting 16000 us of silence
+11-28 15:24:25.414   550  6352 D android.hardware.audio@7.1-impl.ranchu: TinyalsaSource::read:148 pcm_readi was late delivering frames, inserting 16000 us of silence
+11-28 15:24:25.426   550  6352 D android.hardware.audio@7.1-impl.ranchu: TinyalsaSource::read:148 pcm_readi was late delivering frames, inserting 16000 us of silence
+11-28 15:24:25.426   666   666 E mapper.ranchu: getStandardMetadataImpl:886 failure: UNSUPPORTED: id=399: unexpected standardMetadataType=21
+11-28 15:24:25.435   550  6355 W android.hardware.audio@7.1-impl.ranchu: pcmRead:221 pcm_readi failed with 'cannot read/write stream data: I/O error' (-1)
+11-28 15:24:25.435   550  6355 E android.hardware.audio@7.1-impl.ranchu: pcmRead:222 failure: -1
+11-28 15:24:25.442   550  6352 D android.hardware.audio@7.1-impl.ranchu: TinyalsaSource::read:148 pcm_readi was late delivering frames, inserting 16000 us of silence
+11-28 15:24:25.458   550  6352 D android.hardware.audio@7.1-impl.ranchu: TinyalsaSource::read:148 pcm_readi was late delivering frames, inserting 16000 us of silence
+11-28 15:24:25.461   666   666 E mapper.ranchu: getStandardMetadataImpl:886 failure: UNSUPPORTED: id=400: unexpected standardMetadataType=21
+11-28 15:24:25.474   550  6352 D android.hardware.audio@7.1-impl.ranchu: TinyalsaSource::read:148 pcm_readi was late delivering frames, inserting 16000 us of silence
+11-28 15:24:25.490   550  6352 D android.hardware.audio@7.1-impl.ranchu: TinyalsaSource::read:148 pcm_readi was late delivering frames, inserting 16000 us of silence
+11-28 15:24:25.500   666   666 E mapper.ranchu: getStandardMetadataImpl:886 failure: UNSUPPORTED: id=401: unexpected standardMetadataType=21
+11-28 15:24:25.505   550  6352 D android.hardware.audio@7.1-impl.ranchu: TinyalsaSource::read:148 pcm_readi was late delivering frames, inserting 16000 us of silence
+11-28 15:24:25.528   550  6352 D android.hardware.audio@7.1-impl.ranchu: TinyalsaSource::read:148 pcm_readi was late delivering frames, inserting 16000 us of silence
+11-28 15:24:25.537   666   666 E mapper.ranchu: getStandardMetadataImpl:886 failure: UNSUPPORTED: id=402: unexpected standardMetadataType=21
+11-28 15:24:25.538   550  6352 D android.hardware.audio@7.1-impl.ranchu: TinyalsaSource::read:148 pcm_readi was late delivering frames, inserting 16000 us of silence
+11-28 15:24:25.539   550  6355 W android.hardware.audio@7.1-impl.ranchu: pcmRead:221 pcm_readi failed with 'cannot read/write stream data: I/O error' (-1)
+11-28 15:24:25.539   550  6355 E android.hardware.audio@7.1-impl.ranchu: pcmRead:222 failure: -1
+11-28 15:24:25.555   550  6352 D android.hardware.audio@7.1-impl.ranchu: TinyalsaSource::read:148 pcm_readi was late delivering frames, inserting 16000 us of silence
+11-28 15:24:25.559   666   666 E mapper.ranchu: getStandardMetadataImpl:886 failure: UNSUPPORTED: id=404: unexpected standardMetadataType=21
+11-28 15:24:25.571   550  6352 D android.hardware.audio@7.1-impl.ranchu: TinyalsaSource::read:148 pcm_readi was late delivering frames, inserting 16000 us of silence
+11-28 15:24:25.586   550  6352 D android.hardware.audio@7.1-impl.ranchu: TinyalsaSource::read:148 pcm_readi was late delivering frames, inserting 16000 us of silence
+11-28 15:24:25.595   666  1035 E mapper.ranchu: getStandardMetadataImpl:886 failure: UNSUPPORTED: id=391: unexpected standardMetadataType=21
+11-28 15:24:25.602   550  6352 D android.hardware.audio@7.1-impl.ranchu: TinyalsaSource::read:148 pcm_readi was late delivering frames, inserting 16000 us of silence
+11-28 15:24:25.618   550  6352 D android.hardware.audio@7.1-impl.ranchu: TinyalsaSource::read:148 pcm_readi was late delivering frames, inserting 16000 us of silence
+11-28 15:24:25.629   666   666 E mapper.ranchu: getStandardMetadataImpl:886 failure: UNSUPPORTED: id=407: unexpected standardMetadataType=21
+11-28 15:24:25.634   550  6352 D android.hardware.audio@7.1-impl.ranchu: TinyalsaSource::read:148 pcm_readi was late delivering frames, inserting 16000 us of silence
+11-28 15:24:25.643   550  6355 W android.hardware.audio@7.1-impl.ranchu: pcmRead:221 pcm_readi failed with 'cannot read/write stream data: I/O error' (-1)
+11-28 15:24:25.643   550  6355 E android.hardware.audio@7.1-impl.ranchu: pcmRead:222 failure: -1
+11-28 15:24:25.650   550  6352 D android.hardware.audio@7.1-impl.ranchu: TinyalsaSource::read:148 pcm_readi was late delivering frames, inserting 16000 us of silence
+11-28 15:24:25.662   666   666 E mapper.ranchu: getStandardMetadataImpl:886 failure: UNSUPPORTED: id=392: unexpected standardMetadataType=21
+11-28 15:24:25.665   550  6352 D android.hardware.audio@7.1-impl.ranchu: TinyalsaSource::read:148 pcm_readi was late delivering frames, inserting 16000 us of silence
+11-28 15:24:25.682   550  6352 D android.hardware.audio@7.1-impl.ranchu: TinyalsaSource::read:148 pcm_readi was late delivering frames, inserting 16000 us of silence
+11-28 15:24:25.695   666   666 E mapper.ranchu: getStandardMetadataImpl:886 failure: UNSUPPORTED: id=393: unexpected standardMetadataType=21
+11-28 15:24:25.699   550  6352 D android.hardware.audio@7.1-impl.ranchu: TinyalsaSource::read:148 pcm_readi was late delivering frames, inserting 16000 us of silence
+11-28 15:24:25.702  4361  5465 D SceneClassifier: AI Director Analysis: box=null, hint=null, label=Γ£¿ AI: Landscape, source=HEURISTIC_ENGINE in 5ms
+11-28 15:24:25.717   550  6352 D android.hardware.audio@7.1-impl.ranchu: TinyalsaSource::read:148 pcm_readi was late delivering frames, inserting 16000 us of silence
+11-28 15:24:25.730   550  6352 D android.hardware.audio@7.1-impl.ranchu: TinyalsaSource::read:148 pcm_readi was late delivering frames, inserting 16000 us of silence
+11-28 15:24:25.732   666   666 E mapper.ranchu: getStandardMetadataImpl:886 failure: UNSUPPORTED: id=410: unexpected standardMetadataType=21
+11-28 15:24:25.746   550  6352 D android.hardware.audio@7.1-impl.ranchu: TinyalsaSource::read:148 pcm_readi was late delivering frames, inserting 16000 us of silence
+11-28 15:24:25.747   550  6355 W android.hardware.audio@7.1-impl.ranchu: pcmRead:221 pcm_readi failed with 'cannot read/write stream data: I/O error' (-1)
+11-28 15:24:25.747   550  6355 E android.hardware.audio@7.1-impl.ranchu: pcmRead:222 failure: -1
+11-28 15:24:25.763   550  6352 D android.hardware.audio@7.1-impl.ranchu: TinyalsaSource::read:148 pcm_readi was late delivering frames, inserting 16000 us of silence
+11-28 15:24:25.770   666   666 E mapper.ranchu: getStandardMetadataImpl:886 failure: UNSUPPORTED: id=412: unexpected standardMetadataType=21
+11-28 15:24:25.779   550  6352 D android.hardware.audio@7.1-impl.ranchu: TinyalsaSource::read:148 pcm_readi was late delivering frames, inserting 16000 us of silence
+11-28 15:24:25.794   550  6352 D android.hardware.audio@7.1-impl.ranchu: TinyalsaSource::read:148 pcm_readi was late delivering frames, inserting 16000 us of silence
+11-28 15:24:25.807   666  1035 E mapper.ranchu: getStandardMetadataImpl:886 failure: UNSUPPORTED: id=413: unexpected standardMetadataType=21
+11-28 15:24:25.810   550  6352 D android.hardware.audio@7.1-impl.ranchu: TinyalsaSource::read:148 pcm_readi was late delivering frames, inserting 16000 us of silence
+11-28 15:24:25.825   550  6352 D android.hardware.audio@7.1-impl.ranchu: TinyalsaSource::read:148 pcm_readi was late delivering frames, inserting 16000 us of silence
+11-28 15:24:25.842   666  1035 E mapper.ranchu: getStandardMetadataImpl:886 failure: UNSUPPORTED: id=414: unexpected standardMetadataType=21
+11-28 15:24:25.842   550  6352 D android.hardware.audio@7.1-impl.ranchu: TinyalsaSource::read:148 pcm_readi was late delivering frames, inserting 16000 us of silence
+11-28 15:24:25.850   550  6355 W android.hardware.audio@7.1-impl.ranchu: pcmRead:221 pcm_readi failed with 'cannot read/write stream data: I/O error' (-1)
+11-28 15:24:25.850   550  6355 E android.hardware.audio@7.1-impl.ranchu: pcmRead:222 failure: -1
+11-28 15:24:25.857   550  6352 D android.hardware.audio@7.1-impl.ranchu: TinyalsaSource::read:148 pcm_readi was late delivering frames, inserting 16000 us of silence
+11-28 15:24:25.874   550  6352 D android.hardware.audio@7.1-impl.ranchu: TinyalsaSource::read:148 pcm_readi was late delivering frames, inserting 16000 us of silence
+11-28 15:24:25.874   666  1035 E mapper.ranchu: getStandardMetadataImpl:886 failure: UNSUPPORTED: id=415: unexpected standardMetadataType=21
+11-28 15:24:25.890   550  6352 D android.hardware.audio@7.1-impl.ranchu: TinyalsaSource::read:148 pcm_readi was late delivering frames, inserting 16000 us of silence
+11-28 15:24:25.905   666  1035 E mapper.ranchu: getStandardMetadataImpl:886 failure: UNSUPPORTED: id=416: unexpected standardMetadataType=21
+11-28 15:24:25.905   550  6352 D android.hardware.audio@7.1-impl.ranchu: TinyalsaSource::read:148 pcm_readi was late delivering frames, inserting 16000 us of silence
+11-28 15:24:25.922   550  6352 D android.hardware.audio@7.1-impl.ranchu: TinyalsaSource::read:148 pcm_readi was late delivering frames, inserting 16000 us of silence
+11-28 15:24:25.939   550  6352 D android.hardware.audio@7.1-impl.ranchu: TinyalsaSource::read:148 pcm_readi was late delivering frames, inserting 16000 us of silence
+11-28 15:24:25.941   666  1035 E mapper.ranchu: getStandardMetadataImpl:886 failure: UNSUPPORTED: id=419: unexpected standardMetadataType=21
+11-28 15:24:25.955   550  6352 D android.hardware.audio@7.1-impl.ranchu: TinyalsaSource::read:148 pcm_readi was late delivering frames, inserting 16000 us of silence
+11-28 15:24:25.955   550  6355 W android.hardware.audio@7.1-impl.ranchu: pcmRead:221 pcm_readi failed with 'cannot read/write stream data: I/O error' (-1)
+11-28 15:24:25.956   550  6355 E android.hardware.audio@7.1-impl.ranchu: pcmRead:222 failure: -1
+11-28 15:24:25.971   550  6352 D android.hardware.audio@7.1-impl.ranchu: TinyalsaSource::read:148 pcm_readi was late delivering frames, inserting 16000 us of silence
+11-28 15:24:25.981   666  1035 E mapper.ranchu: getStandardMetadataImpl:886 failure: UNSUPPORTED: id=422: unexpected standardMetadataType=21
+11-28 15:24:25.986   550  6352 D android.hardware.audio@7.1-impl.ranchu: TinyalsaSource::read:148 pcm_readi was late delivering frames, inserting 16000 us of silence
+11-28 15:24:26.002   550  6352 D android.hardware.audio@7.1-impl.ranchu: TinyalsaSource::read:148 pcm_readi was late delivering frames, inserting 16000 us of silence
+11-28 15:24:26.011   666  1035 E mapper.ranchu: getStandardMetadataImpl:886 failure: UNSUPPORTED: id=423: unexpected standardMetadataType=21
+11-28 15:24:26.017   550  6352 D android.hardware.audio@7.1-impl.ranchu: TinyalsaSource::read:148 pcm_readi was late delivering frames, inserting 16000 us of silence
+11-28 15:24:26.038   550  6352 D android.hardware.audio@7.1-impl.ranchu: TinyalsaSource::read:148 pcm_readi was late delivering frames, inserting 16000 us of silence
+11-28 15:24:26.042   666   666 E mapper.ranchu: getStandardMetadataImpl:886 failure: UNSUPPORTED: id=394: unexpected standardMetadataType=21
+11-28 15:24:26.049   550  6352 D android.hardware.audio@7.1-impl.ranchu: TinyalsaSource::read:148 pcm_readi was late delivering frames, inserting 16000 us of silence
+11-28 15:24:26.060   550  6355 W android.hardware.audio@7.1-impl.ranchu: pcmRead:221 pcm_readi failed with 'cannot read/write stream data: I/O error' (-1)
+11-28 15:24:26.060   550  6355 E android.hardware.audio@7.1-impl.ranchu: pcmRead:222 failure: -1
+11-28 15:24:26.065   550  6352 D android.hardware.audio@7.1-impl.ranchu: TinyalsaSource::read:148 pcm_readi was late delivering frames, inserting 16000 us of silence
+11-28 15:24:26.076   666   666 E mapper.ranchu: getStandardMetadataImpl:886 failure: UNSUPPORTED: id=395: unexpected standardMetadataType=21
+11-28 15:24:26.082   550  6352 D android.hardware.audio@7.1-impl.ranchu: TinyalsaSource::read:148 pcm_readi was late delivering frames, inserting 16000 us of silence
+11-28 15:24:26.099   550  6352 D android.hardware.audio@7.1-impl.ranchu: TinyalsaSource::read:148 pcm_readi was late delivering frames, inserting 16000 us of silence
+11-28 15:24:26.113   550  6352 D android.hardware.audio@7.1-impl.ranchu: TinyalsaSource::read:148 pcm_readi was late delivering frames, inserting 16000 us of silence
+11-28 15:24:26.117   666  1035 E mapper.ranchu: getStandardMetadataImpl:886 failure: UNSUPPORTED: id=396: unexpected standardMetadataType=21
+11-28 15:24:26.130   550  6352 D android.hardware.audio@7.1-impl.ranchu: TinyalsaSource::read:148 pcm_readi was late delivering frames, inserting 16000 us of silence
+11-28 15:24:26.146   550  6352 D android.hardware.audio@7.1-impl.ranchu: TinyalsaSource::read:148 pcm_readi was late delivering frames, inserting 16000 us of silence
+11-28 15:24:26.146   666  1035 E mapper.ranchu: getStandardMetadataImpl:886 failure: UNSUPPORTED: id=424: unexpected standardMetadataType=21
+11-28 15:24:26.163   550  6355 W android.hardware.audio@7.1-impl.ranchu: pcmRead:221 pcm_readi failed with 'cannot read/write stream data: I/O error' (-1)
+11-28 15:24:26.163   550  6352 D android.hardware.audio@7.1-impl.ranchu: TinyalsaSource::read:148 pcm_readi was late delivering frames, inserting 16000 us of silence
+11-28 15:24:26.163   550  6355 E android.hardware.audio@7.1-impl.ranchu: pcmRead:222 failure: -1
+11-28 15:24:26.179   550  6352 D android.hardware.audio@7.1-impl.ranchu: TinyalsaSource::read:148 pcm_readi was late delivering frames, inserting 16000 us of silence
+11-28 15:24:26.182   666  1035 E mapper.ranchu: getStandardMetadataImpl:886 failure: UNSUPPORTED: id=397: unexpected standardMetadataType=21
+11-28 15:24:26.194   550  6352 D android.hardware.audio@7.1-impl.ranchu: TinyalsaSource::read:148 pcm_readi was late delivering frames, inserting 16000 us of silence
+11-28 15:24:26.211   550  6352 D android.hardware.audio@7.1-impl.ranchu: TinyalsaSource::read:148 pcm_readi was late delivering frames, inserting 16000 us of silence
+11-28 15:24:26.217   666  1035 E mapper.ranchu: getStandardMetadataImpl:886 failure: UNSUPPORTED: id=398: unexpected standardMetadataType=21
+11-28 15:24:26.223  4361  5465 D SceneClassifier: AI Director Analysis: box=null, hint=null, label=Γ£¿ AI: Landscape, source=HEURISTIC_ENGINE in 3ms
+11-28 15:24:26.226   550  6352 D android.hardware.audio@7.1-impl.ranchu: TinyalsaSource::read:148 pcm_readi was late delivering frames, inserting 16000 us of silence
+11-28 15:24:26.242   550  6352 D android.hardware.audio@7.1-impl.ranchu: TinyalsaSource::read:148 pcm_readi was late delivering frames, inserting 16000 us of silence
+11-28 15:24:26.253   666   666 E mapper.ranchu: getStandardMetadataImpl:886 failure: UNSUPPORTED: id=399: unexpected standardMetadataType=21
+11-28 15:24:26.258   550  6352 D android.hardware.audio@7.1-impl.ranchu: TinyalsaSource::read:148 pcm_readi was late delivering frames, inserting 16000 us of silence
+11-28 15:24:26.268   550  6355 W android.hardware.audio@7.1-impl.ranchu: pcmRead:221 pcm_readi failed with 'cannot read/write stream data: I/O error' (-1)
+11-28 15:24:26.268   550  6355 E android.hardware.audio@7.1-impl.ranchu: pcmRead:222 failure: -1
+11-28 15:24:26.274   550  6352 D android.hardware.audio@7.1-impl.ranchu: TinyalsaSource::read:148 pcm_readi was late delivering frames, inserting 16000 us of silence
+11-28 15:24:26.282   666   666 E mapper.ranchu: getStandardMetadataImpl:886 failure: UNSUPPORTED: id=400: unexpected standardMetadataType=21
+11-28 15:24:26.291   550  6352 D android.hardware.audio@7.1-impl.ranchu: TinyalsaSource::read:148 pcm_readi was late delivering frames, inserting 16000 us of silence
+11-28 15:24:26.306   550  6352 D android.hardware.audio@7.1-impl.ranchu: TinyalsaSource::read:148 pcm_readi was late delivering frames, inserting 16000 us of silence
+11-28 15:24:26.308   666  6340 D BufferPoolAccessor2.0: bufferpool2 0x792175206758 : 5(10240 size) total buffers - 4(8192 size) used buffers - 11717/11722 (recycle/alloc) - 42/23435 (fetch/transfer)
+11-28 15:24:26.318   666   666 E mapper.ranchu: getStandardMetadataImpl:886 failure: UNSUPPORTED: id=401: unexpected standardMetadataType=21
+11-28 15:24:26.322   550  6352 D android.hardware.audio@7.1-impl.ranchu: TinyalsaSource::read:148 pcm_readi was late delivering frames, inserting 16000 us of silence
+11-28 15:24:26.339   550  6352 D android.hardware.audio@7.1-impl.ranchu: TinyalsaSource::read:148 pcm_readi was late delivering frames, inserting 16000 us of silence
+11-28 15:24:26.352   666  1035 E mapper.ranchu: getStandardMetadataImpl:886 failure: UNSUPPORTED: id=402: unexpected standardMetadataType=21
+11-28 15:24:26.354   550  6352 D android.hardware.audio@7.1-impl.ranchu: TinyalsaSource::read:148 pcm_readi was late delivering frames, inserting 16000 us of silence
+11-28 15:24:26.371   550  6352 D android.hardware.audio@7.1-impl.ranchu: TinyalsaSource::read:148 pcm_readi was late delivering frames, inserting 16000 us of silence
+11-28 15:24:26.371   550  6355 W android.hardware.audio@7.1-impl.ranchu: pcmRead:221 pcm_readi failed with 'cannot read/write stream data: I/O error' (-1)
+11-28 15:24:26.371   550  6355 E android.hardware.audio@7.1-impl.ranchu: pcmRead:222 failure: -1
+11-28 15:24:26.384   666  1035 E mapper.ranchu: getStandardMetadataImpl:886 failure: UNSUPPORTED: id=404: unexpected standardMetadataType=21
+11-28 15:24:26.387   550  6352 D android.hardware.audio@7.1-impl.ranchu: TinyalsaSource::read:148 pcm_readi was late delivering frames, inserting 16000 us of silence
+11-28 15:24:26.402   550  6352 D android.hardware.audio@7.1-impl.ranchu: TinyalsaSource::read:148 pcm_readi was late delivering frames, inserting 16000 us of silence
+11-28 15:24:26.418   550  6352 D android.hardware.audio@7.1-impl.ranchu: TinyalsaSource::read:148 pcm_readi was late delivering frames, inserting 16000 us of silence
+11-28 15:24:26.424   666  1035 E mapper.ranchu: getStandardMetadataImpl:886 failure: UNSUPPORTED: id=391: unexpected standardMetadataType=21
+11-28 15:24:26.433   550  6352 D android.hardware.audio@7.1-impl.ranchu: TinyalsaSource::read:148 pcm_readi was late delivering frames, inserting 16000 us of silence
+11-28 15:24:26.451   550  6352 D android.hardware.audio@7.1-impl.ranchu: TinyalsaSource::read:148 pcm_readi was late delivering frames, inserting 16000 us of silence
+11-28 15:24:26.456   666  1035 E mapper.ranchu: getStandardMetadataImpl:886 failure: UNSUPPORTED: id=407: unexpected standardMetadataType=21
+11-28 15:24:26.465   550  6352 D android.hardware.audio@7.1-impl.ranchu: TinyalsaSource::read:148 pcm_readi was late delivering frames, inserting 16000 us of silence
+11-28 15:24:26.475   550  6355 W android.hardware.audio@7.1-impl.ranchu: pcmRead:221 pcm_readi failed with 'cannot read/write stream data: I/O error' (-1)
+11-28 15:24:26.475   550  6355 E android.hardware.audio@7.1-impl.ranchu: pcmRead:222 failure: -1
+11-28 15:24:26.483   550  6352 D android.hardware.audio@7.1-impl.ranchu: TinyalsaSource::read:148 pcm_readi was late delivering frames, inserting 16000 us of silence
+11-28 15:24:26.490   666  1035 E mapper.ranchu: getStandardMetadataImpl:886 failure: UNSUPPORTED: id=392: unexpected standardMetadataType=21
+11-28 15:24:26.499   550  6352 D android.hardware.audio@7.1-impl.ranchu: TinyalsaSource::read:148 pcm_readi was late delivering frames, inserting 16000 us of silence
+11-28 15:24:26.513   550  6352 D android.hardware.audio@7.1-impl.ranchu: TinyalsaSource::read:148 pcm_readi was late delivering frames, inserting 16000 us of silence
+11-28 15:24:26.528   666  1035 E mapper.ranchu: getStandardMetadataImpl:886 failure: UNSUPPORTED: id=393: unexpected standardMetadataType=21
+11-28 15:24:26.530   550  6352 D android.hardware.audio@7.1-impl.ranchu: TinyalsaSource::read:148 pcm_readi was late delivering frames, inserting 16000 us of silence
+11-28 15:24:26.546   550  6352 D android.hardware.audio@7.1-impl.ranchu: TinyalsaSource::read:148 pcm_readi was late delivering frames, inserting 16000 us of silence
+11-28 15:24:26.561   550  6352 D android.hardware.audio@7.1-impl.ranchu: TinyalsaSource::read:148 pcm_readi was late delivering frames, inserting 16000 us of silence
+11-28 15:24:26.565   666  1035 E mapper.ranchu: getStandardMetadataImpl:886 failure: UNSUPPORTED: id=410: unexpected standardMetadataType=21
+11-28 15:24:26.577   550  6352 D android.hardware.audio@7.1-impl.ranchu: TinyalsaSource::read:148 pcm_readi was late delivering frames, inserting 16000 us of silence
+11-28 15:24:26.580   550  6355 W android.hardware.audio@7.1-impl.ranchu: pcmRead:221 pcm_readi failed with 'cannot read/write stream data: I/O error' (-1)
+11-28 15:24:26.580   550  6355 E android.hardware.audio@7.1-impl.ranchu: pcmRead:222 failure: -1
+11-28 15:24:26.594   666  1035 E mapper.ranchu: getStandardMetadataImpl:886 failure: UNSUPPORTED: id=412: unexpected standardMetadataType=21
+11-28 15:24:26.595   550  6352 D android.hardware.audio@7.1-impl.ranchu: TinyalsaSource::read:148 pcm_readi was late delivering frames, inserting 16000 us of silence
+11-28 15:24:26.610   550  6352 D android.hardware.audio@7.1-impl.ranchu: TinyalsaSource::read:148 pcm_readi was late delivering frames, inserting 16000 us of silence
+11-28 15:24:26.628   550  6352 D android.hardware.audio@7.1-impl.ranchu: TinyalsaSource::read:148 pcm_readi was late delivering frames, inserting 16000 us of silence
+11-28 15:24:26.629   666  1035 E mapper.ranchu: getStandardMetadataImpl:886 failure: UNSUPPORTED: id=413: unexpected standardMetadataType=21
+11-28 15:24:26.642   550  6352 D android.hardware.audio@7.1-impl.ranchu: TinyalsaSource::read:148 pcm_readi was late delivering frames, inserting 16000 us of silence
+11-28 15:24:26.659   550  6352 D android.hardware.audio@7.1-impl.ranchu: TinyalsaSource::read:148 pcm_readi was late delivering frames, inserting 16000 us of silence
+11-28 15:24:26.667   666  1035 E mapper.ranchu: getStandardMetadataImpl:886 failure: UNSUPPORTED: id=414: unexpected standardMetadataType=21
+11-28 15:24:26.673   550  6352 D android.hardware.audio@7.1-impl.ranchu: TinyalsaSource::read:148 pcm_readi was late delivering frames, inserting 16000 us of silence
+11-28 15:24:26.683   550  6355 W android.hardware.audio@7.1-impl.ranchu: pcmRead:221 pcm_readi failed with 'cannot read/write stream data: I/O error' (-1)
+11-28 15:24:26.683   550  6355 E android.hardware.audio@7.1-impl.ranchu: pcmRead:222 failure: -1
+11-28 15:24:26.689   550  6352 D android.hardware.audio@7.1-impl.ranchu: TinyalsaSource::read:148 pcm_readi was late delivering frames, inserting 16000 us of silence
+11-28 15:24:26.703   666  1035 E mapper.ranchu: getStandardMetadataImpl:886 failure: UNSUPPORTED: id=415: unexpected standardMetadataType=21
+11-28 15:24:26.707   550  6352 D android.hardware.audio@7.1-impl.ranchu: TinyalsaSource::read:148 pcm_readi was late delivering frames, inserting 16000 us of silence
+11-28 15:24:26.722   550  6352 D android.hardware.audio@7.1-impl.ranchu: TinyalsaSource::read:148 pcm_readi was late delivering frames, inserting 16000 us of silence
+11-28 15:24:26.735   666  1035 E mapper.ranchu: getStandardMetadataImpl:886 failure: UNSUPPORTED: id=416: unexpected standardMetadataType=21
+11-28 15:24:26.738   550  6352 D android.hardware.audio@7.1-impl.ranchu: TinyalsaSource::read:148 pcm_readi was late delivering frames, inserting 16000 us of silence
+11-28 15:24:26.754   550  6352 D android.hardware.audio@7.1-impl.ranchu: TinyalsaSource::read:148 pcm_readi was late delivering frames, inserting 16000 us of silence
+11-28 15:24:26.755  4361  5465 D SceneClassifier: AI Director Analysis: box=null, hint=null, label=Γ£¿ AI: Landscape, source=HEURISTIC_ENGINE in 7ms
+11-28 15:24:26.769   666  1035 E mapper.ranchu: getStandardMetadataImpl:886 failure: UNSUPPORTED: id=419: unexpected standardMetadataType=21
+11-28 15:24:26.770   550  6352 D android.hardware.audio@7.1-impl.ranchu: TinyalsaSource::read:148 pcm_readi was late delivering frames, inserting 16000 us of silence
+11-28 15:24:26.786   550  6352 D android.hardware.audio@7.1-impl.ranchu: TinyalsaSource::read:148 pcm_readi was late delivering frames, inserting 16000 us of silence
+11-28 15:24:26.787   550  6355 W android.hardware.audio@7.1-impl.ranchu: pcmRead:221 pcm_readi failed with 'cannot read/write stream data: I/O error' (-1)
+11-28 15:24:26.787   550  6355 E android.hardware.audio@7.1-impl.ranchu: pcmRead:222 failure: -1
+11-28 15:24:26.802   550  6352 D android.hardware.audio@7.1-impl.ranchu: TinyalsaSource::read:148 pcm_readi was late delivering frames, inserting 16000 us of silence
+11-28 15:24:26.802   666  1035 E mapper.ranchu: getStandardMetadataImpl:886 failure: UNSUPPORTED: id=422: unexpected standardMetadataType=21
+11-28 15:24:26.818   550  6352 D android.hardware.audio@7.1-impl.ranchu: TinyalsaSource::read:148 pcm_readi was late delivering frames, inserting 16000 us of silence
+11-28 15:24:26.834   550  6352 D android.hardware.audio@7.1-impl.ranchu: TinyalsaSource::read:148 pcm_readi was late delivering frames, inserting 16000 us of silence
+11-28 15:24:26.836   666   666 E mapper.ranchu: getStandardMetadataImpl:886 failure: UNSUPPORTED: id=423: unexpected standardMetadataType=21
+11-28 15:24:26.850   550  6352 D android.hardware.audio@7.1-impl.ranchu: TinyalsaSource::read:148 pcm_readi was late delivering frames, inserting 16000 us of silence
+11-28 15:24:26.866   550  6352 D android.hardware.audio@7.1-impl.ranchu: TinyalsaSource::read:148 pcm_readi was late delivering frames, inserting 16000 us of silence
+11-28 15:24:26.872   666   666 E mapper.ranchu: getStandardMetadataImpl:886 failure: UNSUPPORTED: id=394: unexpected standardMetadataType=21
+11-28 15:24:26.882   550  6352 D android.hardware.audio@7.1-impl.ranchu: TinyalsaSource::read:148 pcm_readi was late delivering frames, inserting 16000 us of silence
+11-28 15:24:26.891   550  6355 W android.hardware.audio@7.1-impl.ranchu: pcmRead:221 pcm_readi failed with 'cannot read/write stream data: I/O error' (-1)
+11-28 15:24:26.891   550  6355 E android.hardware.audio@7.1-impl.ranchu: pcmRead:222 failure: -1
+11-28 15:24:26.899   550  6352 D android.hardware.audio@7.1-impl.ranchu: TinyalsaSource::read:148 pcm_readi was late delivering frames, inserting 16000 us of silence
+11-28 15:24:26.905   666   666 E mapper.ranchu: getStandardMetadataImpl:886 failure: UNSUPPORTED: id=395: unexpected standardMetadataType=21
+11-28 15:24:26.917   550  6352 D android.hardware.audio@7.1-impl.ranchu: TinyalsaSource::read:148 pcm_readi was late delivering frames, inserting 16000 us of silence
+11-28 15:24:26.930   550  6352 D android.hardware.audio@7.1-impl.ranchu: TinyalsaSource::read:148 pcm_readi was late delivering frames, inserting 16000 us of silence
+11-28 15:24:26.941   666  1035 E mapper.ranchu: getStandardMetadataImpl:886 failure: UNSUPPORTED: id=396: unexpected standardMetadataType=21
+11-28 15:24:26.946   550  6352 D android.hardware.audio@7.1-impl.ranchu: TinyalsaSource::read:148 pcm_readi was late delivering frames, inserting 16000 us of silence
+11-28 15:24:26.963   550  6352 D android.hardware.audio@7.1-impl.ranchu: TinyalsaSource::read:148 pcm_readi was late delivering frames, inserting 16000 us of silence
+11-28 15:24:26.973   666  1035 E mapper.ranchu: getStandardMetadataImpl:886 failure: UNSUPPORTED: id=424: unexpected standardMetadataType=21
+11-28 15:24:26.979   550  6352 D android.hardware.audio@7.1-impl.ranchu: TinyalsaSource::read:148 pcm_readi was late delivering frames, inserting 16000 us of silence
+11-28 15:24:26.994   550  6352 D android.hardware.audio@7.1-impl.ranchu: TinyalsaSource::read:148 pcm_readi was late delivering frames, inserting 16000 us of silence
+11-28 15:24:27.000   550  6355 W android.hardware.audio@7.1-impl.ranchu: pcmRead:221 pcm_readi failed with 'cannot read/write stream data: I/O error' (-1)
+11-28 15:24:27.001   550  6355 E android.hardware.audio@7.1-impl.ranchu: pcmRead:222 failure: -1
+11-28 15:24:27.011   550  6352 D android.hardware.audio@7.1-impl.ranchu: TinyalsaSource::read:148 pcm_readi was late delivering frames, inserting 16000 us of silence
+11-28 15:24:27.016   666  1035 E mapper.ranchu: getStandardMetadataImpl:886 failure: UNSUPPORTED: id=397: unexpected standardMetadataType=21
+11-28 15:24:27.026   550  6352 D android.hardware.audio@7.1-impl.ranchu: TinyalsaSource::read:148 pcm_readi was late delivering frames, inserting 16000 us of silence
+11-28 15:24:27.042   550  6352 D android.hardware.audio@7.1-impl.ranchu: TinyalsaSource::read:148 pcm_readi was late delivering frames, inserting 16000 us of silence
+11-28 15:24:27.043   666  1035 E mapper.ranchu: getStandardMetadataImpl:886 failure: UNSUPPORTED: id=398: unexpected standardMetadataType=21
+11-28 15:24:27.058   550  6352 D android.hardware.audio@7.1-impl.ranchu: TinyalsaSource::read:148 pcm_readi was late delivering frames, inserting 16000 us of silence
+11-28 15:24:27.073   550  6352 D android.hardware.audio@7.1-impl.ranchu: TinyalsaSource::read:148 pcm_readi was late delivering frames, inserting 16000 us of silence
+11-28 15:24:27.080   666   666 E mapper.ranchu: getStandardMetadataImpl:886 failure: UNSUPPORTED: id=399: unexpected standardMetadataType=21
+11-28 15:24:27.090   550  6352 D android.hardware.audio@7.1-impl.ranchu: TinyalsaSource::read:148 pcm_readi was late delivering frames, inserting 16000 us of silence
+11-28 15:24:27.103   550  6355 W android.hardware.audio@7.1-impl.ranchu: pcmRead:221 pcm_readi failed with 'cannot read/write stream data: I/O error' (-1)
+11-28 15:24:27.103   550  6355 E android.hardware.audio@7.1-impl.ranchu: pcmRead:222 failure: -1
+11-28 15:24:27.109   550  6352 D android.hardware.audio@7.1-impl.ranchu: TinyalsaSource::read:148 pcm_readi was late delivering frames, inserting 16000 us of silence
+11-28 15:24:27.111   666  1035 E mapper.ranchu: getStandardMetadataImpl:886 failure: UNSUPPORTED: id=400: unexpected standardMetadataType=21
+11-28 15:24:27.122   550  6352 D android.hardware.audio@7.1-impl.ranchu: TinyalsaSource::read:148 pcm_readi was late delivering frames, inserting 16000 us of silence
+11-28 15:24:27.137   550  6352 D android.hardware.audio@7.1-impl.ranchu: TinyalsaSource::read:148 pcm_readi was late delivering frames, inserting 16000 us of silence
+11-28 15:24:27.145   666   666 E mapper.ranchu: getStandardMetadataImpl:886 failure: UNSUPPORTED: id=401: unexpected standardMetadataType=21
+11-28 15:24:27.155   550  6352 D android.hardware.audio@7.1-impl.ranchu: TinyalsaSource::read:148 pcm_readi was late delivering frames, inserting 16000 us of silence
+11-28 15:24:27.170   550  6352 D android.hardware.audio@7.1-impl.ranchu: TinyalsaSource::read:148 pcm_readi was late delivering frames, inserting 16000 us of silence
+11-28 15:24:27.180   666   666 E mapper.ranchu: getStandardMetadataImpl:886 failure: UNSUPPORTED: id=402: unexpected standardMetadataType=21
+11-28 15:24:27.186   550  6352 D android.hardware.audio@7.1-impl.ranchu: TinyalsaSource::read:148 pcm_readi was late delivering frames, inserting 16000 us of silence
+11-28 15:24:27.202   550  6352 D android.hardware.audio@7.1-impl.ranchu: TinyalsaSource::read:148 pcm_readi was late delivering frames, inserting 16000 us of silence
+11-28 15:24:27.207   550  6355 W android.hardware.audio@7.1-impl.ranchu: pcmRead:221 pcm_readi failed with 'cannot read/write stream data: I/O error' (-1)
+11-28 15:24:27.207   550  6355 E android.hardware.audio@7.1-impl.ranchu: pcmRead:222 failure: -1
+11-28 15:24:27.213   666   666 E mapper.ranchu: getStandardMetadataImpl:886 failure: UNSUPPORTED: id=404: unexpected standardMetadataType=21
+11-28 15:24:27.217   550  6352 D android.hardware.audio@7.1-impl.ranchu: TinyalsaSource::read:148 pcm_readi was late delivering frames, inserting 16000 us of silence
+11-28 15:24:27.233   550  6352 D android.hardware.audio@7.1-impl.ranchu: TinyalsaSource::read:148 pcm_readi was late delivering frames, inserting 16000 us of silence
+11-28 15:24:27.250   666   666 E mapper.ranchu: getStandardMetadataImpl:886 failure: UNSUPPORTED: id=391: unexpected standardMetadataType=21
+11-28 15:24:27.252   550  6352 D android.hardware.audio@7.1-impl.ranchu: TinyalsaSource::read:148 pcm_readi was late delivering frames, inserting 16000 us of silence
+11-28 15:24:27.266   550  6352 D android.hardware.audio@7.1-impl.ranchu: TinyalsaSource::read:148 pcm_readi was late delivering frames, inserting 16000 us of silence
+11-28 15:24:27.270  4361  5465 D SceneClassifier: AI Director Analysis: box=null, hint=null, label=Γ£¿ AI: Landscape, source=HEURISTIC_ENGINE in 3ms
+11-28 15:24:27.282   550  6352 D android.hardware.audio@7.1-impl.ranchu: TinyalsaSource::read:148 pcm_readi was late delivering frames, inserting 16000 us of silence
+11-28 15:24:27.289   666   666 E mapper.ranchu: getStandardMetadataImpl:886 failure: UNSUPPORTED: id=407: unexpected standardMetadataType=21
+11-28 15:24:27.297   550  6352 D android.hardware.audio@7.1-impl.ranchu: TinyalsaSource::read:148 pcm_readi was late delivering frames, inserting 16000 us of silence
+11-28 15:24:27.313   550  6355 W android.hardware.audio@7.1-impl.ranchu: pcmRead:221 pcm_readi failed with 'cannot read/write stream data: I/O error' (-1)
+11-28 15:24:27.313   550  6355 E android.hardware.audio@7.1-impl.ranchu: pcmRead:222 failure: -1
+11-28 15:24:27.314   550  6352 D android.hardware.audio@7.1-impl.ranchu: TinyalsaSource::read:148 pcm_readi was late delivering frames, inserting 16000 us of silence
+11-28 15:24:27.322   666   666 E mapper.ranchu: getStandardMetadataImpl:886 failure: UNSUPPORTED: id=392: unexpected standardMetadataType=21
+11-28 15:24:27.330   550  6352 D android.hardware.audio@7.1-impl.ranchu: TinyalsaSource::read:148 pcm_readi was late delivering frames, inserting 16000 us of silence
+11-28 15:24:27.346   550  6352 D android.hardware.audio@7.1-impl.ranchu: TinyalsaSource::read:148 pcm_readi was late delivering frames, inserting 16000 us of silence
+11-28 15:24:27.358   666   666 E mapper.ranchu: getStandardMetadataImpl:886 failure: UNSUPPORTED: id=393: unexpected standardMetadataType=21
+11-28 15:24:27.362   550  6352 D android.hardware.audio@7.1-impl.ranchu: TinyalsaSource::read:148 pcm_readi was late delivering frames, inserting 16000 us of silence
+11-28 15:24:27.378   550  6352 D android.hardware.audio@7.1-impl.ranchu: TinyalsaSource::read:148 pcm_readi was late delivering frames, inserting 16000 us of silence
+11-28 15:24:27.390   666   666 E mapper.ranchu: getStandardMetadataImpl:886 failure: UNSUPPORTED: id=410: unexpected standardMetadataType=21
+11-28 15:24:27.395   550  6352 D android.hardware.audio@7.1-impl.ranchu: TinyalsaSource::read:148 pcm_readi was late delivering frames, inserting 16000 us of silence
+11-28 15:24:27.410   550  6352 D android.hardware.audio@7.1-impl.ranchu: TinyalsaSource::read:148 pcm_readi was late delivering frames, inserting 16000 us of silence
+11-28 15:24:27.416   550  6355 W android.hardware.audio@7.1-impl.ranchu: pcmRead:221 pcm_readi failed with 'cannot read/write stream data: I/O error' (-1)
+11-28 15:24:27.416   550  6355 E android.hardware.audio@7.1-impl.ranchu: pcmRead:222 failure: -1
+11-28 15:24:27.423   666   666 E mapper.ranchu: getStandardMetadataImpl:886 failure: UNSUPPORTED: id=412: unexpected standardMetadataType=21
+11-28 15:24:27.426   550  6352 D android.hardware.audio@7.1-impl.ranchu: TinyalsaSource::read:148 pcm_readi was late delivering frames, inserting 16000 us of silence
+11-28 15:24:27.442   550  6352 D android.hardware.audio@7.1-impl.ranchu: TinyalsaSource::read:148 pcm_readi was late delivering frames, inserting 16000 us of silence
+11-28 15:24:27.458   666   666 E mapper.ranchu: getStandardMetadataImpl:886 failure: UNSUPPORTED: id=413: unexpected standardMetadataType=21
+11-28 15:24:27.458   550  6352 D android.hardware.audio@7.1-impl.ranchu: TinyalsaSource::read:148 pcm_readi was late delivering frames, inserting 16000 us of silence
+11-28 15:24:27.474   550  6352 D android.hardware.audio@7.1-impl.ranchu: TinyalsaSource::read:148 pcm_readi was late delivering frames, inserting 16000 us of silence
+11-28 15:24:27.490   550  6352 D android.hardware.audio@7.1-impl.ranchu: TinyalsaSource::read:148 pcm_readi was late delivering frames, inserting 16000 us of silence
+11-28 15:24:27.491   666   666 E mapper.ranchu: getStandardMetadataImpl:886 failure: UNSUPPORTED: id=414: unexpected standardMetadataType=21
+11-28 15:24:27.506   550  6352 D android.hardware.audio@7.1-impl.ranchu: TinyalsaSource::read:148 pcm_readi was late delivering frames, inserting 16000 us of silence
+11-28 15:24:27.519   550  6355 W android.hardware.audio@7.1-impl.ranchu: pcmRead:221 pcm_readi failed with 'cannot read/write stream data: I/O error' (-1)
+11-28 15:24:27.519   550  6355 E android.hardware.audio@7.1-impl.ranchu: pcmRead:222 failure: -1
+11-28 15:24:27.522   550  6352 D android.hardware.audio@7.1-impl.ranchu: TinyalsaSource::read:148 pcm_readi was late delivering frames, inserting 16000 us of silence
+11-28 15:24:27.524   666   666 E mapper.ranchu: getStandardMetadataImpl:886 failure: UNSUPPORTED: id=415: unexpected standardMetadataType=21
+11-28 15:24:27.537   550  6352 D android.hardware.audio@7.1-impl.ranchu: TinyalsaSource::read:148 pcm_readi was late delivering frames, inserting 16000 us of silence
+11-28 15:24:27.555   550  6352 D android.hardware.audio@7.1-impl.ranchu: TinyalsaSource::read:148 pcm_readi was late delivering frames, inserting 16000 us of silence
+11-28 15:24:27.561   666   666 E mapper.ranchu: getStandardMetadataImpl:886 failure: UNSUPPORTED: id=416: unexpected standardMetadataType=21
+11-28 15:24:27.570   550  6352 D android.hardware.audio@7.1-impl.ranchu: TinyalsaSource::read:148 pcm_readi was late delivering frames, inserting 16000 us of silence
+11-28 15:24:27.586   550  6352 D android.hardware.audio@7.1-impl.ranchu: TinyalsaSource::read:148 pcm_readi was late delivering frames, inserting 16000 us of silence
+11-28 15:24:27.595   666   666 E mapper.ranchu: getStandardMetadataImpl:886 failure: UNSUPPORTED: id=419: unexpected standardMetadataType=21
+11-28 15:24:27.603   550  6352 D android.hardware.audio@7.1-impl.ranchu: TinyalsaSource::read:148 pcm_readi was late delivering frames, inserting 16000 us of silence
+11-28 15:24:27.619   550  6352 D android.hardware.audio@7.1-impl.ranchu: TinyalsaSource::read:148 pcm_readi was late delivering frames, inserting 16000 us of silence
+11-28 15:24:27.624   550  6355 W android.hardware.audio@7.1-impl.ranchu: pcmRead:221 pcm_readi failed with 'cannot read/write stream data: I/O error' (-1)
+11-28 15:24:27.624   550  6355 E android.hardware.audio@7.1-impl.ranchu: pcmRead:222 failure: -1
+11-28 15:24:27.633   666   666 E mapper.ranchu: getStandardMetadataImpl:886 failure: UNSUPPORTED: id=422: unexpected standardMetadataType=21

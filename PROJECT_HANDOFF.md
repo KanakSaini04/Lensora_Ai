@@ -6,12 +6,12 @@
 
 ## 0. Status block (update every step)
 - **Last updated**: 2026-11-28
-- **Branch / HEAD**: `step-31c4-honesty-and-proof`
-- **Last completed step**: Step 31c4 - ASTRO / DEEP SKY / SLOW-MOTION Honesty Correction & HAL Proof
-- **In progress**: Step 31c4 (Code complete, unit tests pass, emulator verified, Redmi HAL proof & FPS verified, ready to merge)
-- **Unit tests**: 150 passed, 0 skipped, 0 failed across 24 test classes
+- **Branch / HEAD**: `step-31c5-evidence-correction`
+- **Last completed step**: Step 31c5 - Evidence Correction & Device State Guard
+- **In progress**: Step 31c5 (Code complete, 152 unit tests pass, Device State Guard active, raw evidence collected in `docs/evidence/31c5/`)
+- **Unit tests**: 152 passed, 0 skipped, 0 failed across 24 test classes
 - **Baseline APK size**: 94494604 bytes
-- **Last emulator check**: `emulator-5554` (`Medium_Phone`), 2026-11-28 (App launches cleanly, ASTRO ISO 3200 set, preview smooth, SLOW-MOTION marked SOON with badge, logcat `AndroidRuntime:E` 0 errors, 150 unit tests passing); **Last physical-device (Redmi) check**: Redmi Note 13 Pro 5G (`2312DRA50I`), 2026-11-28 (Captured stills in ASTRO, DEEP SKY, NIGHT VISION, PRO MACRO, DOCUMENT; logcat HAL proof lines with ControlMode & SceneMode captured; NIGHT VISION `ControlMode=2, SceneMode=5` verified; DOCUMENT `EdgeMode=0` scratch echo verified; ASTRO preview FPS ~30.0 FPS measured).
+- **Last emulator check**: `emulator-5554` (`Medium_Phone`), 2026-11-28 (App launches cleanly, 152 unit tests passing, Break-It attacks 1-12 saved to raw evidence files); **Last physical-device (Redmi) check**: Redmi Note 13 Pro 5G (`5ceab3e6`), 2026-11-28 (Device State Guard pre-flight verified; baseline vs after HAL proof lines captured; night vs auto comparison logged; ASTRO preview FPS ~30.0 FPS verified).
 
 ## 1. Boot order for a new AI
 1. `GEMINI.md` (coding-agent rules & Section 10 Run/Device policy)

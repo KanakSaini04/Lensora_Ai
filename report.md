@@ -1,5 +1,14 @@
 # Lensora_Ai Master Build Report
 
+## Step 31c5 - Evidence Correction & Device State Guard
+- **Sub-Second Exposure Label Fix**: Updated `formatModeFeedbackLabel` in `ModeSettingsHelper.kt` to format sub-second exposure durations in milliseconds (e.g. `40 ms exposure`, `500 ms exposure`).
+- **NIGHT VISION Toast Honesty**: Updated feedback toast for NIGHT VISION in `CameraController.kt` to `"🌙 Night Vision: Night Scene Mode Requested"`.
+- **Device State Guard**: Added Section 15 "Device State Guard" to `GEMINI.md` mandating pre-flight checks, single recovery attempt, post-check verification, and incident logging for all adb commands.
+- **Raw Log Evidence**: Collected raw evidence in `docs/evidence/31c5/`: `baseline_hal.txt`, `after_hal.txt`, `night_vs_auto.txt`, `fps_measurement.txt`, `scratch_edge_off.txt`, and Break-It logcat slices (`breakit_1.txt` .. `breakit_12.txt`).
+- **Unit Tests**: 152 passed across 24 test classes (+3 new unit tests in `ModeSettingsHelperTest.kt`).
+- **Device Status**: **VERIFIED on `emulator-5554` AND physical Redmi Note 13 Pro 5G (`5ceab3e6`)**: 0 logcat errors.
+- **Break-It**: 12 real attacks recorded with raw logcat slices, verdict **GOOD**.
+
 ## Step 31c4 - ASTRO / DEEP SKY / SLOW-MOTION Honesty Correction & HAL Proof
 - **ISO 3200 Clamping & Safe Ranges**: Updated ASTRO and DEEP SKY in `ModeSettingsHelper.kt` to explicitly request ISO 3200 clamped into `[lower, upper]` range (`3200.coerceIn(lower, upper)`). Added `lower <= upper` range validation preventing `IllegalArgumentException` on corrupted HAL ranges. Eliminated all no-op `upper.coerceIn` calls.
 - **Honest Feedback Toasts**: Replaced hardcoded "30s" and "Stacking" toast text in `CameraController.kt` with pure `ModeSettingsHelper.formatModeFeedbackLabel` helper. Output for ASTRO / DEEP SKY on Redmi: `"✨ Astro: Locked focus to infinity, 1 s exposure, ISO 3200"`.

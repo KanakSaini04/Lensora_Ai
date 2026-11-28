@@ -77,7 +77,8 @@
 | OG | Owner verification gate & completion protocol | None | AGENT-VERIFIED | 6ea74c3 | 141 tests pass, docs only | GEMINI.md sections 13 & 14, agent.md rules 19-21 |
 | 31c2 | Fix unadvertised and wrong still-capture mode settings | None | AGENT-VERIFIED | 5149f4f | 145 tests pass, emulator verified | Removed barcode scene mode override and slow-mo FPS lock |
 | 31c3 | ASTRO exposure fix, honest SLOW-MOTION & HAL result proof | None | AGENT-VERIFIED | ed1c3f4 | 145 tests pass, emulator & Redmi verified | Smooth preview, ISO 3200, SLOW-MOTION SOON badge |
-| 31c4 | ASTRO / DEEP SKY / SLOW-MOTION honesty correction & HAL proof | None | AGENT-VERIFIED | pending | 150 tests pass, emulator & Redmi HAL proof verified | ISO 3200 clamped, formatModeFeedbackLabel, ControlMode/SceneMode logging |
+| 31c4 | ASTRO / DEEP SKY / SLOW-MOTION honesty correction & HAL proof | None | AGENT-VERIFIED | 5e2841c | 150 tests pass, emulator & Redmi HAL proof verified | ISO 3200 clamped, formatModeFeedbackLabel, ControlMode/SceneMode logging |
+| 31c5 | Evidence correction & Device State Guard | None | AGENT-VERIFIED | pending | 152 tests pass, raw evidence saved in docs/evidence/31c5/ | Sub-second ms exposure labels, honest NIGHT VISION toast, Device State Guard |
 
 ## DECISIONS
 - 2026-11-18: Initialized master build queue from docs/MASTER_BUILD_PROMPT.md.

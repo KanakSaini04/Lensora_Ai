@@ -249,10 +249,19 @@ object ModeSettingsHelper {
         }
         val expSec = settings.exposureTimeNs?.let { ns ->
             val sec = ns / 1_000_000_000.0
-            if (sec >= 1.0 && sec == sec.toLong().toDouble()) {
-                "${sec.toLong()} s exposure"
+            if (sec >= 1.0) {
+                if (sec == sec.toLong().toDouble()) {
+                    "${sec.toLong()} s exposure"
+                } else {
+                    String.format(Locale.US, "%.1f s exposure", sec)
+                }
             } else {
-                String.format(Locale.US, "%.1f s exposure", sec)
+                val ms = ns / 1_000_000.0
+                if (ms == ms.toLong().toDouble()) {
+                    "${ms.toLong()} ms exposure"
+                } else {
+                    String.format(Locale.US, "%.1f ms exposure", ms)
+                }
             }
         }
         val isoText = settings.isoSensitivity?.let { "ISO $it" }

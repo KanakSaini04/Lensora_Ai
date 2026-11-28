@@ -147,5 +147,20 @@ d. **Acceptance Criteria Verification & Fix Loop**: Compare the result with ever
 e. **Fix Loop Iteration**: After any fix, repeat from step a. Maximum 3 loops. If something is still unmet after 3 loops, stop, revert or abandon the branch, and report exactly what remains.
 f. **Docs Synchronization**: Before reporting, update every doc: `progress.md`, `CHANGELOG.md`, `README.md` (if behavior changed), `PROJECT_HANDOFF.md`, `report.md`, and `reply.md`. Docs must match the code and the real test results.
 
+## 15. Device State Guard
+Applies to EVERY adb tap or key event on connected devices or emulators. Never assume screen state: verify, then act, then verify again.
+a. **Pre-Flight Before Action Batch**:
+   - Screen awake and unlocked: `adb -s $DEV shell dumpsys power` (mWakefulness = Awake) & `dumpsys window` (no lockscreen).
+   - App in foreground: `adb -s $DEV shell dumpsys window` (mCurrentFocus = `com.lensora.ai/.MainActivity`).
+   - Active mode verified: screenshot or `uiautomator dump` or logcat `Applying Advanced Camera Mode:`.
+b. **Recovery**:
+   - Screen locked/asleep: Stop and ask owner to unlock.
+   - App backgrounded/closed: Relaunch once with `am start -n com.lensora.ai/.MainActivity`. Log in Incident log.
+   - Wrong mode: Re-select mode once. Log in Incident log.
+c. **Post-Check After Action**:
+   - Still capture: `L0 Still Capture HAL Result Proof` with expected Mode= in logcat within 10-15 s.
+   - Photo vs Video: No video recorded; new JPEG exists in DCIM.
+   - Incident log: List every state mismatch and invalid run in `reply.md`.
+
 ---
 **Golden rule: when unsure, ask. Do less, not more. Never break working code. Build exactly what was asked, test it, attack it, prove it, and tell the truth.**

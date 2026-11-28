@@ -241,7 +241,27 @@ class ModeSettingsHelperTest {
     }
 
     @Test
-    fun formatModeFeedbackLabel_returnsFormattedLabel() {
+    fun deepSkyMode_whenIsoRange4000To8000_clampsToLowerBound() {
+        val capsHighIso = defaultCapabilities.copy(isoSensitivityRange = HalRange(4000, 8000))
+        val result = ModeSettingsHelper.calculateModeSettings("DEEP SKY", capsHighIso)
+
+        assertEquals(4000, result.isoSensitivity)
+    }
+
+    @Test
+    fun nightVisionMode_whenInvertedExposureRange_returnsNullAndDoesNotThrow() {
+        val capsInverted = defaultCapabilities.copy(
+            sceneModes = intArrayOf(0),
+            exposureTimeRangeNs = HalRange(1_000_000_000L, 1_000_000L)
+        )
+        val result = ModeSettingsHelper.calculateModeSettings("NIGHT_VISION", capsInverted)
+
+        assertNull(result.controlMode)
+        assertNull(result.exposureTimeNs)
+    }
+
+    @Test
+    fun formatModeFeedbackLabel_subSecondExposures_returnsMsText() {
         val settings1s = ModeSettingsHelper.calculateModeSettings("ASTRO", defaultCapabilities)
         val labelAstro = ModeSettingsHelper.formatModeFeedbackLabel("ASTRO", settings1s)
         val labelDeepSky = ModeSettingsHelper.formatModeFeedbackLabel("DEEP SKY", settings1s)
@@ -251,7 +271,11 @@ class ModeSettingsHelperTest {
 
         val settingsHalfSec = settings1s.copy(exposureTimeNs = 500_000_000L, isoSensitivity = 1600)
         val labelHalfSec = ModeSettingsHelper.formatModeFeedbackLabel("ASTRO", settingsHalfSec)
-        assertEquals("✨ Astro: Locked focus to infinity, 0.5 s exposure, ISO 1600", labelHalfSec)
+        assertEquals("✨ Astro: Locked focus to infinity, 500 ms exposure, ISO 1600", labelHalfSec)
+
+        val settings40ms = settings1s.copy(exposureTimeNs = 40_000_000L, isoSensitivity = 1000)
+        val label40ms = ModeSettingsHelper.formatModeFeedbackLabel("ASTRO", settings40ms)
+        assertEquals("✨ Astro: Locked focus to infinity, 40 ms exposure, ISO 1000", label40ms)
 
         val settingsNullExp = settings1s.copy(exposureTimeNs = null, isoSensitivity = null)
         val labelNullExp = ModeSettingsHelper.formatModeFeedbackLabel("ASTRO", settingsNullExp)
