@@ -1,0 +1,721 @@
+﻿--------- beginning of main
+11-28 15:27:33.411   550  6352 D android.hardware.audio@7.1-impl.ranchu: TinyalsaSource::read:148 pcm_readi was late delivering frames, inserting 16000 us of silence
+11-28 15:27:33.416   666  1065 E mapper.ranchu: getStandardMetadataImpl:886 failure: UNSUPPORTED: id=394: unexpected standardMetadataType=21
+11-28 15:27:33.426   550  6352 D android.hardware.audio@7.1-impl.ranchu: TinyalsaSource::read:148 pcm_readi was late delivering frames, inserting 16000 us of silence
+11-28 15:27:33.444   550  6352 D android.hardware.audio@7.1-impl.ranchu: TinyalsaSource::read:148 pcm_readi was late delivering frames, inserting 16000 us of silence
+11-28 15:27:33.451   666  1065 E mapper.ranchu: getStandardMetadataImpl:886 failure: UNSUPPORTED: id=395: unexpected standardMetadataType=21
+11-28 15:27:33.455   550  6355 W android.hardware.audio@7.1-impl.ranchu: pcmRead:221 pcm_readi failed with 'cannot read/write stream data: I/O error' (-1)
+11-28 15:27:33.455   550  6355 E android.hardware.audio@7.1-impl.ranchu: pcmRead:222 failure: -1
+11-28 15:27:33.459   550  6352 D android.hardware.audio@7.1-impl.ranchu: TinyalsaSource::read:148 pcm_readi was late delivering frames, inserting 16000 us of silence
+11-28 15:27:33.475   550  6352 D android.hardware.audio@7.1-impl.ranchu: TinyalsaSource::read:148 pcm_readi was late delivering frames, inserting 16000 us of silence
+11-28 15:27:33.491   550  6352 D android.hardware.audio@7.1-impl.ranchu: TinyalsaSource::read:148 pcm_readi was late delivering frames, inserting 16000 us of silence
+11-28 15:27:33.492   666  1035 E mapper.ranchu: getStandardMetadataImpl:886 failure: UNSUPPORTED: id=396: unexpected standardMetadataType=21
+11-28 15:27:33.506   550  6352 D android.hardware.audio@7.1-impl.ranchu: TinyalsaSource::read:148 pcm_readi was late delivering frames, inserting 16000 us of silence
+11-28 15:27:33.522   550  6352 D android.hardware.audio@7.1-impl.ranchu: TinyalsaSource::read:148 pcm_readi was late delivering frames, inserting 16000 us of silence
+11-28 15:27:33.523   666  1065 E mapper.ranchu: getStandardMetadataImpl:886 failure: UNSUPPORTED: id=424: unexpected standardMetadataType=21
+11-28 15:27:33.537   550  6352 D android.hardware.audio@7.1-impl.ranchu: TinyalsaSource::read:148 pcm_readi was late delivering frames, inserting 16000 us of silence
+11-28 15:27:33.555   550  6352 D android.hardware.audio@7.1-impl.ranchu: TinyalsaSource::read:148 pcm_readi was late delivering frames, inserting 16000 us of silence
+11-28 15:27:33.558   550  6355 W android.hardware.audio@7.1-impl.ranchu: pcmRead:221 pcm_readi failed with 'cannot read/write stream data: I/O error' (-1)
+11-28 15:27:33.559   550  6355 E android.hardware.audio@7.1-impl.ranchu: pcmRead:222 failure: -1
+11-28 15:27:33.558   666  1065 E mapper.ranchu: getStandardMetadataImpl:886 failure: UNSUPPORTED: id=397: unexpected standardMetadataType=21
+11-28 15:27:33.571   550  6352 D android.hardware.audio@7.1-impl.ranchu: TinyalsaSource::read:148 pcm_readi was late delivering frames, inserting 16000 us of silence
+11-28 15:27:33.589   550  6352 D android.hardware.audio@7.1-impl.ranchu: TinyalsaSource::read:148 pcm_readi was late delivering frames, inserting 16000 us of silence
+11-28 15:27:33.601   666  1065 E mapper.ranchu: getStandardMetadataImpl:886 failure: UNSUPPORTED: id=398: unexpected standardMetadataType=21
+11-28 15:27:33.601   550  6352 D android.hardware.audio@7.1-impl.ranchu: TinyalsaSource::read:148 pcm_readi was late delivering frames, inserting 16000 us of silence
+11-28 15:27:33.618   550  6352 D android.hardware.audio@7.1-impl.ranchu: TinyalsaSource::read:148 pcm_readi was late delivering frames, inserting 16000 us of silence
+11-28 15:27:33.624   666  1065 E mapper.ranchu: getStandardMetadataImpl:886 failure: UNSUPPORTED: id=399: unexpected standardMetadataType=21
+11-28 15:27:33.635   550  6352 D android.hardware.audio@7.1-impl.ranchu: TinyalsaSource::read:148 pcm_readi was late delivering frames, inserting 16000 us of silence
+11-28 15:27:33.653   550  6352 D android.hardware.audio@7.1-impl.ranchu: TinyalsaSource::read:148 pcm_readi was late delivering frames, inserting 16000 us of silence
+11-28 15:27:33.662   550  6355 W android.hardware.audio@7.1-impl.ranchu: pcmRead:221 pcm_readi failed with 'cannot read/write stream data: I/O error' (-1)
+11-28 15:27:33.662   550  6355 E android.hardware.audio@7.1-impl.ranchu: pcmRead:222 failure: -1
+11-28 15:27:33.666   666  1035 E mapper.ranchu: getStandardMetadataImpl:886 failure: UNSUPPORTED: id=400: unexpected standardMetadataType=21
+11-28 15:27:33.666   550  6352 D android.hardware.audio@7.1-impl.ranchu: TinyalsaSource::read:148 pcm_readi was late delivering frames, inserting 16000 us of silence
+11-28 15:27:33.687   550  6352 D android.hardware.audio@7.1-impl.ranchu: TinyalsaSource::read:148 pcm_readi was late delivering frames, inserting 16000 us of silence
+11-28 15:27:33.696   666  1035 E mapper.ranchu: getStandardMetadataImpl:886 failure: UNSUPPORTED: id=401: unexpected standardMetadataType=21
+11-28 15:27:33.697   550  6352 D android.hardware.audio@7.1-impl.ranchu: TinyalsaSource::read:148 pcm_readi was late delivering frames, inserting 16000 us of silence
+11-28 15:27:33.714   550  6352 D android.hardware.audio@7.1-impl.ranchu: TinyalsaSource::read:148 pcm_readi was late delivering frames, inserting 16000 us of silence
+11-28 15:27:33.726   666  1035 E mapper.ranchu: getStandardMetadataImpl:886 failure: UNSUPPORTED: id=402: unexpected standardMetadataType=21
+11-28 15:27:33.731   550  6352 D android.hardware.audio@7.1-impl.ranchu: TinyalsaSource::read:148 pcm_readi was late delivering frames, inserting 16000 us of silence
+11-28 15:27:33.745   550  6352 D android.hardware.audio@7.1-impl.ranchu: TinyalsaSource::read:148 pcm_readi was late delivering frames, inserting 16000 us of silence
+11-28 15:27:33.761   660  6286 W libbinder.IPCThreadState: Sending oneway calls to frozen process.
+11-28 15:27:33.761   666  1035 E mapper.ranchu: getStandardMetadataImpl:886 failure: UNSUPPORTED: id=404: unexpected standardMetadataType=21
+11-28 15:27:33.763   550  6352 D android.hardware.audio@7.1-impl.ranchu: TinyalsaSource::read:148 pcm_readi was late delivering frames, inserting 16000 us of silence
+11-28 15:27:33.766   612   711 W libbinder.IPCThreadState: Sending oneway calls to frozen process.
+11-28 15:27:33.766   550  6355 W android.hardware.audio@7.1-impl.ranchu: pcmRead:221 pcm_readi failed with 'cannot read/write stream data: I/O error' (-1)
+11-28 15:27:33.766   550  6355 E android.hardware.audio@7.1-impl.ranchu: pcmRead:222 failure: -1
+11-28 15:27:33.768   660  6291 W libbinder.IPCThreadState: Transaction failed because process frozen.
+11-28 15:27:33.768   660  6291 E libbinder.IPCThreadState: Binder transaction failure. id: 1483967, cmd: BR_FROZEN_REPLY (29202), error: 0 (Success)
+11-28 15:27:33.768   660  6291 E Surface : [SurfaceTexture-0-4361-2](id:110900000013) queueBuffer: error queuing buffer, -2147483646
+11-28 15:27:33.769   660  6291 E Camera3-PreviewFrameSpacer: queueBufferToClientLocked: Failed to queue buffer to client: Unknown error 2147483646(-2147483646)
+--------- beginning of system
+11-28 15:27:33.771   773   841 I ActivityManager: Killing 4361:com.lensora.ai/u0a227 (adj 0): permissions revoked
+11-28 15:27:33.777   550  6352 D android.hardware.audio@7.1-impl.ranchu: TinyalsaSource::read:148 pcm_readi was late delivering frames, inserting 16000 us of silence
+11-28 15:27:33.783   666  1035 I ResourceManagerMetrics: onProcessTerminated: Application/Process(4361:10227) terminated with reason: 1. TotalClientsCreated: 12  TotalClientsKilled: 0
+11-28 15:27:33.784   666  1035 I ResourceManagerMetrics: pushCodecUsageMetrics: Concurrent Codec Usage Report for the Process[pid(4361): uid(10227) is Ended] is Peak { AudioEnc[  SW: 1 ] VideoEnc[ SW: 1 ] } Peak Pixels: 2073600. Peak Codec Memory: 2073600 Total Codecs: 12 Killed Codec: 0
+11-28 15:27:33.784   660  6363 W libbinder.IPCThreadState: Sending oneway calls to frozen process.
+11-28 15:27:33.790   660  6363 W libbinder.IPCThreadState: Sending oneway calls to frozen process.
+11-28 15:27:33.790   660  6363 D Camera2ClientBase: Camera 1: Shutting down
+11-28 15:27:33.794   660  6284 W libbinder.IPCThreadState: Transaction failed because process frozen.
+11-28 15:27:33.795   660  6284 E libbinder.IPCThreadState: Binder transaction failure. id: 1484015, cmd: BR_FROZEN_REPLY (29202), error: 0 (Success)
+11-28 15:27:33.795   660  6284 E Camera3-OutputStream: getBufferLockedCommon: Stream 0: Can't dequeue next output buffer: Unknown error 2147483646 (-2147483646)
+11-28 15:27:33.795   660  6284 W libbinder.IPCThreadState: Sending oneway calls to frozen process.
+11-28 15:27:33.795   550  6352 D android.hardware.audio@7.1-impl.ranchu: TinyalsaSource::read:148 pcm_readi was late delivering frames, inserting 16000 us of silence
+11-28 15:27:33.799   660  6284 W libbinder.IPCThreadState: Transaction failed because process frozen.
+11-28 15:27:33.799   660  6284 E libbinder.IPCThreadState: Binder transaction failure. id: 1484025, cmd: BR_FROZEN_REPLY (29202), error: 0 (Success)
+11-28 15:27:33.799   660  6284 E Camera3-OutputStream: getBufferLockedCommon: Stream 0: Can't dequeue next output buffer: Unknown error 2147483646 (-2147483646)
+11-28 15:27:33.799   660  6284 W libbinder.IPCThreadState: Sending oneway calls to frozen process.
+11-28 15:27:33.800   660  6291 W libbinder.IPCThreadState: Transaction failed because process frozen.
+11-28 15:27:33.800   660  6291 E libbinder.IPCThreadState: Binder transaction failure. id: 1484028, cmd: BR_FROZEN_REPLY (29202), error: 0 (Success)
+11-28 15:27:33.800   660  6291 E Surface : [SurfaceTexture-0-4361-2](id:110900000013) queueBuffer: error queuing buffer, -2147483646
+11-28 15:27:33.800   660  6291 E Camera3-PreviewFrameSpacer: queueBufferToClientLocked: Failed to queue buffer to client: Unknown error 2147483646(-2147483646)
+11-28 15:27:33.800   666  1035 E mapper.ranchu: getStandardMetadataImpl:886 failure: UNSUPPORTED: id=391: unexpected standardMetadataType=21
+11-28 15:27:33.801   660  6284 W libbinder.IPCThreadState: Transaction failed because process frozen.
+11-28 15:27:33.801   660  6284 E libbinder.IPCThreadState: Binder transaction failure. id: 1484032, cmd: BR_FROZEN_REPLY (29202), error: 0 (Success)
+11-28 15:27:33.801   660  6284 E Camera3-OutputStream: getBufferLockedCommon: Stream 0: Can't dequeue next output buffer: Unknown error 2147483646 (-2147483646)
+11-28 15:27:33.801   660  6284 W libbinder.IPCThreadState: Sending oneway calls to frozen process.
+11-28 15:27:33.801   660  6284 W libbinder.IPCThreadState: Transaction failed because process frozen.
+11-28 15:27:33.801   660  6284 E libbinder.IPCThreadState: Binder transaction failure. id: 1484039, cmd: BR_FROZEN_REPLY (29202), error: 0 (Success)
+11-28 15:27:33.801   660  6284 E Camera3-OutputStream: getBufferLockedCommon: Stream 0: Can't dequeue next output buffer: Unknown error 2147483646 (-2147483646)
+11-28 15:27:33.801   660  6284 W libbinder.IPCThreadState: Sending oneway calls to frozen process.
+11-28 15:27:33.801   660  6284 W libbinder.IPCThreadState: Transaction failed because process frozen.
+11-28 15:27:33.801   660  6284 E libbinder.IPCThreadState: Binder transaction failure. id: 1484041, cmd: BR_FROZEN_REPLY (29202), error: 0 (Success)
+11-28 15:27:33.801   660  6284 E Camera3-OutputStream: getBufferLockedCommon: Stream 0: Can't dequeue next output buffer: Unknown error 2147483646 (-2147483646)
+11-28 15:27:33.802   660  6284 W libbinder.IPCThreadState: Sending oneway calls to frozen process.
+11-28 15:27:33.802   660  6284 W libbinder.IPCThreadState: Transaction failed because process frozen.
+11-28 15:27:33.802   660  6284 E libbinder.IPCThreadState: Binder transaction failure. id: 1484044, cmd: BR_FROZEN_REPLY (29202), error: 0 (Success)
+11-28 15:27:33.802   660  6284 E Camera3-OutputStream: getBufferLockedCommon: Stream 0: Can't dequeue next output buffer: Unknown error 2147483646 (-2147483646)
+11-28 15:27:33.802   660  6284 W libbinder.IPCThreadState: Sending oneway calls to frozen process.
+11-28 15:27:33.802   660  6284 W libbinder.IPCThreadState: Transaction failed because process frozen.
+11-28 15:27:33.802   660  6284 E libbinder.IPCThreadState: Binder transaction failure. id: 1484046, cmd: BR_FROZEN_REPLY (29202), error: 0 (Success)
+11-28 15:27:33.802   660  6284 E Camera3-OutputStream: getBufferLockedCommon: Stream 0: Can't dequeue next output buffer: Unknown error 2147483646 (-2147483646)
+11-28 15:27:33.802   660  6284 W libbinder.IPCThreadState: Sending oneway calls to frozen process.
+11-28 15:27:33.802   660  6284 W libbinder.IPCThreadState: Transaction failed because process frozen.
+11-28 15:27:33.802   660  6284 E libbinder.IPCThreadState: Binder transaction failure. id: 1484048, cmd: BR_FROZEN_REPLY (29202), error: 0 (Success)
+11-28 15:27:33.802   660  6284 E Camera3-OutputStream: getBufferLockedCommon: Stream 0: Can't dequeue next output buffer: Unknown error 2147483646 (-2147483646)
+11-28 15:27:33.803   660  6284 W libbinder.IPCThreadState: Sending oneway calls to frozen process.
+11-28 15:27:33.803   660  6284 W libbinder.IPCThreadState: Transaction failed because process frozen.
+11-28 15:27:33.803   660  6284 E libbinder.IPCThreadState: Binder transaction failure. id: 1484050, cmd: BR_FROZEN_REPLY (29202), error: 0 (Success)
+11-28 15:27:33.803   660  6284 E Camera3-OutputStream: getBufferLockedCommon: Stream 0: Can't dequeue next output buffer: Unknown error 2147483646 (-2147483646)
+11-28 15:27:33.803   660  6284 W libbinder.IPCThreadState: Sending oneway calls to frozen process.
+11-28 15:27:33.803   660  6284 W libbinder.IPCThreadState: Transaction failed because process frozen.
+11-28 15:27:33.804   660  6284 E libbinder.IPCThreadState: Binder transaction failure. id: 1484052, cmd: BR_FROZEN_REPLY (29202), error: 0 (Success)
+11-28 15:27:33.804   660  6284 E Camera3-OutputStream: getBufferLockedCommon: Stream 0: Can't dequeue next output buffer: Unknown error 2147483646 (-2147483646)
+11-28 15:27:33.805   660  6284 W libbinder.IPCThreadState: Sending oneway calls to frozen process.
+11-28 15:27:33.805   660  6284 W libbinder.IPCThreadState: Transaction failed because process frozen.
+11-28 15:27:33.805   660  6284 E libbinder.IPCThreadState: Binder transaction failure. id: 1484055, cmd: BR_FROZEN_REPLY (29202), error: 0 (Success)
+11-28 15:27:33.805   660  6284 E Camera3-OutputStream: getBufferLockedCommon: Stream 0: Can't dequeue next output buffer: Unknown error 2147483646 (-2147483646)
+11-28 15:27:33.805   660  6284 W libbinder.IPCThreadState: Sending oneway calls to frozen process.
+11-28 15:27:33.805   660  6284 W libbinder.IPCThreadState: Transaction failed because process frozen.
+11-28 15:27:33.805   660  6284 E libbinder.IPCThreadState: Binder transaction failure. id: 1484057, cmd: BR_FROZEN_REPLY (29202), error: 0 (Success)
+11-28 15:27:33.805   660  6284 E Camera3-OutputStream: getBufferLockedCommon: Stream 0: Can't dequeue next output buffer: Unknown error 2147483646 (-2147483646)
+11-28 15:27:33.805   660  6284 W libbinder.IPCThreadState: Sending oneway calls to frozen process.
+11-28 15:27:33.805   660  6284 W libbinder.IPCThreadState: Transaction failed because process frozen.
+11-28 15:27:33.805   660  6363 W libbinder.IPCThreadState: Transaction failed because process frozen.
+11-28 15:27:33.805   660  6363 E libbinder.IPCThreadState: Binder transaction failure. id: 1484019, cmd: BR_FROZEN_REPLY (29202), error: 0 (Success)
+11-28 15:27:33.805   660  6284 E libbinder.IPCThreadState: Binder transaction failure. id: 1484063, cmd: BR_FROZEN_REPLY (29202), error: 0 (Success)
+11-28 15:27:33.805   660  6363 E cameraserver: getConsumerName failed to transact: -2147483646
+11-28 15:27:33.805   660  6284 E Camera3-OutputStream: getBufferLockedCommon: Stream 0: Can't dequeue next output buffer: Unknown error 2147483646 (-2147483646)
+11-28 15:27:33.805   660  6284 W libbinder.IPCThreadState: Sending oneway calls to frozen process.
+11-28 15:27:33.806   660  6284 W libbinder.IPCThreadState: Transaction failed because process frozen.
+11-28 15:27:33.806   660  6284 E libbinder.IPCThreadState: Binder transaction failure. id: 1484067, cmd: BR_FROZEN_REPLY (29202), error: 0 (Success)
+11-28 15:27:33.806   660  6284 E Camera3-OutputStream: getBufferLockedCommon: Stream 0: Can't dequeue next output buffer: Unknown error 2147483646 (-2147483646)
+11-28 15:27:33.806   660  6284 W libbinder.IPCThreadState: Sending oneway calls to frozen process.
+11-28 15:27:33.806   660  6284 W libbinder.IPCThreadState: Transaction failed because process frozen.
+11-28 15:27:33.806   660  6284 E libbinder.IPCThreadState: Binder transaction failure. id: 1484072, cmd: BR_FROZEN_REPLY (29202), error: 0 (Success)
+11-28 15:27:33.806   660  6284 E Camera3-OutputStream: getBufferLockedCommon: Stream 0: Can't dequeue next output buffer: Unknown error 2147483646 (-2147483646)
+11-28 15:27:33.806   660  6284 W libbinder.IPCThreadState: Sending oneway calls to frozen process.
+11-28 15:27:33.807   660  6284 W libbinder.IPCThreadState: Transaction failed because process frozen.
+11-28 15:27:33.807   660  6284 E libbinder.IPCThreadState: Binder transaction failure. id: 1484075, cmd: BR_FROZEN_REPLY (29202), error: 0 (Success)
+11-28 15:27:33.807   660  6284 E Camera3-OutputStream: getBufferLockedCommon: Stream 0: Can't dequeue next output buffer: Unknown error 2147483646 (-2147483646)
+11-28 15:27:33.807   660  6284 W libbinder.IPCThreadState: Sending oneway calls to frozen process.
+11-28 15:27:33.807   660  6284 W libbinder.IPCThreadState: Transaction failed because process frozen.
+11-28 15:27:33.807   660  6284 E libbinder.IPCThreadState: Binder transaction failure. id: 1484077, cmd: BR_FROZEN_REPLY (29202), error: 0 (Success)
+11-28 15:27:33.807   660  6284 E Camera3-OutputStream: getBufferLockedCommon: Stream 0: Can't dequeue next output buffer: Unknown error 2147483646 (-2147483646)
+11-28 15:27:33.807   660  6284 W libbinder.IPCThreadState: Sending oneway calls to frozen process.
+11-28 15:27:33.807   660  6284 W libbinder.IPCThreadState: Transaction failed because process frozen.
+11-28 15:27:33.807   660  6284 E libbinder.IPCThreadState: Binder transaction failure. id: 1484080, cmd: BR_FROZEN_REPLY (29202), error: 0 (Success)
+11-28 15:27:33.807   608  6339 D AF::RecordTrack: setSilenced: track with port id: 16, (silenced)
+11-28 15:27:33.807   660  6284 E Camera3-OutputStream: getBufferLockedCommon: Stream 0: Can't dequeue next output buffer: Unknown error 2147483646 (-2147483646)
+11-28 15:27:33.807   660  6284 W libbinder.IPCThreadState: Sending oneway calls to frozen process.
+11-28 15:27:33.808   660  6284 W libbinder.IPCThreadState: Transaction failed because process frozen.
+11-28 15:27:33.808   660  6284 E libbinder.IPCThreadState: Binder transaction failure. id: 1484083, cmd: BR_FROZEN_REPLY (29202), error: 0 (Success)
+11-28 15:27:33.808   660  6284 E Camera3-OutputStream: getBufferLockedCommon: Stream 0: Can't dequeue next output buffer: Unknown error 2147483646 (-2147483646)
+11-28 15:27:33.808   660  6284 W libbinder.IPCThreadState: Sending oneway calls to frozen process.
+11-28 15:27:33.808   660  6284 W libbinder.IPCThreadState: Transaction failed because process frozen.
+11-28 15:27:33.808   660  6284 E libbinder.IPCThreadState: Binder transaction failure. id: 1484087, cmd: BR_FROZEN_REPLY (29202), error: 0 (Success)
+11-28 15:27:33.808   660  6284 E Camera3-OutputStream: getBufferLockedCommon: Stream 0: Can't dequeue next output buffer: Unknown error 2147483646 (-2147483646)
+11-28 15:27:33.808   660  6284 E libbinder.IPCThreadState: Binder transaction failure. id: 1484088, cmd: BR_DEAD_REPLY (29189), error: -3 (No such process)
+11-28 15:27:33.809   660  6284 W libbinder.IPCThreadState: Transaction failed because process frozen.
+11-28 15:27:33.809   660  6284 E libbinder.IPCThreadState: Binder transaction failure. id: 1484089, cmd: BR_FROZEN_REPLY (29202), error: 0 (Success)
+11-28 15:27:33.809   660  6284 E Camera3-OutputStream: getBufferLockedCommon: Stream 0: Can't dequeue next output buffer: Unknown error 2147483646 (-2147483646)
+11-28 15:27:33.809   660  6284 W libbinder.IPCThreadState: Transaction failed because process frozen.
+11-28 15:27:33.809   660  6284 E libbinder.IPCThreadState: Binder transaction failure. id: 1484090, cmd: BR_FROZEN_REPLY (29202), error: 0 (Success)
+11-28 15:27:33.809   660  6284 E Camera3-OutputStream: getBufferLockedCommon: Stream 0: Can't dequeue next output buffer: Unknown error 2147483646 (-2147483646)
+11-28 15:27:33.809   660  6284 W libbinder.IPCThreadState: Transaction failed because process frozen.
+11-28 15:27:33.809   660  6284 E libbinder.IPCThreadState: Binder transaction failure. id: 1484091, cmd: BR_FROZEN_REPLY (29202), error: 0 (Success)
+11-28 15:27:33.809   660  6284 E Camera3-OutputStream: getBufferLockedCommon: Stream 0: Can't dequeue next output buffer: Unknown error 2147483646 (-2147483646)
+11-28 15:27:33.809   773   841 W ActivityTaskManager: Force removing ActivityRecord{211904620 u0 com.lensora.ai/.MainActivity t17}: app died, no saved state
+11-28 15:27:33.809   660  6284 W libbinder.IPCThreadState: Transaction failed because process frozen.
+11-28 15:27:33.809   660  6284 E libbinder.IPCThreadState: Binder transaction failure. id: 1484092, cmd: BR_FROZEN_REPLY (29202), error: 0 (Success)
+11-28 15:27:33.809   660  6284 E Camera3-OutputStream: getBufferLockedCommon: Stream 0: Can't dequeue next output buffer: Unknown error 2147483646 (-2147483646)
+11-28 15:27:33.810   660  6284 W libbinder.IPCThreadState: Transaction failed because process frozen.
+11-28 15:27:33.810   660  6284 E libbinder.IPCThreadState: Binder transaction failure. id: 1484093, cmd: BR_FROZEN_REPLY (29202), error: 0 (Success)
+11-28 15:27:33.810   660  6284 E Camera3-OutputStream: getBufferLockedCommon: Stream 0: Can't dequeue next output buffer: Unknown error 2147483646 (-2147483646)
+11-28 15:27:33.810   660  6284 W libbinder.IPCThreadState: Transaction failed because process frozen.
+11-28 15:27:33.810   660  6284 E libbinder.IPCThreadState: Binder transaction failure. id: 1484094, cmd: BR_FROZEN_REPLY (29202), error: 0 (Success)
+11-28 15:27:33.810   660  6284 E Camera3-OutputStream: getBufferLockedCommon: Stream 0: Can't dequeue next output buffer: Unknown error 2147483646 (-2147483646)
+11-28 15:27:33.810   660  6284 W libbinder.IPCThreadState: Transaction failed because process frozen.
+11-28 15:27:33.810   660  6284 E libbinder.IPCThreadState: Binder transaction failure. id: 1484098, cmd: BR_FROZEN_REPLY (29202), error: 0 (Success)
+11-28 15:27:33.810   660  6284 E Camera3-OutputStream: getBufferLockedCommon: Stream 0: Can't dequeue next output buffer: Unknown error 2147483646 (-2147483646)
+11-28 15:27:33.811   660  6284 W libbinder.IPCThreadState: Transaction failed because process frozen.
+11-28 15:27:33.811   660  6284 E libbinder.IPCThreadState: Binder transaction failure. id: 1484100, cmd: BR_FROZEN_REPLY (29202), error: 0 (Success)
+11-28 15:27:33.811   660  6284 E Camera3-OutputStream: getBufferLockedCommon: Stream 0: Can't dequeue next output buffer: Unknown error 2147483646 (-2147483646)
+11-28 15:27:33.811   660  6284 W libbinder.IPCThreadState: Transaction failed because process frozen.
+11-28 15:27:33.811   660  6284 E libbinder.IPCThreadState: Binder transaction failure. id: 1484101, cmd: BR_FROZEN_REPLY (29202), error: 0 (Success)
+11-28 15:27:33.811   660  6284 E Camera3-OutputStream: getBufferLockedCommon: Stream 0: Can't dequeue next output buffer: Unknown error 2147483646 (-2147483646)
+11-28 15:27:33.811   660  6284 W libbinder.IPCThreadState: Transaction failed because process frozen.
+11-28 15:27:33.811   660  6284 E libbinder.IPCThreadState: Binder transaction failure. id: 1484103, cmd: BR_FROZEN_REPLY (29202), error: 0 (Success)
+11-28 15:27:33.811   550  6352 D android.hardware.audio@7.1-impl.ranchu: TinyalsaSource::read:148 pcm_readi was late delivering frames, inserting 16000 us of silence
+11-28 15:27:33.811   660  6284 E Camera3-OutputStream: getBufferLockedCommon: Stream 0: Can't dequeue next output buffer: Unknown error 2147483646 (-2147483646)
+11-28 15:27:33.812   660  6284 W libbinder.IPCThreadState: Transaction failed because process frozen.
+11-28 15:27:33.812   660  6284 E libbinder.IPCThreadState: Binder transaction failure. id: 1484104, cmd: BR_FROZEN_REPLY (29202), error: 0 (Success)
+11-28 15:27:33.812   660  6284 E Camera3-OutputStream: getBufferLockedCommon: Stream 0: Can't dequeue next output buffer: Unknown error 2147483646 (-2147483646)
+11-28 15:27:33.812   660  6284 W libbinder.IPCThreadState: Transaction failed because process frozen.
+11-28 15:27:33.812   660  6284 E libbinder.IPCThreadState: Binder transaction failure. id: 1484106, cmd: BR_FROZEN_REPLY (29202), error: 0 (Success)
+11-28 15:27:33.812   660  6284 E Camera3-OutputStream: getBufferLockedCommon: Stream 0: Can't dequeue next output buffer: Unknown error 2147483646 (-2147483646)
+11-28 15:27:33.812   660  6284 W libbinder.IPCThreadState: Transaction failed because process frozen.
+11-28 15:27:33.812   660  6284 E libbinder.IPCThreadState: Binder transaction failure. id: 1484107, cmd: BR_FROZEN_REPLY (29202), error: 0 (Success)
+11-28 15:27:33.812   660  6284 E Camera3-OutputStream: getBufferLockedCommon: Stream 0: Can't dequeue next output buffer: Unknown error 2147483646 (-2147483646)
+11-28 15:27:33.813   660  6284 W libbinder.IPCThreadState: Transaction failed because process frozen.
+11-28 15:27:33.813   660  6284 E libbinder.IPCThreadState: Binder transaction failure. id: 1484111, cmd: BR_FROZEN_REPLY (29202), error: 0 (Success)
+11-28 15:27:33.813   660  6284 E Camera3-OutputStream: getBufferLockedCommon: Stream 0: Can't dequeue next output buffer: Unknown error 2147483646 (-2147483646)
+11-28 15:27:33.813   660  6284 W libbinder.IPCThreadState: Transaction failed because process frozen.
+11-28 15:27:33.813   660  6284 E libbinder.IPCThreadState: Binder transaction failure. id: 1484113, cmd: BR_FROZEN_REPLY (29202), error: 0 (Success)
+11-28 15:27:33.813   660  6284 E Camera3-OutputStream: getBufferLockedCommon: Stream 0: Can't dequeue next output buffer: Unknown error 2147483646 (-2147483646)
+11-28 15:27:33.813   660  6284 W libbinder.IPCThreadState: Transaction failed because process frozen.
+11-28 15:27:33.813   660  6284 E libbinder.IPCThreadState: Binder transaction failure. id: 1484114, cmd: BR_FROZEN_REPLY (29202), error: 0 (Success)
+11-28 15:27:33.814   660  6284 E Camera3-OutputStream: getBufferLockedCommon: Stream 0: Can't dequeue next output buffer: Unknown error 2147483646 (-2147483646)
+11-28 15:27:33.814   660  6284 W libbinder.IPCThreadState: Transaction failed because process frozen.
+11-28 15:27:33.814   660  6284 E libbinder.IPCThreadState: Binder transaction failure. id: 1484116, cmd: BR_FROZEN_REPLY (29202), error: 0 (Success)
+11-28 15:27:33.814   660  6284 E Camera3-OutputStream: getBufferLockedCommon: Stream 0: Can't dequeue next output buffer: Unknown error 2147483646 (-2147483646)
+11-28 15:27:33.814   660  6284 W libbinder.IPCThreadState: Transaction failed because process frozen.
+11-28 15:27:33.815   660  6284 E libbinder.IPCThreadState: Binder transaction failure. id: 1484117, cmd: BR_FROZEN_REPLY (29202), error: 0 (Success)
+11-28 15:27:33.815   660  6284 E Camera3-OutputStream: getBufferLockedCommon: Stream 0: Can't dequeue next output buffer: Unknown error 2147483646 (-2147483646)
+11-28 15:27:33.815   660  6284 W libbinder.IPCThreadState: Transaction failed because process frozen.
+11-28 15:27:33.815   660  6284 E libbinder.IPCThreadState: Binder transaction failure. id: 1484118, cmd: BR_FROZEN_REPLY (29202), error: 0 (Success)
+11-28 15:27:33.815   660  6284 E Camera3-OutputStream: getBufferLockedCommon: Stream 0: Can't dequeue next output buffer: Unknown error 2147483646 (-2147483646)
+11-28 15:27:33.815   660  6284 W libbinder.IPCThreadState: Transaction failed because process frozen.
+11-28 15:27:33.815   660  6284 E libbinder.IPCThreadState: Binder transaction failure. id: 1484120, cmd: BR_FROZEN_REPLY (29202), error: 0 (Success)
+11-28 15:27:33.816   660  6284 E Camera3-OutputStream: getBufferLockedCommon: Stream 0: Can't dequeue next output buffer: Unknown error 2147483646 (-2147483646)
+11-28 15:27:33.816   660  6284 W libbinder.IPCThreadState: Transaction failed because process frozen.
+11-28 15:27:33.816   660  6284 E libbinder.IPCThreadState: Binder transaction failure. id: 1484121, cmd: BR_FROZEN_REPLY (29202), error: 0 (Success)
+11-28 15:27:33.816   660  6284 E Camera3-OutputStream: getBufferLockedCommon: Stream 0: Can't dequeue next output buffer: Unknown error 2147483646 (-2147483646)
+11-28 15:27:33.816   660  6284 W libbinder.IPCThreadState: Transaction failed because process frozen.
+11-28 15:27:33.816   660  6284 E libbinder.IPCThreadState: Binder transaction failure. id: 1484122, cmd: BR_FROZEN_REPLY (29202), error: 0 (Success)
+11-28 15:27:33.816   660  6284 E Camera3-OutputStream: getBufferLockedCommon: Stream 0: Can't dequeue next output buffer: Unknown error 2147483646 (-2147483646)
+11-28 15:27:33.827   550  6352 D android.hardware.audio@7.1-impl.ranchu: TinyalsaSource::read:148 pcm_readi was late delivering frames, inserting 16000 us of silence
+11-28 15:27:33.828   666  1035 E mapper.ranchu: getStandardMetadataImpl:886 failure: UNSUPPORTED: id=407: unexpected standardMetadataType=21
+11-28 15:27:33.828  1039  1100 V WindowManagerShell: Transition requested (#22): android.os.BinderProxy@3b4ce67 TransitionRequestInfo { type = CLOSE, triggerTask = TaskInfo{userId=0 taskId=17 effectiveUid=10227 displayId=0 isRunning=true baseIntent=Intent { flg=0x10000000 cmp=com.lensora.ai/.MainActivity } baseActivity=ComponentInfo{com.lensora.ai/com.lensora.ai.MainActivity} topActivity=ComponentInfo{com.lensora.ai/com.lensora.ai.MainActivity} origActivity=null realActivity=ComponentInfo{com.lensora.ai/com.lensora.ai.MainActivity} numActivities=1 lastActiveTime=1568275 supportsMultiWindow=true resizeMode=1 isResizeable=true minWidth=-1 minHeight=-1 defaultMinSize=220 token=WCT{android.os.BinderProxy@e815838} topActivityType=1 pictureInPictureParams=null shouldDockBigOverlays=false launchIntoPipHostTaskId=-1 lastParentTaskIdBeforePip=-1 displayCutoutSafeInsets=Rect(0, 0 - 0, 0) topActivityInfo=ActivityInfo{5897414 com.lensora.ai.MainActivity} launchCookies=[] positionInParent=Point(0, 0) parentTaskId=-1 isFocused=true isVisible=true isVisibleRequested=true isTopActivityNoDisplay=false isSleeping=false locusId=null displayAreaFeatureId=1 isTopActivityTransparent=false isActivityStackTransparent=false lastNonFullscreenBounds=null capturedLink=null capturedLinkTimestamp=0 requestedVisibleTypes=503 topActivityRequestOpenInBrowserEducationTimestamp=0 appCompatTaskInfo=AppCompatTaskInfo { topActivityInSizeCompat=false isLeafTask= true eligibleForLetterboxEducation= false isLetterboxEducationEnabled= true isLetterboxDoubleTapEnabled= false eligibleForUserAspectRatioButton= false topActivityBoundsLetterboxed= false isFromLetterboxDoubleTap= false topActivityLetterboxVerticalPosition= -1 topActivityLetterboxHorizontalPosition= -1 topActivityLetterboxWidth=-1 topActivityLetterboxHeight=-1 topActivityAppBounds=Rect(0, 0 - 1080, 2400) isUserFullscreenOverrideEnabled=false isSystemFullscreenOverrideEnabled=false hasMinAspectRatioOverride=false topActivityLetterboxBounds=null cameraCompatTaskInfo=CameraCompatTaskInfo { cameraCompatMode=undefinedundefined} topNonResizableActivityAspectRatio=-1.0} topActivityMainWindowFrame=null isAppBubble=false}, pipChange = null, remoteTransition = null, displayChange = null, requestedLocation = null, userChange = null, windowingLayerChange = null, flags = 0, debugId = 22 }
+11-28 15:27:33.829  1039  1100 V ShellDesktopMode: DesktopTasksController: handleRequest request=TransitionRequestInfo { type = CLOSE, triggerTask = TaskInfo{userId=0 taskId=17 effectiveUid=10227 displayId=0 isRunning=true baseIntent=Intent { flg=0x10000000 cmp=com.lensora.ai/.MainActivity } baseActivity=ComponentInfo{com.lensora.ai/com.lensora.ai.MainActivity} topActivity=ComponentInfo{com.lensora.ai/com.lensora.ai.MainActivity} origActivity=null realActivity=ComponentInfo{com.lensora.ai/com.lensora.ai.MainActivity} numActivities=1 lastActiveTime=1568275 supportsMultiWindow=true resizeMode=1 isResizeable=true minWidth=-1 minHeight=-1 defaultMinSize=220 token=WCT{android.os.BinderProxy@e815838} topActivityType=1 pictureInPictureParams=null shouldDockBigOverlays=false launchIntoPipHostTaskId=-1 lastParentTaskIdBeforePip=-1 displayCutoutSafeInsets=Rect(0, 0 - 0, 0) topActivityInfo=ActivityInfo{5897414 com.lensora.ai.MainActivity} launchCookies=[] positionInParent=Point(0, 0) parentTaskId=-1 isFocused=true isVisible=true isVisibleRequested=true isTopActivityNoDisplay=false isSleeping=false locusId=null displayAreaFeatureId=1 isTopActivityTransparent=false isActivityStackTransparent=false lastNonFullscreenBounds=null capturedLink=null capturedLinkTimestamp=0 requestedVisibleTypes=503 topActivityRequestOpenInBrowserEducationTimestamp=0 appCompatTaskInfo=AppCompatTaskInfo { topActivityInSizeCompat=false isLeafTask= true eligibleForLetterboxEducation= false isLetterboxEducationEnabled= true isLetterboxDoubleTapEnabled= false eligibleForUserAspectRatioButton= false topActivityBoundsLetterboxed= false isFromLetterboxDoubleTap= false topActivityLetterboxVerticalPosition= -1 topActivityLetterboxHorizontalPosition= -1 topActivityLetterboxWidth=-1 topActivityLetterboxHeight=-1 topActivityAppBounds=Rect(0, 0 - 1080, 2400) isUserFullscreenOverrideEnabled=false isSystemFullscreenOverrideEnabled=false hasMinAspectRatioOverride=false topActivityLetterboxBounds=null cameraCompatTaskInfo=CameraCompatTaskInfo { cameraCompatMode=undefinedundefined} topNonResizableActivityAspectRatio=-1.0} topActivityMainWindowFrame=null isAppBubble=false}, pipChange = null, remoteTransition = null, displayChange = null, requestedLocation = null, userChange = null, windowingLayerChange = null, flags = 0, debugId = 22 }
+11-28 15:27:33.829  1039  1100 V ShellDesktopMode: DesktopTasksController: skipping handleRequest reason=triggerTask's display doesn't support desktop mode
+11-28 15:27:33.829   660  6291 E libbinder.IPCThreadState: Binder transaction failure. id: 1484155, cmd: BR_DEAD_REPLY (29189), error: -3 (No such process)
+11-28 15:27:33.829   660  6291 E Surface : [SurfaceTexture-0-4361-2](id:110900000013) queueBuffer: error queuing buffer, -32
+11-28 15:27:33.829   660  6291 E Camera3-PreviewFrameSpacer: queueBufferToClientLocked: Failed to queue buffer to client: Broken pipe(-32)
+11-28 15:27:33.835   773   773 D PermissionMonitor: setLocalNetworkPermissions in onPermissionsChanged took 85 microseconds.
+11-28 15:27:33.838   773   988 D BackgroundInstallControlService: Package event received: 0
+11-28 15:27:33.839   612   647 I libbinder.BpBinder: onLastStrongRef automatically unlinking death recipients for descriptor: '(not cached)'
+11-28 15:27:33.842   608  1169 I audioserver: App op 27 missing, silencing record AttributionSourceState{pid: 4361, uid: 10227, deviceId: 0, packageName: com.lensora.ai, attributionTag: (null), token: binder:0x757a9840d600, renouncedPermissions: [], next: []}
+11-28 15:27:33.842   550  6352 D android.hardware.audio@7.1-impl.ranchu: TinyalsaSource::read:148 pcm_readi was late delivering frames, inserting 16000 us of silence
+11-28 15:27:33.854   773   893 W InputDispatcher: channel 'f3f0c2a com.lensora.ai/com.lensora.ai.MainActivity' ~ Consumer closed input channel or an error occurred.  events=0x9
+11-28 15:27:33.854   773   893 E InputDispatcher: channel 'f3f0c2a com.lensora.ai/com.lensora.ai.MainActivity' ~ Channel is unrecoverably broken and will be disposed!
+11-28 15:27:33.857   550  6352 D android.hardware.audio@7.1-impl.ranchu: TinyalsaSource::read:148 pcm_readi was late delivering frames, inserting 16000 us of silence
+11-28 15:27:33.858   660   751 I CameraService: binderDied: A camera client has died, removing it from the list of active clients
+11-28 15:27:33.862   660  6291 E Surface : [SurfaceTexture-0-4361-2](id:110900000013) queueBuffer: error queuing buffer, -32
+11-28 15:27:33.862   660  6291 E Camera3-PreviewFrameSpacer: queueBufferToClientLocked: Failed to queue buffer to client: Broken pipe(-32)
+11-28 15:27:33.863   773  1314 I ImeTracker: com.lensora.ai:e26e3aef: onRequestHide at ORIGIN_SERVER reason HIDE_REMOVE_CLIENT fromUser false
+11-28 15:27:33.864   773  1314 I ImeTracker: com.lensora.ai:e26e3aef: onCancelled at PHASE_SERVER_SHOULD_HIDE
+11-28 15:27:33.865   666  1035 E mapper.ranchu: getStandardMetadataImpl:886 failure: UNSUPPORTED: id=392: unexpected standardMetadataType=21
+11-28 15:27:33.871   550  6355 W android.hardware.audio@7.1-impl.ranchu: pcmRead:221 pcm_readi failed with 'cannot read/write stream data: I/O error' (-1)
+11-28 15:27:33.871   550  6355 E android.hardware.audio@7.1-impl.ranchu: pcmRead:222 failure: -1
+11-28 15:27:33.873   550  6352 D android.hardware.audio@7.1-impl.ranchu: TinyalsaSource::read:148 pcm_readi was late delivering frames, inserting 16000 us of silence
+11-28 15:27:33.877   542   542 I Zygote  : Process 4361 exited due to signal 9 (Killed)
+11-28 15:27:33.877   620   620 I adbd    : Remote process closed the socket (on MSG_PEEK)
+11-28 15:27:33.890   550  6352 D android.hardware.audio@7.1-impl.ranchu: TinyalsaSource::read:148 pcm_readi was late delivering frames, inserting 16000 us of silence
+11-28 15:27:33.895   773   814 I libprocessgroup: Removed cgroup /sys/fs/cgroup/apps/uid_10227/pid_4361
+11-28 15:27:33.900   660  6283 I CameraService: Stop camera streaming for com.lensora.ai (PID 0, UID 10227)
+11-28 15:27:33.901   660  6363 I CameraLatencyHistogram: ProcessCaptureRequest latency histogram (12814) samples:
+11-28 15:27:33.901   660  6363 I CameraLatencyHistogram:        40     80    120    160    200    240    280    320    360    inf (max ms)
+11-28 15:27:33.901   660  6363 I CameraLatencyHistogram:      98.94   1.05   0.01   0.00   0.00   0.00   0.00   0.00   0.00   0.01 (%)
+11-28 15:27:33.901   773   795 E AppOps  : Operation not started: uid=10227 pkg=com.lensora.ai(null) op=CAMERA
+11-28 15:27:33.906   550  6352 D android.hardware.audio@7.1-impl.ranchu: TinyalsaSource::read:148 pcm_readi was late delivering frames, inserting 16000 us of silence
+11-28 15:27:33.922   550  6352 D android.hardware.audio@7.1-impl.ranchu: TinyalsaSource::read:148 pcm_readi was late delivering frames, inserting 16000 us of silence
+11-28 15:27:33.923   773   841 V WindowManager: Defer transition id=22 for TaskFragmentTransaction=android.os.Binder@1bd54eb
+11-28 15:27:33.925  1194  1194 D BaseActivity: Launcher flags updated: [state_started] +[state_started]
+11-28 15:27:33.930  1194  1194 D BaseActivity: Launcher flags updated: [state_started|state_resumed|state_user_active] +[state_resumed|state_user_active]
+11-28 15:27:33.932   773   841 V WindowManager: deferTransitionReady deferReadyDepth=1 stack=com.android.server.wm.TransitionController.deferTransitionReady:1061 com.android.server.wm.TaskFragmentOrganizerController$TaskFragmentOrganizerState.dispatchTransaction:517 com.android.server.wm.TaskFragmentOrganizerController.dispatchPendingEvents:1259 com.android.server.wm.TaskFragmentOrganizerController.dispatchPendingEvents:1228 com.android.server.wm.RootWindowContainer.performSurfacePlacement:777 
+11-28 15:27:33.932  1194  1194 D NexusLauncherModelDelegate: notifySmartspaceEvent: SmartspaceTargetEvent{mSmartspaceTarget=null, mSmartspaceActionId='null', mEventType=6}
+11-28 15:27:33.932   773   893 I WindowManager: WINDOW DIED Window{f3f0c2a u0 com.lensora.ai/com.lensora.ai.MainActivity}
+11-28 15:27:33.935   773  1932 I WindowManager: WIN DEATH: Window{f3f0c2a u0 com.lensora.ai/com.lensora.ai.MainActivity EXITING}
+11-28 15:27:33.937   666  6329 D CCodec  : ISConfig stop at 1941563298us delayUs=-18591us
+11-28 15:27:33.937   666  6329 D CCodecConfig: no c2 equivalents for stop-time-us
+11-28 15:27:33.937   666  6329 D CCodecConfig: no recognized params in: Dict {
+11-28 15:27:33.937   666  6329 D CCodecConfig: }
+11-28 15:27:33.937   666  1065 D MPEG4Writer: reset()
+11-28 15:27:33.937   666  1065 D MPEG4Writer: Video track stopping. Stop source
+11-28 15:27:33.937   666  1065 D MPEG4Writer: Video track source stopping
+11-28 15:27:33.939   550  6352 D android.hardware.audio@7.1-impl.ranchu: TinyalsaSource::read:148 pcm_readi was late delivering frames, inserting 16000 us of silence
+11-28 15:27:33.939   666  6326 I MediaCodecSource: puller (audio) reached EOS
+11-28 15:27:33.941   666  6353 V MediaWriter: Track event err/info msg:101, trackId:2, type:1000,val:-1011
+11-28 15:27:33.941   666  6353 E libbinder.IPCThreadState: Binder transaction failure. id: 1484329, cmd: BR_DEAD_REPLY (29189), error: -22 (Invalid argument)
+11-28 15:27:33.941   666  6353 I MPEG4Writer: Received total/0-length (2931/0) buffers and encoded 2930 frames. - Audio
+11-28 15:27:33.941   666  6353 I MPEG4Writer: Audio track drift time: 0 us
+11-28 15:27:33.945   773   988 D BackgroundInstallControlService: Package event received: 0
+11-28 15:27:33.947   773   988 D BackgroundInstallControlService: Package event received: 0
+11-28 15:27:33.951   773  1312 V ActivityManager: Got obituary of 4361:com.lensora.ai
+11-28 15:27:33.955   550  6352 D android.hardware.audio@7.1-impl.ranchu: TinyalsaSource::read:148 pcm_readi was late delivering frames, inserting 16000 us of silence
+11-28 15:27:33.955   773   803 W ActivityManager: setHasOverlayUi called on unknown pid: 4361
+11-28 15:27:33.956   660  6363 I CameraProviderManager: Camera device device@1.1/internal/1 torch status is now AVAILABLE_OFF
+11-28 15:27:33.956   660  6363 I CameraService: onTorchStatusChangedLocked: Torch status changed for cameraId=1, newStatus=1
+11-28 15:27:33.956   660  6364 I CameraService: Camera 1: Access for "com.lensora.ai" has been restricted, isUidTrusted 0, isUidActive 1 isUidVisible 0, isCameraPrivacyEnabled 0 procState 20
+11-28 15:27:33.957   660  6363 W libbinder.IPCThreadState: Sending oneway calls to frozen process.
+11-28 15:27:33.957   660  6363 W libbinder.IPCThreadState: Sending oneway calls to frozen process.
+11-28 15:27:33.958   551   551 I StreamBufferCacheManager: ~StreamBufferCacheManager: Destroying stream buffer cache manager.
+11-28 15:27:33.958   551  6347 I StreamBufferCacheManager: WorkloadThreadLoop: Exiting stream buffer cache manager workload thread.
+11-28 15:27:33.959   660  6363 E Surface : [SurfaceTexture-0-4361-2](id:110900000013) Surface failed to disconnect. Cleaning up internals anyway. Error -32 (DEAD_OBJECT).
+11-28 15:27:33.961   666  6340 D CCodecBufferChannel: [c2.android.aac.encoder#288] MediaCodec discarded an unknown buffer
+11-28 15:27:33.962   660  6363 W Camera3-OutputStream: disconnectLocked: While disconnecting stream 0 from native window, the native window died from under us
+11-28 15:27:33.962   660  6363 I CameraLatencyHistogram: Stream 0 dequeueBuffer latency histogram (12856) samples:
+11-28 15:27:33.962   660  6363 I CameraLatencyHistogram:         5     10     15     20     25     30     35     40     45    inf (max ms)
+11-28 15:27:33.962   660  6363 I CameraLatencyHistogram:      95.99   3.23   0.63   0.10   0.03   0.01   0.00   0.00   0.01   0.01 (%)
+11-28 15:27:33.963   666  1035 W GraphicBufferSource: released unpopulated slots: [24, 25, 26, 27, 28, 29, 30, 31, 32, 33, 34, 35, 36, 37, 38, 39, 40, 41, 42, 43, 44, 45, 46, 47, 48, 49, 50, 51, 52, 53, 54, 55, 56, 57, 58, 59, 60, 61, 62, 63]
+11-28 15:27:33.964  1039  1100 D WindowManagerShell: setLauncherKeepClearAreaHeight: visible=true, height=495
+11-28 15:27:33.965   660  6363 I CameraLatencyHistogram: Stream 2 dequeueBuffer latency histogram (10795) samples:
+11-28 15:27:33.966   660  6363 I CameraLatencyHistogram:         5     10     15     20     25     30     35     40     45    inf (max ms)
+11-28 15:27:33.966   660  6363 I CameraLatencyHistogram:      92.50   4.43   1.37   0.48   0.27   0.29   0.10   0.11   0.08   0.37 (%)
+11-28 15:27:33.967   660  6363 W libbinder.IPCThreadState: Sending oneway calls to frozen process.
+11-28 15:27:33.968   660  6363 W libbinder.IPCThreadState: Sending oneway calls to frozen process.
+11-28 15:27:33.968   666  6340 D CCodecBufferChannel: [c2.android.aac.encoder#288] MediaCodec discarded an unknown buffer
+11-28 15:27:33.970   666  6340 D CCodecBufferChannel: [c2.android.aac.encoder#288] MediaCodec discarded an unknown buffer
+11-28 15:27:33.970   550  6352 D android.hardware.audio@7.1-impl.ranchu: TinyalsaSource::read:148 pcm_readi was late delivering frames, inserting 16000 us of silence
+11-28 15:27:33.971   666  6340 D CCodecBufferChannel: [c2.android.aac.encoder#288] MediaCodec discarded an unknown buffer
+11-28 15:27:33.973   676  1090 I hw-BpHwBinder: onLastStrongRef automatically unlinking death recipients
+11-28 15:27:33.973   666  6340 I hw-BpHwBinder: onLastStrongRef automatically unlinking death recipients
+11-28 15:27:33.975   550  6355 W android.hardware.audio@7.1-impl.ranchu: pcmRead:221 pcm_readi failed with 'cannot read/write stream data: I/O error' (-1)
+11-28 15:27:33.975   550  6355 E android.hardware.audio@7.1-impl.ranchu: pcmRead:222 failure: -1
+11-28 15:27:33.976   660  6363 W libbinder.IPCThreadState: Sending oneway calls to frozen process.
+11-28 15:27:33.976   660  6363 I CameraService: disconnect: Disconnected client for camera 1 for PID 0
+11-28 15:27:33.976   660   751 D Camera2ClientBase: Camera 1: Shutting down
+11-28 15:27:33.977   660   751 E CameraServiceProxyWrapper: logClose: SessionStatsMap should contain camera 1 before it's closed
+11-28 15:27:33.977   660  6364 D Camera2ClientBase: Camera 1: Shutting down
+11-28 15:27:33.977   660  6364 E CameraServiceProxyWrapper: logClose: SessionStatsMap should contain camera 1 before it's closed
+11-28 15:27:33.978   676  1090 D BufferPoolAccessor2.0: bufferpool2 0x715139c0e5c8 : 0(0 size) total buffers - 0(0 size) used buffers - 0/0 (recycle/alloc) - 0/0 (fetch/transfer)
+11-28 15:27:33.978   666  6340 D BufferPoolAccessor2.0: bufferpool2 0x792175206758 : 0(0 size) total buffers - 0(0 size) used buffers - 23443/23448 (recycle/alloc) - 77/46886 (fetch/transfer)
+11-28 15:27:33.979   676  1090 D BufferPoolAccessor2.0: Destruction - bufferpool2 0x715139c0e5c8 cached: 0/0M, 0/0% in use; allocs: 0, 0% recycled; transfers: 0, 0% unfetched
+11-28 15:27:33.982   666  6326 I MediaCodecSource: encoder (audio) stopped
+11-28 15:27:33.986   550  6352 D android.hardware.audio@7.1-impl.ranchu: TinyalsaSource::read:148 pcm_readi was late delivering frames, inserting 16000 us of silence
+11-28 15:27:33.987  1194  1194 D BaseDepthController: setSurface:
+11-28 15:27:33.987  1194  1194 D BaseDepthController: 	mWaitingOnSurfaceValidity: false
+11-28 15:27:33.987  1194  1194 D BaseDepthController: 	mBaseSurface: Surface(name=com.google.android.apps.nexuslauncher/com.google.android.apps.nexuslauncher.NexusLauncherActivity#485)/@0xc798202
+11-28 15:27:33.987  1194  1194 V BaseDepthController: Applying blur: 0 to Surface(name=com.google.android.apps.nexuslauncher/com.google.android.apps.nexuslauncher.NexusLauncherActivity#485)/@0xc798202 applyImmediately: false
+11-28 15:27:33.987  1194  1194 D BaseDepthController: shouldBlurWorkspace: false targetState: Normal currentStableState: Normal mCurrentBlur: 0 mLauncher.getDepthBlurTargets(): [com.android.launcher3.Workspace{4e52713 V.ED..... .......D 0,0-1080,2400 #7f0a049d app:id/workspace}, com.android.launcher3.Hotseat{32b9d50 V.ED..... .......D 0,1905-1080,2400 #7f0a01ee app:id/hotseat}]
+11-28 15:27:33.987   550  6352 D android.hardware.audio@7.1-impl.ranchu: threadLoop: entering standby
+11-28 15:27:33.987   550  6352 D android.hardware.audio@7.1-impl.ranchu: ~TinyalsaSource: joining producerThread
+11-28 15:27:33.991   608   695 W libbinder.IPCThreadState: Sending oneway calls to frozen process.
+11-28 15:27:33.992   773   803 V WindowManager: Unknown focus tokens, dropping reportFocusChanged
+11-28 15:27:33.993   666  6326 I MediaCodecSource: source (audio) stopped
+11-28 15:27:33.993   666  6326 I MediaCodecSource: encoder (video) stopping
+11-28 15:27:33.994  1039  1403 D WallpaperService: onVisibilityChanged(true): com.android.systemui.wallpapers.ImageWallpaper$CanvasEngine@3f9d077
+11-28 15:27:34.039   612   612 I SurfaceFlinger: Display 4619827259835644672 policy changed
+11-28 15:27:34.039   612   612 I SurfaceFlinger: Previous: {defaultModeId=0, allowGroupSwitching=false, primaryRanges={physical=[60.00 Hz, inf Hz], render=[60.00 Hz, 60.00 Hz]}, appRequestRanges={physical=[60.00 Hz, inf Hz], render=[60.00 Hz, 60.00 Hz]} idleScreenConfig=nullptr}
+11-28 15:27:34.039   612   612 I SurfaceFlinger: Current:  DisplayManagerPolicy{defaultModeId=0, allowGroupSwitching=false, primaryRanges={physical=[0.00 Hz, inf Hz], render=[0.00 Hz, 60.00 Hz]}, appRequestRanges={physical=[0.00 Hz, inf Hz], render=[0.00 Hz, inf Hz]} idleScreenConfig=nullptr}
+11-28 15:27:34.039   612   612 I SurfaceFlinger: 0 mode changes were performed under the previous policy
+11-28 15:27:34.039   612   612 D SurfaceFlinger: setDesiredMode 4619827259835644672 {mode={fps=60.00 Hz, modePtr={id=0, vsyncRate=60.00 Hz, peakRefreshRate=60.00 Hz}}, emitEvent=true, force=false}
+11-28 15:27:34.081   773   872 D ActivityManager: sync unfroze 2311 com.google.android.googlequicksearchbox:search for 6
+11-28 15:27:34.087   550  6355 W android.hardware.audio@7.1-impl.ranchu: pcmRead:221 pcm_readi failed with 'cannot read/write stream data: I/O error' (-1)
+11-28 15:27:34.087   550  6355 E android.hardware.audio@7.1-impl.ranchu: pcmRead:222 failure: -1
+11-28 15:27:34.087   550  6355 D android.hardware.audio@7.1-impl.ranchu: producerThread: exiting
+11-28 15:27:34.087   550  6352 D android.hardware.audio@7.1-impl.ranchu: ~TinyalsaSource: stopping PCM stream
+11-28 15:27:34.192  2311  2311 D ActivityThread: Package [com.lensora.ai] reported as REPLACED, but missing application info. Assuming REMOVED.
+11-28 15:27:34.197  2311  2311 D ActivityThread: Package [com.lensora.ai] reported as REPLACED, but missing application info. Assuming REMOVED.
+11-28 15:27:34.203  2311  2488 D WM-DelayedWorkTracker: Scheduling work 291fd98a-04d0-475d-bf65-571ead6fec4f
+11-28 15:27:34.203  1194  1194 D BaseActivity: Launcher flags updated: [state_started|state_resumed|state_deferred_resumed|state_user_active] +[state_deferred_resumed]
+11-28 15:27:34.203  1194  1194 D StatsLog: LAUNCHER_ONRESUME
+11-28 15:27:34.204   773  2107 V WindowManager: Continue transition id=22 for TaskFragmentTransaction=android.os.Binder@1bd54eb
+11-28 15:27:34.205   773  2107 V WindowManager: continueTransitionReady deferReadyDepth=0 stack=com.android.server.wm.TransitionController.continueTransitionReady:1071 com.android.server.wm.TaskFragmentOrganizerController$TaskFragmentOrganizerState.onTransactionFinished:546 com.android.server.wm.TaskFragmentOrganizerController.onTransactionHandled:740 android.window.ITaskFragmentOrganizerController$Stub.onTransact:225 android.os.Binder.execTransactInternal:1473 
+11-28 15:27:34.207  1194  1194 D b/417220811: invalidateLoadedTasks - previous requestLoadId: -1
+11-28 15:27:34.225  1039  1397 V WindowManagerShell: onTransitionReady(transaction=3320009723822)
+11-28 15:27:34.226  1039  1100 V WindowManagerShell: onTransitionReady (#22) android.os.BinderProxy@3b4ce67: {id=22 t=CLOSE f=0x0 trk=0 r=[0@Point(0, 0)] c=[
+11-28 15:27:34.226  1039  1100 V WindowManagerShell:         {m=TO_FRONT f=SHOW_WALLPAPER|MOVE_TO_TOP leash=Surface(name=Task=1#44)/@0x244fbb5 sb=Rect(0, 0 - 1080, 2400) eb=Rect(0, 0 - 1080, 2400) epz=Point(1080, 2400) d=0 taskParent=-1 winMode=1 userId=0},
+11-28 15:27:34.226  1039  1100 V WindowManagerShell:         {m=CLOSE f=NONE leash=Surface(name=Task=17#98)/@0xf0e824a sb=Rect(0, 0 - 1080, 2400) eb=Rect(0, 0 - 1080, 2400) epz=Point(1080, 2400) d=0 taskParent=-1 winMode=1 userId=0},
+11-28 15:27:34.226  1039  1100 V WindowManagerShell:         {m=TO_FRONT f=IS_WALLPAPER leash=Surface(name=WallpaperWindowToken{b108980}#60)/@0x41c35bb sb=Rect(0, 0 - 1080, 2400) eb=Rect(0, 0 - 1080, 2400) epz=Point(1080, 2400) d=0}
+11-28 15:27:34.226  1039  1100 V WindowManagerShell:     ]}
+11-28 15:27:34.228  1039  1100 V WindowManagerShell: Playing animation for (#22) android.os.BinderProxy@3b4ce67@0
+11-28 15:27:34.228  1039  1100 V ShellRecents: RecentsTransitionHandler.startAnimation: no controller found
+11-28 15:27:34.228  1039  1100 V ShellDesktopMode: DesktopMixedTransitionHandler: No pending desktop transition
+11-28 15:27:34.228  1039  1100 V WindowManagerShell: Transition doesn't have explicit remote, search filters for match for {id=22 t=CLOSE f=0x0 trk=0 r=[0@Point(0, 0)] c=[{m=TO_FRONT f=SHOW_WALLPAPER|MOVE_TO_TOP leash=Surface(name=Task=1#44)/@0x244fbb5 sb=Rect(0, 0 - 1080, 2400) eb=Rect(0, 0 - 1080, 2400) epz=Point(1080, 2400) d=0 taskParent=-1 winMode=1 userId=0},{m=CLOSE f=NONE leash=Surface(name=Task=17#98)/@0xf0e824a sb=Rect(0, 0 - 1080, 2400) eb=Rect(0, 0 - 1080, 2400) epz=Point(1080, 2400) d=0 taskParent=-1 winMode=1 userId=0},{m=TO_FRONT f=IS_WALLPAPER leash=Surface(name=WallpaperWindowToken{b108980}#60)/@0x41c35bb sb=Rect(0, 0 - 1080, 2400) eb=Rect(0, 0 - 1080, 2400) epz=Point(1080, 2400) d=0}]}
+11-28 15:27:34.229  1039  1100 V WindowManagerShell:  Checking filter Pair{{types=[] flags=0x0] notFlags=0x0 checks=[{atype=undefined independent=true modes=[CLOSE,TO_BACK] flags=IN_TASK_WITH_EMBEDDED_ACTIVITY mustBeTask=false order=ANY topActivity=null launchCookie=null taskFragmentToken=android.os.BinderProxy@4fa6564 windowingMode=undefined isCrossDisplayMove=false}]} RemoteTransition { remoteTransition = android.window.IRemoteTransition$Stub$Proxy@8d9d3cd, appThread = android.app.IApplicationThread$Stub$Proxy@d5d482, debugName = overlayBackTransition }}
+11-28 15:27:34.229  1039  1100 V WindowManagerShell:  Checking filter Pair{{types=[] flags=0x0] notFlags=0x0 checks=[{atype=dream independent=true modes=[OPEN,TO_FRONT] flags=NONE mustBeTask=false order=ANY topActivity=null launchCookie=null windowingMode=undefined isCrossDisplayMove=false},{atype=home independent=true modes=[CLOSE,TO_BACK] flags=NONE mustBeTask=false order=ANY topActivity=null launchCookie=null windowingMode=undefined isCrossDisplayMove=false}]} RemoteTransition { remoteTransition = android.window.IRemoteTransition$Stub$Proxy@574793, appThread = android.app.IApplicationThread$Stub$Proxy@baa73d0, debugName = LauncherToDream }}
+11-28 15:27:34.229  1039  1100 V WindowManagerShell:  Checking filter Pair{{types=[] flags=0x0] notFlags=0x100 checks=[{atype=home independent=true modes=[OPEN,TO_FRONT] flags=NONE mustBeTask=false order=TOP topActivity=ComponentInfo{com.google.android.apps.nexuslauncher/com.google.android.apps.nexuslauncher.NexusLauncherActivity} launchCookie=null windowingMode=undefined isCrossDisplayMove=false},{atype=standard independent=true modes=[CLOSE,TO_BACK] flags=NONE mustBeTask=false order=ANY topActivity=null launchCookie=null windowingMode=undefined isCrossDisplayMove=false},{NOT atype=undefined independent=true modes=[] flags=NONE mustBeTask=true order=ANY topActivity=null launchCookie=null customAnim=true windowingMode=undefined isCrossDisplayMove=false}]} RemoteTransition { remoteTransition = android.window.IRemoteTransition$Stub$Proxy@9bcdfc9, appThread = android.app.IApplicationThread$Stub$Proxy@10b6ce, debugName = QuickstepLaunchHome }}
+11-28 15:27:34.229  1039  1100 D RemoteTransitionHandler: Found filterPair{{types=[] flags=0x0] notFlags=0x100 checks=[{atype=home independent=true modes=[OPEN,TO_FRONT] flags=NONE mustBeTask=false order=TOP topActivity=ComponentInfo{com.google.android.apps.nexuslauncher/com.google.android.apps.nexuslauncher.NexusLauncherActivity} launchCookie=null windowingMode=undefined isCrossDisplayMove=false},{atype=standard independent=true modes=[CLOSE,TO_BACK] flags=NONE mustBeTask=false order=ANY topActivity=null launchCookie=null windowingMode=undefined isCrossDisplayMove=false},{NOT atype=undefined independent=true modes=[] flags=NONE mustBeTask=true order=ANY topActivity=null launchCookie=null customAnim=true windowingMode=undefined isCrossDisplayMove=false}]} RemoteTransition { remoteTransition = android.window.IRemoteTransition$Stub$Proxy@9bcdfc9, appThread = android.app.IApplicationThread$Stub$Proxy@10b6ce, debugName = QuickstepLaunchHome }}
+11-28 15:27:34.229  1039  1100 V WindowManagerShell:  Delegate animation for (#22) to RemoteTransition { remoteTransition = android.window.IRemoteTransition$Stub$Proxy@9bcdfc9, appThread = android.app.IApplicationThread$Stub$Proxy@10b6ce, debugName = QuickstepLaunchHome }
+11-28 15:27:34.232  1194  1252 D QuickstepModelDelegate: notifyAppTargetEvent action=1 launchLocation=workspace/0/[-1,-1]/[1,1]
+11-28 15:27:34.237  2311  2488 D WM-GreedyScheduler: Starting tracking for 291fd98a-04d0-475d-bf65-571ead6fec4f
+11-28 15:27:34.263  2311  2488 D WM-DelayedWorkTracker: Scheduling work 54f40bc1-5509-413b-9810-f719a165eddb
+11-28 15:27:34.264  1194  1194 D BaseActivity: Launcher flags updated: [state_started|state_resumed|state_deferred_resumed|state_window_focused|state_user_active] +[state_window_focused]
+11-28 15:27:34.267   773   800 V WindowManager: Sent Transition (#22) createdAt=11-28 15:27:33.809 via request=TransitionRequestInfo { type = CLOSE, triggerTask = TaskInfo{userId=0 taskId=17 effectiveUid=10227 displayId=0 isRunning=true baseIntent=Intent { flg=0x10000000 cmp=com.lensora.ai/.MainActivity } baseActivity=ComponentInfo{com.lensora.ai/com.lensora.ai.MainActivity} topActivity=ComponentInfo{com.lensora.ai/com.lensora.ai.MainActivity} origActivity=null realActivity=ComponentInfo{com.lensora.ai/com.lensora.ai.MainActivity} numActivities=1 lastActiveTime=1568275 supportsMultiWindow=true resizeMode=1 isResizeable=true minWidth=-1 minHeight=-1 defaultMinSize=220 token=WCT{RemoteToken{5a6ba2b Task{e128e35 #17 type=standard A=10227:com.lensora.ai}}} topActivityType=1 pictureInPictureParams=null shouldDockBigOverlays=false launchIntoPipHostTaskId=-1 lastParentTaskIdBeforePip=-1 displayCutoutSafeInsets=Rect(0, 0 - 0, 0) topActivityInfo=ActivityInfo{cf88e88 com.lensora.ai.MainActivity} launchCookies=[] positionInParent=Point(0, 0) parentTaskId=-1 isFocused=true isVisible=true isVisibleRequested=true isTopActivityNoDisplay=false isSleeping=false locusId=null displayAreaFeatureId=1 isTopActivityTransparent=false isActivityStackTransparent=false lastNonFullscreenBounds=null capturedLink=null capturedLinkTimestamp=0 requestedVisibleTypes=503 topActivityRequestOpenInBrowserEducationTimestamp=0 appCompatTaskInfo=AppCompatTaskInfo { topActivityInSizeCompat=false isLeafTask= true eligibleForLetterboxEducation= false isLetterboxEducationEnabled= true isLetterboxDoubleTapEnabled= false eligibleForUserAspectRatioButton= false topActivityBoundsLetterboxed= false isFromLetterboxDoubleTap= false topActivityLetterboxVerticalPosition= -1 topActivityLetterboxHorizontalPosition= -1 topActivityLetterboxWidth=-1 topActivityLetterboxHeight=-1 topActivityAppBounds=Rect(0, 0 - 1080, 2400) isUserFullscreenOverrideEnabled=false isSystemFullscreenOverrideEnabled=false hasMinAspectRatioOverride=false topActivityLetterboxBounds=null cameraCompatTaskInfo=CameraCompatTaskInfo { cameraCompatMode=undefinedundefined} topNonResizableActivityAspectRatio=-1.0} topActivityMainWindowFrame=null isAppBubble=false}, pipChange = null, remoteTransition = null, displayChange = null, requestedLocation = null, userChange = null, windowingLayerChange = null, flags = 0, debugId = 22 }
+11-28 15:27:34.267   773   800 V WindowManager:     startWCT=WindowContainerTransaction { changes= {} hops= [] errorCallbackToken=null taskFragmentOrganizer=null }
+11-28 15:27:34.267   773   800 V WindowManager:     info={id=22 t=CLOSE f=0x0 trk=0 r=[0@Point(0, 0)] c=[
+11-28 15:27:34.267   773   800 V WindowManager:         {WCT{RemoteToken{6725021 Task{aea5e1f #1 type=home}}} m=TO_FRONT f=SHOW_WALLPAPER|MOVE_TO_TOP leash=Surface(name=Task=1#44)/@0x605c49c sb=Rect(0, 0 - 1080, 2400) eb=Rect(0, 0 - 1080, 2400) epz=Point(1080, 2400) d=0 taskParent=-1 winMode=1 userId=0},
+11-28 15:27:34.267   773   800 V WindowManager:         {WCT{RemoteToken{5a6ba2b Task{e128e35 #17 type=standard A=10227:com.lensora.ai}}} m=CLOSE f=NONE leash=Surface(name=Task=17#98)/@0xf046ea5 sb=Rect(0, 0 - 1080, 2400) eb=Rect(0, 0 - 1080, 2400) epz=Point(1080, 2400) d=0 taskParent=-1 winMode=1 userId=0},
+11-28 15:27:34.267   773   800 V WindowManager:         {m=TO_FRONT f=IS_WALLPAPER leash=Surface(name=WallpaperWindowToken{b108980}#60)/@0x4f56c0f sb=Rect(0, 0 - 1080, 2400) eb=Rect(0, 0 - 1080, 2400) epz=Point(1080, 2400) d=0}
+11-28 15:27:34.267   773   800 V WindowManager:     ]}
+11-28 15:27:34.270  1194  1194 D LauncherStateManager: StateManager.cancelAnimation: animation ongoing: false, partial trace:
+11-28 15:27:34.270  1194  1194 D LauncherStateManager: 	at com.android.launcher3.statemanager.StateManager.setCurrentAnimation(go/retraceme f3a19d912c87c27267cfbc05ba0bc7b202ab72a6648bd76225f5f7e128d94583:18)
+11-28 15:27:34.270  1194  1194 D LauncherStateManager: 	at com.android.launcher3.QuickstepTransitionManager.createWallpaperOpenAnimations(go/retraceme f3a19d912c87c27267cfbc05ba0bc7b202ab72a6648bd76225f5f7e128d94583:646)
+11-28 15:27:34.270  1194  1194 D LauncherStateManager: 	at com.android.launcher3.QuickstepTransitionManager$WallpaperOpenLauncherAnimationRunner.onAnimationStart(go/retraceme f3a19d912c87c27267cfbc05ba0bc7b202ab72a6648bd76225f5f7e128d94583:96)
+11-28 15:27:34.271  2311  2488 D WM-GreedyScheduler: Starting tracking for 54f40bc1-5509-413b-9810-f719a165eddb
+11-28 15:27:34.271  1194  1194 D LauncherStateManager: StateManager.createAtomicAnimation: fromState: Normal, toState: Normal, partial trace:
+11-28 15:27:34.271  1194  1194 D LauncherStateManager: 	at com.android.quickstep.util.WorkspaceRevealAnim.prepareToAnimate(go/retraceme f3a19d912c87c27267cfbc05ba0bc7b202ab72a6648bd76225f5f7e128d94583:20)
+11-28 15:27:34.271  1194  1194 D LauncherStateManager: 	at com.android.quickstep.util.WorkspaceRevealAnim.<init>(go/retraceme f3a19d912c87c27267cfbc05ba0bc7b202ab72a6648bd76225f5f7e128d94583:11)
+11-28 15:27:34.271  1194  1194 D LauncherStateManager: 	at com.android.launcher3.QuickstepTransitionManager.createWallpaperOpenAnimations(go/retraceme f3a19d912c87c27267cfbc05ba0bc7b202ab72a6648bd76225f5f7e128d94583:683)
+11-28 15:27:34.272  1194  1194 D AllAppsTransitionController: shouldProtectHeader: false skipScrim: true state: Normal stateManager.getState(): Normal
+11-28 15:27:34.272  1194  1194 D KeyboardInsetsHandler: removePendingImeController: pendingImeController=null
+11-28 15:27:34.272  1194  1194 D b/311077782: LauncherAnimationRunner.setAnimation
+11-28 15:27:34.273  2311  2488 D WM-DelayedWorkTracker: Scheduling work c9982172-5957-4342-a15a-39b54bbb5cca
+11-28 15:27:34.273  2311  2488 D WM-GreedyScheduler: Starting tracking for c9982172-5957-4342-a15a-39b54bbb5cca
+11-28 15:27:34.283   773   803 W ProcessStats: Tracking association SourceState{556e7d5 system/1000 ImpBg #3065} whose proc state 6 is better than process ProcessState{1ac3ea5 com.google.android.googlequicksearchbox:search/10158 pkg=com.google.android.googlequicksearchbox} proc state 14 (23 skipped)
+11-28 15:27:34.285   676  6334 D BufferPoolAccessor2.0: bufferpool2 0x715139c0c0c8 : 3(9331200 size) total buffers - 1(3110400 size) used buffers - 10778/10781 (recycle/alloc) - 19/10781 (fetch/transfer)
+11-28 15:27:34.286  1039  1100 V WindowManagerShell:  animated by com.android.wm.shell.transition.RemoteTransitionHandler@77e5f
+11-28 15:27:34.320   773   902 I ImeTracker: com.google.android.apps.nexuslauncher:ab114386: onRequestHide at ORIGIN_SERVER reason HIDE_UNSPECIFIED_WINDOW fromUser false
+11-28 15:27:34.323  1194  1194 D InsetsController: hide(ime())
+11-28 15:27:34.324  1194  1194 I ImeTracker: com.google.android.apps.nexuslauncher:ab114386: onCancelled at PHASE_CLIENT_ALREADY_HIDDEN
+11-28 15:27:34.324  2311  2488 D WM-DelayedWorkTracker: Scheduling work b1e25db4-2980-4dbe-a6e0-870b3e802220
+11-28 15:27:34.325  2311  2488 D WM-GreedyScheduler: Starting tracking for b1e25db4-2980-4dbe-a6e0-870b3e802220
+11-28 15:27:34.325  1538  1538 I GoogleInputMethodService: GoogleInputMethodService.onFinishInput():2057 
+11-28 15:27:34.339  2311  2488 D WM-DelayedWorkTracker: Scheduling work 3b3a886c-2fcf-4128-95e9-39559ff4792a
+11-28 15:27:34.339  2311  2394 D WM-GreedyScheduler: Constraints not met: Cancelling work ID WorkGenerationalId(workSpecId=291fd98a-04d0-475d-bf65-571ead6fec4f, generation=6)
+11-28 15:27:34.339  2311  2488 D WM-GreedyScheduler: Starting tracking for 3b3a886c-2fcf-4128-95e9-39559ff4792a
+11-28 15:27:34.340  2311  2394 D WM-GreedyScheduler: Constraints not met: Cancelling work ID WorkGenerationalId(workSpecId=54f40bc1-5509-413b-9810-f719a165eddb, generation=6)
+11-28 15:27:34.340  2311  2488 D WM-DelayedWorkTracker: Scheduling work 52ec5a56-58e8-4704-bf3f-4abe7702c8de
+11-28 15:27:34.340  2311  2488 D WM-GreedyScheduler: Starting work for 52ec5a56-58e8-4704-bf3f-4abe7702c8de
+11-28 15:27:34.341  2311  2394 D WM-GreedyScheduler: Constraints not met: Cancelling work ID WorkGenerationalId(workSpecId=c9982172-5957-4342-a15a-39b54bbb5cca, generation=13)
+11-28 15:27:34.343  2311  2394 D WM-GreedyScheduler: Constraints not met: Cancelling work ID WorkGenerationalId(workSpecId=b1e25db4-2980-4dbe-a6e0-870b3e802220, generation=3)
+11-28 15:27:34.351   773  2354 I ImeTracker: system_server:353a803: onRequestHide at ORIGIN_SERVER reason IME_REQUESTED_CHANGED_LISTENER fromUser false
+11-28 15:27:34.354  2311  2311 D WM-SystemJobService: onStartJob for WorkGenerationalId(workSpecId=52ec5a56-58e8-4704-bf3f-4abe7702c8de, generation=6)
+11-28 15:27:34.363  1660  1856 I AiAiEcho: Predicting[0]:  [CONTEXT sampling_count=5 ]
+11-28 15:27:34.364  1660  1856 I AiAiEcho: EchoTargets: 
+11-28 15:27:34.364  1660  1856 I AiAiEcho: Filtered by AiAi flag check: 
+11-28 15:27:34.364  1660  1856 I AiAiEcho: [CONTEXT ratelimit_period="10 SECONDS" ]
+11-28 15:27:34.365  1660  1856 I AiAiEcho: #remoteViewsTwiddler: feature disabled.
+11-28 15:27:34.366  1660  1856 I AiAiEcho: #postPredictionTargets: Sending updates to UISurface home with targets# 0 (types=[])
+11-28 15:27:34.370  1538  1538 I Module  : DeviceLockedStatusModuleProvider$Module.updateDeviceLockedStatus():100 repeatCheckTimes = 0, locked = false
+11-28 15:27:34.371  1538  1538 W NotificationCenter: NotificationCenter$NotificationQueue.notifyPendingNotificationsOnExecutor():877 Heavy notify work detected on UI thread: [ltj->guu, ltj->jtc, ltj->lsn, ltj->jtc, ltj->jtc, ltj->lse, ltj->fwu, ltj->ngp, ltj->jqp, ltj->jup, ltj->jtc, ltj->jtc, ltj->jtc, ltj->jtc, ltj->jtc, ltj->jtc, ltj->jtc, ltj->jtc, ltj->jtc, ltj->kya, ltj->nuz, ltj->fum, ltj->jtc, ltj->jtc] takes 32ms
+11-28 15:27:34.377  1538  1538 I GoogleInputMethodService: GoogleInputMethodService.onStartInput():1318 onStartInput(EditorInfo{EditorInfo{packageName=com.google.android.apps.nexuslauncher, inputType=0, inputTypeString=NULL, enableLearning=false, autoCorrection=false, autoComplete=false, imeOptions=0, privateImeOptions=null, actionName=UNSPECIFIED, actionLabel=null, initialSelStart=-1, initialSelEnd=-1, initialCapsMode=0, label=null, fieldId=0, fieldName=null, extras=null, hintText=null, hintLocales=[]}}, false)
+11-28 15:27:34.389  2311  2394 D WM-Processor: mib: processing WorkGenerationalId(workSpecId=52ec5a56-58e8-4704-bf3f-4abe7702c8de, generation=6)
+11-28 15:27:34.391   773  2354 W PackageConfigPersister: App-specific configuration not found for packageName: com.google.android.apps.nexuslauncher and userId: 0
+11-28 15:27:34.394  2311  2394 D WM-Processor: Work WorkGenerationalId(workSpecId=52ec5a56-58e8-4704-bf3f-4abe7702c8de, generation=6) is already enqueued for processing
+11-28 15:27:34.395   773   803 I ImeTracker: system_server:353a803: onCancelled at PHASE_SERVER_SHOULD_HIDE
+11-28 15:27:34.404  1538  1538 I Module  : DeviceLockedStatusModuleProvider$Module.updateDeviceLockedStatus():100 repeatCheckTimes = 1, locked = false
+11-28 15:27:34.412  1194  1194 D SsBaseTemplateCard: Passed-in item info is null
+11-28 15:27:34.413  1194  1194 D SsBaseTemplateCard: Passed-in item info is null
+11-28 15:27:34.413  1194  1194 D SsBaseTemplateCard: Passed-in item info is null
+11-28 15:27:34.413  1194  1194 D SsBaseTemplateCard: Passed-in item info is null
+11-28 15:27:34.413  1194  1194 I SsBaseTemplateCard: Secondary card pane is null
+11-28 15:27:34.465  2311  2311 D WM-WorkerWrapper: Starting work for androidx.work.multiprocess.RemoteListenableDelegatingWorker
+11-28 15:27:34.467  2311  2311 D WM-ListenableWorkerImpl: Binding to com.google.android.googlequicksearchbox, com.google.android.libraries.search.integrations.tiktok.RemoteWorkerService_search
+11-28 15:27:34.469  2311  2394 D WM-GreedyScheduler: Constraints not met: Cancelling work ID WorkGenerationalId(workSpecId=3b3a886c-2fcf-4128-95e9-39559ff4792a, generation=3)
+11-28 15:27:34.498  2311  2311 I WM-RemoteWorkerService: Binding to RemoteWorkerService
+11-28 15:27:34.503  2311  2311 D WM-ListenableWorkerImpl: Service connected
+11-28 15:27:34.503  2311  2444 D WM-ListenableWorkerImpl: Executing work request (52ec5a56-58e8-4704-bf3f-4abe7702c8de, com.google.apps.tiktok.contrib.work.TikTokListenableWorker)
+11-28 15:27:34.534  2311  2311 I eehr    : #sync(). Running Synclets and scheduling next sync.
+11-28 15:27:34.576  2311  2394 I eehr    : (REDACTED) Running synclets: %s
+11-28 15:27:34.603  2311  2477 I eehr    : (REDACTED) Starting synclet: %s
+11-28 15:27:34.629  1194  1194 D WorkspaceRevealAnim: onAnimationEnd: workspace alpha = 1.0
+11-28 15:27:34.636  1039  1397 V WindowManagerShell: Received remote transition finished callback for (#22)
+11-28 15:27:34.639  1039  1100 V WindowManagerShell: Transition animation finished (aborted=false), notifying core (#22) android.os.BinderProxy@3b4ce67@0
+11-28 15:27:34.644   773  2102 E libbinder.IPCThreadState: Binder transaction failure. id: 1485090, cmd: BR_DEAD_REPLY (29189), error: -22 (Invalid argument)
+11-28 15:27:34.651   773   800 V WindowManager: Finish Transition (#22): created at 11-28 15:27:33.809 collect-started=0.146ms request-sent=0.391ms started=127.767ms ready=403.76ms sent=414.166ms commit=37.205ms finished=833.319ms
+11-28 15:27:34.653   773  2102 W ActivityManager: pid 773 system sent binder code 7 with flags 1 and got error -32
+11-28 15:27:34.657   773  2102 W WindowManager: Exception thrown during dispatchAppVisibility Window{f3f0c2a u0 com.lensora.ai/com.lensora.ai.MainActivity EXITING}
+11-28 15:27:34.657   773  2102 W WindowManager: android.os.DeadObjectException
+11-28 15:27:34.657   773  2102 W WindowManager: 	at android.os.BinderProxy.transactNative(Native Method)
+11-28 15:27:34.657   773  2102 W WindowManager: 	at android.os.BinderProxy.transact(BinderProxy.java:599)
+11-28 15:27:34.657   773  2102 W WindowManager: 	at android.view.IWindow$Stub$Proxy.dispatchAppVisibility(IWindow.java:535)
+11-28 15:27:34.657   773  2102 W WindowManager: 	at com.android.server.wm.WindowState.sendAppVisibilityToClients(WindowState.java:3266)
+11-28 15:27:34.657   773  2102 W WindowManager: 	at com.android.server.wm.WindowContainer.sendAppVisibilityToClients(WindowContainer.java:1218)
+11-28 15:27:34.657   773  2102 W WindowManager: 	at com.android.server.wm.WindowToken.setClientVisible(WindowToken.java:394)
+11-28 15:27:34.657   773  2102 W WindowManager: 	at com.android.server.wm.ActivityRecord.commitVisibility(ActivityRecord.java:5626)
+11-28 15:27:34.657   773  2102 W WindowManager: 	at com.android.server.wm.Transition.finishTransition(Transition.java:1500)
+11-28 15:27:34.657   773  2102 W WindowManager: 	at com.android.server.wm.TransitionController.finishTransition(TransitionController.java:1096)
+11-28 15:27:34.657   773  2102 W WindowManager: 	at com.android.server.wm.WindowOrganizerController.finishTransition(WindowOrganizerController.java:518)
+11-28 15:27:34.657   773  2102 W WindowManager: 	at android.window.IWindowOrganizerController$Stub.onTransact(IWindowOrganizerController.java:270)
+11-28 15:27:34.657   773  2102 W WindowManager: 	at com.android.server.wm.WindowOrganizerController.onTransact(WindowOrganizerController.java:233)
+11-28 15:27:34.657   773  2102 W WindowManager: 	at android.os.Binder.execTransactInternal(Binder.java:1478)
+11-28 15:27:34.657   773  2102 W WindowManager: 	at android.os.Binder.execTransact(Binder.java:1418)
+11-28 15:27:34.657   773  2102 W Process : Unable to open /proc/4361/status
+11-28 15:27:34.669  2311  2477 I aizb    : Robin eligibility : Account is Pseudonymous type.
+11-28 15:27:34.670  2311  2477 I aizb    : User became ineligible due to one of checks failed on client
+11-28 15:27:34.680  2311  2478 I amll    : OptInSetting is UNKNOWN or UNRECOGNIZED [CONTEXT ratelimit_period="10 SECONDS" skipped=3 ]
+11-28 15:27:34.680  2311  2478 I aibm    : Manufacturer not matched [CONTEXT ratelimit_period="10 SECONDS" skipped=3 ]
+11-28 15:27:34.680  2311  2478 I aibm    : Device not matched [CONTEXT ratelimit_period="10 SECONDS" skipped=3 ]
+11-28 15:27:34.682  2311  2478 I azzp    : (REDACTED) getInitialSimplifiedOobeViaDeeplinkUser: %b
+11-28 15:27:34.682  2311  2478 I amll    : (REDACTED) isDeeplinkEnabled %s, isInitialSimplifiedOobeViaDeeplinkUser %s
+11-28 15:27:34.682  2311  2478 I amll    : #getOobeStatus: BeforeOobe [CONTEXT ratelimit_period="10 SECONDS" skipped=3 ]
+11-28 15:27:34.683  2311  2478 I aizb    : (REDACTED) Robin eligibility : Robin is ineligible failure reasons: %s
+11-28 15:27:34.685  2311  2318 W earchbox:search: Reducing the number of considered missed Gc histogram windows from 186 to 100
+11-28 15:27:34.687  2311  2477 I aezi    : (REDACTED) %s was not found: %s
+11-28 15:27:34.697  2311  2478 W aevr    : Failed to fetch account name for ROBIN_SUPERVISED_ACCOUNT_CHECKER
+11-28 15:27:34.697  2311  2478 W aevr    : java.lang.NullPointerException: Attempt to invoke virtual method 'java.lang.Class java.lang.Object.getClass()' on a null object reference
+11-28 15:27:34.697  2311  2478 W aevr    : 	at agqz.b(PG:82)
+11-28 15:27:34.697  2311  2478 W aevr    : 	at aevr.b(PG:60)
+11-28 15:27:34.697  2311  2478 W aevr    : 	at aewd.b(PG:120)
+11-28 15:27:34.697  2311  2478 W aevr    : 	at fcyf.u(PG:12)
+11-28 15:27:34.697  2311  2478 W aevr    : 	at fdhq.run(PG:110)
+11-28 15:27:34.697  2311  2478 W aevr    : 	at edes.run(PG:3)
+11-28 15:27:34.697  2311  2478 W aevr    : 	at eepm.run(PG:13)
+11-28 15:27:34.697  2311  2478 W aevr    : 	at ckfm.run(PG:5)
+11-28 15:27:34.697  2311  2478 W aevr    : 	at elzk.run(PG:44)
+11-28 15:27:34.697  2311  2478 W aevr    : 	at ckey.run(PG:83)
+11-28 15:27:34.697  2311  2478 W aevr    : 	at java.lang.Thread.run(Thread.java:1563)
+11-28 15:27:34.697  2311  2478 W aevr    : 	at ckgq.run(PG:62)
+11-28 15:27:34.707   773   988 D BackgroundInstallControlService: Package event received: 0
+11-28 15:27:34.713  1039  1100 V WindowManagerShell: Track 0 became idle
+11-28 15:27:34.713  1039  1100 V WindowManagerShell: All active transition animations finished
+11-28 15:27:34.720  1039  1100 V ShellTaskOrganizer: Task vanished taskId=17
+11-28 15:27:34.720  1039  1100 V ShellTaskOrganizer: Fullscreen Task Vanished: #17
+11-28 15:27:34.722  1194  1194 D RecentsView: onTaskRemoved: 17, not handling task stack changes
+11-28 15:27:34.722  1194  1194 D RecentsView: onTaskRemoved: 17, not handling task stack changes
+11-28 15:27:34.723  1039  1100 V ShellDesktopMode: Task Vanished: #17 closed=true
+11-28 15:27:34.724  1039  1100 D ShellDesktopMode: AppToWebRepository: Task 17 is vanishing. Removing task data from repository
+11-28 15:27:34.725  1194  1194 D b/417220811: invalidateLoadedTasks - previous requestLoadId: -1
+11-28 15:27:34.727  1039  1100 V AppCompat: SingleSurfaceLetterboxController: []
+11-28 15:27:34.727  1039  1100 V AppCompat: MultiSurfaceLetterboxController: []
+11-28 15:27:34.727  1039  1100 V AppCompat: LetterboxInputController: []
+11-28 15:27:34.727  1039  1100 V AppCompat: RoundedCornersLetterboxController: {}
+11-28 15:27:34.744   612   612 E BpTransactionCompletedListener: Failed to transact (-32)
+11-28 15:27:34.752   773  1011 W ImageReader_JNI: Unable to acquire a buffer item, very likely client tried to acquire more than maxImages buffers
+11-28 15:27:34.757  2311  2477 I aesj    : (REDACTED) FCF System FeatureName to check: %s
+11-28 15:27:34.759  2311  2477 I aesj    : (REDACTED) FCF: Device model check status : %s
+11-28 15:27:34.760  2311  2477 I aezr    : #isGeminiDefaultSystemFeatureEnabled: false
+11-28 15:27:34.780  2311  2478 I azzp    : (REDACTED) getInitialSimplifiedOobeViaDeeplinkUser: %b
+11-28 15:27:34.781  2311  2478 I amll    : (REDACTED) isDeeplinkEnabled %s, isInitialSimplifiedOobeViaDeeplinkUser %s
+11-28 15:27:34.781  2311  2477 I aknt    : Returning COHORT_NOT_DETERMINED for signed out user.
+11-28 15:27:34.781  2311  2478 I azzp    : (REDACTED) getInitialSimplifiedOobeViaDeeplinkUser: %b
+11-28 15:27:34.781  2311  2478 I amll    : (REDACTED) isDeeplinkEnabled %s, isInitialSimplifiedOobeViaDeeplinkUser %s
+11-28 15:27:34.781  2311  2478 I aezk    : User not OptedIn. Skipping Eligibility Checks.
+11-28 15:27:34.782  2311  2478 I aezi    : (REDACTED) %s was not found: %s
+11-28 15:27:34.785  2311  2477 I akoc    : Refreshing cohort details.
+11-28 15:27:34.786  2311  2477 I aknt    : Returning COHORT_NOT_DETERMINED for signed out user.
+11-28 15:27:34.786  1039  1046 W System  : A resource failed to call release. 
+11-28 15:27:34.787  1039  1046 W System  : A resource failed to call release. 
+11-28 15:27:34.787  1039  1046 W System  : A resource failed to call release. 
+11-28 15:27:34.787  1039  1046 W System  : A resource failed to call release. 
+11-28 15:27:34.789  2311  2477 I akue    : (REDACTED) Refresh done: received=%s
+11-28 15:27:34.790  2311  2477 I azzp    : (REDACTED) getInitialSimplifiedOobeViaDeeplinkUser: %b
+11-28 15:27:34.790  2311  2477 I amll    : (REDACTED) isDeeplinkEnabled %s, isInitialSimplifiedOobeViaDeeplinkUser %s
+11-28 15:27:34.794  2311  2477 I azzp    : (REDACTED) getInitialSimplifiedOobeViaDeeplinkUser: %b
+11-28 15:27:34.796  2311  2477 I amll    : (REDACTED) isDeeplinkEnabled %s, isInitialSimplifiedOobeViaDeeplinkUser %s
+11-28 15:27:34.799  2311  2477 I aezk    : User not OptedIn. Skipping Eligibility Checks.
+11-28 15:27:34.822  2311  2477 I eehr    : Scheduling next wakeup
+11-28 15:27:34.823  2311  2477 I eeir    : Scheduling next periodic WorkManager workers
+11-28 15:27:34.867   773  6411 I GFXSTREAM: [eglDisplay.cpp(297)] Opening libGLESv1_CM_emulation.so
+11-28 15:27:34.869   773  6411 I GFXSTREAM: [eglDisplay.cpp(297)] Opening libGLESv2_emulation.so
+11-28 15:27:34.912  2311  2381 D WM-GreedyScheduler: Cancelling work ID 54f40bc1-5509-413b-9810-f719a165eddb
+11-28 15:27:34.924   773  6411 W HWUI    : Failed to choose config with EGL_SWAP_BEHAVIOR_PRESERVED, retrying without...
+11-28 15:27:34.925   773  6411 W HWUI    : Failed to initialize 101010-2 format, error = EGL_SUCCESS
+11-28 15:27:34.938  2311  2381 D WM-SystemJobScheduler: Scheduling work ID 54f40bc1-5509-413b-9810-f719a165eddbJob ID 99
+11-28 15:27:34.946  2311  2381 D WM-GreedyScheduler: Starting tracking for e0b9ba47-b668-4887-b16e-f3d53c68a401,fe5c9780-ec38-4b59-807d-b9495bb99a15,291fd98a-04d0-475d-bf65-571ead6fec4f,48a05495-1c6a-4372-bfff-96d2c0581d7c,b1e25db4-2980-4dbe-a6e0-870b3e802220,3b3a886c-2fcf-4128-95e9-39559ff4792a,8465b882-37c0-4f41-937b-4d09e9c4620b,cba80705-8107-421c-98da-bc8e219b2b78,c3ec9464-9275-49e4-a9e4-dbd793080d94,da068b6b-32c0-4f1b-862f-88fb665e2077,604769c0-16b8-40e0-95db-aba400706292,c9982172-5957-4342-a15a-39b54bbb5cca,38a4b374-70dd-46a4-9cc4-ce487526ffa0,9da7cefc-cdc3-4d0d-bc67-3c7652afe793
+11-28 15:27:34.956   773  2239 W ActivityTaskManager: callingPackage for (uid=2000, pid=9143) has no WPC
+11-28 15:27:34.958   773  2239 V WindowManager: DesktopModeLaunchParamsModifier: phase= 0 task=null activity=null display-area-from-current-params=null display-area-from-default-fallback=DefaultTaskDisplayArea@131926325 display-id=0 task-display-area-windowing-mode=1 suggested-display-area=DefaultTaskDisplayArea@131926325 task null, skipping
+11-28 15:27:34.958   773  2239 V WindowManager: TaskLaunchParamsModifier:phase=0 task=null activity=null display-area-from-current-params=null display-area-from-default-fallback=DefaultTaskDisplayArea@131926325 display-id=0 task-display-area-windowing-mode=1 suggested-display-area=DefaultTaskDisplayArea@131926325
+11-28 15:27:34.959  2311  2381 D WM-GreedyScheduler: Cancelling work ID c9982172-5957-4342-a15a-39b54bbb5cca
+11-28 15:27:34.959   773  2239 V GrammaticalInflectionUtils: AttributionSource: android.content.AttributionSource@3ad95312 does not have READ_SYSTEM_GRAMMATICAL_GENDER permission.
+11-28 15:27:34.960   773  2239 V WindowManager: DesktopModeLaunchParamsModifier: phase= 0 task=null activity=ActivityRecord{144023687 u0 com.lensora.ai/.MainActivity display-area-from-current-params=null display-area-from-default-fallback=DefaultTaskDisplayArea@131926325 display-id=0 task-display-area-windowing-mode=1 suggested-display-area=DefaultTaskDisplayArea@131926325 task null, skipping
+11-28 15:27:34.960   773  2239 V WindowManager: TaskLaunchParamsModifier:phase=0 task=null activity=ActivityRecord{144023687 u0 com.lensora.ai/.MainActivity t-1} display-area-from-current-params=null display-area-from-default-fallback=DefaultTaskDisplayArea@131926325 display-id=0 task-display-area-windowing-mode=1 suggested-display-area=DefaultTaskDisplayArea@131926325
+11-28 15:27:34.961   773  2239 V WindowManager: DesktopModeLaunchParamsModifier: phase= 3 task=null activity=ActivityRecord{144023687 u0 com.lensora.ai/.MainActivity t-1} display-area-from-current-params=null display-area-from-default-fallback=DefaultTaskDisplayArea@131926325 display-id=0 task-display-area-windowing-mode=1 suggested-display-area=DefaultTaskDisplayArea@131926325 task null, skipping
+11-28 15:27:34.961   773  2239 V WindowManager: TaskLaunchParamsModifier:phase=3 task=null activity=ActivityRecord{144023687 u0 com.lensora.ai/.MainActivity t-1} display-area-from-current-params=null display-area-from-default-fallback=DefaultTaskDisplayArea@131926325 display-id=0 task-display-area-windowing-mode=1 suggested-display-area=DefaultTaskDisplayArea@131926325 non-freeform-task-display-area display-area=DefaultTaskDisplayArea@131926325 skip-bounds-fullscreen
+11-28 15:27:34.963   773  2239 V WindowManager: DesktopModeLaunchParamsModifier: phase= 3 task=Task{e08abb4 #18 type=standard A=10227:com.lensora.ai} activity=ActivityRecord{144023687 u0 com.lensora.ai/.MainActivity t-1} display-from-task=0 display-id=0 task-display-area-windowing-mode=1 suggested-display-area=DefaultTaskDisplayArea@131926325 not entering desktop mode, skipping
+11-28 15:27:34.964   773  2239 V WindowManager: TaskLaunchParamsModifier:phase=3 task=Task{e08abb4 #18 type=standard A=10227:com.lensora.ai} activity=ActivityRecord{144023687 u0 com.lensora.ai/.MainActivity t-1} display-from-task=0 display-id=0 task-display-area-windowing-mode=1 suggested-display-area=DefaultTaskDisplayArea@131926325 inherit-from-task=fullscreen non-freeform-task-display-area display-area=DefaultTaskDisplayArea@131926325 skip-bounds-fullscreen
+11-28 15:27:34.967   612  1282 I libbinder.BpBinder: onLastStrongRef automatically unlinking death recipients for descriptor: '(not cached)'
+11-28 15:27:34.973   773  2239 I ActivityTaskManager: START u0 {flg=0x10000000 xflg=0x5 cmp=com.lensora.ai/.MainActivity} with LAUNCH_MULTIPLE from uid 2000 (com.android.shell) (BAL_ALLOW_PERMISSION) result code=0
+11-28 15:27:34.974  1194  1194 D BaseActivity: Launcher flags updated: [state_started|state_resumed|state_deferred_resumed|state_window_focused] -[state_user_active]
+11-28 15:27:34.974  1194  1194 D BaseActivity: Launcher flags updated: [state_started|state_window_focused] -[state_resumed|state_deferred_resumed]
+11-28 15:27:34.975  1194  1194 W SplitSelectStateCtor: Missing session instanceIds
+11-28 15:27:34.975  1194  1194 D StatsLog: LAUNCHER_SPLIT_SELECTION_EXIT_INTERRUPTED
+11-28 15:27:34.980  1039  1100 D WindowManagerShell: setLauncherKeepClearAreaHeight: visible=false, height=495
+11-28 15:27:34.982   773  2239 V WindowManager: Defer transition id=23 for TaskFragmentTransaction=android.os.Binder@821be23
+11-28 15:27:34.982   773  2239 V WindowManager: deferTransitionReady deferReadyDepth=1 stack=com.android.server.wm.TransitionController.deferTransitionReady:1061 com.android.server.wm.TaskFragmentOrganizerController$TaskFragmentOrganizerState.dispatchTransaction:517 com.android.server.wm.TaskFragmentOrganizerController.dispatchPendingEvents:1259 com.android.server.wm.TaskFragmentOrganizerController.dispatchPendingEvents:1228 com.android.server.wm.RootWindowContainer.performSurfacePlacement:777 
+11-28 15:27:34.983  1039  1100 V WindowManagerShell: Transition requested (#23): android.os.BinderProxy@585ec6d TransitionRequestInfo { type = OPEN, triggerTask = TaskInfo{userId=0 taskId=18 effectiveUid=10227 displayId=0 isRunning=true baseIntent=Intent { flg=0x10000000 cmp=com.lensora.ai/.MainActivity } baseActivity=ComponentInfo{com.lensora.ai/com.lensora.ai.MainActivity} topActivity=ComponentInfo{com.lensora.ai/com.lensora.ai.MainActivity} origActivity=null realActivity=ComponentInfo{com.lensora.ai/com.lensora.ai.MainActivity} numActivities=1 lastActiveTime=1942670 supportsMultiWindow=true resizeMode=1 isResizeable=true minWidth=-1 minHeight=-1 defaultMinSize=220 token=WCT{android.os.BinderProxy@15d10a2} topActivityType=1 pictureInPictureParams=null shouldDockBigOverlays=false launchIntoPipHostTaskId=-1 lastParentTaskIdBeforePip=-1 displayCutoutSafeInsets=Rect(0, 0 - 0, 0) topActivityInfo=ActivityInfo{efda133 com.lensora.ai.MainActivity} launchCookies=[] positionInParent=Point(0, 0) parentTaskId=-1 isFocused=false isVisible=false isVisibleRequested=false isTopActivityNoDisplay=false isSleeping=false locusId=null displayAreaFeatureId=1 isTopActivityTransparent=false isActivityStackTransparent=false lastNonFullscreenBounds=null capturedLink=null capturedLinkTimestamp=0 requestedVisibleTypes=503 topActivityRequestOpenInBrowserEducationTimestamp=0 appCompatTaskInfo=AppCompatTaskInfo { topActivityInSizeCompat=false isLeafTask= true eligibleForLetterboxEducation= false isLetterboxEducationEnabled= true isLetterboxDoubleTapEnabled= false eligibleForUserAspectRatioButton= false topActivityBoundsLetterboxed= false isFromLetterboxDoubleTap= false topActivityLetterboxVerticalPosition= -1 topActivityLetterboxHorizontalPosition= -1 topActivityLetterboxWidth=-1 topActivityLetterboxHeight=-1 topActivityAppBounds=Rect(0, 0 - 1080, 2400) isUserFullscreenOverrideEnabled=false isSystemFullscreenOverrideEnabled=false hasMinAspectRatioOverride=false topActivityLetterboxBounds=null cameraCompatTaskInfo=CameraCompatTaskInfo { cameraCompatMode=undefinedundefined} topNonResizableActivityAspectRatio=-1.0} topActivityMainWindowFrame=null isAppBubble=false}, pipChange = null, remoteTransition = null, displayChange = null, requestedLocation = null, userChange = null, windowingLayerChange = null, flags = 0, debugId = 23 }
+11-28 15:27:34.983  1039  1100 D ShellSplitScreen: logExit: no-op, mLoggerSessionId is null
+11-28 15:27:34.984  1039  1100 V ShellDesktopMode: DesktopTasksController: handleRequest request=TransitionRequestInfo { type = OPEN, triggerTask = TaskInfo{userId=0 taskId=18 effectiveUid=10227 displayId=0 isRunning=true baseIntent=Intent { flg=0x10000000 cmp=com.lensora.ai/.MainActivity } baseActivity=ComponentInfo{com.lensora.ai/com.lensora.ai.MainActivity} topActivity=ComponentInfo{com.lensora.ai/com.lensora.ai.MainActivity} origActivity=null realActivity=ComponentInfo{com.lensora.ai/com.lensora.ai.MainActivity} numActivities=1 lastActiveTime=1942670 supportsMultiWindow=true resizeMode=1 isResizeable=true minWidth=-1 minHeight=-1 defaultMinSize=220 token=WCT{android.os.BinderProxy@15d10a2} topActivityType=1 pictureInPictureParams=null shouldDockBigOverlays=false launchIntoPipHostTaskId=-1 lastParentTaskIdBeforePip=-1 displayCutoutSafeInsets=Rect(0, 0 - 0, 0) topActivityInfo=ActivityInfo{efda133 com.lensora.ai.MainActivity} launchCookies=[] positionInParent=Point(0, 0) parentTaskId=-1 isFocused=false isVisible=false isVisibleRequested=false isTopActivityNoDisplay=false isSleeping=false locusId=null displayAreaFeatureId=1 isTopActivityTransparent=false isActivityStackTransparent=false lastNonFullscreenBounds=null capturedLink=null capturedLinkTimestamp=0 requestedVisibleTypes=503 topActivityRequestOpenInBrowserEducationTimestamp=0 appCompatTaskInfo=AppCompatTaskInfo { topActivityInSizeCompat=false isLeafTask= true eligibleForLetterboxEducation= false isLetterboxEducationEnabled= true isLetterboxDoubleTapEnabled= false eligibleForUserAspectRatioButton= false topActivityBoundsLetterboxed= false isFromLetterboxDoubleTap= false topActivityLetterboxVerticalPosition= -1 topActivityLetterboxHorizontalPosition= -1 topActivityLetterboxWidth=-1 topActivityLetterboxHeight=-1 topActivityAppBounds=Rect(0, 0 - 1080, 2400) isUserFullscreenOverrideEnabled=false isSystemFullscreenOverrideEnabled=false hasMinAspectRatioOverride=false topActivityLetterboxBounds=null cameraCompatTaskInfo=CameraCompatTaskInfo { cameraCompatMode=undefinedundefined} topNonResizableActivityAspectRatio=-1.0} topActivityMainWindowFrame=null isAppBubble=false}, pipChange = null, remoteTransition = null, displayChange = null, requestedLocation = null, userChange = null, windowingLayerChange = null, flags = 0, debugId = 23 }
+11-28 15:27:34.984  1039  1100 V ShellDesktopMode: DesktopTasksController: skipping handleRequest reason=triggerTask's display doesn't support desktop mode
+11-28 15:27:34.989  1194  1194 D RecentsView: onTaskDisplayChanged: 18, new displayId = 0
+11-28 15:27:34.991   773   795 V WindowManager: Continue transition id=23 for TaskFragmentTransaction=android.os.Binder@821be23
+11-28 15:27:34.992   773   795 V WindowManager: continueTransitionReady deferReadyDepth=0 stack=com.android.server.wm.TransitionController.continueTransitionReady:1071 com.android.server.wm.TaskFragmentOrganizerController$TaskFragmentOrganizerState.onTransactionFinished:546 com.android.server.wm.TaskFragmentOrganizerController.onTransactionHandled:740 android.window.ITaskFragmentOrganizerController$Stub.onTransact:225 android.os.Binder.execTransactInternal:1473 
+11-28 15:27:34.992  2311  2381 D WM-SystemJobScheduler: Scheduling work ID c9982172-5957-4342-a15a-39b54bbb5ccaJob ID 100
+11-28 15:27:34.993   773   803 V GrammaticalInflectionUtils: AttributionSource: android.content.AttributionSource@3ad95312 does not have READ_SYSTEM_GRAMMATICAL_GENDER permission.
+11-28 15:27:35.004   666  6326 D MediaCodecSource: source (video) stopping stalled
+11-28 15:27:35.008   666  6350 V MediaWriter: Track event err/info msg:101, trackId:1, type:1000,val:-1011
+11-28 15:27:35.008   666  6350 I MPEG4Writer: Received total/0-length (10793/0) buffers and encoded 10792 frames. - Video
+11-28 15:27:35.011  1194  1194 D b/417220811: invalidateLoadedTasks - previous requestLoadId: -1
+11-28 15:27:35.011  1039  1100 D ShellDesktopMode: DesktopRepository: Removes freeform task: taskId=17
+11-28 15:27:35.012  1039  1100 W ShellDesktopMode: DesktopRepository: No display id found for task: taskId=17
+11-28 15:27:35.015   773   988 D BackgroundInstallControlService: Package event received: 0
+11-28 15:27:35.016  1194  1194 D b/417220811: invalidateLoadedTasks - previous requestLoadId: -1
+11-28 15:27:35.021   666  6330 I hw-BpHwBinder: onLastStrongRef automatically unlinking death recipients
+11-28 15:27:35.022   676  1090 I hw-BpHwBinder: onLastStrongRef automatically unlinking death recipients
+11-28 15:27:35.023   676  1090 I hw-BpHwBinder: onLastStrongRef automatically unlinking death recipients
+11-28 15:27:35.025  2311  2381 D WM-GreedyScheduler: Starting tracking for e0b9ba47-b668-4887-b16e-f3d53c68a401,fe5c9780-ec38-4b59-807d-b9495bb99a15,291fd98a-04d0-475d-bf65-571ead6fec4f,48a05495-1c6a-4372-bfff-96d2c0581d7c,b1e25db4-2980-4dbe-a6e0-870b3e802220,3b3a886c-2fcf-4128-95e9-39559ff4792a,8465b882-37c0-4f41-937b-4d09e9c4620b,cba80705-8107-421c-98da-bc8e219b2b78,c3ec9464-9275-49e4-a9e4-dbd793080d94,da068b6b-32c0-4f1b-862f-88fb665e2077,604769c0-16b8-40e0-95db-aba400706292,38a4b374-70dd-46a4-9cc4-ce487526ffa0,9da7cefc-cdc3-4d0d-bc67-3c7652afe793
+11-28 15:27:35.027   660   751 W libbinder.IPCThreadState: Sending oneway calls to frozen process.
+11-28 15:27:35.052   660   751 W libbinder.IPCThreadState: Sending oneway calls to frozen process.
+11-28 15:27:35.064   542   542 I Zygote  : Entering forkRepeatedly native zygote loop
+11-28 15:27:35.065  1194  1194 D BaseActivity: Launcher flags updated: [state_started] -[state_window_focused]
+11-28 15:27:35.068  1039  1156 D WindowOnBackDispatcher: setTopOnBackInvokedCallback (unwrapped): android.view.ViewRootImpl$$ExternalSyntheticLambda12@d11159e
+11-28 15:27:35.073   773  2102 D CoreBackPreview: Window{31bd4c u0 Splash Screen com.lensora.ai}: Setting back callback OnBackInvokedCallbackInfo{mCallback=android.window.IOnBackInvokedCallback$Stub$Proxy@78e1211, mPriority=0, mIsAnimationCallback=false, mOverrideBehavior=0}
+11-28 15:27:35.074   666  6326 I MediaCodecSource: encoder (video) stopped
+11-28 15:27:35.074   666  6326 I MediaCodecSource: source (video) stopped
+11-28 15:27:35.075   666  1065 D MPEG4Writer: Video track source stopped
+11-28 15:27:35.075   666  1065 D MPEG4Writer: Video track stopped. Status:0. Stop source
+11-28 15:27:35.075   666  1065 D MPEG4Writer: Audio track stopping. Stop source
+11-28 15:27:35.075   666  1065 D MPEG4Writer: Audio track source stopping
+11-28 15:27:35.075   666  6326 I MediaCodecSource: encoder (audio) stopping
+11-28 15:27:35.075   666  6326 I MediaCodecSource: encoder (audio) already stopped
+11-28 15:27:35.075   666  1065 D MPEG4Writer: Audio track source stopped
+11-28 15:27:35.075   666  1065 D MPEG4Writer: Audio track stopped. Status:0. Stop source
+11-28 15:27:35.076   666  1065 D MPEG4Writer: Duration from tracks range is [375040000, 375103265] us
+11-28 15:27:35.076   666  6348 D MPEG4Writer: 0 chunks are written in the last batch
+11-28 15:27:35.076   542   542 D Zygote  : Forked child process 9147
+11-28 15:27:35.077   666  1065 D MPEG4Writer: WriterThread stopped. Status:0
+11-28 15:27:35.077   773   813 W ActivityManager: Slow operation: 83ms so far, now at startProcess: returned from zygote!
+11-28 15:27:35.077   773   813 W ActivityManager: Slow operation: 84ms so far, now at startProcess: done updating battery stats
+11-28 15:27:35.077   773   813 W ActivityManager: Slow operation: 84ms so far, now at startProcess: building log message
+11-28 15:27:35.078   773   813 I ActivityManager: Start proc 9147:com.lensora.ai/u0a227 for next-top-activity {com.lensora.ai/com.lensora.ai.MainActivity}
+11-28 15:27:35.078   773   813 W ActivityManager: Slow operation: 84ms so far, now at startProcess: starting to update pids map
+11-28 15:27:35.078   773   813 W ActivityManager: Slow operation: 85ms so far, now at startProcess: done updating pids map
+11-28 15:27:35.080   666  1065 I MPEG4Writer: Adjust the moov start time from 4168 us -> 4168 us
+11-28 15:27:35.095   666  1065 I MPEG4Writer: The mp4 file will not be streamable.
+11-28 15:27:35.095   666  1065 I MPEG4Writer: MOOV atom was written to the file
+11-28 15:27:35.095   666  1065 D MPEG4Writer: release()
+11-28 15:27:35.095   666  1065 D MPEG4Writer: ftruncate mPreAllocateFileEndOffset:55238155 mOffset:55237157 mMdatEndOffset:55093599 diff:998
+11-28 15:27:35.106   666  1065 D MPEG4Writer: final fsync() takes 10 ms, file size 55237157
+11-28 15:27:35.107   666  1065 D MPEG4Writer: MP4WtrCtrlHlpLooper stopped
+11-28 15:27:35.108   666  6329 W AMessage: failed to deliver message as target handler 3 is gone.
+11-28 15:27:35.108   666  1065 D MPEG4Writer: Top 5 write durations(microseconds): #1:10238 #2:10249 #3:10612 #4:12602 #5:27518
+11-28 15:27:35.108   666  1065 D MPEG4Writer: reset()
+11-28 15:27:35.108   666  1065 D MPEG4Writer: Video track stopping. Stop source
+11-28 15:27:35.108   666  1065 E MPEG4Writer: Stop() called but track is not started or stopped
+11-28 15:27:35.108   666  1065 D MPEG4Writer: Audio track stopping. Stop source
+11-28 15:27:35.108   666  1065 E MPEG4Writer: Stop() called but track is not started or stopped
+11-28 15:27:35.119  2311  2381 D WM-GreedyScheduler: Cancelling work ID c9982172-5957-4342-a15a-39b54bbb5cca
+11-28 15:27:35.124  1186  1327 D SatelliteController: iisInCarrierRoamingNbIotNtn: satellite is disabled
+11-28 15:27:35.127  9147  9147 I Zygote  : Process 9147 created for com.lensora.ai
+11-28 15:27:35.128  9147  9147 I com.lensora.ai: Late-enabling -Xcheck:jni
+11-28 15:27:35.133   608  1169 W AudioFlinger: session id 113 not found for pid 4361
+11-28 15:27:35.145  1186  1327 D SatelliteController: getCarrierRoamingNtnConnectType: Falling back to global carrier config connect type: 0
+11-28 15:27:35.142  1194  1194 D b/417220811: invalidateLoadedTasks - previous requestLoadId: -1
+11-28 15:27:35.151   608  1169 W libbinder.IPCThreadState: Sending oneway calls to frozen process.
+11-28 15:27:35.187  2311  2381 D WM-SystemJobScheduler: Scheduling work ID c9982172-5957-4342-a15a-39b54bbb5ccaJob ID 101
+11-28 15:27:35.209   773   800 V WindowManager: Sent Transition (#23) createdAt=11-28 15:27:34.960 via request=TransitionRequestInfo { type = OPEN, triggerTask = TaskInfo{userId=0 taskId=18 effectiveUid=10227 displayId=0 isRunning=true baseIntent=Intent { flg=0x10000000 cmp=com.lensora.ai/.MainActivity } baseActivity=ComponentInfo{com.lensora.ai/com.lensora.ai.MainActivity} topActivity=ComponentInfo{com.lensora.ai/com.lensora.ai.MainActivity} origActivity=null realActivity=ComponentInfo{com.lensora.ai/com.lensora.ai.MainActivity} numActivities=1 lastActiveTime=1942670 supportsMultiWindow=true resizeMode=1 isResizeable=true minWidth=-1 minHeight=-1 defaultMinSize=220 token=WCT{RemoteToken{cd44050 Task{e08abb4 #18 type=standard A=10227:com.lensora.ai}}} topActivityType=1 pictureInPictureParams=null shouldDockBigOverlays=false launchIntoPipHostTaskId=-1 lastParentTaskIdBeforePip=-1 displayCutoutSafeInsets=Rect(0, 0 - 0, 0) topActivityInfo=ActivityInfo{fd7f249 com.lensora.ai.MainActivity} launchCookies=[] positionInParent=Point(0, 0) parentTaskId=-1 isFocused=false isVisible=false isVisibleRequested=false isTopActivityNoDisplay=false isSleeping=false locusId=null displayAreaFeatureId=1 isTopActivityTransparent=false isActivityStackTransparent=false lastNonFullscreenBounds=null capturedLink=null capturedLinkTimestamp=0 requestedVisibleTypes=503 topActivityRequestOpenInBrowserEducationTimestamp=0 appCompatTaskInfo=AppCompatTaskInfo { topActivityInSizeCompat=false isLeafTask= true eligibleForLetterboxEducation= false isLetterboxEducationEnabled= true isLetterboxDoubleTapEnabled= false eligibleForUserAspectRatioButton= false topActivityBoundsLetterboxed= false isFromLetterboxDoubleTap= false topActivityLetterboxVerticalPosition= -1 topActivityLetterboxHorizontalPosition= -1 topActivityLetterboxWidth=-1 topActivityLetterboxHeight=-1 topActivityAppBounds=Rect(0, 0 - 1080, 2400) isUserFullscreenOverrideEnabled=false isSystemFullscreenOverrideEnabled=false hasMinAspectRatioOverride=false topActivityLetterboxBounds=null cameraCompatTaskInfo=CameraCompatTaskInfo { cameraCompatMode=undefinedundefined} topNonResizableActivityAspectRatio=-1.0} topActivityMainWindowFrame=null isAppBubble=false}, pipChange = null, remoteTransition = null, displayChange = null, requestedLocation = null, userChange = null, windowingLayerChange = null, flags = 0, debugId = 23 }
+11-28 15:27:35.211   773   800 V WindowManager:     startWCT=WindowContainerTransaction { changes= {} hops= [] errorCallbackToken=null taskFragmentOrganizer=null }
+11-28 15:27:35.211   773   800 V WindowManager:     info={id=23 t=OPEN f=0x0 trk=0 r=[0@Point(0, 0)] c=[
+11-28 15:27:35.211   773   800 V WindowManager:         {WCT{RemoteToken{cd44050 Task{e08abb4 #18 type=standard A=10227:com.lensora.ai}}} m=OPEN f=NONE leash=Surface(name=Task=18#494)/@0x74aad02 sb=Rect(0, 0 - 1080, 2400) eb=Rect(0, 0 - 1080, 2400) epz=Point(1080, 2400) d=0 taskParent=-1 winMode=1 userId=0},
+11-28 15:27:35.211   773   800 V WindowManager:         {WCT{RemoteToken{6725021 Task{aea5e1f #1 type=home}}} m=TO_BACK f=SHOW_WALLPAPER leash=Surface(name=Task=1#44)/@0x605c49c sb=Rect(0, 0 - 1080, 2400) eb=Rect(0, 0 - 1080, 2400) epz=Point(1080, 2400) d=0 taskParent=-1 winMode=1 userId=0},
+11-28 15:27:35.211   773   800 V WindowManager:         {m=TO_BACK f=IS_WALLPAPER leash=Surface(name=WallpaperWindowToken{b108980}#60)/@0x4f56c0f sb=Rect(0, 0 - 1080, 2400) eb=Rect(0, 0 - 1080, 2400) epz=Point(1080, 2400) d=0}
+11-28 15:27:35.211   773   800 V WindowManager:     ]}
+11-28 15:27:35.212  2311  2381 D WM-GreedyScheduler: Starting tracking for e0b9ba47-b668-4887-b16e-f3d53c68a401,fe5c9780-ec38-4b59-807d-b9495bb99a15,291fd98a-04d0-475d-bf65-571ead6fec4f,48a05495-1c6a-4372-bfff-96d2c0581d7c,b1e25db4-2980-4dbe-a6e0-870b3e802220,3b3a886c-2fcf-4128-95e9-39559ff4792a,8465b882-37c0-4f41-937b-4d09e9c4620b,cba80705-8107-421c-98da-bc8e219b2b78,c3ec9464-9275-49e4-a9e4-dbd793080d94,da068b6b-32c0-4f1b-862f-88fb665e2077,604769c0-16b8-40e0-95db-aba400706292,38a4b374-70dd-46a4-9cc4-ce487526ffa0,9da7cefc-cdc3-4d0d-bc67-3c7652afe793
+11-28 15:27:35.217  1039  1053 V WindowManagerShell: onTransitionReady(transaction=3320009723875)
+11-28 15:27:35.219  1039  1100 V WindowManagerShell: onTransitionReady (#23) android.os.BinderProxy@585ec6d: {id=23 t=OPEN f=0x0 trk=0 r=[0@Point(0, 0)] c=[
+11-28 15:27:35.219  1039  1100 V WindowManagerShell:         {m=OPEN f=NONE leash=Surface(name=Task=18#494)/@0xdbb0911 sb=Rect(0, 0 - 1080, 2400) eb=Rect(0, 0 - 1080, 2400) epz=Point(1080, 2400) d=0 taskParent=-1 winMode=1 userId=0},
+11-28 15:27:35.219  1039  1100 V WindowManagerShell:         {m=TO_BACK f=SHOW_WALLPAPER leash=Surface(name=Task=1#44)/@0x98c3a76 sb=Rect(0, 0 - 1080, 2400) eb=Rect(0, 0 - 1080, 2400) epz=Point(1080, 2400) d=0 taskParent=-1 winMode=1 userId=0},
+11-28 15:27:35.219  1039  1100 V WindowManagerShell:         {m=TO_BACK f=IS_WALLPAPER leash=Surface(name=WallpaperWindowToken{b108980}#60)/@0x7c90877 sb=Rect(0, 0 - 1080, 2400) eb=Rect(0, 0 - 1080, 2400) epz=Point(1080, 2400) d=0}
+11-28 15:27:35.219  1039  1100 V WindowManagerShell:     ]}
+11-28 15:27:35.219  1039  1100 V WindowManagerShell: Playing animation for (#23) android.os.BinderProxy@585ec6d@0
+11-28 15:27:35.221  2311  2381 D WM-GreedyScheduler: Cancelling work ID 291fd98a-04d0-475d-bf65-571ead6fec4f
+11-28 15:27:35.229  1039  1100 V ShellRecents: RecentsTransitionHandler.startAnimation: no controller found
+11-28 15:27:35.232  9147  9147 I com.lensora.ai: Using CollectorTypeCMC GC.
+11-28 15:27:35.236  1039  1100 V ShellDesktopMode: DesktopMixedTransitionHandler: No pending desktop transition
+11-28 15:27:35.237  1039  1100 V WindowManagerShell: Transition doesn't have explicit remote, search filters for match for {id=23 t=OPEN f=0x0 trk=0 r=[0@Point(0, 0)] c=[{m=OPEN f=NONE leash=Surface(name=Task=18#494)/@0xdbb0911 sb=Rect(0, 0 - 1080, 2400) eb=Rect(0, 0 - 1080, 2400) epz=Point(1080, 2400) d=0 taskParent=-1 winMode=1 userId=0},{m=TO_BACK f=SHOW_WALLPAPER leash=Surface(name=Task=1#44)/@0x98c3a76 sb=Rect(0, 0 - 1080, 2400) eb=Rect(0, 0 - 1080, 2400) epz=Point(1080, 2400) d=0 taskParent=-1 winMode=1 userId=0},{m=TO_BACK f=IS_WALLPAPER leash=Surface(name=WallpaperWindowToken{b108980}#60)/@0x7c90877 sb=Rect(0, 0 - 1080, 2400) eb=Rect(0, 0 - 1080, 2400) epz=Point(1080, 2400) d=0}]}
+11-28 15:27:35.238  1039  1100 V WindowManagerShell:  Checking filter Pair{{types=[] flags=0x0] notFlags=0x0 checks=[{atype=undefined independent=true modes=[CLOSE,TO_BACK] flags=IN_TASK_WITH_EMBEDDED_ACTIVITY mustBeTask=false order=ANY topActivity=null launchCookie=null taskFragmentToken=android.os.BinderProxy@4fa6564 windowingMode=undefined isCrossDisplayMove=false}]} RemoteTransition { remoteTransition = android.window.IRemoteTransition$Stub$Proxy@8d9d3cd, appThread = android.app.IApplicationThread$Stub$Proxy@d5d482, debugName = overlayBackTransition }}
+11-28 15:27:35.239  1039  1100 V WindowManagerShell:  Checking filter Pair{{types=[] flags=0x0] notFlags=0x0 checks=[{atype=dream independent=true modes=[OPEN,TO_FRONT] flags=NONE mustBeTask=false order=ANY topActivity=null launchCookie=null windowingMode=undefined isCrossDisplayMove=false},{atype=home independent=true modes=[CLOSE,TO_BACK] flags=NONE mustBeTask=false order=ANY topActivity=null launchCookie=null windowingMode=undefined isCrossDisplayMove=false}]} RemoteTransition { remoteTransition = android.window.IRemoteTransition$Stub$Proxy@574793, appThread = android.app.IApplicationThread$Stub$Proxy@baa73d0, debugName = LauncherToDream }}
+11-28 15:27:35.239  1039  1100 V WindowManagerShell:  Checking filter Pair{{types=[] flags=0x0] notFlags=0x100 checks=[{atype=home independent=true modes=[OPEN,TO_FRONT] flags=NONE mustBeTask=false order=TOP topActivity=ComponentInfo{com.google.android.apps.nexuslauncher/com.google.android.apps.nexuslauncher.NexusLauncherActivity} launchCookie=null windowingMode=undefined isCrossDisplayMove=false},{atype=standard independent=true modes=[CLOSE,TO_BACK] flags=NONE mustBeTask=false order=ANY topActivity=null launchCookie=null windowingMode=undefined isCrossDisplayMove=false},{NOT atype=undefined independent=true modes=[] flags=NONE mustBeTask=true order=ANY topActivity=null launchCookie=null customAnim=true windowingMode=undefined isCrossDisplayMove=false}]} RemoteTransition { remoteTransition = android.window.IRemoteTransition$Stub$Proxy@9bcdfc9, appThread = android.app.IApplicationThread$Stub$Proxy@10b6ce, debugName = QuickstepLaunchHome }}
+11-28 15:27:35.239  1039  1100 V WindowManagerShell:  Checking filter Pair{{types=[OPEN,TO_FRONT] flags=0x0] notFlags=0x0 checks=[{atype=standard independent=true modes=[OPEN,TO_FRONT] flags=NONE mustBeTask=true order=ANY topActivity=null launchCookie=null windowingMode=freeform isCrossDisplayMove=false}]} RemoteTransition { remoteTransition = android.window.IRemoteTransition$Stub$Proxy@d37247d, appThread = null, debugName = DesktopWindowLimitUnminimize }}
+11-28 15:27:35.239  1039  1100 V WindowManagerShell:  Delegate animation for (#23) to null
+11-28 15:27:35.239  1039  1100 V WindowManagerShell: start default transition animation, info = {id=23 t=OPEN f=0x0 trk=0 r=[0@Point(0, 0)] c=[{m=OPEN f=NONE leash=Surface(name=Task=18#494)/@0xdbb0911 sb=Rect(0, 0 - 1080, 2400) eb=Rect(0, 0 - 1080, 2400) epz=Point(1080, 2400) d=0 taskParent=-1 winMode=1 userId=0},{m=TO_BACK f=SHOW_WALLPAPER leash=Surface(name=Task=1#44)/@0x98c3a76 sb=Rect(0, 0 - 1080, 2400) eb=Rect(0, 0 - 1080, 2400) epz=Point(1080, 2400) d=0 taskParent=-1 winMode=1 userId=0},{m=TO_BACK f=IS_WALLPAPER leash=Surface(name=WallpaperWindowToken{b108980}#60)/@0x7c90877 sb=Rect(0, 0 - 1080, 2400) eb=Rect(0, 0 - 1080, 2400) epz=Point(1080, 2400) d=0}]}
+11-28 15:27:35.239  9147  9147 W com.lensora.ai: Unexpected CPU variant for x86: x86_64.
+11-28 15:27:35.239  9147  9147 W com.lensora.ai: Known variants: atom, sandybridge, silvermont, goldmont, goldmont-plus, goldmont-without-sha-xsaves, tremont, kabylake, alderlake, default
+11-28 15:27:35.240  1039  1100 V WindowManagerShell: loadAnimation: anim=android.view.animation.AnimationSet@c798802 animAttr=0x13 type=OPEN isEntrance=false
+11-28 15:27:35.243  1039  1100 V WindowManagerShell: loadAnimation: anim=android.view.animation.AnimationSet@1ccc949 animAttr=0x12 type=OPEN isEntrance=true
+11-28 15:27:35.247  2311  2381 D WM-SystemJobScheduler: Scheduling work ID 291fd98a-04d0-475d-bf65-571ead6fec4fJob ID 102
+11-28 15:27:35.251  1039  1100 V WindowManagerShell:  animated by com.android.wm.shell.transition.DefaultTransitionHandler@ceb6635
+11-28 15:27:35.251  1039  1100 V ShellTaskOrganizer: Task appeared taskId=18 listener=FullscreenTaskListener
+11-28 15:27:35.251  1039  1100 V ShellTaskOrganizer: Fullscreen Task Appeared: #18
+11-28 15:27:35.253  1194  1194 D b/417220811: invalidateLoadedTasks - previous requestLoadId: -1
+11-28 15:27:35.264  2311  2381 D WM-GreedyScheduler: Starting tracking for e0b9ba47-b668-4887-b16e-f3d53c68a401,3b3a886c-2fcf-4128-95e9-39559ff4792a,fe5c9780-ec38-4b59-807d-b9495bb99a15,8465b882-37c0-4f41-937b-4d09e9c4620b,cba80705-8107-421c-98da-bc8e219b2b78,c3ec9464-9275-49e4-a9e4-dbd793080d94,da068b6b-32c0-4f1b-862f-88fb665e2077,604769c0-16b8-40e0-95db-aba400706292,38a4b374-70dd-46a4-9cc4-ce487526ffa0,9da7cefc-cdc3-4d0d-bc67-3c7652afe793,48a05495-1c6a-4372-bfff-96d2c0581d7c,b1e25db4-2980-4dbe-a6e0-870b3e802220
+11-28 15:27:35.270  2311  2477 I eeir    : Successfully scheduled next periodic workers
+11-28 15:27:35.280  2311  2381 D WM-GreedyScheduler: Constraints not met: Cancelling work ID WorkGenerationalId(workSpecId=3b3a886c-2fcf-4128-95e9-39559ff4792a, generation=4)
+11-28 15:27:35.280  2311  2381 D WM-GreedyScheduler: Constraints not met: Cancelling work ID WorkGenerationalId(workSpecId=b1e25db4-2980-4dbe-a6e0-870b3e802220, generation=4)
+11-28 15:27:35.280  2311  2444 I eehr    : #sync() complete
+11-28 15:27:35.283   620   640 I adbd    : jdwp connection from 9147
+11-28 15:27:35.308  2311  2444 D RemoteListenableDelegatingWorker: Cleaning up
+11-28 15:27:35.317  9147  9147 D nativeloader: Load libframework-connectivity-tiramisu-jni.so using APEX ns com_android_tethering for caller /apex/com.android.tethering/javalib/framework-connectivity-t.jar: ok
+11-28 15:27:35.321  1153  1162 W droid.bluetooth: Reducing the number of considered missed Gc histogram windows from 190 to 100
+11-28 15:27:35.322  2311  2444 I WM-WorkerWrapper: Worker result SUCCESS for Work [ id=52ec5a56-58e8-4704-bf3f-4abe7702c8de, tags={ com.google.apps.tiktok.contrib.work.TikTokListenableWorker,com.google.apps.tiktok.sync.impl.workmanager.SyncPeriodicWorker_proc<search>,TikTokWorker#com.google.apps.tiktok.sync.impl.workmanager.SyncPeriodicWorker } ]
+11-28 15:27:35.333  2311  2311 D WM-Processor: mib 52ec5a56-58e8-4704-bf3f-4abe7702c8de executed; reschedule = false
+11-28 15:27:35.333  2311  2311 D WM-SystemJobService: 52ec5a56-58e8-4704-bf3f-4abe7702c8de executed on JobScheduler
+11-28 15:27:35.340  2311  2444 D WM-GreedyScheduler: Cancelling work ID 52ec5a56-58e8-4704-bf3f-4abe7702c8de
+11-28 15:27:35.353  2311  2444 D WM-SystemJobScheduler: Scheduling work ID 52ec5a56-58e8-4704-bf3f-4abe7702c8deJob ID 103
+11-28 15:27:35.361  2311  2444 D WM-GreedyScheduler: Starting tracking for e0b9ba47-b668-4887-b16e-f3d53c68a401,3b3a886c-2fcf-4128-95e9-39559ff4792a,fe5c9780-ec38-4b59-807d-b9495bb99a15,8465b882-37c0-4f41-937b-4d09e9c4620b,cba80705-8107-421c-98da-bc8e219b2b78,c3ec9464-9275-49e4-a9e4-dbd793080d94,da068b6b-32c0-4f1b-862f-88fb665e2077,604769c0-16b8-40e0-95db-aba400706292,38a4b374-70dd-46a4-9cc4-ce487526ffa0,9da7cefc-cdc3-4d0d-bc67-3c7652afe793,48a05495-1c6a-4372-bfff-96d2c0581d7c,b1e25db4-2980-4dbe-a6e0-870b3e802220
+11-28 15:27:35.424   773   988 D BackgroundInstallControlService: Package event received: 0
+11-28 15:27:35.563  1039  1100 V WindowManagerShell: Transition animation finished (aborted=false), notifying core (#23) android.os.BinderProxy@585ec6d@0
+11-28 15:27:35.568  1194  1194 D VRI[NexusLauncherActivity]: visibilityChanged oldVisibility=true newVisibility=false
+11-28 15:27:35.569   773   800 V WindowManager: Finish Transition (#23): created at 11-28 15:27:34.960 collect-started=0.147ms request-sent=12.496ms started=32.681ms ready=232.75ms sent=247.283ms commit=55.228ms finished=605.884ms
+11-28 15:27:35.570  1039  1403 D WallpaperService: onVisibilityChanged(false): com.android.systemui.wallpapers.ImageWallpaper$CanvasEngine@3f9d077
+11-28 15:27:35.572  1039  1100 V WindowManagerShell: Track 0 became idle
+11-28 15:27:35.574  1039  1100 V WindowManagerShell: All active transition animations finished
+11-28 15:27:35.579  1194  1194 D NexusLauncherModelDelegate: notifySmartspaceEvent: SmartspaceTargetEvent{mSmartspaceTarget=null, mSmartspaceActionId='null', mEventType=7}
+11-28 15:27:36.069   773   773 D PermissionMonitor: setLocalNetworkPermissions in onPermissionsChanged took 22 microseconds.
+11-28 15:27:36.112  9147  9147 D nativeloader: Configuring clns-9 for other apk /data/app/~~0KgoErI4OQeclfIlFMJo0A==/com.lensora.ai-9CA7KEibaAzChHZQnHsgBQ==/base.apk. target_sdk_version=35, uses_libraries=, library_path=/data/app/~~0KgoErI4OQeclfIlFMJo0A==/com.lensora.ai-9CA7KEibaAzChHZQnHsgBQ==/lib/x86_64:/data/app/~~0KgoErI4OQeclfIlFMJo0A==/com.lensora.ai-9CA7KEibaAzChHZQnHsgBQ==/base.apk!/lib/x86_64, permitted_path=/data:/mnt/expand:/data/user/0/com.lensora.ai
+11-28 15:27:36.118  9147  9147 D CompatChangeReporter: Compat change id reported: 202956589; UID 10227; state: ENABLED
+11-28 15:27:36.159  9147  9147 V GraphicsEnvironment: Currently set values for:
+11-28 15:27:36.159  9147  9147 V GraphicsEnvironment:   angle_gl_driver_selection_pkgs=[]
+11-28 15:27:36.159  9147  9147 V GraphicsEnvironment:   angle_gl_driver_selection_values=[]
+11-28 15:27:36.159  9147  9147 V GraphicsEnvironment: com.lensora.ai is not listed in per-application setting
+11-28 15:27:36.160  9147  9147 V GraphicsEnvironment: ANGLE allowlist from config: com.dreamgames.royalmatch com.dts.freefiremax com.dxx.firenow com.gramgames.mergedragons com.ludo.king com.mojang.minecraftpe com.my.defense com.nintendo.zaka com.os.airforce com.playrix.fishdomdd.gplay io.teslatech.callbreak jp.konami.prospia net.peakgames.toonblast
+11-28 15:27:36.160  9147  9147 V GraphicsEnvironment: No special selections for ANGLE, returning default driver choice
+11-28 15:27:36.160  9147  9147 V GraphicsEnvironment: Neither updatable production driver nor prerelease driver is supported.
+11-28 15:27:36.198  9147  9147 D WM-WrkMgrInitializer: Initializing WorkManager with default configuration.
+11-28 15:27:36.349  9147  9147 D WM-PackageManagerHelper: Skipping component enablement for androidx.work.impl.background.systemjob.SystemJobService
+11-28 15:27:36.349  9147  9147 D WM-Schedulers: Created SystemJobScheduler and enabled SystemJobService
+11-28 15:27:36.447  9147  9170 D WM-ForceStopRunnable: The default process name was not specified.
+11-28 15:27:36.448  9147  9170 D WM-ForceStopRunnable: Performing cleanup operations.
+11-28 15:27:36.467  9147  9170 E ashmem  : Pinning is deprecated since Android Q. Please use trim or other methods.
+11-28 15:27:36.549   773   988 D BackgroundInstallControlService: Package event received: 0
+11-28 15:27:36.549   773   988 D BackgroundInstallControlService: Package event received: 0
+11-28 15:27:36.558  9147  9172 I DisplayManager: Choreographer implicitly registered for the refresh rate.
+11-28 15:27:36.628  9147  9147 D DesktopExperienceFlags: Toggle override initialized to: false
+11-28 15:27:36.650  9147  9172 I GFXSTREAM: [eglDisplay.cpp(297)] Opening libGLESv1_CM_emulation.so
+11-28 15:27:36.652  9147  9172 I GFXSTREAM: [eglDisplay.cpp(297)] Opening libGLESv2_emulation.so
+11-28 15:27:36.652  9147  9170 D WM-PackageManagerHelper: Skipping component enablement for androidx.work.impl.background.systemalarm.RescheduleReceiver
+11-28 15:27:36.659  9147  9147 D CompatChangeReporter: Compat change id reported: 309578419; UID 10227; state: ENABLED
+11-28 15:27:36.659  9147  9147 D DesktopModeFlags: Toggle override initialized to: OVERRIDE_UNSET
+11-28 15:27:36.660  9147  9172 W HWUI    : Failed to choose config with EGL_SWAP_BEHAVIOR_PRESERVED, retrying without...
+11-28 15:27:36.660  9147  9172 W HWUI    : Failed to initialize 101010-2 format, error = EGL_SUCCESS
+11-28 15:27:36.851  9147  9147 D CompatChangeReporter: Compat change id reported: 349153669; UID 10227; state: ENABLED
+11-28 15:27:36.853  9147  9147 W HWUI    : Unknown dataspace 0
+11-28 15:27:37.140   773   795 W ActivityTaskManager: callingPackage for (uid=2000, pid=9181) has no WPC
+11-28 15:27:37.141   773   795 V WindowManager: DesktopModeLaunchParamsModifier: phase= 0 task=null activity=null display-area-from-current-params=null display-area-from-default-fallback=DefaultTaskDisplayArea@131926325 display-id=0 task-display-area-windowing-mode=1 suggested-display-area=DefaultTaskDisplayArea@131926325 task null, skipping
+11-28 15:27:37.141   773   795 V WindowManager: TaskLaunchParamsModifier:phase=0 task=null activity=null display-area-from-current-params=null display-area-from-default-fallback=DefaultTaskDisplayArea@131926325 display-id=0 task-display-area-windowing-mode=1 suggested-display-area=DefaultTaskDisplayArea@131926325
+11-28 15:27:37.141   773   795 V GrammaticalInflectionUtils: AttributionSource: android.content.AttributionSource@3ad95312 does not have READ_SYSTEM_GRAMMATICAL_GENDER permission.
+11-28 15:27:37.142   773   795 V WindowManager: DesktopModeLaunchParamsModifier: phase= 0 task=null activity=ActivityRecord{157861214 u0 com.lensora.ai/.MainActivity display-area-from-current-params=null display-area-for-record=DefaultTaskDisplayArea@131926325 display-id=0 task-display-area-windowing-mode=1 suggested-display-area=DefaultTaskDisplayArea@131926325 task null, skipping
+11-28 15:27:37.142   773   795 V WindowManager: TaskLaunchParamsModifier:phase=0 task=null activity=ActivityRecord{157861214 u0 com.lensora.ai/.MainActivity t-1} display-area-from-current-params=null display-area-for-record=DefaultTaskDisplayArea@131926325 display-id=0 task-display-area-windowing-mode=1 suggested-display-area=DefaultTaskDisplayArea@131926325
+11-28 15:27:37.142   773   795 V WindowManager: DesktopModeLaunchParamsModifier: phase= 3 task=Task{e08abb4 #18 type=standard A=10227:com.lensora.ai} activity=ActivityRecord{157861214 u0 com.lensora.ai/.MainActivity t-1} display-from-task=0 display-id=0 task-display-area-windowing-mode=1 suggested-display-area=DefaultTaskDisplayArea@131926325 not entering desktop mode, skipping
+11-28 15:27:37.142   773   795 V WindowManager: TaskLaunchParamsModifier:phase=3 task=Task{e08abb4 #18 type=standard A=10227:com.lensora.ai} activity=ActivityRecord{157861214 u0 com.lensora.ai/.MainActivity t-1} display-from-task=0 display-id=0 task-display-area-windowing-mode=1 suggested-display-area=DefaultTaskDisplayArea@131926325 inherit-from-task=fullscreen non-freeform-task-display-area display-area=DefaultTaskDisplayArea@131926325 skip-bounds-fullscreen
+11-28 15:27:37.144   773   795 V WindowManager: DesktopModeLaunchParamsModifier: phase= 3 task=Task{e08abb4 #18 type=standard A=10227:com.lensora.ai} activity=ActivityRecord{157861214 u0 com.lensora.ai/.MainActivity t-1} display-from-task=0 display-id=0 task-display-area-windowing-mode=1 suggested-display-area=DefaultTaskDisplayArea@131926325 not entering desktop mode, skipping
+11-28 15:27:37.144   773   795 V WindowManager: TaskLaunchParamsModifier:phase=3 task=Task{e08abb4 #18 type=standard A=10227:com.lensora.ai} activity=ActivityRecord{157861214 u0 com.lensora.ai/.MainActivity t-1} display-from-task=0 display-id=0 task-display-area-windowing-mode=1 suggested-display-area=DefaultTaskDisplayArea@131926325 inherit-from-task=fullscreen non-freeform-task-display-area display-area=DefaultTaskDisplayArea@131926325 skip-bounds-fullscreen
+11-28 15:27:37.146  1039  1677 D KeyguardService: setOccluded(false)
+11-28 15:27:37.146  1039  1677 D KeyguardViewMediator: setOccluded(false)
+11-28 15:27:37.146   773   795 I ActivityTaskManager: START u0 {flg=0x10000000 xflg=0x5 cmp=com.lensora.ai/.MainActivity} with LAUNCH_MULTIPLE from uid 2000 (com.android.shell) (BAL_ALLOW_PERMISSION) result code=3
+11-28 15:27:37.146  1039  1039 D KeyguardViewMediator: handleSetOccluded(false)
+11-28 15:27:37.147  1039  1039 D KeyguardViewMediator: KeyguardViewMediator queue processing message: SET_OCCLUDED
+11-28 15:27:37.149   612   647 I libbinder.BpBinder: onLastStrongRef automatically unlinking death recipients for descriptor: '(not cached)'
+11-28 15:27:37.150  1039  1100 D WindowManagerShell: onActivityRestartAttempt: topActivity=ComponentInfo{com.lensora.ai/com.lensora.ai.MainActivity}, wasVisible=true, displayId=0, pipDisplayLayoutState#displayId=0

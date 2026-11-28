@@ -412,7 +412,7 @@ class CameraController(private val context: Context) {
                     onFeedback("⏱️ Time-Lapse: High-Speed Interval Frame Capture Active")
                 }
                 "NIGHT VISION", "NIGHT_VISION" -> {
-                    onFeedback("🌙 Night Vision: Low-Light Sensitivity Boost Active")
+                    onFeedback("🌙 Night Vision: Night Scene Mode Requested")
                 }
                 "ASTRO", "DEEP SKY", "DEEP_SKY" -> {
                     val caps = ModeSettingsHelper.extractCapabilities(cameraCharacteristics)

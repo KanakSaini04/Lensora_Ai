@@ -1,0 +1,659 @@
+﻿--------- beginning of system
+11-28 15:10:33.441   773   796 W VibratorManagerService: performHapticFeedbackWithEffect; vibration absent for constant 9
+--------- beginning of main
+11-28 15:10:33.441  4361  4361 D LensoraDebug: Configuring universal CaptureRequest.Builder for mode: PHOTO
+11-28 15:10:33.458   551   551 I GCH_CameraDeviceSession: ProcessCaptureRequest: [sbc] Stream 1 1st req arrived, notify SBC Manager.
+11-28 15:10:33.503  4361  4524 D SceneClassifier: AI Director Analysis: box=null, hint=null, label=Γ£¿ AI: Landscape, source=HEURISTIC_ENGINE in 2ms
+11-28 15:10:33.575   773   796 W VibratorManagerService: performHapticFeedbackWithEffect; vibration absent for constant 9
+11-28 15:10:33.576  4361  4361 D LensoraDebug: Configuring universal CaptureRequest.Builder for mode: PHOTO
+11-28 15:10:33.684  1638  1646 W MediaProvider: isAppCloneUserPair for user 0: false
+11-28 15:10:33.708  1638  1646 I MediaProvider: Open with lower FS for /storage/emulated/0/Pictures/Lensora_Ai/.pending-1796463633-LENSORA_1795858833673.jpg. Uid: 10227
+11-28 15:10:33.724   773  1006 W VibratorManagerService: performHapticFeedbackWithEffect; vibration absent for constant 9
+11-28 15:10:33.725  4361  4361 D LensoraDebug: Configuring universal CaptureRequest.Builder for mode: PHOTO
+11-28 15:10:33.763  1371  1995 I UriTaskContentObserver: (REDACTED) Throttling content uri change event for %s
+11-28 15:10:33.769  1371  5057 I NetworkScheduler.Stats: (REDACTED) Task %s/%s started execution. cause:%s exec_start_elapsed_seconds: %s
+11-28 15:10:33.774  1371  5063 I NetworkScheduler.Stats: (REDACTED) Task %s/%s finished executing. cause:%s result: %s elapsed_millis: %s uptime_millis: %s exec_start_elapsed_seconds: %s
+11-28 15:10:33.784  4361  4450 I CameraController: Enqueuing photo capture pass [Mode: PHOTO, AdvancedMode: Astro, IsHighRes: false]
+11-28 15:10:33.789   773  2231 I ActivityManager: Background started FGS: Allowed [callingPackage: com.lensora.ai; callingUid: 10227; uidState: TOP ; uidBFSL: [BFSL]; intent: Intent { xflg=0x4 cmp=com.lensora.ai/.service.AiProcessorService (has extras) }; code:PROC_STATE_TOP; tempAllowListReason:<null>; allowWiu:12; targetSdkVersion:35; callerTargetSdkVersion:35; startForegroundCount:0; bindFromPackage:null: isBindService:false]
+11-28 15:10:33.795   773   988 D BackgroundInstallControlService: Package event received: 0
+11-28 15:10:33.796  4361  4450 I CameraController: Started L3 AiProcessorService for content://media/external/images/media/54
+11-28 15:10:33.804  1638  1762 D WM-SystemJobScheduler: Scheduling work ID 3446cb83-9fac-4b4d-8af6-3f3e692749fbJob ID 45
+11-28 15:10:33.810  1638  1762 D WM-GreedyScheduler: Ignoring {WorkSpec: 3c6c4135-b997-4e1b-9661-22e5ab13e7aa}. Requires device idle.
+11-28 15:10:33.810  1638  1762 D WM-GreedyScheduler: Ignoring {WorkSpec: d21d6e86-b6ef-4ce1-a308-6f305ea14219}. Requires device idle.
+11-28 15:10:33.810  1638  1762 D WM-GreedyScheduler: Ignoring {WorkSpec: dddae3d0-4da8-44bf-bc94-f4a106b095e6}. Requires device idle.
+11-28 15:10:33.810  1638  1762 D WM-GreedyScheduler: Ignoring {WorkSpec: 07661c93-4319-4311-91b7-cf7c9f665c99}. Requires device idle.
+11-28 15:10:33.823   773   796 I ActivityManager: Background started FGS: Allowed [callingPackage: com.lensora.ai; callingUid: 10227; uidState: TOP ; uidBFSL: [BFSL]; intent: Intent { cmp=com.lensora.ai/.service.AiProcessorService }; code:PROC_STATE_TOP; tempAllowListReason:<null>; allowWiu:12; targetSdkVersion:35; callerTargetSdkVersion:35; startForegroundCount:0; bindFromPackage:null: isBindService:false]
+11-28 15:10:33.825   773   796 W ForegroundServiceTypeLoggerModule: Foreground service start for UID: 10227 does not have any types
+11-28 15:10:33.825   773   988 D BackgroundInstallControlService: Package event received: 0
+11-28 15:10:33.827  4361  4361 I AiProcessorService: Enqueued AiJobRequest job_1795858833807_6424 for content://media/external/images/media/54 [Pending in queue: 1]
+11-28 15:10:33.841  4361  4522 I AiProcessorService: Executing L3 Real Image-to-Image AI Enhancement & LUT Pipeline for content://media/external/images/media/54 [Job: job_1795858833807_6424]
+11-28 15:10:33.865  1638  1646 I MediaProvider: Open with lower FS for /storage/emulated/0/Pictures/Lensora_Ai/LENSORA_1795858833673.jpg. Uid: 10227
+11-28 15:10:33.869  1638  5070 I MediaProvider: Open with lower FS for /storage/emulated/0/Pictures/Lensora_Ai/LENSORA_1795858833673.jpg. Uid: 10227
+11-28 15:10:33.870  4361  4522 I AiProcessorService: Processing 1920 x 1440 px in 12 tiles (512 x 512 px each) [ImageToImage AI: false]
+11-28 15:10:33.887   773  1006 W VibratorManagerService: performHapticFeedbackWithEffect; vibration absent for constant 9
+11-28 15:10:33.887  4361  4361 D LensoraDebug: Configuring universal CaptureRequest.Builder for mode: PHOTO
+11-28 15:10:34.014  4361  4521 D SceneClassifier: AI Director Analysis: box=null, hint=null, label=Γ£¿ AI: Landscape, source=HEURISTIC_ENGINE in 5ms
+11-28 15:10:34.024   773   773 V NotificationHistory: Attempted to add notif for locked/gone/disabled user 0
+11-28 15:10:34.026   773   988 D BackgroundInstallControlService: Package event received: 0
+11-28 15:10:34.026  4361  4361 D LensoraDebug: Configuring universal CaptureRequest.Builder for mode: PHOTO
+11-28 15:10:34.027   773   796 W VibratorManagerService: performHapticFeedbackWithEffect; vibration absent for constant 9
+11-28 15:10:34.028  4361  4522 W L4Validator: L4 Validation FAIL: Blown out white image detected (avgLum: 254 >= 253)
+11-28 15:10:34.028  4361  4522 W AiProcessorService: L4 Validator failed: Processed bitmap invalid or pitch black. Keeping raw photo content://media/external/images/media/54
+11-28 15:10:34.028  4361  4522 I AiProcessorService: TFLite Interpreter resources safely closed
+11-28 15:10:34.029  4361  4522 I AiProcessorService: Cleaning up AiProcessorService and dismissing notification.
+11-28 15:10:34.034   773  1006 D ActivityManager: Stop FGS timeout: ServiceRecord{7a9756 u0 com.lensora.ai/.service.AiProcessorService c:com.lensora.ai}
+11-28 15:10:34.035   773  1006 W ForegroundServiceTypeLoggerModule: FGS stop call for: 10227 has no types!
+11-28 15:10:34.038  1660  2165 W AiAiEcho: LyftNotificationParser Ridesharing ETA not enabled
+11-28 15:10:34.038  1660  2165 I AiAiEcho: SmartspaceNotificationPredictor no parser can handle this notification or notification is invalid
+11-28 15:10:34.040   773   988 D BackgroundInstallControlService: Package event received: 0
+11-28 15:10:34.040   773   988 D BackgroundInstallControlService: Package event received: 0
+11-28 15:10:34.040   773   988 D BackgroundInstallControlService: Package event received: 0
+11-28 15:10:34.040   773   988 D BackgroundInstallControlService: Package event received: 0
+11-28 15:10:34.040   773   988 D BackgroundInstallControlService: Package event received: 0
+11-28 15:10:34.040   773   988 D BackgroundInstallControlService: Package event received: 0
+11-28 15:10:34.040   773   988 D BackgroundInstallControlService: Package event received: 0
+11-28 15:10:34.040   773   988 D BackgroundInstallControlService: Package event received: 0
+11-28 15:10:34.041   773   988 D BackgroundInstallControlService: Package event received: 0
+11-28 15:10:34.041   773   988 D BackgroundInstallControlService: Package event received: 0
+11-28 15:10:34.049  4361  4361 I AiProcessorService: AiProcessorService destroyed
+11-28 15:10:34.057  1660  2165 W AiAiEcho: LyftNotificationParser Ridesharing ETA not enabled
+11-28 15:10:34.058  1660  2165 I AiAiEcho: SmartspaceNotificationPredictor no parser can handle this notification or notification is invalid
+11-28 15:10:34.062  1660  2165 W AiAiEcho: LyftNotificationParser Ridesharing ETA not enabled
+11-28 15:10:34.062  1660  2165 I AiAiEcho: SmartspaceNotificationPredictor no parser can handle this notification or notification is invalid
+11-28 15:10:34.088   773   773 I NotificationService: Cannot find enqueued record for key: 0|com.lensora.ai|1001|null|10227
+11-28 15:10:34.102   773   773 I NotificationService: Cannot find enqueued record for key: 0|com.lensora.ai|1001|null|10227
+11-28 15:10:34.113   773   773 I NotificationService: Cannot find enqueued record for key: 0|com.lensora.ai|1001|null|10227
+11-28 15:10:34.124   773   773 I NotificationService: Cannot find enqueued record for key: 0|com.lensora.ai|1001|null|10227
+11-28 15:10:34.141   773   773 I NotificationService: Cannot find enqueued record for key: 0|com.lensora.ai|1001|null|10227
+11-28 15:10:34.151   773   773 I NotificationService: Cannot find enqueued record for key: 0|com.lensora.ai|1001|null|10227
+11-28 15:10:34.160   773   773 I NotificationService: Cannot find enqueued record for key: 0|com.lensora.ai|1001|null|10227
+11-28 15:10:34.165  4361  4361 D LensoraDebug: Configuring universal CaptureRequest.Builder for mode: PHOTO
+11-28 15:10:34.166   773  2231 W VibratorManagerService: performHapticFeedbackWithEffect; vibration absent for constant 9
+11-28 15:10:34.170   773   773 I NotificationService: Cannot find enqueued record for key: 0|com.lensora.ai|1001|null|10227
+11-28 15:10:34.176   551  4509 W GCH_ResultDispatcher: [Cam1_ResultDispatcher] PrintTimeoutMessages: pending shutter for frame 17531 ready 0
+11-28 15:10:34.176   551  4509 W GCH_ResultDispatcher: [Cam1_ResultDispatcher] PrintTimeoutMessages: pending shutter for frame 17532 ready 0
+11-28 15:10:34.176   551  4509 W GCH_ResultDispatcher: [Cam1_ResultDispatcher] PrintTimeoutMessages: pending shutter for frame 17533 ready 0
+11-28 15:10:34.176   551  4509 W GCH_ResultDispatcher: [Cam1_ResultDispatcher] PrintTimeoutMessages: pending shutter for frame 17534 ready 0
+11-28 15:10:34.176   551  4509 W GCH_ResultDispatcher: [Cam1_ResultDispatcher] PrintTimeoutMessages: pending shutter for frame 17535 ready 0
+11-28 15:10:34.176   551  4509 W GCH_ResultDispatcher: [Cam1_ResultDispatcher] PrintTimeoutMessages: pending shutter for frame 17536 ready 0
+11-28 15:10:34.176   551  4509 W GCH_ResultDispatcher: [Cam1_ResultDispatcher] PrintTimeoutMessages: pending early result metadata for frame 17530 ready 0
+11-28 15:10:34.176   551  4509 W GCH_ResultDispatcher: [Cam1_ResultDispatcher] PrintTimeoutMessages: pending early result metadata for frame 17531 ready 0
+11-28 15:10:34.176   551  4509 W GCH_ResultDispatcher: [Cam1_ResultDispatcher] PrintTimeoutMessages: pending early result metadata for frame 17532 ready 0
+11-28 15:10:34.176   551  4509 W GCH_ResultDispatcher: [Cam1_ResultDispatcher] PrintTimeoutMessages: pending early result metadata for frame 17533 ready 0
+11-28 15:10:34.176   551  4509 W GCH_ResultDispatcher: [Cam1_ResultDispatcher] PrintTimeoutMessages: pending early result metadata for frame 17534 ready 0
+11-28 15:10:34.176   551  4509 W GCH_ResultDispatcher: [Cam1_ResultDispatcher] PrintTimeoutMessages: pending early result metadata for frame 17535 ready 0
+11-28 15:10:34.176   551  4509 W GCH_ResultDispatcher: [Cam1_ResultDispatcher] PrintTimeoutMessages: pending early result metadata for frame 17536 ready 0
+11-28 15:10:34.176   551  4509 W GCH_ResultDispatcher: [Cam1_ResultDispatcher] PrintTimeoutMessages: pending final result metadata for frame 17530 ready 0
+11-28 15:10:34.176   551  4509 W GCH_ResultDispatcher: [Cam1_ResultDispatcher] PrintTimeoutMessages: pending final result metadata for frame 17531 ready 0
+11-28 15:10:34.176   551  4509 W GCH_ResultDispatcher: [Cam1_ResultDispatcher] PrintTimeoutMessages: pending final result metadata for frame 17532 ready 0
+11-28 15:10:34.176   551  4509 W GCH_ResultDispatcher: [Cam1_ResultDispatcher] PrintTimeoutMessages: pending final result metadata for frame 17533 ready 0
+11-28 15:10:34.176   551  4509 W GCH_ResultDispatcher: [Cam1_ResultDispatcher] PrintTimeoutMessages: pending final result metadata for frame 17534 ready 0
+11-28 15:10:34.176   551  4509 W GCH_ResultDispatcher: [Cam1_ResultDispatcher] PrintTimeoutMessages: pending final result metadata for frame 17535 ready 0
+11-28 15:10:34.176   551  4509 W GCH_ResultDispatcher: [Cam1_ResultDispatcher] PrintTimeoutMessages: pending final result metadata for frame 17536 ready 0
+11-28 15:10:34.176   551  4509 W GCH_ResultDispatcher: [Cam1_ResultDispatcher] PrintTimeoutMessages: pending buffer of stream 0 for frame 17531 ready 0
+11-28 15:10:34.176   551  4509 W GCH_ResultDispatcher: [Cam1_ResultDispatcher] PrintTimeoutMessages: pending buffer of stream 0 for frame 17532 ready 0
+11-28 15:10:34.176   551  4509 W GCH_ResultDispatcher: [Cam1_ResultDispatcher] PrintTimeoutMessages: pending buffer of stream 0 for frame 17533 ready 0
+11-28 15:10:34.176   551  4509 W GCH_ResultDispatcher: [Cam1_ResultDispatcher] PrintTimeoutMessages: pending buffer of stream 0 for frame 17535 ready 0
+11-28 15:10:34.176   551  4509 W GCH_ResultDispatcher: [Cam1_ResultDispatcher] PrintTimeoutMessages: pending buffer of stream 0 for frame 17536 ready 0
+11-28 15:10:34.176   551  4509 W GCH_ResultDispatcher: [Cam1_ResultDispatcher] PrintTimeoutMessages: pending buffer of stream 1 for frame 17534 ready 0
+11-28 15:10:34.181   773   773 I NotificationService: Cannot find enqueued record for key: 0|com.lensora.ai|1001|null|10227
+11-28 15:10:34.196   773   773 I NotificationService: Cannot find enqueued record for key: 0|com.lensora.ai|1001|null|10227
+11-28 15:10:34.207   773   773 I NotificationService: Cannot find enqueued record for key: 0|com.lensora.ai|1001|null|10227
+11-28 15:10:34.222   773   773 I NotificationService: Cannot find enqueued record for key: 0|com.lensora.ai|1001|null|10227
+11-28 15:10:34.299   773  2231 W VibratorManagerService: performHapticFeedbackWithEffect; vibration absent for constant 9
+11-28 15:10:34.300  4361  4361 D LensoraDebug: Configuring universal CaptureRequest.Builder for mode: PHOTO
+11-28 15:10:34.419   773  2231 W VibratorManagerService: performHapticFeedbackWithEffect; vibration absent for constant 9
+11-28 15:10:34.420  4361  4361 D LensoraDebug: Configuring universal CaptureRequest.Builder for mode: PHOTO
+11-28 15:10:34.563  4361  4522 D SceneClassifier: AI Director Analysis: box=null, hint=null, label=Γ£¿ AI: Landscape, source=HEURISTIC_ENGINE in 10ms
+11-28 15:10:34.569   773  2231 W VibratorManagerService: performHapticFeedbackWithEffect; vibration absent for constant 9
+11-28 15:10:34.571  4361  4361 D LensoraDebug: Configuring universal CaptureRequest.Builder for mode: PHOTO
+11-28 15:10:34.679   551  4509 W GCH_ResultDispatcher: [Cam1_ResultDispatcher] PrintTimeoutMessages: pending shutter for frame 17531 ready 0
+11-28 15:10:34.679   551  4509 W GCH_ResultDispatcher: [Cam1_ResultDispatcher] PrintTimeoutMessages: pending shutter for frame 17532 ready 0
+11-28 15:10:34.679   551  4509 W GCH_ResultDispatcher: [Cam1_ResultDispatcher] PrintTimeoutMessages: pending shutter for frame 17533 ready 0
+11-28 15:10:34.679   551  4509 W GCH_ResultDispatcher: [Cam1_ResultDispatcher] PrintTimeoutMessages: pending shutter for frame 17534 ready 0
+11-28 15:10:34.679   551  4509 W GCH_ResultDispatcher: [Cam1_ResultDispatcher] PrintTimeoutMessages: pending shutter for frame 17535 ready 0
+11-28 15:10:34.679   551  4509 W GCH_ResultDispatcher: [Cam1_ResultDispatcher] PrintTimeoutMessages: pending shutter for frame 17536 ready 0
+11-28 15:10:34.679   551  4509 W GCH_ResultDispatcher: [Cam1_ResultDispatcher] PrintTimeoutMessages: pending early result metadata for frame 17530 ready 0
+11-28 15:10:34.679   551  4509 W GCH_ResultDispatcher: [Cam1_ResultDispatcher] PrintTimeoutMessages: pending early result metadata for frame 17531 ready 0
+11-28 15:10:34.679   551  4509 W GCH_ResultDispatcher: [Cam1_ResultDispatcher] PrintTimeoutMessages: pending early result metadata for frame 17532 ready 0
+11-28 15:10:34.679   551  4509 W GCH_ResultDispatcher: [Cam1_ResultDispatcher] PrintTimeoutMessages: pending early result metadata for frame 17533 ready 0
+11-28 15:10:34.679   551  4509 W GCH_ResultDispatcher: [Cam1_ResultDispatcher] PrintTimeoutMessages: pending early result metadata for frame 17534 ready 0
+11-28 15:10:34.679   551  4509 W GCH_ResultDispatcher: [Cam1_ResultDispatcher] PrintTimeoutMessages: pending early result metadata for frame 17535 ready 0
+11-28 15:10:34.679   551  4509 W GCH_ResultDispatcher: [Cam1_ResultDispatcher] PrintTimeoutMessages: pending early result metadata for frame 17536 ready 0
+11-28 15:10:34.679   551  4509 W GCH_ResultDispatcher: [Cam1_ResultDispatcher] PrintTimeoutMessages: pending final result metadata for frame 17530 ready 0
+11-28 15:10:34.679   551  4509 W GCH_ResultDispatcher: [Cam1_ResultDispatcher] PrintTimeoutMessages: pending final result metadata for frame 17531 ready 0
+11-28 15:10:34.679   551  4509 W GCH_ResultDispatcher: [Cam1_ResultDispatcher] PrintTimeoutMessages: pending final result metadata for frame 17532 ready 0
+11-28 15:10:34.679   551  4509 W GCH_ResultDispatcher: [Cam1_ResultDispatcher] PrintTimeoutMessages: pending final result metadata for frame 17533 ready 0
+11-28 15:10:34.679   551  4509 W GCH_ResultDispatcher: [Cam1_ResultDispatcher] PrintTimeoutMessages: pending final result metadata for frame 17534 ready 0
+11-28 15:10:34.679   551  4509 W GCH_ResultDispatcher: [Cam1_ResultDispatcher] PrintTimeoutMessages: pending final result metadata for frame 17535 ready 0
+11-28 15:10:34.679   551  4509 W GCH_ResultDispatcher: [Cam1_ResultDispatcher] PrintTimeoutMessages: pending final result metadata for frame 17536 ready 0
+11-28 15:10:34.679   551  4509 W GCH_ResultDispatcher: [Cam1_ResultDispatcher] PrintTimeoutMessages: pending buffer of stream 0 for frame 17531 ready 0
+11-28 15:10:34.679   551  4509 W GCH_ResultDispatcher: [Cam1_ResultDispatcher] PrintTimeoutMessages: pending buffer of stream 0 for frame 17532 ready 0
+11-28 15:10:34.679   551  4509 W GCH_ResultDispatcher: [Cam1_ResultDispatcher] PrintTimeoutMessages: pending buffer of stream 0 for frame 17533 ready 0
+11-28 15:10:34.679   551  4509 W GCH_ResultDispatcher: [Cam1_ResultDispatcher] PrintTimeoutMessages: pending buffer of stream 0 for frame 17535 ready 0
+11-28 15:10:34.679   551  4509 W GCH_ResultDispatcher: [Cam1_ResultDispatcher] PrintTimeoutMessages: pending buffer of stream 0 for frame 17536 ready 0
+11-28 15:10:34.679   551  4509 W GCH_ResultDispatcher: [Cam1_ResultDispatcher] PrintTimeoutMessages: pending buffer of stream 1 for frame 17534 ready 0
+11-28 15:10:34.707   773  2231 W VibratorManagerService: performHapticFeedbackWithEffect; vibration absent for constant 9
+11-28 15:10:34.707  4361  4361 D LensoraDebug: Configuring universal CaptureRequest.Builder for mode: PHOTO
+11-28 15:10:34.841   773  2231 W VibratorManagerService: performHapticFeedbackWithEffect; vibration absent for constant 9
+11-28 15:10:34.842  4361  4361 D LensoraDebug: Configuring universal CaptureRequest.Builder for mode: PHOTO
+11-28 15:10:34.993   773  2231 W VibratorManagerService: performHapticFeedbackWithEffect; vibration absent for constant 9
+11-28 15:10:34.994  4361  4361 D LensoraDebug: Configuring universal CaptureRequest.Builder for mode: PHOTO
+11-28 15:10:35.074  1186  1327 D SatelliteController: iisInCarrierRoamingNbIotNtn: satellite is disabled
+11-28 15:10:35.076  1186  1327 D SatelliteController: getCarrierRoamingNtnConnectType: Falling back to global carrier config connect type: 0
+11-28 15:10:35.095  4361  4522 D SceneClassifier: AI Director Analysis: box=null, hint=null, label=Γ£¿ AI: Landscape, source=HEURISTIC_ENGINE in 2ms
+11-28 15:10:35.149   773  2231 W VibratorManagerService: performHapticFeedbackWithEffect; vibration absent for constant 9
+11-28 15:10:35.150  4361  4361 D LensoraDebug: Configuring universal CaptureRequest.Builder for mode: PHOTO
+11-28 15:10:35.181   551  4509 W GCH_ResultDispatcher: [Cam1_ResultDispatcher] PrintTimeoutMessages: pending shutter for frame 17531 ready 0
+11-28 15:10:35.181   551  4509 W GCH_ResultDispatcher: [Cam1_ResultDispatcher] PrintTimeoutMessages: pending shutter for frame 17532 ready 0
+11-28 15:10:35.181   551  4509 W GCH_ResultDispatcher: [Cam1_ResultDispatcher] PrintTimeoutMessages: pending shutter for frame 17533 ready 0
+11-28 15:10:35.181   551  4509 W GCH_ResultDispatcher: [Cam1_ResultDispatcher] PrintTimeoutMessages: pending shutter for frame 17534 ready 0
+11-28 15:10:35.181   551  4509 W GCH_ResultDispatcher: [Cam1_ResultDispatcher] PrintTimeoutMessages: pending shutter for frame 17535 ready 0
+11-28 15:10:35.181   551  4509 W GCH_ResultDispatcher: [Cam1_ResultDispatcher] PrintTimeoutMessages: pending shutter for frame 17536 ready 0
+11-28 15:10:35.181   551  4509 W GCH_ResultDispatcher: [Cam1_ResultDispatcher] PrintTimeoutMessages: pending early result metadata for frame 17530 ready 0
+11-28 15:10:35.181   551  4509 W GCH_ResultDispatcher: [Cam1_ResultDispatcher] PrintTimeoutMessages: pending early result metadata for frame 17531 ready 0
+11-28 15:10:35.181   551  4509 W GCH_ResultDispatcher: [Cam1_ResultDispatcher] PrintTimeoutMessages: pending early result metadata for frame 17532 ready 0
+11-28 15:10:35.181   551  4509 W GCH_ResultDispatcher: [Cam1_ResultDispatcher] PrintTimeoutMessages: pending early result metadata for frame 17533 ready 0
+11-28 15:10:35.181   551  4509 W GCH_ResultDispatcher: [Cam1_ResultDispatcher] PrintTimeoutMessages: pending early result metadata for frame 17534 ready 0
+11-28 15:10:35.181   551  4509 W GCH_ResultDispatcher: [Cam1_ResultDispatcher] PrintTimeoutMessages: pending early result metadata for frame 17535 ready 0
+11-28 15:10:35.181   551  4509 W GCH_ResultDispatcher: [Cam1_ResultDispatcher] PrintTimeoutMessages: pending early result metadata for frame 17536 ready 0
+11-28 15:10:35.181   551  4509 W GCH_ResultDispatcher: [Cam1_ResultDispatcher] PrintTimeoutMessages: pending final result metadata for frame 17530 ready 0
+11-28 15:10:35.181   551  4509 W GCH_ResultDispatcher: [Cam1_ResultDispatcher] PrintTimeoutMessages: pending final result metadata for frame 17531 ready 0
+11-28 15:10:35.182   551  4509 W GCH_ResultDispatcher: [Cam1_ResultDispatcher] PrintTimeoutMessages: pending final result metadata for frame 17532 ready 0
+11-28 15:10:35.182   551  4509 W GCH_ResultDispatcher: [Cam1_ResultDispatcher] PrintTimeoutMessages: pending final result metadata for frame 17533 ready 0
+11-28 15:10:35.182   551  4509 W GCH_ResultDispatcher: [Cam1_ResultDispatcher] PrintTimeoutMessages: pending final result metadata for frame 17534 ready 0
+11-28 15:10:35.182   551  4509 W GCH_ResultDispatcher: [Cam1_ResultDispatcher] PrintTimeoutMessages: pending final result metadata for frame 17535 ready 0
+11-28 15:10:35.182   551  4509 W GCH_ResultDispatcher: [Cam1_ResultDispatcher] PrintTimeoutMessages: pending final result metadata for frame 17536 ready 0
+11-28 15:10:35.182   551  4509 W GCH_ResultDispatcher: [Cam1_ResultDispatcher] PrintTimeoutMessages: pending buffer of stream 0 for frame 17531 ready 0
+11-28 15:10:35.182   551  4509 W GCH_ResultDispatcher: [Cam1_ResultDispatcher] PrintTimeoutMessages: pending buffer of stream 0 for frame 17532 ready 0
+11-28 15:10:35.182   551  4509 W GCH_ResultDispatcher: [Cam1_ResultDispatcher] PrintTimeoutMessages: pending buffer of stream 0 for frame 17533 ready 0
+11-28 15:10:35.182   551  4509 W GCH_ResultDispatcher: [Cam1_ResultDispatcher] PrintTimeoutMessages: pending buffer of stream 0 for frame 17535 ready 0
+11-28 15:10:35.182   551  4509 W GCH_ResultDispatcher: [Cam1_ResultDispatcher] PrintTimeoutMessages: pending buffer of stream 0 for frame 17536 ready 0
+11-28 15:10:35.182   551  4509 W GCH_ResultDispatcher: [Cam1_ResultDispatcher] PrintTimeoutMessages: pending buffer of stream 1 for frame 17534 ready 0
+11-28 15:10:35.224   773  2359 W NotificationService: Toast already killed. pkg=com.lensora.ai token=android.os.BinderProxy@443dc45
+11-28 15:10:35.281  1638  1638 D WM-DelayedWorkTracker: Scheduling work 3446cb83-9fac-4b4d-8af6-3f3e692749fb
+11-28 15:10:35.281  1638  1638 D WM-GreedyScheduler: Starting tracking for 3446cb83-9fac-4b4d-8af6-3f3e692749fb
+11-28 15:10:35.283  1638  1719 D WM-ConstraintTracker: BatteryNotLowTracker: initial state = true
+11-28 15:10:35.283  1638  1719 D WM-BrdcstRcvrCnstrntTrc: BatteryNotLowTracker: registering receiver
+11-28 15:10:35.286  1638  1719 D WM-GreedyScheduler: Constraints met: Scheduling work ID WorkGenerationalId(workSpecId=3446cb83-9fac-4b4d-8af6-3f3e692749fb, generation=0)
+11-28 15:10:35.290  1638  1719 D WM-Processor: Processor: processing WorkGenerationalId(workSpecId=3446cb83-9fac-4b4d-8af6-3f3e692749fb, generation=0)
+11-28 15:10:35.314  1638  1638 D WM-WorkerWrapper: Starting work for com.android.providers.media.photopicker.sync.ProactiveSyncWorker
+11-28 15:10:35.315  1638  5246 I PSyncWorker: Starting proactive picker sync from sync source: 1
+11-28 15:10:35.316  1638  5246 I PickerSyncTracker: Created new sync future java.util.concurrent.CompletableFuture@2936517[Not completed, 1 dependents]. Future map: {3446cb83-9fac-4b4d-8af6-3f3e692749fb=java.util.concurrent.CompletableFuture@2936517[Not completed, 1 dependents]}
+11-28 15:10:35.317  1638  5246 D PickerSyncController: syncAllMediaFromProvider() LOCAL, auth=com.android.providers.media.photopicker, retry=true
+11-28 15:10:35.317  1638  5246 D PickerSyncController: getSyncRequestParams() LOCAL, auth=com.android.providers.media.photopicker
+11-28 15:10:35.322   773  2359 W VibratorManagerService: performHapticFeedbackWithEffect; vibration absent for constant 9
+11-28 15:10:35.325  1638  5246 D PickerSyncController:    Latest ID/Gen=9df73665bf6646a7:0000-0000:external_primary/341
+11-28 15:10:35.325  1638  5246 D PickerSyncController:    Cached ID/Gen=9df73665bf6646a7:0000-0000:external_primary/321
+11-28 15:10:35.325  1638  5246 D PickerSyncController:    RESULT=SyncRequestParams{type=MEDIA_INCREMENTAL, gen=321, latest=Bundle[{last_media_sync_generation=341, media_collection_id=9df73665bf6646a7:0000-0000:external_primary}], pageSize=1000}
+11-28 15:10:35.325  1638  5246 I PickerSyncController: Executing SyncAdd. isLocal: true. authority: com.android.providers.media.photopicker
+11-28 15:10:35.325  1638  5246 D PickerSyncLockManager: Trying to acquire lock com.android.providers.media.photopicker.sync.CloseableReentrantLock@59915b1[Unlocked]. Lock Name = CLOUD_PROVIDER_LOCK. Threads that may be waiting to acquire this lock = [] with timeout.
+11-28 15:10:35.325  1638  5246 D CloseableReentrantLock: Successfully acquired lock com.android.providers.media.photopicker.sync.CloseableReentrantLock@59915b1[Locked by thread pool-4-thread-8]. Lock Name = CLOUD_PROVIDER_LOCK. Threads that may be waiting to acquire this lock = []
+11-28 15:10:35.325  1638  5246 D CloseableReentrantLock: Successfully released lock com.android.providers.media.photopicker.sync.CloseableReentrantLock@59915b1[Unlocked]. Lock Name = CLOUD_PROVIDER_LOCK. Threads that may be waiting to acquire this lock = []
+11-28 15:10:35.326  1638  5246 D ExternalDbFacade: Token received for queryMedia = null
+11-28 15:10:35.328  4361  4361 D LensoraDebug: Configuring universal CaptureRequest.Builder for mode: PHOTO
+11-28 15:10:35.346  1638  5246 D PickerSyncLockManager: Trying to acquire lock com.android.providers.media.photopicker.sync.CloseableReentrantLock@59915b1[Unlocked]. Lock Name = CLOUD_PROVIDER_LOCK. Threads that may be waiting to acquire this lock = [] with timeout.
+11-28 15:10:35.346  1638  5246 D CloseableReentrantLock: Successfully acquired lock com.android.providers.media.photopicker.sync.CloseableReentrantLock@59915b1[Locked by thread pool-4-thread-8]. Lock Name = CLOUD_PROVIDER_LOCK. Threads that may be waiting to acquire this lock = []
+11-28 15:10:35.346  1638  5246 D PickerSyncController: Saving next page token: 1795858833663|54 for key: local_provider:media_add:resume
+11-28 15:10:35.346  1638  5246 D CloseableReentrantLock: Successfully released lock com.android.providers.media.photopicker.sync.CloseableReentrantLock@59915b1[Unlocked]. Lock Name = CLOUD_PROVIDER_LOCK. Threads that may be waiting to acquire this lock = []
+11-28 15:10:35.347  1638  5246 D PickerNotificationSender: Sending a notification for media update
+11-28 15:10:35.352  1638  5246 D PickerNotificationSender: Sending a notification for merged album media update Favorites
+11-28 15:10:35.352  1638  5246 D PickerNotificationSender: Sending a notification for album media update Favorites
+11-28 15:10:35.353  1638  5246 D PickerNotificationSender: Sending a notification for merged album media update Videos
+11-28 15:10:35.353  1638  5246 D PickerNotificationSender: Sending a notification for album media update Videos
+11-28 15:10:35.355  1638  5246 D ExternalDbFacade: Token received for queryMedia = 1795858833663|54
+11-28 15:10:35.358  1638  5246 D PickerSyncLockManager: Trying to acquire lock com.android.providers.media.photopicker.sync.CloseableReentrantLock@59915b1[Unlocked]. Lock Name = CLOUD_PROVIDER_LOCK. Threads that may be waiting to acquire this lock = [] with timeout.
+11-28 15:10:35.358  1638  5246 D CloseableReentrantLock: Successfully acquired lock com.android.providers.media.photopicker.sync.CloseableReentrantLock@59915b1[Locked by thread pool-4-thread-8]. Lock Name = CLOUD_PROVIDER_LOCK. Threads that may be waiting to acquire this lock = []
+11-28 15:10:35.358  1638  5246 D PickerSyncController: Clearing next page token for key: local_provider:media_add:resume
+11-28 15:10:35.359  1638  5246 D CloseableReentrantLock: Successfully released lock com.android.providers.media.photopicker.sync.CloseableReentrantLock@59915b1[Unlocked]. Lock Name = CLOUD_PROVIDER_LOCK. Threads that may be waiting to acquire this lock = []
+11-28 15:10:35.359  1638  5246 D PickerNotificationSender: Sending a notification for media update
+11-28 15:10:35.360  1638  5246 D PickerNotificationSender: Sending a notification for merged album media update Favorites
+11-28 15:10:35.360  1638  5246 D PickerNotificationSender: Sending a notification for album media update Favorites
+11-28 15:10:35.362  1638  5246 D PickerNotificationSender: Sending a notification for merged album media update Videos
+11-28 15:10:35.362  1638  5246 D PickerNotificationSender: Sending a notification for album media update Videos
+11-28 15:10:35.364  1638  5246 I PickerSyncController: Paged sync successful. QueryArgs: Bundle[{android.provider.extra.PAGE_TOKEN=1795858833663|54, android.provider.extra.SYNC_GENERATION=321, android.provider.extra.PAGE_SIZE=1000}] Total Rows: 1
+11-28 15:10:35.365  1638  5246 I PickerSyncController: Executing SyncRemove. isLocal: true. authority: com.android.providers.media.photopicker
+11-28 15:10:35.365  1638  5246 D PickerSyncLockManager: Trying to acquire lock com.android.providers.media.photopicker.sync.CloseableReentrantLock@59915b1[Unlocked]. Lock Name = CLOUD_PROVIDER_LOCK. Threads that may be waiting to acquire this lock = [] with timeout.
+11-28 15:10:35.365  1638  5246 D CloseableReentrantLock: Successfully acquired lock com.android.providers.media.photopicker.sync.CloseableReentrantLock@59915b1[Locked by thread pool-4-thread-8]. Lock Name = CLOUD_PROVIDER_LOCK. Threads that may be waiting to acquire this lock = []
+11-28 15:10:35.365  1638  5246 D CloseableReentrantLock: Successfully released lock com.android.providers.media.photopicker.sync.CloseableReentrantLock@59915b1[Unlocked]. Lock Name = CLOUD_PROVIDER_LOCK. Threads that may be waiting to acquire this lock = []
+11-28 15:10:35.371  1638  5246 D PickerSyncLockManager: Trying to acquire lock com.android.providers.media.photopicker.sync.CloseableReentrantLock@59915b1[Unlocked]. Lock Name = CLOUD_PROVIDER_LOCK. Threads that may be waiting to acquire this lock = [] with timeout.
+11-28 15:10:35.371  1638  5246 D CloseableReentrantLock: Successfully acquired lock com.android.providers.media.photopicker.sync.CloseableReentrantLock@59915b1[Locked by thread pool-4-thread-8]. Lock Name = CLOUD_PROVIDER_LOCK. Threads that may be waiting to acquire this lock = []
+11-28 15:10:35.371  1638  5246 D PickerSyncController: Clearing next page token for key: local_provider:media_remove:resume
+11-28 15:10:35.371  1638  5246 D CloseableReentrantLock: Successfully released lock com.android.providers.media.photopicker.sync.CloseableReentrantLock@59915b1[Unlocked]. Lock Name = CLOUD_PROVIDER_LOCK. Threads that may be waiting to acquire this lock = []
+11-28 15:10:35.371  1638  5246 D PickerNotificationSender: Sending a notification for media update
+11-28 15:10:35.372  1638  1638 D WM-SystemJobService: onStartJob for WorkGenerationalId(workSpecId=3446cb83-9fac-4b4d-8af6-3f3e692749fb, generation=0)
+11-28 15:10:35.374   773   988 D BackgroundInstallControlService: Package event received: 0
+11-28 15:10:35.374  1638  5246 D PickerNotificationSender: Sending a notification for merged album media update Favorites
+11-28 15:10:35.374  1638  5246 D PickerNotificationSender: Sending a notification for album media update Favorites
+11-28 15:10:35.374  1638  1719 D WM-Processor: Work WorkGenerationalId(workSpecId=3446cb83-9fac-4b4d-8af6-3f3e692749fb, generation=0) is already enqueued for processing
+11-28 15:10:35.376  1638  5246 D PickerNotificationSender: Sending a notification for merged album media update Videos
+11-28 15:10:35.376  1638  5246 D PickerNotificationSender: Sending a notification for album media update Videos
+11-28 15:10:35.377  1638  5246 I PickerSyncController: Paged sync successful. QueryArgs: Bundle[{android.provider.extra.PAGE_TOKEN=1795858833663|54, android.provider.extra.SYNC_GENERATION=321, android.provider.extra.PAGE_SIZE=1000}] Total Rows: 0
+11-28 15:10:35.379  1638  5246 I PickerSyncTracker: Marked sync future complete for work id: 3446cb83-9fac-4b4d-8af6-3f3e692749fb. Future map: {}
+11-28 15:10:35.379  1638  5246 I PSyncWorker: Completed picker proactive sync complete from local provider.
+11-28 15:10:35.381  1638  1757 I WM-WorkerWrapper: Worker result SUCCESS for Work [ id=3446cb83-9fac-4b4d-8af6-3f3e692749fb, tags={ com.android.providers.media.photopicker.sync.ProactiveSyncWorker } ]
+11-28 15:10:35.387  1638  1638 D WM-Processor: Processor 3446cb83-9fac-4b4d-8af6-3f3e692749fb executed; reschedule = false
+11-28 15:10:35.387  1638  1638 D WM-GreedyScheduler: Stopping tracking for WorkGenerationalId(workSpecId=3446cb83-9fac-4b4d-8af6-3f3e692749fb, generation=0)
+11-28 15:10:35.388  1638  1638 D WM-SystemJobService: 3446cb83-9fac-4b4d-8af6-3f3e692749fb executed on JobScheduler
+11-28 15:10:35.396  1638  1757 D WM-GreedyScheduler: Cancelling work ID 3446cb83-9fac-4b4d-8af6-3f3e692749fb
+11-28 15:10:35.401  1638  1757 D WM-GreedyScheduler: Ignoring {WorkSpec: 3c6c4135-b997-4e1b-9661-22e5ab13e7aa}. Requires device idle.
+11-28 15:10:35.401  1638  1757 D WM-GreedyScheduler: Ignoring {WorkSpec: d21d6e86-b6ef-4ce1-a308-6f305ea14219}. Requires device idle.
+11-28 15:10:35.401  1638  1757 D WM-GreedyScheduler: Ignoring {WorkSpec: dddae3d0-4da8-44bf-bc94-f4a106b095e6}. Requires device idle.
+11-28 15:10:35.401  1638  1757 D WM-GreedyScheduler: Ignoring {WorkSpec: 07661c93-4319-4311-91b7-cf7c9f665c99}. Requires device idle.
+11-28 15:10:35.402  1638  1762 D WM-BrdcstRcvrCnstrntTrc: BatteryNotLowTracker: unregistering receiver
+11-28 15:10:35.474   773  1006 W VibratorManagerService: performHapticFeedbackWithEffect; vibration absent for constant 9
+11-28 15:10:35.475  4361  4361 D LensoraDebug: Configuring universal CaptureRequest.Builder for mode: PHOTO
+11-28 15:10:35.616  4361  4522 D SceneClassifier: AI Director Analysis: box=null, hint=null, label=Γ£¿ AI: Landscape, source=HEURISTIC_ENGINE in 4ms
+11-28 15:10:35.627   773  1006 W VibratorManagerService: performHapticFeedbackWithEffect; vibration absent for constant 9
+11-28 15:10:35.628  4361  4361 D LensoraDebug: Configuring universal CaptureRequest.Builder for mode: PHOTO
+11-28 15:10:35.683   551  4509 W GCH_ResultDispatcher: [Cam1_ResultDispatcher] PrintTimeoutMessages: pending shutter for frame 17531 ready 0
+11-28 15:10:35.683   551  4509 W GCH_ResultDispatcher: [Cam1_ResultDispatcher] PrintTimeoutMessages: pending shutter for frame 17532 ready 0
+11-28 15:10:35.683   551  4509 W GCH_ResultDispatcher: [Cam1_ResultDispatcher] PrintTimeoutMessages: pending shutter for frame 17533 ready 0
+11-28 15:10:35.683   551  4509 W GCH_ResultDispatcher: [Cam1_ResultDispatcher] PrintTimeoutMessages: pending shutter for frame 17534 ready 0
+11-28 15:10:35.683   551  4509 W GCH_ResultDispatcher: [Cam1_ResultDispatcher] PrintTimeoutMessages: pending shutter for frame 17535 ready 0
+11-28 15:10:35.683   551  4509 W GCH_ResultDispatcher: [Cam1_ResultDispatcher] PrintTimeoutMessages: pending shutter for frame 17536 ready 0
+11-28 15:10:35.683   551  4509 W GCH_ResultDispatcher: [Cam1_ResultDispatcher] PrintTimeoutMessages: pending early result metadata for frame 17530 ready 0
+11-28 15:10:35.683   551  4509 W GCH_ResultDispatcher: [Cam1_ResultDispatcher] PrintTimeoutMessages: pending early result metadata for frame 17531 ready 0
+11-28 15:10:35.683   551  4509 W GCH_ResultDispatcher: [Cam1_ResultDispatcher] PrintTimeoutMessages: pending early result metadata for frame 17532 ready 0
+11-28 15:10:35.683   551  4509 W GCH_ResultDispatcher: [Cam1_ResultDispatcher] PrintTimeoutMessages: pending early result metadata for frame 17533 ready 0
+11-28 15:10:35.683   551  4509 W GCH_ResultDispatcher: [Cam1_ResultDispatcher] PrintTimeoutMessages: pending early result metadata for frame 17534 ready 0
+11-28 15:10:35.683   551  4509 W GCH_ResultDispatcher: [Cam1_ResultDispatcher] PrintTimeoutMessages: pending early result metadata for frame 17535 ready 0
+11-28 15:10:35.683   551  4509 W GCH_ResultDispatcher: [Cam1_ResultDispatcher] PrintTimeoutMessages: pending early result metadata for frame 17536 ready 0
+11-28 15:10:35.683   551  4509 W GCH_ResultDispatcher: [Cam1_ResultDispatcher] PrintTimeoutMessages: pending final result metadata for frame 17530 ready 0
+11-28 15:10:35.683   551  4509 W GCH_ResultDispatcher: [Cam1_ResultDispatcher] PrintTimeoutMessages: pending final result metadata for frame 17531 ready 0
+11-28 15:10:35.683   551  4509 W GCH_ResultDispatcher: [Cam1_ResultDispatcher] PrintTimeoutMessages: pending final result metadata for frame 17532 ready 0
+11-28 15:10:35.683   551  4509 W GCH_ResultDispatcher: [Cam1_ResultDispatcher] PrintTimeoutMessages: pending final result metadata for frame 17533 ready 0
+11-28 15:10:35.683   551  4509 W GCH_ResultDispatcher: [Cam1_ResultDispatcher] PrintTimeoutMessages: pending final result metadata for frame 17534 ready 0
+11-28 15:10:35.683   551  4509 W GCH_ResultDispatcher: [Cam1_ResultDispatcher] PrintTimeoutMessages: pending final result metadata for frame 17535 ready 0
+11-28 15:10:35.683   551  4509 W GCH_ResultDispatcher: [Cam1_ResultDispatcher] PrintTimeoutMessages: pending final result metadata for frame 17536 ready 0
+11-28 15:10:35.683   551  4509 W GCH_ResultDispatcher: [Cam1_ResultDispatcher] PrintTimeoutMessages: pending buffer of stream 0 for frame 17531 ready 0
+11-28 15:10:35.683   551  4509 W GCH_ResultDispatcher: [Cam1_ResultDispatcher] PrintTimeoutMessages: pending buffer of stream 0 for frame 17532 ready 0
+11-28 15:10:35.683   551  4509 W GCH_ResultDispatcher: [Cam1_ResultDispatcher] PrintTimeoutMessages: pending buffer of stream 0 for frame 17533 ready 0
+11-28 15:10:35.683   551  4509 W GCH_ResultDispatcher: [Cam1_ResultDispatcher] PrintTimeoutMessages: pending buffer of stream 0 for frame 17535 ready 0
+11-28 15:10:35.683   551  4509 W GCH_ResultDispatcher: [Cam1_ResultDispatcher] PrintTimeoutMessages: pending buffer of stream 0 for frame 17536 ready 0
+11-28 15:10:35.683   551  4509 W GCH_ResultDispatcher: [Cam1_ResultDispatcher] PrintTimeoutMessages: pending buffer of stream 1 for frame 17534 ready 0
+11-28 15:10:35.760   773  1006 W VibratorManagerService: performHapticFeedbackWithEffect; vibration absent for constant 9
+11-28 15:10:35.761  4361  4361 D LensoraDebug: Configuring universal CaptureRequest.Builder for mode: PHOTO
+11-28 15:10:35.876   773  1006 W VibratorManagerService: performHapticFeedbackWithEffect; vibration absent for constant 9
+11-28 15:10:35.876  4361  4361 D LensoraDebug: Configuring universal CaptureRequest.Builder for mode: PHOTO
+11-28 15:10:36.008   773  1006 W VibratorManagerService: performHapticFeedbackWithEffect; vibration absent for constant 9
+11-28 15:10:36.008  4361  4361 D LensoraDebug: Configuring universal CaptureRequest.Builder for mode: PHOTO
+11-28 15:10:36.134   773  1006 W VibratorManagerService: performHapticFeedbackWithEffect; vibration absent for constant 9
+11-28 15:10:36.135  4361  4361 D LensoraDebug: Configuring universal CaptureRequest.Builder for mode: PHOTO
+11-28 15:10:36.139  4361  4522 D SceneClassifier: AI Director Analysis: box=null, hint=null, label=Γ£¿ AI: Landscape, source=HEURISTIC_ENGINE in 8ms
+11-28 15:10:36.185   551  4509 W GCH_ResultDispatcher: [Cam1_ResultDispatcher] PrintTimeoutMessages: pending shutter for frame 17531 ready 0
+11-28 15:10:36.185   551  4509 W GCH_ResultDispatcher: [Cam1_ResultDispatcher] PrintTimeoutMessages: pending shutter for frame 17532 ready 0
+11-28 15:10:36.185   551  4509 W GCH_ResultDispatcher: [Cam1_ResultDispatcher] PrintTimeoutMessages: pending shutter for frame 17533 ready 0
+11-28 15:10:36.186   551  4509 W GCH_ResultDispatcher: [Cam1_ResultDispatcher] PrintTimeoutMessages: pending shutter for frame 17534 ready 0
+11-28 15:10:36.186   551  4509 W GCH_ResultDispatcher: [Cam1_ResultDispatcher] PrintTimeoutMessages: pending shutter for frame 17535 ready 0
+11-28 15:10:36.186   551  4509 W GCH_ResultDispatcher: [Cam1_ResultDispatcher] PrintTimeoutMessages: pending shutter for frame 17536 ready 0
+11-28 15:10:36.186   551  4509 W GCH_ResultDispatcher: [Cam1_ResultDispatcher] PrintTimeoutMessages: pending early result metadata for frame 17530 ready 0
+11-28 15:10:36.186   551  4509 W GCH_ResultDispatcher: [Cam1_ResultDispatcher] PrintTimeoutMessages: pending early result metadata for frame 17531 ready 0
+11-28 15:10:36.186   551  4509 W GCH_ResultDispatcher: [Cam1_ResultDispatcher] PrintTimeoutMessages: pending early result metadata for frame 17532 ready 0
+11-28 15:10:36.186   551  4509 W GCH_ResultDispatcher: [Cam1_ResultDispatcher] PrintTimeoutMessages: pending early result metadata for frame 17533 ready 0
+11-28 15:10:36.186   551  4509 W GCH_ResultDispatcher: [Cam1_ResultDispatcher] PrintTimeoutMessages: pending early result metadata for frame 17534 ready 0
+11-28 15:10:36.186   551  4509 W GCH_ResultDispatcher: [Cam1_ResultDispatcher] PrintTimeoutMessages: pending early result metadata for frame 17535 ready 0
+11-28 15:10:36.186   551  4509 W GCH_ResultDispatcher: [Cam1_ResultDispatcher] PrintTimeoutMessages: pending early result metadata for frame 17536 ready 0
+11-28 15:10:36.186   551  4509 W GCH_ResultDispatcher: [Cam1_ResultDispatcher] PrintTimeoutMessages: pending final result metadata for frame 17530 ready 0
+11-28 15:10:36.186   551  4509 W GCH_ResultDispatcher: [Cam1_ResultDispatcher] PrintTimeoutMessages: pending final result metadata for frame 17531 ready 0
+11-28 15:10:36.186   551  4509 W GCH_ResultDispatcher: [Cam1_ResultDispatcher] PrintTimeoutMessages: pending final result metadata for frame 17532 ready 0
+11-28 15:10:36.186   551  4509 W GCH_ResultDispatcher: [Cam1_ResultDispatcher] PrintTimeoutMessages: pending final result metadata for frame 17533 ready 0
+11-28 15:10:36.186   551  4509 W GCH_ResultDispatcher: [Cam1_ResultDispatcher] PrintTimeoutMessages: pending final result metadata for frame 17534 ready 0
+11-28 15:10:36.186   551  4509 W GCH_ResultDispatcher: [Cam1_ResultDispatcher] PrintTimeoutMessages: pending final result metadata for frame 17535 ready 0
+11-28 15:10:36.186   551  4509 W GCH_ResultDispatcher: [Cam1_ResultDispatcher] PrintTimeoutMessages: pending final result metadata for frame 17536 ready 0
+11-28 15:10:36.186   551  4509 W GCH_ResultDispatcher: [Cam1_ResultDispatcher] PrintTimeoutMessages: pending buffer of stream 0 for frame 17531 ready 0
+11-28 15:10:36.187   551  4509 W GCH_ResultDispatcher: [Cam1_ResultDispatcher] PrintTimeoutMessages: pending buffer of stream 0 for frame 17532 ready 0
+11-28 15:10:36.187   551  4509 W GCH_ResultDispatcher: [Cam1_ResultDispatcher] PrintTimeoutMessages: pending buffer of stream 0 for frame 17533 ready 0
+11-28 15:10:36.187   551  4509 W GCH_ResultDispatcher: [Cam1_ResultDispatcher] PrintTimeoutMessages: pending buffer of stream 0 for frame 17535 ready 0
+11-28 15:10:36.187   551  4509 W GCH_ResultDispatcher: [Cam1_ResultDispatcher] PrintTimeoutMessages: pending buffer of stream 0 for frame 17536 ready 0
+11-28 15:10:36.187   551  4509 W GCH_ResultDispatcher: [Cam1_ResultDispatcher] PrintTimeoutMessages: pending buffer of stream 1 for frame 17534 ready 0
+11-28 15:10:36.265  4361  4361 D LensoraDebug: Configuring universal CaptureRequest.Builder for mode: PHOTO
+11-28 15:10:36.265   773  1006 W VibratorManagerService: performHapticFeedbackWithEffect; vibration absent for constant 9
+11-28 15:10:36.399   773  1006 W VibratorManagerService: performHapticFeedbackWithEffect; vibration absent for constant 9
+11-28 15:10:36.399  4361  4361 D LensoraDebug: Configuring universal CaptureRequest.Builder for mode: PHOTO
+11-28 15:10:36.546   773  1006 W VibratorManagerService: performHapticFeedbackWithEffect; vibration absent for constant 9
+11-28 15:10:36.546  4361  4361 D LensoraDebug: Configuring universal CaptureRequest.Builder for mode: PHOTO
+11-28 15:10:36.677  4361  4522 D SceneClassifier: AI Director Analysis: box=null, hint=null, label=Γ£¿ AI: Landscape, source=HEURISTIC_ENGINE in 4ms
+11-28 15:10:36.688   551  4509 W GCH_ResultDispatcher: [Cam1_ResultDispatcher] PrintTimeoutMessages: pending shutter for frame 17531 ready 0
+11-28 15:10:36.689   551  4509 W GCH_ResultDispatcher: [Cam1_ResultDispatcher] PrintTimeoutMessages: pending shutter for frame 17532 ready 0
+11-28 15:10:36.689   551  4509 W GCH_ResultDispatcher: [Cam1_ResultDispatcher] PrintTimeoutMessages: pending shutter for frame 17533 ready 0
+11-28 15:10:36.689   551  4509 W GCH_ResultDispatcher: [Cam1_ResultDispatcher] PrintTimeoutMessages: pending shutter for frame 17534 ready 0
+11-28 15:10:36.689   551  4509 W GCH_ResultDispatcher: [Cam1_ResultDispatcher] PrintTimeoutMessages: pending shutter for frame 17535 ready 0
+11-28 15:10:36.689   551  4509 W GCH_ResultDispatcher: [Cam1_ResultDispatcher] PrintTimeoutMessages: pending shutter for frame 17536 ready 0
+11-28 15:10:36.689   551  4509 W GCH_ResultDispatcher: [Cam1_ResultDispatcher] PrintTimeoutMessages: pending early result metadata for frame 17530 ready 0
+11-28 15:10:36.689   551  4509 W GCH_ResultDispatcher: [Cam1_ResultDispatcher] PrintTimeoutMessages: pending early result metadata for frame 17531 ready 0
+11-28 15:10:36.689   551  4509 W GCH_ResultDispatcher: [Cam1_ResultDispatcher] PrintTimeoutMessages: pending early result metadata for frame 17532 ready 0
+11-28 15:10:36.689   551  4509 W GCH_ResultDispatcher: [Cam1_ResultDispatcher] PrintTimeoutMessages: pending early result metadata for frame 17533 ready 0
+11-28 15:10:36.689   551  4509 W GCH_ResultDispatcher: [Cam1_ResultDispatcher] PrintTimeoutMessages: pending early result metadata for frame 17534 ready 0
+11-28 15:10:36.689   551  4509 W GCH_ResultDispatcher: [Cam1_ResultDispatcher] PrintTimeoutMessages: pending early result metadata for frame 17535 ready 0
+11-28 15:10:36.689   551  4509 W GCH_ResultDispatcher: [Cam1_ResultDispatcher] PrintTimeoutMessages: pending early result metadata for frame 17536 ready 0
+11-28 15:10:36.689   551  4509 W GCH_ResultDispatcher: [Cam1_ResultDispatcher] PrintTimeoutMessages: pending final result metadata for frame 17530 ready 0
+11-28 15:10:36.689   551  4509 W GCH_ResultDispatcher: [Cam1_ResultDispatcher] PrintTimeoutMessages: pending final result metadata for frame 17531 ready 0
+11-28 15:10:36.689   551  4509 W GCH_ResultDispatcher: [Cam1_ResultDispatcher] PrintTimeoutMessages: pending final result metadata for frame 17532 ready 0
+11-28 15:10:36.689   551  4509 W GCH_ResultDispatcher: [Cam1_ResultDispatcher] PrintTimeoutMessages: pending final result metadata for frame 17533 ready 0
+11-28 15:10:36.689   551  4509 W GCH_ResultDispatcher: [Cam1_ResultDispatcher] PrintTimeoutMessages: pending final result metadata for frame 17534 ready 0
+11-28 15:10:36.689   551  4509 W GCH_ResultDispatcher: [Cam1_ResultDispatcher] PrintTimeoutMessages: pending final result metadata for frame 17535 ready 0
+11-28 15:10:36.689   551  4509 W GCH_ResultDispatcher: [Cam1_ResultDispatcher] PrintTimeoutMessages: pending final result metadata for frame 17536 ready 0
+11-28 15:10:36.689   551  4509 W GCH_ResultDispatcher: [Cam1_ResultDispatcher] PrintTimeoutMessages: pending buffer of stream 0 for frame 17531 ready 0
+11-28 15:10:36.689   551  4509 W GCH_ResultDispatcher: [Cam1_ResultDispatcher] PrintTimeoutMessages: pending buffer of stream 0 for frame 17532 ready 0
+11-28 15:10:36.689   551  4509 W GCH_ResultDispatcher: [Cam1_ResultDispatcher] PrintTimeoutMessages: pending buffer of stream 0 for frame 17533 ready 0
+11-28 15:10:36.689   551  4509 W GCH_ResultDispatcher: [Cam1_ResultDispatcher] PrintTimeoutMessages: pending buffer of stream 0 for frame 17535 ready 0
+11-28 15:10:36.689   551  4509 W GCH_ResultDispatcher: [Cam1_ResultDispatcher] PrintTimeoutMessages: pending buffer of stream 0 for frame 17536 ready 0
+11-28 15:10:36.689   551  4509 W GCH_ResultDispatcher: [Cam1_ResultDispatcher] PrintTimeoutMessages: pending buffer of stream 1 for frame 17534 ready 0
+11-28 15:10:36.691   773  1006 W VibratorManagerService: performHapticFeedbackWithEffect; vibration absent for constant 9
+11-28 15:10:36.692  4361  4361 D LensoraDebug: Configuring universal CaptureRequest.Builder for mode: PHOTO
+11-28 15:10:36.827   773  1006 W VibratorManagerService: performHapticFeedbackWithEffect; vibration absent for constant 9
+11-28 15:10:36.828  4361  4361 D LensoraDebug: Configuring universal CaptureRequest.Builder for mode: PHOTO
+11-28 15:10:36.966  4361  4361 D LensoraDebug: Configuring universal CaptureRequest.Builder for mode: PHOTO
+11-28 15:10:36.966   773  1006 W VibratorManagerService: performHapticFeedbackWithEffect; vibration absent for constant 9
+11-28 15:10:37.116   773  1006 W VibratorManagerService: performHapticFeedbackWithEffect; vibration absent for constant 9
+11-28 15:10:37.117  4361  4361 D LensoraDebug: Configuring universal CaptureRequest.Builder for mode: PHOTO
+11-28 15:10:37.190   551  4509 W GCH_ResultDispatcher: [Cam1_ResultDispatcher] PrintTimeoutMessages: pending shutter for frame 17531 ready 0
+11-28 15:10:37.190   551  4509 W GCH_ResultDispatcher: [Cam1_ResultDispatcher] PrintTimeoutMessages: pending shutter for frame 17532 ready 0
+11-28 15:10:37.190   551  4509 W GCH_ResultDispatcher: [Cam1_ResultDispatcher] PrintTimeoutMessages: pending shutter for frame 17533 ready 0
+11-28 15:10:37.191   551  4509 W GCH_ResultDispatcher: [Cam1_ResultDispatcher] PrintTimeoutMessages: pending shutter for frame 17534 ready 0
+11-28 15:10:37.191   551  4509 W GCH_ResultDispatcher: [Cam1_ResultDispatcher] PrintTimeoutMessages: pending shutter for frame 17535 ready 0
+11-28 15:10:37.191   551  4509 W GCH_ResultDispatcher: [Cam1_ResultDispatcher] PrintTimeoutMessages: pending shutter for frame 17536 ready 0
+11-28 15:10:37.191   551  4509 W GCH_ResultDispatcher: [Cam1_ResultDispatcher] PrintTimeoutMessages: pending early result metadata for frame 17530 ready 0
+11-28 15:10:37.191   551  4509 W GCH_ResultDispatcher: [Cam1_ResultDispatcher] PrintTimeoutMessages: pending early result metadata for frame 17531 ready 0
+11-28 15:10:37.191   551  4509 W GCH_ResultDispatcher: [Cam1_ResultDispatcher] PrintTimeoutMessages: pending early result metadata for frame 17532 ready 0
+11-28 15:10:37.191   551  4509 W GCH_ResultDispatcher: [Cam1_ResultDispatcher] PrintTimeoutMessages: pending early result metadata for frame 17533 ready 0
+11-28 15:10:37.191   551  4509 W GCH_ResultDispatcher: [Cam1_ResultDispatcher] PrintTimeoutMessages: pending early result metadata for frame 17534 ready 0
+11-28 15:10:37.191   551  4509 W GCH_ResultDispatcher: [Cam1_ResultDispatcher] PrintTimeoutMessages: pending early result metadata for frame 17535 ready 0
+11-28 15:10:37.191   551  4509 W GCH_ResultDispatcher: [Cam1_ResultDispatcher] PrintTimeoutMessages: pending early result metadata for frame 17536 ready 0
+11-28 15:10:37.191   551  4509 W GCH_ResultDispatcher: [Cam1_ResultDispatcher] PrintTimeoutMessages: pending final result metadata for frame 17530 ready 0
+11-28 15:10:37.191   551  4509 W GCH_ResultDispatcher: [Cam1_ResultDispatcher] PrintTimeoutMessages: pending final result metadata for frame 17531 ready 0
+11-28 15:10:37.191   551  4509 W GCH_ResultDispatcher: [Cam1_ResultDispatcher] PrintTimeoutMessages: pending final result metadata for frame 17532 ready 0
+11-28 15:10:37.191   551  4509 W GCH_ResultDispatcher: [Cam1_ResultDispatcher] PrintTimeoutMessages: pending final result metadata for frame 17533 ready 0
+11-28 15:10:37.191   551  4509 W GCH_ResultDispatcher: [Cam1_ResultDispatcher] PrintTimeoutMessages: pending final result metadata for frame 17534 ready 0
+11-28 15:10:37.191   551  4509 W GCH_ResultDispatcher: [Cam1_ResultDispatcher] PrintTimeoutMessages: pending final result metadata for frame 17535 ready 0
+11-28 15:10:37.191   551  4509 W GCH_ResultDispatcher: [Cam1_ResultDispatcher] PrintTimeoutMessages: pending final result metadata for frame 17536 ready 0
+11-28 15:10:37.191   551  4509 W GCH_ResultDispatcher: [Cam1_ResultDispatcher] PrintTimeoutMessages: pending buffer of stream 0 for frame 17531 ready 0
+11-28 15:10:37.191   551  4509 W GCH_ResultDispatcher: [Cam1_ResultDispatcher] PrintTimeoutMessages: pending buffer of stream 0 for frame 17532 ready 0
+11-28 15:10:37.191   551  4509 W GCH_ResultDispatcher: [Cam1_ResultDispatcher] PrintTimeoutMessages: pending buffer of stream 0 for frame 17533 ready 0
+11-28 15:10:37.191   551  4509 W GCH_ResultDispatcher: [Cam1_ResultDispatcher] PrintTimeoutMessages: pending buffer of stream 0 for frame 17535 ready 0
+11-28 15:10:37.191   551  4509 W GCH_ResultDispatcher: [Cam1_ResultDispatcher] PrintTimeoutMessages: pending buffer of stream 0 for frame 17536 ready 0
+11-28 15:10:37.191   551  4509 W GCH_ResultDispatcher: [Cam1_ResultDispatcher] PrintTimeoutMessages: pending buffer of stream 1 for frame 17534 ready 0
+11-28 15:10:37.193  4361  4522 D SceneClassifier: AI Director Analysis: box=null, hint=null, label=Γ£¿ AI: Landscape, source=HEURISTIC_ENGINE in 2ms
+11-28 15:10:37.263   773  1006 W VibratorManagerService: performHapticFeedbackWithEffect; vibration absent for constant 9
+11-28 15:10:37.263  4361  4361 D LensoraDebug: Configuring universal CaptureRequest.Builder for mode: PHOTO
+11-28 15:10:37.419   773  1006 W VibratorManagerService: performHapticFeedbackWithEffect; vibration absent for constant 9
+11-28 15:10:37.420  4361  4361 D LensoraDebug: Configuring universal CaptureRequest.Builder for mode: PHOTO
+11-28 15:10:37.572   773  1006 W VibratorManagerService: performHapticFeedbackWithEffect; vibration absent for constant 9
+11-28 15:10:37.573  4361  4361 D LensoraDebug: Configuring universal CaptureRequest.Builder for mode: PHOTO
+11-28 15:10:37.691   551  4509 W GCH_ResultDispatcher: [Cam1_ResultDispatcher] PrintTimeoutMessages: pending shutter for frame 17531 ready 0
+11-28 15:10:37.691   551  4509 W GCH_ResultDispatcher: [Cam1_ResultDispatcher] PrintTimeoutMessages: pending shutter for frame 17532 ready 0
+11-28 15:10:37.691   551  4509 W GCH_ResultDispatcher: [Cam1_ResultDispatcher] PrintTimeoutMessages: pending shutter for frame 17533 ready 0
+11-28 15:10:37.691   551  4509 W GCH_ResultDispatcher: [Cam1_ResultDispatcher] PrintTimeoutMessages: pending shutter for frame 17534 ready 0
+11-28 15:10:37.691   551  4509 W GCH_ResultDispatcher: [Cam1_ResultDispatcher] PrintTimeoutMessages: pending shutter for frame 17535 ready 0
+11-28 15:10:37.691   551  4509 W GCH_ResultDispatcher: [Cam1_ResultDispatcher] PrintTimeoutMessages: pending shutter for frame 17536 ready 0
+11-28 15:10:37.691   551  4509 W GCH_ResultDispatcher: [Cam1_ResultDispatcher] PrintTimeoutMessages: pending early result metadata for frame 17530 ready 0
+11-28 15:10:37.691   551  4509 W GCH_ResultDispatcher: [Cam1_ResultDispatcher] PrintTimeoutMessages: pending early result metadata for frame 17531 ready 0
+11-28 15:10:37.691   551  4509 W GCH_ResultDispatcher: [Cam1_ResultDispatcher] PrintTimeoutMessages: pending early result metadata for frame 17532 ready 0
+11-28 15:10:37.691   551  4509 W GCH_ResultDispatcher: [Cam1_ResultDispatcher] PrintTimeoutMessages: pending early result metadata for frame 17533 ready 0
+11-28 15:10:37.691   551  4509 W GCH_ResultDispatcher: [Cam1_ResultDispatcher] PrintTimeoutMessages: pending early result metadata for frame 17534 ready 0
+11-28 15:10:37.692   551  4509 W GCH_ResultDispatcher: [Cam1_ResultDispatcher] PrintTimeoutMessages: pending early result metadata for frame 17535 ready 0
+11-28 15:10:37.692   551  4509 W GCH_ResultDispatcher: [Cam1_ResultDispatcher] PrintTimeoutMessages: pending early result metadata for frame 17536 ready 0
+11-28 15:10:37.692   551  4509 W GCH_ResultDispatcher: [Cam1_ResultDispatcher] PrintTimeoutMessages: pending final result metadata for frame 17530 ready 0
+11-28 15:10:37.692   551  4509 W GCH_ResultDispatcher: [Cam1_ResultDispatcher] PrintTimeoutMessages: pending final result metadata for frame 17531 ready 0
+11-28 15:10:37.692   551  4509 W GCH_ResultDispatcher: [Cam1_ResultDispatcher] PrintTimeoutMessages: pending final result metadata for frame 17532 ready 0
+11-28 15:10:37.692   551  4509 W GCH_ResultDispatcher: [Cam1_ResultDispatcher] PrintTimeoutMessages: pending final result metadata for frame 17533 ready 0
+11-28 15:10:37.692   551  4509 W GCH_ResultDispatcher: [Cam1_ResultDispatcher] PrintTimeoutMessages: pending final result metadata for frame 17534 ready 0
+11-28 15:10:37.692   551  4509 W GCH_ResultDispatcher: [Cam1_ResultDispatcher] PrintTimeoutMessages: pending final result metadata for frame 17535 ready 0
+11-28 15:10:37.692   551  4509 W GCH_ResultDispatcher: [Cam1_ResultDispatcher] PrintTimeoutMessages: pending final result metadata for frame 17536 ready 0
+11-28 15:10:37.692   551  4509 W GCH_ResultDispatcher: [Cam1_ResultDispatcher] PrintTimeoutMessages: pending buffer of stream 0 for frame 17531 ready 0
+11-28 15:10:37.692   551  4509 W GCH_ResultDispatcher: [Cam1_ResultDispatcher] PrintTimeoutMessages: pending buffer of stream 0 for frame 17532 ready 0
+11-28 15:10:37.692   551  4509 W GCH_ResultDispatcher: [Cam1_ResultDispatcher] PrintTimeoutMessages: pending buffer of stream 0 for frame 17533 ready 0
+11-28 15:10:37.692   551  4509 W GCH_ResultDispatcher: [Cam1_ResultDispatcher] PrintTimeoutMessages: pending buffer of stream 0 for frame 17535 ready 0
+11-28 15:10:37.692   551  4509 W GCH_ResultDispatcher: [Cam1_ResultDispatcher] PrintTimeoutMessages: pending buffer of stream 0 for frame 17536 ready 0
+11-28 15:10:37.692   551  4509 W GCH_ResultDispatcher: [Cam1_ResultDispatcher] PrintTimeoutMessages: pending buffer of stream 1 for frame 17534 ready 0
+11-28 15:10:37.711  4361  4522 D SceneClassifier: AI Director Analysis: box=null, hint=null, label=Γ£¿ AI: Landscape, source=HEURISTIC_ENGINE in 3ms
+11-28 15:10:37.729   773  1006 W VibratorManagerService: performHapticFeedbackWithEffect; vibration absent for constant 9
+11-28 15:10:37.730  4361  4361 D LensoraDebug: Configuring universal CaptureRequest.Builder for mode: PHOTO
+11-28 15:10:37.808   773  2359 W NotificationService: Toast already killed. pkg=com.lensora.ai token=android.os.BinderProxy@79ecd81
+11-28 15:10:37.882   773  1006 W VibratorManagerService: performHapticFeedbackWithEffect; vibration absent for constant 9
+11-28 15:10:37.889  4361  4361 D LensoraDebug: Configuring universal CaptureRequest.Builder for mode: PHOTO
+11-28 15:10:38.038   773  1006 W VibratorManagerService: performHapticFeedbackWithEffect; vibration absent for constant 9
+11-28 15:10:38.039  4361  4361 D LensoraDebug: Configuring universal CaptureRequest.Builder for mode: PHOTO
+11-28 15:10:38.186   773  1006 W VibratorManagerService: performHapticFeedbackWithEffect; vibration absent for constant 9
+11-28 15:10:38.186  4361  4361 D LensoraDebug: Configuring universal CaptureRequest.Builder for mode: PHOTO
+11-28 15:10:38.193   551  4509 W GCH_ResultDispatcher: [Cam1_ResultDispatcher] PrintTimeoutMessages: pending shutter for frame 17531 ready 0
+11-28 15:10:38.193   551  4509 W GCH_ResultDispatcher: [Cam1_ResultDispatcher] PrintTimeoutMessages: pending shutter for frame 17532 ready 0
+11-28 15:10:38.193   551  4509 W GCH_ResultDispatcher: [Cam1_ResultDispatcher] PrintTimeoutMessages: pending shutter for frame 17533 ready 0
+11-28 15:10:38.193   551  4509 W GCH_ResultDispatcher: [Cam1_ResultDispatcher] PrintTimeoutMessages: pending shutter for frame 17534 ready 0
+11-28 15:10:38.194   551  4509 W GCH_ResultDispatcher: [Cam1_ResultDispatcher] PrintTimeoutMessages: pending shutter for frame 17535 ready 0
+11-28 15:10:38.194   551  4509 W GCH_ResultDispatcher: [Cam1_ResultDispatcher] PrintTimeoutMessages: pending shutter for frame 17536 ready 0
+11-28 15:10:38.194   551  4509 W GCH_ResultDispatcher: [Cam1_ResultDispatcher] PrintTimeoutMessages: pending early result metadata for frame 17530 ready 0
+11-28 15:10:38.194   551  4509 W GCH_ResultDispatcher: [Cam1_ResultDispatcher] PrintTimeoutMessages: pending early result metadata for frame 17531 ready 0
+11-28 15:10:38.194   551  4509 W GCH_ResultDispatcher: [Cam1_ResultDispatcher] PrintTimeoutMessages: pending early result metadata for frame 17532 ready 0
+11-28 15:10:38.194   551  4509 W GCH_ResultDispatcher: [Cam1_ResultDispatcher] PrintTimeoutMessages: pending early result metadata for frame 17533 ready 0
+11-28 15:10:38.194   551  4509 W GCH_ResultDispatcher: [Cam1_ResultDispatcher] PrintTimeoutMessages: pending early result metadata for frame 17534 ready 0
+11-28 15:10:38.194   551  4509 W GCH_ResultDispatcher: [Cam1_ResultDispatcher] PrintTimeoutMessages: pending early result metadata for frame 17535 ready 0
+11-28 15:10:38.194   551  4509 W GCH_ResultDispatcher: [Cam1_ResultDispatcher] PrintTimeoutMessages: pending early result metadata for frame 17536 ready 0
+11-28 15:10:38.194   551  4509 W GCH_ResultDispatcher: [Cam1_ResultDispatcher] PrintTimeoutMessages: pending final result metadata for frame 17530 ready 0
+11-28 15:10:38.194   551  4509 W GCH_ResultDispatcher: [Cam1_ResultDispatcher] PrintTimeoutMessages: pending final result metadata for frame 17531 ready 0
+11-28 15:10:38.194   551  4509 W GCH_ResultDispatcher: [Cam1_ResultDispatcher] PrintTimeoutMessages: pending final result metadata for frame 17532 ready 0
+11-28 15:10:38.194   551  4509 W GCH_ResultDispatcher: [Cam1_ResultDispatcher] PrintTimeoutMessages: pending final result metadata for frame 17533 ready 0
+11-28 15:10:38.194   551  4509 W GCH_ResultDispatcher: [Cam1_ResultDispatcher] PrintTimeoutMessages: pending final result metadata for frame 17534 ready 0
+11-28 15:10:38.194   551  4509 W GCH_ResultDispatcher: [Cam1_ResultDispatcher] PrintTimeoutMessages: pending final result metadata for frame 17535 ready 0
+11-28 15:10:38.194   551  4509 W GCH_ResultDispatcher: [Cam1_ResultDispatcher] PrintTimeoutMessages: pending final result metadata for frame 17536 ready 0
+11-28 15:10:38.194   551  4509 W GCH_ResultDispatcher: [Cam1_ResultDispatcher] PrintTimeoutMessages: pending buffer of stream 0 for frame 17531 ready 0
+11-28 15:10:38.194   551  4509 W GCH_ResultDispatcher: [Cam1_ResultDispatcher] PrintTimeoutMessages: pending buffer of stream 0 for frame 17532 ready 0
+11-28 15:10:38.194   551  4509 W GCH_ResultDispatcher: [Cam1_ResultDispatcher] PrintTimeoutMessages: pending buffer of stream 0 for frame 17533 ready 0
+11-28 15:10:38.195   551  4509 W GCH_ResultDispatcher: [Cam1_ResultDispatcher] PrintTimeoutMessages: pending buffer of stream 0 for frame 17535 ready 0
+11-28 15:10:38.195   551  4509 W GCH_ResultDispatcher: [Cam1_ResultDispatcher] PrintTimeoutMessages: pending buffer of stream 0 for frame 17536 ready 0
+11-28 15:10:38.195   551  4509 W GCH_ResultDispatcher: [Cam1_ResultDispatcher] PrintTimeoutMessages: pending buffer of stream 1 for frame 17534 ready 0
+11-28 15:10:38.237  4361  4522 D SceneClassifier: AI Director Analysis: box=null, hint=null, label=Γ£¿ AI: Landscape, source=HEURISTIC_ENGINE in 6ms
+11-28 15:10:38.322   773  1006 W VibratorManagerService: performHapticFeedbackWithEffect; vibration absent for constant 9
+11-28 15:10:38.322  4361  4361 D LensoraDebug: Configuring universal CaptureRequest.Builder for mode: PHOTO
+11-28 15:10:38.460   773  1006 W VibratorManagerService: performHapticFeedbackWithEffect; vibration absent for constant 9
+11-28 15:10:38.460  4361  4361 D LensoraDebug: Configuring universal CaptureRequest.Builder for mode: PHOTO
+11-28 15:10:38.611   773  1006 W VibratorManagerService: performHapticFeedbackWithEffect; vibration absent for constant 9
+11-28 15:10:38.611  4361  4361 D LensoraDebug: Configuring universal CaptureRequest.Builder for mode: PHOTO
+11-28 15:10:38.695   551  4509 W GCH_ResultDispatcher: [Cam1_ResultDispatcher] PrintTimeoutMessages: pending shutter for frame 17531 ready 0
+11-28 15:10:38.695   551  4509 W GCH_ResultDispatcher: [Cam1_ResultDispatcher] PrintTimeoutMessages: pending shutter for frame 17532 ready 0
+11-28 15:10:38.695   551  4509 W GCH_ResultDispatcher: [Cam1_ResultDispatcher] PrintTimeoutMessages: pending shutter for frame 17533 ready 0
+11-28 15:10:38.695   551  4509 W GCH_ResultDispatcher: [Cam1_ResultDispatcher] PrintTimeoutMessages: pending shutter for frame 17534 ready 0
+11-28 15:10:38.695   551  4509 W GCH_ResultDispatcher: [Cam1_ResultDispatcher] PrintTimeoutMessages: pending shutter for frame 17535 ready 0
+11-28 15:10:38.695   551  4509 W GCH_ResultDispatcher: [Cam1_ResultDispatcher] PrintTimeoutMessages: pending shutter for frame 17536 ready 0
+11-28 15:10:38.695   551  4509 W GCH_ResultDispatcher: [Cam1_ResultDispatcher] PrintTimeoutMessages: pending early result metadata for frame 17530 ready 0
+11-28 15:10:38.695   551  4509 W GCH_ResultDispatcher: [Cam1_ResultDispatcher] PrintTimeoutMessages: pending early result metadata for frame 17531 ready 0
+11-28 15:10:38.696   551  4509 W GCH_ResultDispatcher: [Cam1_ResultDispatcher] PrintTimeoutMessages: pending early result metadata for frame 17532 ready 0
+11-28 15:10:38.696   551  4509 W GCH_ResultDispatcher: [Cam1_ResultDispatcher] PrintTimeoutMessages: pending early result metadata for frame 17533 ready 0
+11-28 15:10:38.696   551  4509 W GCH_ResultDispatcher: [Cam1_ResultDispatcher] PrintTimeoutMessages: pending early result metadata for frame 17534 ready 0
+11-28 15:10:38.696   551  4509 W GCH_ResultDispatcher: [Cam1_ResultDispatcher] PrintTimeoutMessages: pending early result metadata for frame 17535 ready 0
+11-28 15:10:38.696   551  4509 W GCH_ResultDispatcher: [Cam1_ResultDispatcher] PrintTimeoutMessages: pending early result metadata for frame 17536 ready 0
+11-28 15:10:38.696   551  4509 W GCH_ResultDispatcher: [Cam1_ResultDispatcher] PrintTimeoutMessages: pending final result metadata for frame 17530 ready 0
+11-28 15:10:38.696   551  4509 W GCH_ResultDispatcher: [Cam1_ResultDispatcher] PrintTimeoutMessages: pending final result metadata for frame 17531 ready 0
+11-28 15:10:38.696   551  4509 W GCH_ResultDispatcher: [Cam1_ResultDispatcher] PrintTimeoutMessages: pending final result metadata for frame 17532 ready 0
+11-28 15:10:38.696   551  4509 W GCH_ResultDispatcher: [Cam1_ResultDispatcher] PrintTimeoutMessages: pending final result metadata for frame 17533 ready 0
+11-28 15:10:38.696   551  4509 W GCH_ResultDispatcher: [Cam1_ResultDispatcher] PrintTimeoutMessages: pending final result metadata for frame 17534 ready 0
+11-28 15:10:38.696   551  4509 W GCH_ResultDispatcher: [Cam1_ResultDispatcher] PrintTimeoutMessages: pending final result metadata for frame 17535 ready 0
+11-28 15:10:38.696   551  4509 W GCH_ResultDispatcher: [Cam1_ResultDispatcher] PrintTimeoutMessages: pending final result metadata for frame 17536 ready 0
+11-28 15:10:38.696   551  4509 W GCH_ResultDispatcher: [Cam1_ResultDispatcher] PrintTimeoutMessages: pending buffer of stream 0 for frame 17531 ready 0
+11-28 15:10:38.696   551  4509 W GCH_ResultDispatcher: [Cam1_ResultDispatcher] PrintTimeoutMessages: pending buffer of stream 0 for frame 17532 ready 0
+11-28 15:10:38.696   551  4509 W GCH_ResultDispatcher: [Cam1_ResultDispatcher] PrintTimeoutMessages: pending buffer of stream 0 for frame 17533 ready 0
+11-28 15:10:38.696   551  4509 W GCH_ResultDispatcher: [Cam1_ResultDispatcher] PrintTimeoutMessages: pending buffer of stream 0 for frame 17535 ready 0
+11-28 15:10:38.696   551  4509 W GCH_ResultDispatcher: [Cam1_ResultDispatcher] PrintTimeoutMessages: pending buffer of stream 0 for frame 17536 ready 0
+11-28 15:10:38.696   551  4509 W GCH_ResultDispatcher: [Cam1_ResultDispatcher] PrintTimeoutMessages: pending buffer of stream 1 for frame 17534 ready 0
+11-28 15:10:38.750  4361  4522 D SceneClassifier: AI Director Analysis: box=null, hint=null, label=Γ£¿ AI: Landscape, source=HEURISTIC_ENGINE in 7ms
+11-28 15:10:38.755   773  1006 W VibratorManagerService: performHapticFeedbackWithEffect; vibration absent for constant 9
+11-28 15:10:38.756  4361  4361 D LensoraDebug: Configuring universal CaptureRequest.Builder for mode: PHOTO
+11-28 15:10:38.903   773  1006 W VibratorManagerService: performHapticFeedbackWithEffect; vibration absent for constant 9
+11-28 15:10:38.907  4361  4361 D LensoraDebug: Configuring universal CaptureRequest.Builder for mode: PHOTO
+11-28 15:10:39.060   773  1006 W VibratorManagerService: performHapticFeedbackWithEffect; vibration absent for constant 9
+11-28 15:10:39.061  4361  4361 D LensoraDebug: Configuring universal CaptureRequest.Builder for mode: PHOTO
+11-28 15:10:39.198   551  4509 W GCH_ResultDispatcher: [Cam1_ResultDispatcher] PrintTimeoutMessages: pending shutter for frame 17531 ready 0
+11-28 15:10:39.198   551  4509 W GCH_ResultDispatcher: [Cam1_ResultDispatcher] PrintTimeoutMessages: pending shutter for frame 17532 ready 0
+11-28 15:10:39.198   551  4509 W GCH_ResultDispatcher: [Cam1_ResultDispatcher] PrintTimeoutMessages: pending shutter for frame 17533 ready 0
+11-28 15:10:39.198   551  4509 W GCH_ResultDispatcher: [Cam1_ResultDispatcher] PrintTimeoutMessages: pending shutter for frame 17534 ready 0
+11-28 15:10:39.198   551  4509 W GCH_ResultDispatcher: [Cam1_ResultDispatcher] PrintTimeoutMessages: pending shutter for frame 17535 ready 0
+11-28 15:10:39.198   551  4509 W GCH_ResultDispatcher: [Cam1_ResultDispatcher] PrintTimeoutMessages: pending shutter for frame 17536 ready 0
+11-28 15:10:39.198   551  4509 W GCH_ResultDispatcher: [Cam1_ResultDispatcher] PrintTimeoutMessages: pending early result metadata for frame 17530 ready 0
+11-28 15:10:39.198   551  4509 W GCH_ResultDispatcher: [Cam1_ResultDispatcher] PrintTimeoutMessages: pending early result metadata for frame 17531 ready 0
+11-28 15:10:39.198   551  4509 W GCH_ResultDispatcher: [Cam1_ResultDispatcher] PrintTimeoutMessages: pending early result metadata for frame 17532 ready 0
+11-28 15:10:39.198   551  4509 W GCH_ResultDispatcher: [Cam1_ResultDispatcher] PrintTimeoutMessages: pending early result metadata for frame 17533 ready 0
+11-28 15:10:39.198   551  4509 W GCH_ResultDispatcher: [Cam1_ResultDispatcher] PrintTimeoutMessages: pending early result metadata for frame 17534 ready 0
+11-28 15:10:39.198   551  4509 W GCH_ResultDispatcher: [Cam1_ResultDispatcher] PrintTimeoutMessages: pending early result metadata for frame 17535 ready 0
+11-28 15:10:39.198   551  4509 W GCH_ResultDispatcher: [Cam1_ResultDispatcher] PrintTimeoutMessages: pending early result metadata for frame 17536 ready 0
+11-28 15:10:39.198   551  4509 W GCH_ResultDispatcher: [Cam1_ResultDispatcher] PrintTimeoutMessages: pending final result metadata for frame 17530 ready 0
+11-28 15:10:39.198   551  4509 W GCH_ResultDispatcher: [Cam1_ResultDispatcher] PrintTimeoutMessages: pending final result metadata for frame 17531 ready 0
+11-28 15:10:39.198   551  4509 W GCH_ResultDispatcher: [Cam1_ResultDispatcher] PrintTimeoutMessages: pending final result metadata for frame 17532 ready 0
+11-28 15:10:39.198   551  4509 W GCH_ResultDispatcher: [Cam1_ResultDispatcher] PrintTimeoutMessages: pending final result metadata for frame 17533 ready 0
+11-28 15:10:39.198   551  4509 W GCH_ResultDispatcher: [Cam1_ResultDispatcher] PrintTimeoutMessages: pending final result metadata for frame 17534 ready 0
+11-28 15:10:39.198   551  4509 W GCH_ResultDispatcher: [Cam1_ResultDispatcher] PrintTimeoutMessages: pending final result metadata for frame 17535 ready 0
+11-28 15:10:39.198   551  4509 W GCH_ResultDispatcher: [Cam1_ResultDispatcher] PrintTimeoutMessages: pending final result metadata for frame 17536 ready 0
+11-28 15:10:39.198   551  4509 W GCH_ResultDispatcher: [Cam1_ResultDispatcher] PrintTimeoutMessages: pending buffer of stream 0 for frame 17531 ready 0
+11-28 15:10:39.199   551  4509 W GCH_ResultDispatcher: [Cam1_ResultDispatcher] PrintTimeoutMessages: pending buffer of stream 0 for frame 17532 ready 0
+11-28 15:10:39.199   551  4509 W GCH_ResultDispatcher: [Cam1_ResultDispatcher] PrintTimeoutMessages: pending buffer of stream 0 for frame 17533 ready 0
+11-28 15:10:39.199   551  4509 W GCH_ResultDispatcher: [Cam1_ResultDispatcher] PrintTimeoutMessages: pending buffer of stream 0 for frame 17535 ready 0
+11-28 15:10:39.199   551  4509 W GCH_ResultDispatcher: [Cam1_ResultDispatcher] PrintTimeoutMessages: pending buffer of stream 0 for frame 17536 ready 0
+11-28 15:10:39.199   551  4509 W GCH_ResultDispatcher: [Cam1_ResultDispatcher] PrintTimeoutMessages: pending buffer of stream 1 for frame 17534 ready 0
+11-28 15:10:39.215   773  1006 W VibratorManagerService: performHapticFeedbackWithEffect; vibration absent for constant 9
+11-28 15:10:39.217  4361  4361 D LensoraDebug: Configuring universal CaptureRequest.Builder for mode: PHOTO
+11-28 15:10:39.279  4361  4522 D SceneClassifier: AI Director Analysis: box=null, hint=null, label=Γ£¿ AI: Landscape, source=HEURISTIC_ENGINE in 5ms
+11-28 15:10:39.360   773  1006 W VibratorManagerService: performHapticFeedbackWithEffect; vibration absent for constant 9
+11-28 15:10:39.362  4361  4361 D LensoraDebug: Configuring universal CaptureRequest.Builder for mode: PHOTO
+11-28 15:10:39.515   773  1006 W VibratorManagerService: performHapticFeedbackWithEffect; vibration absent for constant 9
+11-28 15:10:39.515  4361  4361 D LensoraDebug: Configuring universal CaptureRequest.Builder for mode: PHOTO
+11-28 15:10:39.667   773  1006 W VibratorManagerService: performHapticFeedbackWithEffect; vibration absent for constant 9
+11-28 15:10:39.669  4361  4361 D LensoraDebug: Configuring universal CaptureRequest.Builder for mode: PHOTO
+11-28 15:10:39.699   551  4509 W GCH_ResultDispatcher: [Cam1_ResultDispatcher] PrintTimeoutMessages: pending shutter for frame 17531 ready 0
+11-28 15:10:39.699   551  4509 W GCH_ResultDispatcher: [Cam1_ResultDispatcher] PrintTimeoutMessages: pending shutter for frame 17532 ready 0
+11-28 15:10:39.699   551  4509 W GCH_ResultDispatcher: [Cam1_ResultDispatcher] PrintTimeoutMessages: pending shutter for frame 17533 ready 0
+11-28 15:10:39.699   551  4509 W GCH_ResultDispatcher: [Cam1_ResultDispatcher] PrintTimeoutMessages: pending shutter for frame 17534 ready 0
+11-28 15:10:39.700   551  4509 W GCH_ResultDispatcher: [Cam1_ResultDispatcher] PrintTimeoutMessages: pending shutter for frame 17535 ready 0
+11-28 15:10:39.700   551  4509 W GCH_ResultDispatcher: [Cam1_ResultDispatcher] PrintTimeoutMessages: pending shutter for frame 17536 ready 0
+11-28 15:10:39.700   551  4509 W GCH_ResultDispatcher: [Cam1_ResultDispatcher] PrintTimeoutMessages: pending early result metadata for frame 17530 ready 0
+11-28 15:10:39.700   551  4509 W GCH_ResultDispatcher: [Cam1_ResultDispatcher] PrintTimeoutMessages: pending early result metadata for frame 17531 ready 0
+11-28 15:10:39.700   551  4509 W GCH_ResultDispatcher: [Cam1_ResultDispatcher] PrintTimeoutMessages: pending early result metadata for frame 17532 ready 0
+11-28 15:10:39.700   551  4509 W GCH_ResultDispatcher: [Cam1_ResultDispatcher] PrintTimeoutMessages: pending early result metadata for frame 17533 ready 0
+11-28 15:10:39.700   551  4509 W GCH_ResultDispatcher: [Cam1_ResultDispatcher] PrintTimeoutMessages: pending early result metadata for frame 17534 ready 0
+11-28 15:10:39.700   551  4509 W GCH_ResultDispatcher: [Cam1_ResultDispatcher] PrintTimeoutMessages: pending early result metadata for frame 17535 ready 0
+11-28 15:10:39.700   551  4509 W GCH_ResultDispatcher: [Cam1_ResultDispatcher] PrintTimeoutMessages: pending early result metadata for frame 17536 ready 0
+11-28 15:10:39.700   551  4509 W GCH_ResultDispatcher: [Cam1_ResultDispatcher] PrintTimeoutMessages: pending final result metadata for frame 17530 ready 0
+11-28 15:10:39.700   551  4509 W GCH_ResultDispatcher: [Cam1_ResultDispatcher] PrintTimeoutMessages: pending final result metadata for frame 17531 ready 0
+11-28 15:10:39.700   551  4509 W GCH_ResultDispatcher: [Cam1_ResultDispatcher] PrintTimeoutMessages: pending final result metadata for frame 17532 ready 0
+11-28 15:10:39.700   551  4509 W GCH_ResultDispatcher: [Cam1_ResultDispatcher] PrintTimeoutMessages: pending final result metadata for frame 17533 ready 0
+11-28 15:10:39.700   551  4509 W GCH_ResultDispatcher: [Cam1_ResultDispatcher] PrintTimeoutMessages: pending final result metadata for frame 17534 ready 0
+11-28 15:10:39.700   551  4509 W GCH_ResultDispatcher: [Cam1_ResultDispatcher] PrintTimeoutMessages: pending final result metadata for frame 17535 ready 0
+11-28 15:10:39.700   551  4509 W GCH_ResultDispatcher: [Cam1_ResultDispatcher] PrintTimeoutMessages: pending final result metadata for frame 17536 ready 0
+11-28 15:10:39.700   551  4509 W GCH_ResultDispatcher: [Cam1_ResultDispatcher] PrintTimeoutMessages: pending buffer of stream 0 for frame 17531 ready 0
+11-28 15:10:39.700   551  4509 W GCH_ResultDispatcher: [Cam1_ResultDispatcher] PrintTimeoutMessages: pending buffer of stream 0 for frame 17532 ready 0
+11-28 15:10:39.700   551  4509 W GCH_ResultDispatcher: [Cam1_ResultDispatcher] PrintTimeoutMessages: pending buffer of stream 0 for frame 17533 ready 0
+11-28 15:10:39.700   551  4509 W GCH_ResultDispatcher: [Cam1_ResultDispatcher] PrintTimeoutMessages: pending buffer of stream 0 for frame 17535 ready 0
+11-28 15:10:39.700   551  4509 W GCH_ResultDispatcher: [Cam1_ResultDispatcher] PrintTimeoutMessages: pending buffer of stream 0 for frame 17536 ready 0
+11-28 15:10:39.700   551  4509 W GCH_ResultDispatcher: [Cam1_ResultDispatcher] PrintTimeoutMessages: pending buffer of stream 1 for frame 17534 ready 0
+11-28 15:10:39.816  4361  4522 D SceneClassifier: AI Director Analysis: box=null, hint=null, label=Γ£¿ AI: Landscape, source=HEURISTIC_ENGINE in 4ms
+11-28 15:10:39.845   773  1006 W VibratorManagerService: performHapticFeedbackWithEffect; vibration absent for constant 9
+11-28 15:10:39.847  4361  4361 D LensoraDebug: Configuring universal CaptureRequest.Builder for mode: PHOTO
+11-28 15:10:39.993   773  1006 W VibratorManagerService: performHapticFeedbackWithEffect; vibration absent for constant 9
+11-28 15:10:39.993  4361  4361 D LensoraDebug: Configuring universal CaptureRequest.Builder for mode: PHOTO
+11-28 15:10:40.113   773  1006 W VibratorManagerService: performHapticFeedbackWithEffect; vibration absent for constant 9
+11-28 15:10:40.113  4361  4361 D LensoraDebug: Configuring universal CaptureRequest.Builder for mode: PHOTO
+11-28 15:10:40.202   551  4509 W GCH_ResultDispatcher: [Cam1_ResultDispatcher] PrintTimeoutMessages: pending shutter for frame 17531 ready 0
+11-28 15:10:40.202   551  4509 W GCH_ResultDispatcher: [Cam1_ResultDispatcher] PrintTimeoutMessages: pending shutter for frame 17532 ready 0
+11-28 15:10:40.202   551  4509 W GCH_ResultDispatcher: [Cam1_ResultDispatcher] PrintTimeoutMessages: pending shutter for frame 17533 ready 0
+11-28 15:10:40.202   551  4509 W GCH_ResultDispatcher: [Cam1_ResultDispatcher] PrintTimeoutMessages: pending shutter for frame 17534 ready 0
+11-28 15:10:40.202   551  4509 W GCH_ResultDispatcher: [Cam1_ResultDispatcher] PrintTimeoutMessages: pending shutter for frame 17535 ready 0
+11-28 15:10:40.202   551  4509 W GCH_ResultDispatcher: [Cam1_ResultDispatcher] PrintTimeoutMessages: pending shutter for frame 17536 ready 0
+11-28 15:10:40.202   551  4509 W GCH_ResultDispatcher: [Cam1_ResultDispatcher] PrintTimeoutMessages: pending early result metadata for frame 17530 ready 0
+11-28 15:10:40.202   551  4509 W GCH_ResultDispatcher: [Cam1_ResultDispatcher] PrintTimeoutMessages: pending early result metadata for frame 17531 ready 0
+11-28 15:10:40.202   551  4509 W GCH_ResultDispatcher: [Cam1_ResultDispatcher] PrintTimeoutMessages: pending early result metadata for frame 17532 ready 0
+11-28 15:10:40.202   551  4509 W GCH_ResultDispatcher: [Cam1_ResultDispatcher] PrintTimeoutMessages: pending early result metadata for frame 17533 ready 0
+11-28 15:10:40.202   551  4509 W GCH_ResultDispatcher: [Cam1_ResultDispatcher] PrintTimeoutMessages: pending early result metadata for frame 17534 ready 0
+11-28 15:10:40.202   551  4509 W GCH_ResultDispatcher: [Cam1_ResultDispatcher] PrintTimeoutMessages: pending early result metadata for frame 17535 ready 0
+11-28 15:10:40.202   551  4509 W GCH_ResultDispatcher: [Cam1_ResultDispatcher] PrintTimeoutMessages: pending early result metadata for frame 17536 ready 0
+11-28 15:10:40.202   551  4509 W GCH_ResultDispatcher: [Cam1_ResultDispatcher] PrintTimeoutMessages: pending final result metadata for frame 17530 ready 0
+11-28 15:10:40.202   551  4509 W GCH_ResultDispatcher: [Cam1_ResultDispatcher] PrintTimeoutMessages: pending final result metadata for frame 17531 ready 0
+11-28 15:10:40.202   551  4509 W GCH_ResultDispatcher: [Cam1_ResultDispatcher] PrintTimeoutMessages: pending final result metadata for frame 17532 ready 0
+11-28 15:10:40.202   551  4509 W GCH_ResultDispatcher: [Cam1_ResultDispatcher] PrintTimeoutMessages: pending final result metadata for frame 17533 ready 0
+11-28 15:10:40.202   551  4509 W GCH_ResultDispatcher: [Cam1_ResultDispatcher] PrintTimeoutMessages: pending final result metadata for frame 17534 ready 0
+11-28 15:10:40.202   551  4509 W GCH_ResultDispatcher: [Cam1_ResultDispatcher] PrintTimeoutMessages: pending final result metadata for frame 17535 ready 0
+11-28 15:10:40.202   551  4509 W GCH_ResultDispatcher: [Cam1_ResultDispatcher] PrintTimeoutMessages: pending final result metadata for frame 17536 ready 0
+11-28 15:10:40.202   551  4509 W GCH_ResultDispatcher: [Cam1_ResultDispatcher] PrintTimeoutMessages: pending buffer of stream 0 for frame 17531 ready 0
+11-28 15:10:40.202   551  4509 W GCH_ResultDispatcher: [Cam1_ResultDispatcher] PrintTimeoutMessages: pending buffer of stream 0 for frame 17532 ready 0
+11-28 15:10:40.203   551  4509 W GCH_ResultDispatcher: [Cam1_ResultDispatcher] PrintTimeoutMessages: pending buffer of stream 0 for frame 17533 ready 0
+11-28 15:10:40.203   551  4509 W GCH_ResultDispatcher: [Cam1_ResultDispatcher] PrintTimeoutMessages: pending buffer of stream 0 for frame 17535 ready 0
+11-28 15:10:40.203   551  4509 W GCH_ResultDispatcher: [Cam1_ResultDispatcher] PrintTimeoutMessages: pending buffer of stream 0 for frame 17536 ready 0
+11-28 15:10:40.203   551  4509 W GCH_ResultDispatcher: [Cam1_ResultDispatcher] PrintTimeoutMessages: pending buffer of stream 1 for frame 17534 ready 0
+11-28 15:10:40.242   773  1006 W VibratorManagerService: performHapticFeedbackWithEffect; vibration absent for constant 9
+11-28 15:10:40.242  4361  4361 D LensoraDebug: Configuring universal CaptureRequest.Builder for mode: PHOTO
+11-28 15:10:40.376  4361  4522 D SceneClassifier: AI Director Analysis: box=null, hint=null, label=Γ£¿ AI: Landscape, source=HEURISTIC_ENGINE in 7ms
+11-28 15:10:40.394   773  1006 W VibratorManagerService: performHapticFeedbackWithEffect; vibration absent for constant 9
+11-28 15:10:40.395  4361  4361 D LensoraDebug: Configuring universal CaptureRequest.Builder for mode: PHOTO
+11-28 15:10:40.520   773  1006 W VibratorManagerService: performHapticFeedbackWithEffect; vibration absent for constant 9
+11-28 15:10:40.521  4361  4361 D LensoraDebug: Configuring universal CaptureRequest.Builder for mode: PHOTO
+11-28 15:10:40.704   551  4509 W GCH_ResultDispatcher: [Cam1_ResultDispatcher] PrintTimeoutMessages: pending shutter for frame 17531 ready 0
+11-28 15:10:40.704   551  4509 W GCH_ResultDispatcher: [Cam1_ResultDispatcher] PrintTimeoutMessages: pending shutter for frame 17532 ready 0
+11-28 15:10:40.704   551  4509 W GCH_ResultDispatcher: [Cam1_ResultDispatcher] PrintTimeoutMessages: pending shutter for frame 17533 ready 0
+11-28 15:10:40.704   551  4509 W GCH_ResultDispatcher: [Cam1_ResultDispatcher] PrintTimeoutMessages: pending shutter for frame 17534 ready 0
+11-28 15:10:40.704   551  4509 W GCH_ResultDispatcher: [Cam1_ResultDispatcher] PrintTimeoutMessages: pending shutter for frame 17535 ready 0
+11-28 15:10:40.704   551  4509 W GCH_ResultDispatcher: [Cam1_ResultDispatcher] PrintTimeoutMessages: pending shutter for frame 17536 ready 0
+11-28 15:10:40.704   551  4509 W GCH_ResultDispatcher: [Cam1_ResultDispatcher] PrintTimeoutMessages: pending early result metadata for frame 17530 ready 0
+11-28 15:10:40.704   551  4509 W GCH_ResultDispatcher: [Cam1_ResultDispatcher] PrintTimeoutMessages: pending early result metadata for frame 17531 ready 0
+11-28 15:10:40.704   551  4509 W GCH_ResultDispatcher: [Cam1_ResultDispatcher] PrintTimeoutMessages: pending early result metadata for frame 17532 ready 0
+11-28 15:10:40.704   551  4509 W GCH_ResultDispatcher: [Cam1_ResultDispatcher] PrintTimeoutMessages: pending early result metadata for frame 17533 ready 0
+11-28 15:10:40.704   551  4509 W GCH_ResultDispatcher: [Cam1_ResultDispatcher] PrintTimeoutMessages: pending early result metadata for frame 17534 ready 0
+11-28 15:10:40.704   551  4509 W GCH_ResultDispatcher: [Cam1_ResultDispatcher] PrintTimeoutMessages: pending early result metadata for frame 17535 ready 0
+11-28 15:10:40.704   551  4509 W GCH_ResultDispatcher: [Cam1_ResultDispatcher] PrintTimeoutMessages: pending early result metadata for frame 17536 ready 0
+11-28 15:10:40.704   551  4509 W GCH_ResultDispatcher: [Cam1_ResultDispatcher] PrintTimeoutMessages: pending final result metadata for frame 17530 ready 0
+11-28 15:10:40.704   551  4509 W GCH_ResultDispatcher: [Cam1_ResultDispatcher] PrintTimeoutMessages: pending final result metadata for frame 17531 ready 0
+11-28 15:10:40.704   551  4509 W GCH_ResultDispatcher: [Cam1_ResultDispatcher] PrintTimeoutMessages: pending final result metadata for frame 17532 ready 0
+11-28 15:10:40.704   551  4509 W GCH_ResultDispatcher: [Cam1_ResultDispatcher] PrintTimeoutMessages: pending final result metadata for frame 17533 ready 0
+11-28 15:10:40.704   551  4509 W GCH_ResultDispatcher: [Cam1_ResultDispatcher] PrintTimeoutMessages: pending final result metadata for frame 17534 ready 0
+11-28 15:10:40.704   551  4509 W GCH_ResultDispatcher: [Cam1_ResultDispatcher] PrintTimeoutMessages: pending final result metadata for frame 17535 ready 0
+11-28 15:10:40.704   551  4509 W GCH_ResultDispatcher: [Cam1_ResultDispatcher] PrintTimeoutMessages: pending final result metadata for frame 17536 ready 0
+11-28 15:10:40.704   551  4509 W GCH_ResultDispatcher: [Cam1_ResultDispatcher] PrintTimeoutMessages: pending buffer of stream 0 for frame 17531 ready 0
+11-28 15:10:40.704   551  4509 W GCH_ResultDispatcher: [Cam1_ResultDispatcher] PrintTimeoutMessages: pending buffer of stream 0 for frame 17532 ready 0
+11-28 15:10:40.704   551  4509 W GCH_ResultDispatcher: [Cam1_ResultDispatcher] PrintTimeoutMessages: pending buffer of stream 0 for frame 17533 ready 0
+11-28 15:10:40.704   551  4509 W GCH_ResultDispatcher: [Cam1_ResultDispatcher] PrintTimeoutMessages: pending buffer of stream 0 for frame 17535 ready 0
+11-28 15:10:40.704   551  4509 W GCH_ResultDispatcher: [Cam1_ResultDispatcher] PrintTimeoutMessages: pending buffer of stream 0 for frame 17536 ready 0
+11-28 15:10:40.704   551  4509 W GCH_ResultDispatcher: [Cam1_ResultDispatcher] PrintTimeoutMessages: pending buffer of stream 1 for frame 17534 ready 0
+11-28 15:10:40.893  4361  4522 D SceneClassifier: AI Director Analysis: box=null, hint=null, label=Γ£¿ AI: Landscape, source=HEURISTIC_ENGINE in 2ms
+11-28 15:10:41.205   551  4509 W GCH_ResultDispatcher: [Cam1_ResultDispatcher] PrintTimeoutMessages: pending shutter for frame 17531 ready 0
+11-28 15:10:41.205   551  4509 W GCH_ResultDispatcher: [Cam1_ResultDispatcher] PrintTimeoutMessages: pending shutter for frame 17532 ready 0
+11-28 15:10:41.205   551  4509 W GCH_ResultDispatcher: [Cam1_ResultDispatcher] PrintTimeoutMessages: pending shutter for frame 17533 ready 0
+11-28 15:10:41.205   551  4509 W GCH_ResultDispatcher: [Cam1_ResultDispatcher] PrintTimeoutMessages: pending shutter for frame 17534 ready 0
+11-28 15:10:41.205   551  4509 W GCH_ResultDispatcher: [Cam1_ResultDispatcher] PrintTimeoutMessages: pending shutter for frame 17535 ready 0
+11-28 15:10:41.205   551  4509 W GCH_ResultDispatcher: [Cam1_ResultDispatcher] PrintTimeoutMessages: pending shutter for frame 17536 ready 0
+11-28 15:10:41.205   551  4509 W GCH_ResultDispatcher: [Cam1_ResultDispatcher] PrintTimeoutMessages: pending early result metadata for frame 17530 ready 0
+11-28 15:10:41.205   551  4509 W GCH_ResultDispatcher: [Cam1_ResultDispatcher] PrintTimeoutMessages: pending early result metadata for frame 17531 ready 0
+11-28 15:10:41.205   551  4509 W GCH_ResultDispatcher: [Cam1_ResultDispatcher] PrintTimeoutMessages: pending early result metadata for frame 17532 ready 0
+11-28 15:10:41.205   551  4509 W GCH_ResultDispatcher: [Cam1_ResultDispatcher] PrintTimeoutMessages: pending early result metadata for frame 17533 ready 0
+11-28 15:10:41.205   551  4509 W GCH_ResultDispatcher: [Cam1_ResultDispatcher] PrintTimeoutMessages: pending early result metadata for frame 17534 ready 0
+11-28 15:10:41.205   551  4509 W GCH_ResultDispatcher: [Cam1_ResultDispatcher] PrintTimeoutMessages: pending early result metadata for frame 17535 ready 0
+11-28 15:10:41.205   551  4509 W GCH_ResultDispatcher: [Cam1_ResultDispatcher] PrintTimeoutMessages: pending early result metadata for frame 17536 ready 0
+11-28 15:10:41.205   551  4509 W GCH_ResultDispatcher: [Cam1_ResultDispatcher] PrintTimeoutMessages: pending final result metadata for frame 17530 ready 0
+11-28 15:10:41.205   551  4509 W GCH_ResultDispatcher: [Cam1_ResultDispatcher] PrintTimeoutMessages: pending final result metadata for frame 17531 ready 0
+11-28 15:10:41.205   551  4509 W GCH_ResultDispatcher: [Cam1_ResultDispatcher] PrintTimeoutMessages: pending final result metadata for frame 17532 ready 0
+11-28 15:10:41.205   551  4509 W GCH_ResultDispatcher: [Cam1_ResultDispatcher] PrintTimeoutMessages: pending final result metadata for frame 17533 ready 0
+11-28 15:10:41.205   551  4509 W GCH_ResultDispatcher: [Cam1_ResultDispatcher] PrintTimeoutMessages: pending final result metadata for frame 17534 ready 0
+11-28 15:10:41.206   551  4509 W GCH_ResultDispatcher: [Cam1_ResultDispatcher] PrintTimeoutMessages: pending final result metadata for frame 17535 ready 0
+11-28 15:10:41.206   551  4509 W GCH_ResultDispatcher: [Cam1_ResultDispatcher] PrintTimeoutMessages: pending final result metadata for frame 17536 ready 0
+11-28 15:10:41.206   551  4509 W GCH_ResultDispatcher: [Cam1_ResultDispatcher] PrintTimeoutMessages: pending buffer of stream 0 for frame 17531 ready 0
+11-28 15:10:41.206   551  4509 W GCH_ResultDispatcher: [Cam1_ResultDispatcher] PrintTimeoutMessages: pending buffer of stream 0 for frame 17532 ready 0
+11-28 15:10:41.206   551  4509 W GCH_ResultDispatcher: [Cam1_ResultDispatcher] PrintTimeoutMessages: pending buffer of stream 0 for frame 17533 ready 0
+11-28 15:10:41.206   551  4509 W GCH_ResultDispatcher: [Cam1_ResultDispatcher] PrintTimeoutMessages: pending buffer of stream 0 for frame 17535 ready 0
+11-28 15:10:41.206   551  4509 W GCH_ResultDispatcher: [Cam1_ResultDispatcher] PrintTimeoutMessages: pending buffer of stream 0 for frame 17536 ready 0
+11-28 15:10:41.206   551  4509 W GCH_ResultDispatcher: [Cam1_ResultDispatcher] PrintTimeoutMessages: pending buffer of stream 1 for frame 17534 ready 0
+11-28 15:10:41.403  4361  4522 D SceneClassifier: AI Director Analysis: box=null, hint=null, label=Γ£¿ AI: Landscape, source=HEURISTIC_ENGINE in 2ms
+11-28 15:10:41.463  5427  5427 W libbinder.BackendUnifiedServiceManager: Thread Pool max thread count is 0. Cannot cache binder as linkToDeath cannot be implemented. serviceName: package
+11-28 15:10:41.628  2286  2286 I artd    : GetBestInfo: odex next to the dex file (/data/app/~~PNQIiZKIJOD72IL0Jgdm-A==/com.google.android.gms-PG5eLsm9F_rOQoJNlavStA==/oat/x86_64/base.odex) is kOatUpToDate with filter 'speed-profile' executable 'false'
+11-28 15:10:41.632  2286  2291 I artd    : GetBestInfo: odex next to the dex file (/data/app/~~PNQIiZKIJOD72IL0Jgdm-A==/com.google.android.gms-PG5eLsm9F_rOQoJNlavStA==/oat/x86_64/split_AdsDynamite_installtime.odex) is kOatUpToDate with filter 'speed' executable 'false'
+11-28 15:10:41.634  2286  2291 I artd    : GetBestInfo: odex next to the dex file (/data/app/~~PNQIiZKIJOD72IL0Jgdm-A==/com.google.android.gms-PG5eLsm9F_rOQoJNlavStA==/oat/x86_64/split_CronetDynamite_installtime.odex) is kOatUpToDate with filter 'speed' executable 'false'
+11-28 15:10:41.637  2286  2291 I artd    : GetBestInfo: odex next to the dex file (/data/app/~~PNQIiZKIJOD72IL0Jgdm-A==/com.google.android.gms-PG5eLsm9F_rOQoJNlavStA==/oat/x86_64/split_DynamiteLoader_installtime.odex) is kOatUpToDate with filter 'speed' executable 'false'
+11-28 15:10:41.640  2286  2291 I artd    : GetBestInfo: odex next to the dex file (/data/app/~~PNQIiZKIJOD72IL0Jgdm-A==/com.google.android.gms-PG5eLsm9F_rOQoJNlavStA==/oat/x86_64/split_DynamiteModulesA_installtime.odex) is kOatUpToDate with filter 'speed' executable 'false'
+11-28 15:10:41.644  2286  2291 I artd    : GetBestInfo: odex next to the dex file (/data/app/~~PNQIiZKIJOD72IL0Jgdm-A==/com.google.android.gms-PG5eLsm9F_rOQoJNlavStA==/oat/x86_64/split_DynamiteModulesC_installtime.odex) is kOatUpToDate with filter 'speed' executable 'false'
+11-28 15:10:41.648  2286  2291 I artd    : GetBestInfo: odex next to the dex file (/data/app/~~PNQIiZKIJOD72IL0Jgdm-A==/com.google.android.gms-PG5eLsm9F_rOQoJNlavStA==/oat/x86_64/split_GoogleCertificates_installtime.odex) is kOatUpToDate with filter 'speed' executable 'false'
+11-28 15:10:41.652  2286  2291 I artd    : GetBestInfo: odex next to the dex file (/data/app/~~PNQIiZKIJOD72IL0Jgdm-A==/com.google.android.gms-PG5eLsm9F_rOQoJNlavStA==/oat/x86_64/split_MapsDynamite_installtime.odex) is kOatUpToDate with filter 'speed' executable 'false'
+11-28 15:10:41.655  2286  2291 I artd    : GetBestInfo: odex next to the dex file (/data/app/~~PNQIiZKIJOD72IL0Jgdm-A==/com.google.android.gms-PG5eLsm9F_rOQoJNlavStA==/oat/x86_64/split_MeasurementDynamite_installtime.odex) is kOatUpToDate with filter 'speed' executable 'false'
+11-28 15:10:41.657  2286  2291 I artd    : GetBestInfo: /data/user_de/0/com.google.android.gms/app_chimera/m/0000000d/dl-PlayCloudSearch.optional_253434100000.apk has no usable artifacts
+11-28 15:10:41.659  2286  2291 I artd    : GetBestInfo: /data/user_de/0/com.google.android.gms/app_chimera/m/00000001/CronetDynamite.apk has no usable artifacts
+11-28 15:10:41.660  2286  2291 I artd    : GetBestInfo: /data/user_de/0/com.google.android.gms/app_chimera/m/00000002/DynamiteLoader.apk has no usable artifacts
+11-28 15:10:41.661  2286  2291 I artd    : GetBestInfo: /data/user_de/0/com.google.android.gms/app_chimera/m/00000005/GoogleCertificates.apk has no usable artifacts
+11-28 15:10:41.663  2286  2291 I artd    : GetBestInfo: /data/user_de/0/com.google.android.gms/app_chimera/m/00000012/dl-MlkitBarcodeUi.optional_264564100800.apk has no usable artifacts
+11-28 15:10:41.666  2286  2291 I artd    : GetBestInfo: /data/user_de/0/com.google.android.gms/app_chimera/m/00000009/dl-MlkitBarcodeUi.optional_253434100800.apk has no usable artifacts
+11-28 15:10:41.673  2286  2291 I artd    : GetBestInfo: /data/user_de/0/com.google.android.gms/app_chimera/m/0000000c/dl-Appsearch.optional_253434100800.apk has no usable artifacts
+11-28 15:10:41.676  2286  2291 I artd    : GetBestInfo: /data/user_de/0/com.google.android.gms/app_chimera/m/0000000a/dl-TfliteDynamiteDynamite.integ_264010405100800.apk has no usable artifacts
+11-28 15:10:41.678  2286  2291 I artd    : GetBestInfo: /data/user_de/0/com.google.android.gms/app_chimera/m/00000015/dl-VisionOcr.optional_264564100000.apk has no usable artifacts

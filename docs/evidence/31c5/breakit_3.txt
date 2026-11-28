@@ -1,0 +1,307 @@
+﻿--------- beginning of main
+11-28 15:18:07.930   551   551 W libbinder.Binder: Binder transaction to android.hardware.camera.device.ICameraDeviceSession code 8 took 10319ms. Data bytes: 320 Reply bytes: 8 Flags: 16
+11-28 15:18:07.931  4361  4450 I CameraController: L0 Still Capture HAL Result Proof: Mode=AUTO, ExpTimeNs=10319000832 (10319.00 ms), ISO=1000, AeMode=0, AfMode=0, EdgeMode=2, ControlMode=1, SceneMode=0
+11-28 15:18:07.944  1638  5550 W MediaProvider: isAppCloneUserPair for user 0: false
+11-28 15:18:07.950  1638  5550 I MediaProvider: Open with lower FS for /storage/emulated/0/Pictures/Lensora_Ai/.pending-1796464087-LENSORA_1795859287941.jpg. Uid: 10227
+11-28 15:18:07.962  1371  1995 I UriTaskContentObserver: (REDACTED) Throttling content uri change event for %s
+11-28 15:18:07.973  4361  4523 D SceneClassifier: AI Director Analysis: box=null, hint=null, label=Γ£¿ AI: Landscape, source=HEURISTIC_ENGINE in 1ms
+11-28 15:18:07.975  1371  1995 I UriTaskContentObserver: (REDACTED) Throttling content uri change event for %s
+11-28 15:18:07.978  1638  1719 D WM-SystemJobScheduler: Scheduling work ID 1498619f-86d2-4347-9f37-7dc7988a957aJob ID 89
+11-28 15:18:07.979  4361  4450 I CameraController: Enqueuing photo capture pass [Mode: VIDEO, AdvancedMode: AUTO, IsHighRes: false]
+--------- beginning of system
+11-28 15:18:07.979   773  1990 I ActivityManager: Background started FGS: Allowed [callingPackage: com.lensora.ai; callingUid: 10227; uidState: TOP ; uidBFSL: [BFSL]; intent: Intent { xflg=0x4 cmp=com.lensora.ai/.service.AiProcessorService (has extras) }; code:PROC_STATE_TOP; tempAllowListReason:<null>; allowWiu:12; targetSdkVersion:35; callerTargetSdkVersion:35; startForegroundCount:0; bindFromPackage:null: isBindService:false]
+11-28 15:18:07.980  1638  1719 D WM-GreedyScheduler: Ignoring {WorkSpec: 3c6c4135-b997-4e1b-9661-22e5ab13e7aa}. Requires device idle.
+11-28 15:18:07.980  1638  1719 D WM-GreedyScheduler: Ignoring {WorkSpec: d21d6e86-b6ef-4ce1-a308-6f305ea14219}. Requires device idle.
+11-28 15:18:07.980  1638  1719 D WM-GreedyScheduler: Ignoring {WorkSpec: dddae3d0-4da8-44bf-bc94-f4a106b095e6}. Requires device idle.
+11-28 15:18:07.980  1638  1719 D WM-GreedyScheduler: Ignoring {WorkSpec: 07661c93-4319-4311-91b7-cf7c9f665c99}. Requires device idle.
+11-28 15:18:07.982  4361  4450 I CameraController: Started L3 AiProcessorService for content://media/external/images/media/98
+11-28 15:18:07.994   773  1990 I ActivityManager: Background started FGS: Allowed [callingPackage: com.lensora.ai; callingUid: 10227; uidState: TOP ; uidBFSL: [BFSL]; intent: Intent { cmp=com.lensora.ai/.service.AiProcessorService }; code:PROC_STATE_TOP; tempAllowListReason:<null>; allowWiu:12; targetSdkVersion:35; callerTargetSdkVersion:35; startForegroundCount:0; bindFromPackage:null: isBindService:false]
+11-28 15:18:07.995   773  1990 W ForegroundServiceTypeLoggerModule: Foreground service start for UID: 10227 does not have any types
+11-28 15:18:07.997  4361  4361 I AiProcessorService: Enqueued AiJobRequest job_1795859287988_4866 for content://media/external/images/media/98 [Pending in queue: 1]
+11-28 15:18:08.001   773   988 D BackgroundInstallControlService: Package event received: 0
+11-28 15:18:08.011  4361  4524 I AiProcessorService: Executing L3 Real Image-to-Image AI Enhancement & LUT Pipeline for content://media/external/images/media/98 [Job: job_1795859287988_4866]
+11-28 15:18:08.016  1638  5550 I MediaProvider: Open with lower FS for /storage/emulated/0/Pictures/Lensora_Ai/LENSORA_1795859287941.jpg. Uid: 10227
+11-28 15:18:08.019  1638  4914 I MediaProvider: Open with lower FS for /storage/emulated/0/Pictures/Lensora_Ai/LENSORA_1795859287941.jpg. Uid: 10227
+11-28 15:18:08.024  4361  4524 I AiProcessorService: Processing 1920 x 1440 px in 12 tiles (512 x 512 px each) [ImageToImage AI: false]
+11-28 15:18:08.065  4361  4361 W WindowOnBackDispatcher: OnBackInvokedCallback is not enabled for the application.
+11-28 15:18:08.065  4361  4361 W WindowOnBackDispatcher: Set 'android:enableOnBackInvokedCallback="true"' in the application manifest.
+11-28 15:18:08.077  4361  4361 W WindowOnBackDispatcher: OnBackInvokedCallback is not enabled for the application.
+11-28 15:18:08.077  4361  4361 W WindowOnBackDispatcher: Set 'android:enableOnBackInvokedCallback="true"' in the application manifest.
+11-28 15:18:08.098   773  1314 E NotificationService: Package enqueue rate is 5.184071. Shedding 0|com.lensora.ai|1001|null|10227. package=com.lensora.ai
+11-28 15:18:08.099  4361  4361 D WindowOnBackDispatcher: setTopOnBackInvokedCallback (unwrapped): android.view.ViewRootImpl$$ExternalSyntheticLambda12@7f5d864
+11-28 15:18:08.100   773  1990 D CoreBackPreview: Window{a4753fc u0 com.lensora.ai/com.lensora.ai.MainActivity}: Setting back callback OnBackInvokedCallbackInfo{mCallback=android.window.IOnBackInvokedCallback$Stub$Proxy@f9a70a6, mPriority=0, mIsAnimationCallback=false, mOverrideBehavior=0}
+11-28 15:18:08.159  4361  4524 W L4Validator: L4 Validation FAIL: Blown out white image detected (avgLum: 254 >= 253)
+11-28 15:18:08.159  4361  4524 W AiProcessorService: L4 Validator failed: Processed bitmap invalid or pitch black. Keeping raw photo content://media/external/images/media/98
+11-28 15:18:08.159  4361  4524 I AiProcessorService: TFLite Interpreter resources safely closed
+11-28 15:18:08.160  4361  4524 I AiProcessorService: Cleaning up AiProcessorService and dismissing notification.
+11-28 15:18:08.162   773  1312 D ActivityManager: Stop FGS timeout: ServiceRecord{a865fcc u0 com.lensora.ai/.service.AiProcessorService c:com.lensora.ai}
+11-28 15:18:08.163   773  1312 W ForegroundServiceTypeLoggerModule: FGS stop call for: 10227 has no types!
+11-28 15:18:08.166   773   988 D BackgroundInstallControlService: Package event received: 0
+11-28 15:18:08.196   773   773 I NotificationService: Cannot find enqueued record for key: 0|com.lensora.ai|1001|null|10227
+11-28 15:18:08.206   773   773 I NotificationService: Cannot find enqueued record for key: 0|com.lensora.ai|1001|null|10227
+11-28 15:18:08.218   773   773 I NotificationService: Cannot find enqueued record for key: 0|com.lensora.ai|1001|null|10227
+11-28 15:18:08.281   773   773 I NotificationService: Cannot find enqueued record for key: 0|com.lensora.ai|1001|null|10227
+11-28 15:18:08.282   773   773 I NotificationService: Cannot find enqueued record for key: 0|com.lensora.ai|1001|null|10227
+11-28 15:18:08.282   773   773 I NotificationService: Cannot find enqueued record for key: 0|com.lensora.ai|1001|null|10227
+11-28 15:18:08.283   773   773 I NotificationService: Cannot find enqueued record for key: 0|com.lensora.ai|1001|null|10227
+11-28 15:18:08.291   773   773 I NotificationService: Cannot find enqueued record for key: 0|com.lensora.ai|1001|null|10227
+11-28 15:18:08.332   773   773 I NotificationService: Cannot find enqueued record for key: 0|com.lensora.ai|1001|null|10227
+11-28 15:18:08.364   773   773 I NotificationService: Cannot find enqueued record for key: 0|com.lensora.ai|1001|null|10227
+11-28 15:18:08.391  4361  4361 I AiProcessorService: AiProcessorService destroyed
+11-28 15:18:08.437   773   902 I ImeTracker: com.lensora.ai:5ef1b1c1: onRequestHide at ORIGIN_SERVER reason HIDE_UNSPECIFIED_WINDOW fromUser false
+11-28 15:18:08.438  4361  4361 D InsetsController: hide(ime())
+11-28 15:18:08.438  4361  4361 I ImeTracker: com.lensora.ai:5ef1b1c1: onCancelled at PHASE_CLIENT_ALREADY_HIDDEN
+11-28 15:18:08.440  1538  1538 I GoogleInputMethodService: GoogleInputMethodService.onFinishInput():2057 
+11-28 15:18:08.440   773  1312 I ImeTracker: system_server:84caa214: onRequestHide at ORIGIN_SERVER reason IME_REQUESTED_CHANGED_LISTENER fromUser false
+11-28 15:18:08.441  1538  1538 I Module  : DeviceLockedStatusModuleProvider$Module.updateDeviceLockedStatus():100 repeatCheckTimes = 0, locked = false
+11-28 15:18:08.441   551  4509 W GCH_ResultDispatcher: [Cam1_ResultDispatcher] PrintTimeoutMessages: pending shutter for frame 17580 ready 0
+11-28 15:18:08.441   551  4509 W GCH_ResultDispatcher: [Cam1_ResultDispatcher] PrintTimeoutMessages: pending shutter for frame 17581 ready 0
+11-28 15:18:08.441   551  4509 W GCH_ResultDispatcher: [Cam1_ResultDispatcher] PrintTimeoutMessages: pending shutter for frame 17582 ready 0
+11-28 15:18:08.441   551  4509 W GCH_ResultDispatcher: [Cam1_ResultDispatcher] PrintTimeoutMessages: pending shutter for frame 17583 ready 0
+11-28 15:18:08.441   551  4509 W GCH_ResultDispatcher: [Cam1_ResultDispatcher] PrintTimeoutMessages: pending shutter for frame 17584 ready 0
+11-28 15:18:08.441   551  4509 W GCH_ResultDispatcher: [Cam1_ResultDispatcher] PrintTimeoutMessages: pending shutter for frame 17585 ready 0
+11-28 15:18:08.442   551  4509 W GCH_ResultDispatcher: [Cam1_ResultDispatcher] PrintTimeoutMessages: pending early result metadata for frame 17579 ready 0
+11-28 15:18:08.442   551  4509 W GCH_ResultDispatcher: [Cam1_ResultDispatcher] PrintTimeoutMessages: pending early result metadata for frame 17580 ready 0
+11-28 15:18:08.442   551  4509 W GCH_ResultDispatcher: [Cam1_ResultDispatcher] PrintTimeoutMessages: pending early result metadata for frame 17581 ready 0
+11-28 15:18:08.442   551  4509 W GCH_ResultDispatcher: [Cam1_ResultDispatcher] PrintTimeoutMessages: pending early result metadata for frame 17582 ready 0
+11-28 15:18:08.442   551  4509 W GCH_ResultDispatcher: [Cam1_ResultDispatcher] PrintTimeoutMessages: pending early result metadata for frame 17583 ready 0
+11-28 15:18:08.442   551  4509 W GCH_ResultDispatcher: [Cam1_ResultDispatcher] PrintTimeoutMessages: pending early result metadata for frame 17584 ready 0
+11-28 15:18:08.442   551  4509 W GCH_ResultDispatcher: [Cam1_ResultDispatcher] PrintTimeoutMessages: pending early result metadata for frame 17585 ready 0
+11-28 15:18:08.442   551  4509 W GCH_ResultDispatcher: [Cam1_ResultDispatcher] PrintTimeoutMessages: pending final result metadata for frame 17579 ready 0
+11-28 15:18:08.442   551  4509 W GCH_ResultDispatcher: [Cam1_ResultDispatcher] PrintTimeoutMessages: pending final result metadata for frame 17580 ready 0
+11-28 15:18:08.442   551  4509 W GCH_ResultDispatcher: [Cam1_ResultDispatcher] PrintTimeoutMessages: pending final result metadata for frame 17581 ready 0
+11-28 15:18:08.442   551  4509 W GCH_ResultDispatcher: [Cam1_ResultDispatcher] PrintTimeoutMessages: pending final result metadata for frame 17582 ready 0
+11-28 15:18:08.442   551  4509 W GCH_ResultDispatcher: [Cam1_ResultDispatcher] PrintTimeoutMessages: pending final result metadata for frame 17583 ready 0
+11-28 15:18:08.442   551  4509 W GCH_ResultDispatcher: [Cam1_ResultDispatcher] PrintTimeoutMessages: pending final result metadata for frame 17584 ready 0
+11-28 15:18:08.442   551  4509 W GCH_ResultDispatcher: [Cam1_ResultDispatcher] PrintTimeoutMessages: pending final result metadata for frame 17585 ready 0
+11-28 15:18:08.442   551  4509 W GCH_ResultDispatcher: [Cam1_ResultDispatcher] PrintTimeoutMessages: pending buffer of stream 0 for frame 17585 ready 0
+11-28 15:18:08.442   551  4509 W GCH_ResultDispatcher: [Cam1_ResultDispatcher] PrintTimeoutMessages: pending buffer of stream 1 for frame 17580 ready 0
+11-28 15:18:08.442   551  4509 W GCH_ResultDispatcher: [Cam1_ResultDispatcher] PrintTimeoutMessages: pending buffer of stream 1 for frame 17581 ready 0
+11-28 15:18:08.442   551  4509 W GCH_ResultDispatcher: [Cam1_ResultDispatcher] PrintTimeoutMessages: pending buffer of stream 1 for frame 17582 ready 0
+11-28 15:18:08.442   551  4509 W GCH_ResultDispatcher: [Cam1_ResultDispatcher] PrintTimeoutMessages: pending buffer of stream 1 for frame 17583 ready 0
+11-28 15:18:08.442   551  4509 W GCH_ResultDispatcher: [Cam1_ResultDispatcher] PrintTimeoutMessages: pending buffer of stream 1 for frame 17584 ready 0
+11-28 15:18:08.442   773   803 I ImeTracker: system_server:84caa214: onCancelled at PHASE_SERVER_SHOULD_HIDE
+11-28 15:18:08.443  1538  1538 I GoogleInputMethodService: GoogleInputMethodService.onStartInput():1318 onStartInput(EditorInfo{EditorInfo{packageName=com.lensora.ai, inputType=0, inputTypeString=NULL, enableLearning=false, autoCorrection=false, autoComplete=false, imeOptions=0, privateImeOptions=null, actionName=UNSPECIFIED, actionLabel=null, initialSelStart=-1, initialSelEnd=-1, initialCapsMode=0, label=null, fieldId=0, fieldName=null, extras=null, hintText=null, hintLocales=[]}}, false)
+11-28 15:18:08.445   773  1312 W PackageConfigPersister: App-specific configuration not found for packageName: com.lensora.ai and userId: 0
+11-28 15:18:08.447  1538  1538 I Module  : DeviceLockedStatusModuleProvider$Module.updateDeviceLockedStatus():100 repeatCheckTimes = 1, locked = false
+11-28 15:18:08.479  4361  4524 D SceneClassifier: AI Director Analysis: box=null, hint=null, label=Γ£¿ AI: Landscape, source=HEURISTIC_ENGINE in 2ms
+11-28 15:18:08.610  4361  4361 I CameraController: Applying Advanced Camera Mode: Deep Sky
+11-28 15:18:08.651  4361  4361 D WindowOnBackDispatcher: setTopOnBackInvokedCallback (unwrapped): null
+11-28 15:18:08.652   773  1932 D CoreBackPreview: Window{a4753fc u0 com.lensora.ai/com.lensora.ai.MainActivity}: Setting back callback null
+11-28 15:18:08.670   773   803 V WindowManager: Unknown focus tokens, dropping reportFocusChanged
+11-28 15:18:08.725   773   902 I ImeTracker: com.lensora.ai:86b17643: onRequestHide at ORIGIN_SERVER reason HIDE_UNSPECIFIED_WINDOW fromUser false
+11-28 15:18:08.728  4361  4361 D InsetsController: hide(ime())
+11-28 15:18:08.728  4361  4361 I ImeTracker: com.lensora.ai:86b17643: onCancelled at PHASE_CLIENT_ALREADY_HIDDEN
+11-28 15:18:08.732  1538  1538 I GoogleInputMethodService: GoogleInputMethodService.onFinishInput():2057 
+11-28 15:18:08.732   773  1932 I ImeTracker: system_server:b86e93e3: onRequestHide at ORIGIN_SERVER reason IME_REQUESTED_CHANGED_LISTENER fromUser false
+11-28 15:18:08.732  1538  1538 I Module  : DeviceLockedStatusModuleProvider$Module.updateDeviceLockedStatus():100 repeatCheckTimes = 0, locked = false
+11-28 15:18:08.733   773   803 I ImeTracker: system_server:b86e93e3: onCancelled at PHASE_SERVER_SHOULD_HIDE
+11-28 15:18:08.734  1538  1538 I GoogleInputMethodService: GoogleInputMethodService.onStartInput():1318 onStartInput(EditorInfo{EditorInfo{packageName=com.lensora.ai, inputType=0, inputTypeString=NULL, enableLearning=false, autoCorrection=false, autoComplete=false, imeOptions=0, privateImeOptions=null, actionName=UNSPECIFIED, actionLabel=null, initialSelStart=-1, initialSelEnd=-1, initialCapsMode=0, label=null, fieldId=0, fieldName=null, extras=null, hintText=null, hintLocales=[]}}, false)
+11-28 15:18:08.735   773  2234 W PackageConfigPersister: App-specific configuration not found for packageName: com.lensora.ai and userId: 0
+11-28 15:18:08.737  1538  1538 I Module  : DeviceLockedStatusModuleProvider$Module.updateDeviceLockedStatus():100 repeatCheckTimes = 1, locked = false
+11-28 15:18:08.942   551  4509 W GCH_ResultDispatcher: [Cam1_ResultDispatcher] PrintTimeoutMessages: pending shutter for frame 17580 ready 0
+11-28 15:18:08.942   551  4509 W GCH_ResultDispatcher: [Cam1_ResultDispatcher] PrintTimeoutMessages: pending shutter for frame 17581 ready 0
+11-28 15:18:08.942   551  4509 W GCH_ResultDispatcher: [Cam1_ResultDispatcher] PrintTimeoutMessages: pending shutter for frame 17582 ready 0
+11-28 15:18:08.942   551  4509 W GCH_ResultDispatcher: [Cam1_ResultDispatcher] PrintTimeoutMessages: pending shutter for frame 17583 ready 0
+11-28 15:18:08.942   551  4509 W GCH_ResultDispatcher: [Cam1_ResultDispatcher] PrintTimeoutMessages: pending shutter for frame 17584 ready 0
+11-28 15:18:08.942   551  4509 W GCH_ResultDispatcher: [Cam1_ResultDispatcher] PrintTimeoutMessages: pending shutter for frame 17585 ready 0
+11-28 15:18:08.942   551  4509 W GCH_ResultDispatcher: [Cam1_ResultDispatcher] PrintTimeoutMessages: pending early result metadata for frame 17579 ready 0
+11-28 15:18:08.943   551  4509 W GCH_ResultDispatcher: [Cam1_ResultDispatcher] PrintTimeoutMessages: pending early result metadata for frame 17580 ready 0
+11-28 15:18:08.943   551  4509 W GCH_ResultDispatcher: [Cam1_ResultDispatcher] PrintTimeoutMessages: pending early result metadata for frame 17581 ready 0
+11-28 15:18:08.943   551  4509 W GCH_ResultDispatcher: [Cam1_ResultDispatcher] PrintTimeoutMessages: pending early result metadata for frame 17582 ready 0
+11-28 15:18:08.943   551  4509 W GCH_ResultDispatcher: [Cam1_ResultDispatcher] PrintTimeoutMessages: pending early result metadata for frame 17583 ready 0
+11-28 15:18:08.943   551  4509 W GCH_ResultDispatcher: [Cam1_ResultDispatcher] PrintTimeoutMessages: pending early result metadata for frame 17584 ready 0
+11-28 15:18:08.943   551  4509 W GCH_ResultDispatcher: [Cam1_ResultDispatcher] PrintTimeoutMessages: pending early result metadata for frame 17585 ready 0
+11-28 15:18:08.943   551  4509 W GCH_ResultDispatcher: [Cam1_ResultDispatcher] PrintTimeoutMessages: pending final result metadata for frame 17579 ready 0
+11-28 15:18:08.943   551  4509 W GCH_ResultDispatcher: [Cam1_ResultDispatcher] PrintTimeoutMessages: pending final result metadata for frame 17580 ready 0
+11-28 15:18:08.943   551  4509 W GCH_ResultDispatcher: [Cam1_ResultDispatcher] PrintTimeoutMessages: pending final result metadata for frame 17581 ready 0
+11-28 15:18:08.943   551  4509 W GCH_ResultDispatcher: [Cam1_ResultDispatcher] PrintTimeoutMessages: pending final result metadata for frame 17582 ready 0
+11-28 15:18:08.943   551  4509 W GCH_ResultDispatcher: [Cam1_ResultDispatcher] PrintTimeoutMessages: pending final result metadata for frame 17583 ready 0
+11-28 15:18:08.943   551  4509 W GCH_ResultDispatcher: [Cam1_ResultDispatcher] PrintTimeoutMessages: pending final result metadata for frame 17584 ready 0
+11-28 15:18:08.943   551  4509 W GCH_ResultDispatcher: [Cam1_ResultDispatcher] PrintTimeoutMessages: pending final result metadata for frame 17585 ready 0
+11-28 15:18:08.943   551  4509 W GCH_ResultDispatcher: [Cam1_ResultDispatcher] PrintTimeoutMessages: pending buffer of stream 0 for frame 17585 ready 0
+11-28 15:18:08.943   551  4509 W GCH_ResultDispatcher: [Cam1_ResultDispatcher] PrintTimeoutMessages: pending buffer of stream 1 for frame 17580 ready 0
+11-28 15:18:08.943   551  4509 W GCH_ResultDispatcher: [Cam1_ResultDispatcher] PrintTimeoutMessages: pending buffer of stream 1 for frame 17581 ready 0
+11-28 15:18:08.943   551  4509 W GCH_ResultDispatcher: [Cam1_ResultDispatcher] PrintTimeoutMessages: pending buffer of stream 1 for frame 17582 ready 0
+11-28 15:18:08.943   551  4509 W GCH_ResultDispatcher: [Cam1_ResultDispatcher] PrintTimeoutMessages: pending buffer of stream 1 for frame 17583 ready 0
+11-28 15:18:08.943   551  4509 W GCH_ResultDispatcher: [Cam1_ResultDispatcher] PrintTimeoutMessages: pending buffer of stream 1 for frame 17584 ready 0
+11-28 15:18:09.035  4361  4524 D SceneClassifier: AI Director Analysis: box=null, hint=null, label=Γ£¿ AI: Landscape, source=HEURISTIC_ENGINE in 14ms
+11-28 15:18:09.356   773  1932 E NotificationService: Package has already queued 5 toasts. Not showing more. Package=com.lensora.ai
+11-28 15:18:09.445   551  4509 W GCH_ResultDispatcher: [Cam1_ResultDispatcher] PrintTimeoutMessages: pending shutter for frame 17580 ready 0
+11-28 15:18:09.445   551  4509 W GCH_ResultDispatcher: [Cam1_ResultDispatcher] PrintTimeoutMessages: pending shutter for frame 17581 ready 0
+11-28 15:18:09.445   551  4509 W GCH_ResultDispatcher: [Cam1_ResultDispatcher] PrintTimeoutMessages: pending shutter for frame 17582 ready 0
+11-28 15:18:09.445   551  4509 W GCH_ResultDispatcher: [Cam1_ResultDispatcher] PrintTimeoutMessages: pending shutter for frame 17583 ready 0
+11-28 15:18:09.445   551  4509 W GCH_ResultDispatcher: [Cam1_ResultDispatcher] PrintTimeoutMessages: pending shutter for frame 17584 ready 0
+11-28 15:18:09.445   551  4509 W GCH_ResultDispatcher: [Cam1_ResultDispatcher] PrintTimeoutMessages: pending shutter for frame 17585 ready 0
+11-28 15:18:09.445   551  4509 W GCH_ResultDispatcher: [Cam1_ResultDispatcher] PrintTimeoutMessages: pending early result metadata for frame 17579 ready 0
+11-28 15:18:09.445   551  4509 W GCH_ResultDispatcher: [Cam1_ResultDispatcher] PrintTimeoutMessages: pending early result metadata for frame 17580 ready 0
+11-28 15:18:09.445   551  4509 W GCH_ResultDispatcher: [Cam1_ResultDispatcher] PrintTimeoutMessages: pending early result metadata for frame 17581 ready 0
+11-28 15:18:09.445   551  4509 W GCH_ResultDispatcher: [Cam1_ResultDispatcher] PrintTimeoutMessages: pending early result metadata for frame 17582 ready 0
+11-28 15:18:09.445   551  4509 W GCH_ResultDispatcher: [Cam1_ResultDispatcher] PrintTimeoutMessages: pending early result metadata for frame 17583 ready 0
+11-28 15:18:09.445   551  4509 W GCH_ResultDispatcher: [Cam1_ResultDispatcher] PrintTimeoutMessages: pending early result metadata for frame 17584 ready 0
+11-28 15:18:09.445   551  4509 W GCH_ResultDispatcher: [Cam1_ResultDispatcher] PrintTimeoutMessages: pending early result metadata for frame 17585 ready 0
+11-28 15:18:09.445   551  4509 W GCH_ResultDispatcher: [Cam1_ResultDispatcher] PrintTimeoutMessages: pending final result metadata for frame 17579 ready 0
+11-28 15:18:09.445   551  4509 W GCH_ResultDispatcher: [Cam1_ResultDispatcher] PrintTimeoutMessages: pending final result metadata for frame 17580 ready 0
+11-28 15:18:09.445   551  4509 W GCH_ResultDispatcher: [Cam1_ResultDispatcher] PrintTimeoutMessages: pending final result metadata for frame 17581 ready 0
+11-28 15:18:09.445   551  4509 W GCH_ResultDispatcher: [Cam1_ResultDispatcher] PrintTimeoutMessages: pending final result metadata for frame 17582 ready 0
+11-28 15:18:09.445   551  4509 W GCH_ResultDispatcher: [Cam1_ResultDispatcher] PrintTimeoutMessages: pending final result metadata for frame 17583 ready 0
+11-28 15:18:09.445   551  4509 W GCH_ResultDispatcher: [Cam1_ResultDispatcher] PrintTimeoutMessages: pending final result metadata for frame 17584 ready 0
+11-28 15:18:09.445   551  4509 W GCH_ResultDispatcher: [Cam1_ResultDispatcher] PrintTimeoutMessages: pending final result metadata for frame 17585 ready 0
+11-28 15:18:09.445   551  4509 W GCH_ResultDispatcher: [Cam1_ResultDispatcher] PrintTimeoutMessages: pending buffer of stream 0 for frame 17585 ready 0
+11-28 15:18:09.445   551  4509 W GCH_ResultDispatcher: [Cam1_ResultDispatcher] PrintTimeoutMessages: pending buffer of stream 1 for frame 17580 ready 0
+11-28 15:18:09.445   551  4509 W GCH_ResultDispatcher: [Cam1_ResultDispatcher] PrintTimeoutMessages: pending buffer of stream 1 for frame 17581 ready 0
+11-28 15:18:09.445   551  4509 W GCH_ResultDispatcher: [Cam1_ResultDispatcher] PrintTimeoutMessages: pending buffer of stream 1 for frame 17582 ready 0
+11-28 15:18:09.445   551  4509 W GCH_ResultDispatcher: [Cam1_ResultDispatcher] PrintTimeoutMessages: pending buffer of stream 1 for frame 17583 ready 0
+11-28 15:18:09.445   551  4509 W GCH_ResultDispatcher: [Cam1_ResultDispatcher] PrintTimeoutMessages: pending buffer of stream 1 for frame 17584 ready 0
+11-28 15:18:09.466  1638  1638 D WM-DelayedWorkTracker: Scheduling work 1498619f-86d2-4347-9f37-7dc7988a957a
+11-28 15:18:09.466  1638  1638 D WM-GreedyScheduler: Starting tracking for 1498619f-86d2-4347-9f37-7dc7988a957a
+11-28 15:18:09.467  1638  1719 D WM-ConstraintTracker: BatteryNotLowTracker: initial state = true
+11-28 15:18:09.468  1638  1719 D WM-BrdcstRcvrCnstrntTrc: BatteryNotLowTracker: registering receiver
+11-28 15:18:09.469  1638  1719 D WM-GreedyScheduler: Constraints met: Scheduling work ID WorkGenerationalId(workSpecId=1498619f-86d2-4347-9f37-7dc7988a957a, generation=0)
+11-28 15:18:09.470  1638  1762 D WM-Processor: Processor: processing WorkGenerationalId(workSpecId=1498619f-86d2-4347-9f37-7dc7988a957a, generation=0)
+11-28 15:18:09.473  1638  1638 D WM-WorkerWrapper: Starting work for com.android.providers.media.photopicker.sync.ProactiveSyncWorker
+11-28 15:18:09.474  1638  6100 I PSyncWorker: Starting proactive picker sync from sync source: 1
+11-28 15:18:09.474  1638  6100 I PickerSyncTracker: Created new sync future java.util.concurrent.CompletableFuture@46bb5a3[Not completed, 1 dependents]. Future map: {1498619f-86d2-4347-9f37-7dc7988a957a=java.util.concurrent.CompletableFuture@46bb5a3[Not completed, 1 dependents]}
+11-28 15:18:09.484  1638  6100 D PickerSyncController: syncAllMediaFromProvider() LOCAL, auth=com.android.providers.media.photopicker, retry=true
+11-28 15:18:09.484  1638  6100 D PickerSyncController: getSyncRequestParams() LOCAL, auth=com.android.providers.media.photopicker
+11-28 15:18:09.486  1638  6100 D PickerSyncController:    Latest ID/Gen=9df73665bf6646a7:0000-0000:external_primary/871
+11-28 15:18:09.486  1638  6100 D PickerSyncController:    Cached ID/Gen=9df73665bf6646a7:0000-0000:external_primary/859
+11-28 15:18:09.486  1638  6100 D PickerSyncController:    RESULT=SyncRequestParams{type=MEDIA_INCREMENTAL, gen=859, latest=Bundle[{last_media_sync_generation=871, media_collection_id=9df73665bf6646a7:0000-0000:external_primary}], pageSize=1000}
+11-28 15:18:09.486  1638  6100 I PickerSyncController: Executing SyncAdd. isLocal: true. authority: com.android.providers.media.photopicker
+11-28 15:18:09.486  1638  6100 D PickerSyncLockManager: Trying to acquire lock com.android.providers.media.photopicker.sync.CloseableReentrantLock@59915b1[Unlocked]. Lock Name = CLOUD_PROVIDER_LOCK. Threads that may be waiting to acquire this lock = [] with timeout.
+11-28 15:18:09.486  1638  6100 D CloseableReentrantLock: Successfully acquired lock com.android.providers.media.photopicker.sync.CloseableReentrantLock@59915b1[Locked by thread pool-4-thread-52]. Lock Name = CLOUD_PROVIDER_LOCK. Threads that may be waiting to acquire this lock = []
+11-28 15:18:09.486  1638  6100 D CloseableReentrantLock: Successfully released lock com.android.providers.media.photopicker.sync.CloseableReentrantLock@59915b1[Unlocked]. Lock Name = CLOUD_PROVIDER_LOCK. Threads that may be waiting to acquire this lock = []
+11-28 15:18:09.487  1638  6100 D ExternalDbFacade: Token received for queryMedia = null
+11-28 15:18:09.489  1638  6100 D PickerSyncLockManager: Trying to acquire lock com.android.providers.media.photopicker.sync.CloseableReentrantLock@59915b1[Unlocked]. Lock Name = CLOUD_PROVIDER_LOCK. Threads that may be waiting to acquire this lock = [] with timeout.
+11-28 15:18:09.489  1638  6100 D CloseableReentrantLock: Successfully acquired lock com.android.providers.media.photopicker.sync.CloseableReentrantLock@59915b1[Locked by thread pool-4-thread-52]. Lock Name = CLOUD_PROVIDER_LOCK. Threads that may be waiting to acquire this lock = []
+11-28 15:18:09.489  1638  6100 D PickerSyncController: Saving next page token: 1795859287933|98 for key: local_provider:media_add:resume
+11-28 15:18:09.489  1638  6100 D CloseableReentrantLock: Successfully released lock com.android.providers.media.photopicker.sync.CloseableReentrantLock@59915b1[Unlocked]. Lock Name = CLOUD_PROVIDER_LOCK. Threads that may be waiting to acquire this lock = []
+11-28 15:18:09.490  1638  6100 D PickerNotificationSender: Sending a notification for media update
+11-28 15:18:09.490  1638  6100 D PickerNotificationSender: Sending a notification for merged album media update Favorites
+11-28 15:18:09.490  1638  6100 D PickerNotificationSender: Sending a notification for album media update Favorites
+11-28 15:18:09.491  1638  6100 D PickerNotificationSender: Sending a notification for merged album media update Videos
+11-28 15:18:09.491  1638  6100 D PickerNotificationSender: Sending a notification for album media update Videos
+11-28 15:18:09.492  1638  6100 D ExternalDbFacade: Token received for queryMedia = 1795859287933|98
+11-28 15:18:09.493  1638  6100 D PickerSyncLockManager: Trying to acquire lock com.android.providers.media.photopicker.sync.CloseableReentrantLock@59915b1[Unlocked]. Lock Name = CLOUD_PROVIDER_LOCK. Threads that may be waiting to acquire this lock = [] with timeout.
+11-28 15:18:09.494  1638  6100 D CloseableReentrantLock: Successfully acquired lock com.android.providers.media.photopicker.sync.CloseableReentrantLock@59915b1[Locked by thread pool-4-thread-52]. Lock Name = CLOUD_PROVIDER_LOCK. Threads that may be waiting to acquire this lock = []
+11-28 15:18:09.494  1638  6100 D PickerSyncController: Clearing next page token for key: local_provider:media_add:resume
+11-28 15:18:09.494  1638  6100 D CloseableReentrantLock: Successfully released lock com.android.providers.media.photopicker.sync.CloseableReentrantLock@59915b1[Unlocked]. Lock Name = CLOUD_PROVIDER_LOCK. Threads that may be waiting to acquire this lock = []
+11-28 15:18:09.494  1638  6100 D PickerNotificationSender: Sending a notification for media update
+11-28 15:18:09.495  1638  6100 D PickerNotificationSender: Sending a notification for merged album media update Favorites
+11-28 15:18:09.495  1638  6100 D PickerNotificationSender: Sending a notification for album media update Favorites
+11-28 15:18:09.496  1638  6100 D PickerNotificationSender: Sending a notification for merged album media update Videos
+11-28 15:18:09.496  1638  6100 D PickerNotificationSender: Sending a notification for album media update Videos
+11-28 15:18:09.496  1638  6100 I PickerSyncController: Paged sync successful. QueryArgs: Bundle[{android.provider.extra.PAGE_TOKEN=1795859287933|98, android.provider.extra.SYNC_GENERATION=859, android.provider.extra.PAGE_SIZE=1000}] Total Rows: 1
+11-28 15:18:09.497  1638  6100 I PickerSyncController: Executing SyncRemove. isLocal: true. authority: com.android.providers.media.photopicker
+11-28 15:18:09.497  1638  6100 D PickerSyncLockManager: Trying to acquire lock com.android.providers.media.photopicker.sync.CloseableReentrantLock@59915b1[Unlocked]. Lock Name = CLOUD_PROVIDER_LOCK. Threads that may be waiting to acquire this lock = [] with timeout.
+11-28 15:18:09.497  1638  6100 D CloseableReentrantLock: Successfully acquired lock com.android.providers.media.photopicker.sync.CloseableReentrantLock@59915b1[Locked by thread pool-4-thread-52]. Lock Name = CLOUD_PROVIDER_LOCK. Threads that may be waiting to acquire this lock = []
+11-28 15:18:09.497  1638  6100 D CloseableReentrantLock: Successfully released lock com.android.providers.media.photopicker.sync.CloseableReentrantLock@59915b1[Unlocked]. Lock Name = CLOUD_PROVIDER_LOCK. Threads that may be waiting to acquire this lock = []
+11-28 15:18:09.498  1638  6100 D PickerSyncLockManager: Trying to acquire lock com.android.providers.media.photopicker.sync.CloseableReentrantLock@59915b1[Unlocked]. Lock Name = CLOUD_PROVIDER_LOCK. Threads that may be waiting to acquire this lock = [] with timeout.
+11-28 15:18:09.498  1638  6100 D CloseableReentrantLock: Successfully acquired lock com.android.providers.media.photopicker.sync.CloseableReentrantLock@59915b1[Locked by thread pool-4-thread-52]. Lock Name = CLOUD_PROVIDER_LOCK. Threads that may be waiting to acquire this lock = []
+11-28 15:18:09.498  1638  6100 D PickerSyncController: Clearing next page token for key: local_provider:media_remove:resume
+11-28 15:18:09.498  1638  6100 D CloseableReentrantLock: Successfully released lock com.android.providers.media.photopicker.sync.CloseableReentrantLock@59915b1[Unlocked]. Lock Name = CLOUD_PROVIDER_LOCK. Threads that may be waiting to acquire this lock = []
+11-28 15:18:09.498  1638  6100 D PickerNotificationSender: Sending a notification for media update
+11-28 15:18:09.500  1638  6100 D PickerNotificationSender: Sending a notification for merged album media update Favorites
+11-28 15:18:09.500  1638  6100 D PickerNotificationSender: Sending a notification for album media update Favorites
+11-28 15:18:09.501  1638  6100 D PickerNotificationSender: Sending a notification for merged album media update Videos
+11-28 15:18:09.501  1638  6100 D PickerNotificationSender: Sending a notification for album media update Videos
+11-28 15:18:09.502  1638  6100 I PickerSyncController: Paged sync successful. QueryArgs: Bundle[{android.provider.extra.PAGE_TOKEN=1795859287933|98, android.provider.extra.SYNC_GENERATION=859, android.provider.extra.PAGE_SIZE=1000}] Total Rows: 0
+11-28 15:18:09.503  1638  6100 I PickerSyncTracker: Marked sync future complete for work id: 1498619f-86d2-4347-9f37-7dc7988a957a. Future map: {}
+11-28 15:18:09.503  1638  6100 I PSyncWorker: Completed picker proactive sync complete from local provider.
+11-28 15:18:09.504  1638  1762 I WM-WorkerWrapper: Worker result SUCCESS for Work [ id=1498619f-86d2-4347-9f37-7dc7988a957a, tags={ com.android.providers.media.photopicker.sync.ProactiveSyncWorker } ]
+11-28 15:18:09.506  1638  1638 D WM-Processor: Processor 1498619f-86d2-4347-9f37-7dc7988a957a executed; reschedule = false
+11-28 15:18:09.506  1638  1638 D WM-GreedyScheduler: Stopping tracking for WorkGenerationalId(workSpecId=1498619f-86d2-4347-9f37-7dc7988a957a, generation=0)
+11-28 15:18:09.516  1638  1762 D WM-GreedyScheduler: Cancelling work ID 1498619f-86d2-4347-9f37-7dc7988a957a
+11-28 15:18:09.518  1638  1762 D WM-GreedyScheduler: Ignoring {WorkSpec: 3c6c4135-b997-4e1b-9661-22e5ab13e7aa}. Requires device idle.
+11-28 15:18:09.519  1638  1762 D WM-GreedyScheduler: Ignoring {WorkSpec: d21d6e86-b6ef-4ce1-a308-6f305ea14219}. Requires device idle.
+11-28 15:18:09.519  1638  1762 D WM-GreedyScheduler: Ignoring {WorkSpec: dddae3d0-4da8-44bf-bc94-f4a106b095e6}. Requires device idle.
+11-28 15:18:09.519  1638  1762 D WM-GreedyScheduler: Ignoring {WorkSpec: 07661c93-4319-4311-91b7-cf7c9f665c99}. Requires device idle.
+11-28 15:18:09.519  1638  1762 D WM-BrdcstRcvrCnstrntTrc: BatteryNotLowTracker: unregistering receiver
+11-28 15:18:09.550   773   796 E NotificationService: Package has already queued 5 toasts. Not showing more. Package=com.lensora.ai
+11-28 15:18:09.556  4361  4524 D SceneClassifier: AI Director Analysis: box=null, hint=null, label=Γ£¿ AI: Landscape, source=HEURISTIC_ENGINE in 1ms
+11-28 15:18:09.731   773   796 E NotificationService: Package has already queued 5 toasts. Not showing more. Package=com.lensora.ai
+11-28 15:18:09.906   773   796 E NotificationService: Package has already queued 5 toasts. Not showing more. Package=com.lensora.ai
+11-28 15:18:09.946   551  4509 W GCH_ResultDispatcher: [Cam1_ResultDispatcher] PrintTimeoutMessages: pending shutter for frame 17580 ready 0
+11-28 15:18:09.946   551  4509 W GCH_ResultDispatcher: [Cam1_ResultDispatcher] PrintTimeoutMessages: pending shutter for frame 17581 ready 0
+11-28 15:18:09.946   551  4509 W GCH_ResultDispatcher: [Cam1_ResultDispatcher] PrintTimeoutMessages: pending shutter for frame 17582 ready 0
+11-28 15:18:09.946   551  4509 W GCH_ResultDispatcher: [Cam1_ResultDispatcher] PrintTimeoutMessages: pending shutter for frame 17583 ready 0
+11-28 15:18:09.946   551  4509 W GCH_ResultDispatcher: [Cam1_ResultDispatcher] PrintTimeoutMessages: pending shutter for frame 17584 ready 0
+11-28 15:18:09.946   551  4509 W GCH_ResultDispatcher: [Cam1_ResultDispatcher] PrintTimeoutMessages: pending shutter for frame 17585 ready 0
+11-28 15:18:09.946   551  4509 W GCH_ResultDispatcher: [Cam1_ResultDispatcher] PrintTimeoutMessages: pending early result metadata for frame 17579 ready 0
+11-28 15:18:09.946   551  4509 W GCH_ResultDispatcher: [Cam1_ResultDispatcher] PrintTimeoutMessages: pending early result metadata for frame 17580 ready 0
+11-28 15:18:09.946   551  4509 W GCH_ResultDispatcher: [Cam1_ResultDispatcher] PrintTimeoutMessages: pending early result metadata for frame 17581 ready 0
+11-28 15:18:09.946   551  4509 W GCH_ResultDispatcher: [Cam1_ResultDispatcher] PrintTimeoutMessages: pending early result metadata for frame 17582 ready 0
+11-28 15:18:09.947   551  4509 W GCH_ResultDispatcher: [Cam1_ResultDispatcher] PrintTimeoutMessages: pending early result metadata for frame 17583 ready 0
+11-28 15:18:09.947   551  4509 W GCH_ResultDispatcher: [Cam1_ResultDispatcher] PrintTimeoutMessages: pending early result metadata for frame 17584 ready 0
+11-28 15:18:09.947   551  4509 W GCH_ResultDispatcher: [Cam1_ResultDispatcher] PrintTimeoutMessages: pending early result metadata for frame 17585 ready 0
+11-28 15:18:09.947   551  4509 W GCH_ResultDispatcher: [Cam1_ResultDispatcher] PrintTimeoutMessages: pending final result metadata for frame 17579 ready 0
+11-28 15:18:09.947   551  4509 W GCH_ResultDispatcher: [Cam1_ResultDispatcher] PrintTimeoutMessages: pending final result metadata for frame 17580 ready 0
+11-28 15:18:09.947   551  4509 W GCH_ResultDispatcher: [Cam1_ResultDispatcher] PrintTimeoutMessages: pending final result metadata for frame 17581 ready 0
+11-28 15:18:09.947   551  4509 W GCH_ResultDispatcher: [Cam1_ResultDispatcher] PrintTimeoutMessages: pending final result metadata for frame 17582 ready 0
+11-28 15:18:09.947   551  4509 W GCH_ResultDispatcher: [Cam1_ResultDispatcher] PrintTimeoutMessages: pending final result metadata for frame 17583 ready 0
+11-28 15:18:09.947   551  4509 W GCH_ResultDispatcher: [Cam1_ResultDispatcher] PrintTimeoutMessages: pending final result metadata for frame 17584 ready 0
+11-28 15:18:09.947   551  4509 W GCH_ResultDispatcher: [Cam1_ResultDispatcher] PrintTimeoutMessages: pending final result metadata for frame 17585 ready 0
+11-28 15:18:09.947   551  4509 W GCH_ResultDispatcher: [Cam1_ResultDispatcher] PrintTimeoutMessages: pending buffer of stream 0 for frame 17585 ready 0
+11-28 15:18:09.947   551  4509 W GCH_ResultDispatcher: [Cam1_ResultDispatcher] PrintTimeoutMessages: pending buffer of stream 1 for frame 17580 ready 0
+11-28 15:18:09.947   551  4509 W GCH_ResultDispatcher: [Cam1_ResultDispatcher] PrintTimeoutMessages: pending buffer of stream 1 for frame 17581 ready 0
+11-28 15:18:09.947   551  4509 W GCH_ResultDispatcher: [Cam1_ResultDispatcher] PrintTimeoutMessages: pending buffer of stream 1 for frame 17582 ready 0
+11-28 15:18:09.947   551  4509 W GCH_ResultDispatcher: [Cam1_ResultDispatcher] PrintTimeoutMessages: pending buffer of stream 1 for frame 17583 ready 0
+11-28 15:18:09.947   551  4509 W GCH_ResultDispatcher: [Cam1_ResultDispatcher] PrintTimeoutMessages: pending buffer of stream 1 for frame 17584 ready 0
+11-28 15:18:10.067  4361  4524 D SceneClassifier: AI Director Analysis: box=null, hint=null, label=Γ£¿ AI: Landscape, source=HEURISTIC_ENGINE in 3ms
+11-28 15:18:10.074   773   796 E NotificationService: Package has already queued 5 toasts. Not showing more. Package=com.lensora.ai
+11-28 15:18:10.249   773   796 E NotificationService: Package has already queued 5 toasts. Not showing more. Package=com.lensora.ai
+11-28 15:18:10.448   551  4509 W GCH_ResultDispatcher: [Cam1_ResultDispatcher] PrintTimeoutMessages: pending shutter for frame 17580 ready 0
+11-28 15:18:10.448   551  4509 W GCH_ResultDispatcher: [Cam1_ResultDispatcher] PrintTimeoutMessages: pending shutter for frame 17581 ready 0
+11-28 15:18:10.448   551  4509 W GCH_ResultDispatcher: [Cam1_ResultDispatcher] PrintTimeoutMessages: pending shutter for frame 17582 ready 0
+11-28 15:18:10.448   551  4509 W GCH_ResultDispatcher: [Cam1_ResultDispatcher] PrintTimeoutMessages: pending shutter for frame 17583 ready 0
+11-28 15:18:10.448   551  4509 W GCH_ResultDispatcher: [Cam1_ResultDispatcher] PrintTimeoutMessages: pending shutter for frame 17584 ready 0
+11-28 15:18:10.448   551  4509 W GCH_ResultDispatcher: [Cam1_ResultDispatcher] PrintTimeoutMessages: pending shutter for frame 17585 ready 0
+11-28 15:18:10.448   551  4509 W GCH_ResultDispatcher: [Cam1_ResultDispatcher] PrintTimeoutMessages: pending early result metadata for frame 17579 ready 0
+11-28 15:18:10.448   551  4509 W GCH_ResultDispatcher: [Cam1_ResultDispatcher] PrintTimeoutMessages: pending early result metadata for frame 17580 ready 0
+11-28 15:18:10.448   551  4509 W GCH_ResultDispatcher: [Cam1_ResultDispatcher] PrintTimeoutMessages: pending early result metadata for frame 17581 ready 0
+11-28 15:18:10.448   551  4509 W GCH_ResultDispatcher: [Cam1_ResultDispatcher] PrintTimeoutMessages: pending early result metadata for frame 17582 ready 0
+11-28 15:18:10.448   551  4509 W GCH_ResultDispatcher: [Cam1_ResultDispatcher] PrintTimeoutMessages: pending early result metadata for frame 17583 ready 0
+11-28 15:18:10.448   551  4509 W GCH_ResultDispatcher: [Cam1_ResultDispatcher] PrintTimeoutMessages: pending early result metadata for frame 17584 ready 0
+11-28 15:18:10.448   551  4509 W GCH_ResultDispatcher: [Cam1_ResultDispatcher] PrintTimeoutMessages: pending early result metadata for frame 17585 ready 0
+11-28 15:18:10.448   551  4509 W GCH_ResultDispatcher: [Cam1_ResultDispatcher] PrintTimeoutMessages: pending final result metadata for frame 17579 ready 0
+11-28 15:18:10.448   551  4509 W GCH_ResultDispatcher: [Cam1_ResultDispatcher] PrintTimeoutMessages: pending final result metadata for frame 17580 ready 0
+11-28 15:18:10.448   551  4509 W GCH_ResultDispatcher: [Cam1_ResultDispatcher] PrintTimeoutMessages: pending final result metadata for frame 17581 ready 0
+11-28 15:18:10.448   551  4509 W GCH_ResultDispatcher: [Cam1_ResultDispatcher] PrintTimeoutMessages: pending final result metadata for frame 17582 ready 0
+11-28 15:18:10.448   551  4509 W GCH_ResultDispatcher: [Cam1_ResultDispatcher] PrintTimeoutMessages: pending final result metadata for frame 17583 ready 0
+11-28 15:18:10.448   551  4509 W GCH_ResultDispatcher: [Cam1_ResultDispatcher] PrintTimeoutMessages: pending final result metadata for frame 17584 ready 0
+11-28 15:18:10.448   551  4509 W GCH_ResultDispatcher: [Cam1_ResultDispatcher] PrintTimeoutMessages: pending final result metadata for frame 17585 ready 0
+11-28 15:18:10.448   551  4509 W GCH_ResultDispatcher: [Cam1_ResultDispatcher] PrintTimeoutMessages: pending buffer of stream 0 for frame 17585 ready 0
+11-28 15:18:10.448   551  4509 W GCH_ResultDispatcher: [Cam1_ResultDispatcher] PrintTimeoutMessages: pending buffer of stream 1 for frame 17580 ready 0
+11-28 15:18:10.448   551  4509 W GCH_ResultDispatcher: [Cam1_ResultDispatcher] PrintTimeoutMessages: pending buffer of stream 1 for frame 17581 ready 0
+11-28 15:18:10.448   551  4509 W GCH_ResultDispatcher: [Cam1_ResultDispatcher] PrintTimeoutMessages: pending buffer of stream 1 for frame 17582 ready 0
+11-28 15:18:10.448   551  4509 W GCH_ResultDispatcher: [Cam1_ResultDispatcher] PrintTimeoutMessages: pending buffer of stream 1 for frame 17583 ready 0
+11-28 15:18:10.448   551  4509 W GCH_ResultDispatcher: [Cam1_ResultDispatcher] PrintTimeoutMessages: pending buffer of stream 1 for frame 17584 ready 0
+11-28 15:18:10.585  4361  4524 D SceneClassifier: AI Director Analysis: box=null, hint=null, label=Γ£¿ AI: Landscape, source=HEURISTIC_ENGINE in 5ms
+11-28 15:18:10.606   773  1932 W NotificationService: Toast already killed. pkg=com.lensora.ai token=android.os.BinderProxy@5b388a8
+11-28 15:18:10.949   551  4509 W GCH_ResultDispatcher: [Cam1_ResultDispatcher] PrintTimeoutMessages: pending shutter for frame 17580 ready 0
+11-28 15:18:10.949   551  4509 W GCH_ResultDispatcher: [Cam1_ResultDispatcher] PrintTimeoutMessages: pending shutter for frame 17581 ready 0
+11-28 15:18:10.949   551  4509 W GCH_ResultDispatcher: [Cam1_ResultDispatcher] PrintTimeoutMessages: pending shutter for frame 17582 ready 0
+11-28 15:18:10.949   551  4509 W GCH_ResultDispatcher: [Cam1_ResultDispatcher] PrintTimeoutMessages: pending shutter for frame 17583 ready 0
+11-28 15:18:10.949   551  4509 W GCH_ResultDispatcher: [Cam1_ResultDispatcher] PrintTimeoutMessages: pending shutter for frame 17584 ready 0
+11-28 15:18:10.950   551  4509 W GCH_ResultDispatcher: [Cam1_ResultDispatcher] PrintTimeoutMessages: pending shutter for frame 17585 ready 0
+11-28 15:18:10.950   551  4509 W GCH_ResultDispatcher: [Cam1_ResultDispatcher] PrintTimeoutMessages: pending early result metadata for frame 17579 ready 0
+11-28 15:18:10.950   551  4509 W GCH_ResultDispatcher: [Cam1_ResultDispatcher] PrintTimeoutMessages: pending early result metadata for frame 17580 ready 0
+11-28 15:18:10.950   551  4509 W GCH_ResultDispatcher: [Cam1_ResultDispatcher] PrintTimeoutMessages: pending early result metadata for frame 17581 ready 0
+11-28 15:18:10.950   551  4509 W GCH_ResultDispatcher: [Cam1_ResultDispatcher] PrintTimeoutMessages: pending early result metadata for frame 17582 ready 0
+11-28 15:18:10.950   551  4509 W GCH_ResultDispatcher: [Cam1_ResultDispatcher] PrintTimeoutMessages: pending early result metadata for frame 17583 ready 0
+11-28 15:18:10.950   551  4509 W GCH_ResultDispatcher: [Cam1_ResultDispatcher] PrintTimeoutMessages: pending early result metadata for frame 17584 ready 0
+11-28 15:18:10.950   551  4509 W GCH_ResultDispatcher: [Cam1_ResultDispatcher] PrintTimeoutMessages: pending early result metadata for frame 17585 ready 0
+11-28 15:18:10.950   551  4509 W GCH_ResultDispatcher: [Cam1_ResultDispatcher] PrintTimeoutMessages: pending final result metadata for frame 17579 ready 0
+11-28 15:18:10.950   551  4509 W GCH_ResultDispatcher: [Cam1_ResultDispatcher] PrintTimeoutMessages: pending final result metadata for frame 17580 ready 0
+11-28 15:18:10.950   551  4509 W GCH_ResultDispatcher: [Cam1_ResultDispatcher] PrintTimeoutMessages: pending final result metadata for frame 17581 ready 0
+11-28 15:18:10.950   551  4509 W GCH_ResultDispatcher: [Cam1_ResultDispatcher] PrintTimeoutMessages: pending final result metadata for frame 17582 ready 0
+11-28 15:18:10.950   551  4509 W GCH_ResultDispatcher: [Cam1_ResultDispatcher] PrintTimeoutMessages: pending final result metadata for frame 17583 ready 0
+11-28 15:18:10.950   551  4509 W GCH_ResultDispatcher: [Cam1_ResultDispatcher] PrintTimeoutMessages: pending final result metadata for frame 17584 ready 0
+11-28 15:18:10.950   551  4509 W GCH_ResultDispatcher: [Cam1_ResultDispatcher] PrintTimeoutMessages: pending final result metadata for frame 17585 ready 0
+11-28 15:18:10.950   551  4509 W GCH_ResultDispatcher: [Cam1_ResultDispatcher] PrintTimeoutMessages: pending buffer of stream 0 for frame 17585 ready 0
+11-28 15:18:10.950   551  4509 W GCH_ResultDispatcher: [Cam1_ResultDispatcher] PrintTimeoutMessages: pending buffer of stream 1 for frame 17580 ready 0
+11-28 15:18:10.950   551  4509 W GCH_ResultDispatcher: [Cam1_ResultDispatcher] PrintTimeoutMessages: pending buffer of stream 1 for frame 17581 ready 0
+11-28 15:18:10.950   551  4509 W GCH_ResultDispatcher: [Cam1_ResultDispatcher] PrintTimeoutMessages: pending buffer of stream 1 for frame 17582 ready 0
+11-28 15:18:10.950   551  4509 W GCH_ResultDispatcher: [Cam1_ResultDispatcher] PrintTimeoutMessages: pending buffer of stream 1 for frame 17583 ready 0
+11-28 15:18:10.950   551  4509 W GCH_ResultDispatcher: [Cam1_ResultDispatcher] PrintTimeoutMessages: pending buffer of stream 1 for frame 17584 ready 0
+11-28 15:18:11.092  4361  4524 D SceneClassifier: AI Director Analysis: box=null, hint=null, label=Γ£¿ AI: Landscape, source=HEURISTIC_ENGINE in 1ms

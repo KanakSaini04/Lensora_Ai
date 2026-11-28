@@ -1,3 +1,13 @@
+## [Unreleased] - Step 31c5: Evidence Correction & Device State Guard (2026-11-28)
+
+### Fixed & Verified
+- **Evidence Correction & Device State Guard (Step 31c5)**:
+  - `ModeSettingsHelper.kt`: Updated `formatModeFeedbackLabel` to format sub-second exposures in milliseconds (e.g. `40 ms exposure`, `500 ms exposure`).
+  - `CameraController.kt`: Updated NIGHT VISION feedback toast to `"🌙 Night Vision: Night Scene Mode Requested"`.
+  - `ModeSettingsHelperTest.kt`: Added 3 unit tests for sub-second ms label formatting, DEEP SKY 4000..8000 clamping, and NIGHT VISION inverted exposure range non-throwing fallback (152 JVM unit tests passing total across 24 test classes).
+  - `GEMINI.md`: Added Section 15 "Device State Guard" defining pre-flight checks, recovery rules, and incident logging.
+  - Saved raw evidence files to `docs/evidence/31c5/`.
+
 ## [Unreleased] - Step 31c4: ASTRO / DEEP SKY / SLOW-MOTION Honesty Correction & HAL Proof (2026-11-28)
 
 ### Fixed & Verified

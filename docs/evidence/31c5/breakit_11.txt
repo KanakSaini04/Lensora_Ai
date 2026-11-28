@@ -1,0 +1,405 @@
+﻿--------- beginning of main
+11-28 15:28:36.290  9147  9205 D SceneClassifier: AI Director Analysis: box=null, hint=null, label=Γ£¿ AI: Landscape, source=HEURISTIC_ENGINE in 1ms
+--------- beginning of system
+11-28 15:28:36.360   773  2327 W VibratorManagerService: performHapticFeedbackWithEffect; vibration absent for constant 9
+11-28 15:28:36.365   666  1065 W StagefrightRecorder: stop while neither recording nor paused
+11-28 15:28:36.370   246   246 I hwservicemanager: getTransport: Cannot find entry android.hardware.media.omx@1.0::IOmx/default in either framework or device VINTF manifest.
+11-28 15:28:36.370   666  1035 D MediaRecorderService: OMX service is not available
+11-28 15:28:36.388   666  1035 D MPEG4Writer: PreAllocation enabled
+11-28 15:28:36.388   666  1035 D MediaCodecList: codecHandlesFormat: no format, so no extra checks
+11-28 15:28:36.389   666  9242 D CCodec  : allocate(c2.android.avc.encoder)
+11-28 15:28:36.392   666  9242 I CCodec  : setting up 'default' as default (vendor) store
+11-28 15:28:36.393   676  1090 I mediaswcodec: missing struct descriptor #Param::CoreIndex(--004) for field values of struct #Param::CoreIndex(F-12004)
+11-28 15:28:36.393   676  1090 I mediaswcodec: missing struct descriptor #Param::CoreIndex(--1812) for field values of struct #Param::CoreIndex(F-11812)
+11-28 15:28:36.394   676  1090 I mediaswcodec: missing struct descriptor #Param::CoreIndex(--004) for field values of struct #Param::CoreIndex(F-12004)
+11-28 15:28:36.394   676  1090 I mediaswcodec: missing struct descriptor #Param::CoreIndex(--1812) for field values of struct #Param::CoreIndex(F-11812)
+11-28 15:28:36.396   666  9242 I CCodec  : Created component [c2.android.avc.encoder] for [c2.android.avc.encoder]
+11-28 15:28:36.396   666  9242 D CCodecConfig: read media type: video/avc
+11-28 15:28:36.403   666  9242 D ReflectedParamUpdater: extent() != 1 for single value type: algo.buffers.max-count.values
+11-28 15:28:36.403   666  9242 D ReflectedParamUpdater: extent() != 1 for single value type: output.subscribed-indices.values
+11-28 15:28:36.403   666  9242 D ReflectedParamUpdater: extent() != 1 for single value type: input.buffers.allocator-ids.values
+11-28 15:28:36.404   666  9242 D ReflectedParamUpdater: extent() != 1 for single value type: output.buffers.allocator-ids.values
+11-28 15:28:36.404   666  9242 D ReflectedParamUpdater: extent() != 1 for single value type: algo.buffers.allocator-ids.values
+11-28 15:28:36.404   666  9242 D ReflectedParamUpdater: extent() != 1 for single value type: output.buffers.pool-ids.values
+11-28 15:28:36.405   666  9242 D ReflectedParamUpdater: extent() != 1 for single value type: algo.buffers.pool-ids.values
+11-28 15:28:36.408   666  9242 D ReflectedParamUpdater: ignored struct field coding.gop.values
+11-28 15:28:36.408   666  9242 D ReflectedParamUpdater: ignored struct field coding.qp.values
+11-28 15:28:36.409   666  9242 D CCodecConfig: ignoring local param raw.color (0xc2001809) as it is already supported
+11-28 15:28:36.412   666  9242 I CCodecConfig: query failed after returning 13 values (BAD_INDEX)
+11-28 15:28:36.413   666  9242 D CCodecConfig: c2 config diff is Dict {
+11-28 15:28:36.413   666  9242 D CCodecConfig:   c2::u32 algo.bitrate-mode.value = 3
+11-28 15:28:36.413   666  9242 D CCodecConfig:   c2::i32 coded.average-qp.value = 0
+11-28 15:28:36.413   666  9242 D CCodecConfig:   c2::u32 coded.bitrate.value = 64000
+11-28 15:28:36.413   666  9242 D CCodecConfig:   c2::float coded.frame-rate.value = 1
+11-28 15:28:36.413   666  9242 D CCodecConfig:   c2::u32 coded.picture-type.value = 0
+11-28 15:28:36.413   666  9242 D CCodecConfig:   c2::u32 coded.pl.level = 20492
+11-28 15:28:36.413   666  9242 D CCodecConfig:   c2::u32 coded.pl.profile = 20481
+11-28 15:28:36.413   666  9242 D CCodecConfig:   c2::u32 coded.vui.color.matrix = 0
+11-28 15:28:36.413   666  9242 D CCodecConfig:   c2::u32 coded.vui.color.primaries = 0
+11-28 15:28:36.413   666  9242 D CCodecConfig:   c2::u32 coded.vui.color.range = 0
+11-28 15:28:36.413   666  9242 D CCodecConfig:   c2::u32 coded.vui.color.transfer = 0
+11-28 15:28:36.413   666  9242 D CCodecConfig:   c2::u32 coding.intra-refresh.mode = 0
+11-28 15:28:36.413   666  9242 D CCodecConfig:   c2::float coding.intra-refresh.period = 0
+11-28 15:28:36.413   666  9242 D CCodecConfig:   c2::u32 coding.request-sync-frame.value = 0
+11-28 15:28:36.413   666  9242 D CCodecConfig:   c2::i64 coding.sync-frame-interval.value = 1000000
+11-28 15:28:36.413   666  9242 D CCodecConfig:   c2::u32 input.delay.value = 0
+11-28 15:28:36.413   666  9242 D CCodecConfig:   string input.media-type.value = "video/raw"
+11-28 15:28:36.413   666  9242 D CCodecConfig:   string output.media-type.value = "video/avc"
+11-28 15:28:36.413   666  9242 D CCodecConfig:   c2::u32 raw.color.matrix = 0
+11-28 15:28:36.413   666  9242 D CCodecConfig:   c2::u32 raw.color.primaries = 0
+11-28 15:28:36.413   666  9242 D CCodecConfig:   c2::u32 raw.color.range = 0
+11-28 15:28:36.413   666  9242 D CCodecConfig:   c2::u32 raw.color.transfer = 0
+11-28 15:28:36.413   666  9242 D CCodecConfig:   c2::u32 raw.size.height = 16
+11-28 15:28:36.413   666  9242 D CCodecConfig:   c2::u32 raw.size.width = 16
+11-28 15:28:36.413   666  9242 D CCodecConfig: }
+11-28 15:28:36.413   666  9242 W ColorUtils: expected specified color aspects (0:0:0:0)
+11-28 15:28:36.413   666  9241 I MediaCodec: MediaCodec will operate in async mode
+11-28 15:28:36.414   666  1035 I MediaCodec: media_quality service unavailable, skipping updatePictureProfile
+11-28 15:28:36.414   666  1035 D MediaCodec: shapeMediaFormat: deltas(1): AMessage(what = 0x00000000) = {
+11-28 15:28:36.414   666  1035 D MediaCodec:     int32_t android._encoding-quality-level = 0
+11-28 15:28:36.414   666  1035 D MediaCodec:   }
+11-28 15:28:36.415   666  9242 D CCodec  : [c2.android.avc.encoder] buffers are bound to CCodec for this session
+11-28 15:28:36.415   666  9242 D CCodecConfig: no c2 equivalents for stride
+11-28 15:28:36.415   666  9242 D CCodecConfig: no c2 equivalents for slice-height
+11-28 15:28:36.415   666  9242 D CCodecConfig: no c2 equivalents for color-format
+11-28 15:28:36.415   666  9242 D CCodecConfig: no c2 equivalents for create-input-buffers-suspended
+11-28 15:28:36.415   666  9242 D CCodecConfig: no c2 equivalents for flags
+11-28 15:28:36.415   666  9242 D CCodecConfig: no c2 equivalents for encoder
+11-28 15:28:36.416   666  9242 D CCodecConfig: c2 config diff is   c2::u32 coded.bitrate.value = 10000000
+11-28 15:28:36.416   666  9242 D CCodecConfig:   c2::float coded.frame-rate.value = 30
+11-28 15:28:36.416   666  9242 D CCodecConfig:   c2::u32 raw.size.height = 1080
+11-28 15:28:36.416   666  9242 D CCodecConfig:   c2::u32 raw.size.width = 1920
+11-28 15:28:36.416   666  9242 W ColorUtils: expected specified color aspects (0:0:0:0)
+11-28 15:28:36.417   666  9242 D CCodec  : encoding statistics level = 0
+11-28 15:28:36.417   666  9242 D CCodec  : setup formats input: AMessage(what = 0x00000000) = {
+11-28 15:28:36.417   666  9242 D CCodec  :   Rect crop(0, 0, 1919, 1079)
+11-28 15:28:36.417   666  9242 D CCodec  :   int32_t color-standard = 0
+11-28 15:28:36.417   666  9242 D CCodec  :   int32_t color-range = 0
+11-28 15:28:36.417   666  9242 D CCodec  :   int32_t color-transfer = 0
+11-28 15:28:36.417   666  9242 D CCodec  :   int32_t frame-rate = 30
+11-28 15:28:36.417   666  9242 D CCodec  :   int32_t height = 1080
+11-28 15:28:36.417   666  9242 D CCodec  :   int32_t intra-refresh-period = 0
+11-28 15:28:36.417   666  9242 D CCodec  :   string mime = "video/raw"
+11-28 15:28:36.417   666  9242 D CCodec  :   int32_t video-qp-average = 0
+11-28 15:28:36.417   666  9242 D CCodec  :   int32_t width = 1920
+11-28 15:28:36.417   666  9242 D CCodec  :   int32_t android._dataspace = 0
+11-28 15:28:36.417   666  9242 D CCodec  :   int32_t using-sw-read-often = 1
+11-28 15:28:36.417   666  9242 D CCodec  :   int64_t android._C2MemoryUsage = 1
+11-28 15:28:36.417   666  9242 D CCodec  :   int32_t color-format = 2130708361
+11-28 15:28:36.417   666  9242 D CCodec  :   int32_t android._color-format = 2130708361
+11-28 15:28:36.417   666  9242 D CCodec  : }
+11-28 15:28:36.417   666  9242 D CCodec  : setup formats output: AMessage(what = 0x00000000) = {
+11-28 15:28:36.417   666  9242 D CCodec  :   int32_t bitrate = 10000000
+11-28 15:28:36.417   666  9242 D CCodec  :   int32_t bitrate-mode = 1
+11-28 15:28:36.417   666  9242 D CCodec  :   Rect crop(0, 0, 1919, 1079)
+11-28 15:28:36.417   666  9242 D CCodec  :   int32_t color-standard = 0
+11-28 15:28:36.417   666  9242 D CCodec  :   int32_t color-range = 0
+11-28 15:28:36.417   666  9242 D CCodec  :   int32_t color-transfer = 0
+11-28 15:28:36.417   666  9242 D CCodec  :   int32_t frame-rate = 30
+11-28 15:28:36.417   666  9242 D CCodec  :   int32_t height = 1080
+11-28 15:28:36.417   666  9242 D CCodec  :   int32_t intra-refresh-period = 0
+11-28 15:28:36.417   666  9242 D CCodec  :   int32_t level = 4096
+11-28 15:28:36.417   666  9242 D CCodec  :   int32_t max-bitrate = 10000000
+11-28 15:28:36.417   666  9242 D CCodec  :   string mime = "video/avc"
+11-28 15:28:36.417   666  9242 D CCodec  :   int32_t profile = 65536
+11-28 15:28:36.417   666  9242 D CCodec  :   int32_t video-qp-average = 0
+11-28 15:28:36.417   666  9242 D CCodec  :   int32_t width = 1920
+11-28 15:28:36.417   666  9242 D CCodec  : }
+11-28 15:28:36.417   666  9242 I CCodecConfig: query failed after returning 14 values (BAD_INDEX)
+11-28 15:28:36.418   666  9242 E mediaserver: Failed to query component interface for required system resources: 6
+11-28 15:28:36.419   666  9242 D CCodec  : aidl based PersistentSurface created
+11-28 15:28:36.419   666  9242 D CCodec  : input format changed to AMessage(what = 0x00000000) = {
+11-28 15:28:36.419   666  9242 D CCodec  :   Rect crop(0, 0, 1919, 1079)
+11-28 15:28:36.419   666  9242 D CCodec  :   int32_t color-standard = 1
+11-28 15:28:36.419   666  9242 D CCodec  :   int32_t color-range = 2
+11-28 15:28:36.419   666  9242 D CCodec  :   int32_t color-transfer = 3
+11-28 15:28:36.419   666  9242 D CCodec  :   int32_t frame-rate = 30
+11-28 15:28:36.419   666  9242 D CCodec  :   int32_t height = 1080
+11-28 15:28:36.419   666  9242 D CCodec  :   int32_t intra-refresh-period = 0
+11-28 15:28:36.419   666  9242 D CCodec  :   string mime = "video/raw"
+11-28 15:28:36.419   666  9242 D CCodec  :   int32_t video-qp-average = 0
+11-28 15:28:36.419   666  9242 D CCodec  :   int32_t width = 1920
+11-28 15:28:36.419   666  9242 D CCodec  :   int32_t android._dataspace = 260
+11-28 15:28:36.419   666  9242 D CCodec  :   int32_t using-sw-read-often = 1
+11-28 15:28:36.419   666  9242 D CCodec  :   int64_t android._C2MemoryUsage = 1
+11-28 15:28:36.419   666  9242 D CCodec  :   int32_t color-format = 2130708361
+11-28 15:28:36.419   666  9242 D CCodec  :   int32_t android._color-format = 2130708361
+11-28 15:28:36.419   666  9242 D CCodec  : }
+11-28 15:28:36.419   666  9242 D GraphicBufferSource: setting dataspace: 0x10c10000, acquired=0
+11-28 15:28:36.419   666  9242 D CCodec  : ISConfig suspend at -1us
+11-28 15:28:36.420   666  1035 D MediaCodec: keep callback message for reclaim
+11-28 15:28:36.421   666  9242 W Codec2Client: query -- param skipped: index = 1342179345.
+11-28 15:28:36.421   666  9242 W Codec2Client: query -- param skipped: index = 2415921170.
+11-28 15:28:36.422   666  9242 D CCodecBufferChannel: [c2.android.avc.encoder#485] Using basic input block pool with poolID 1 => got 1 - OK (0)
+11-28 15:28:36.424   666  6397 D BufferPoolAccessor2.0: bufferpool2 0x792175206758 : 0(0 size) total buffers - 0(0 size) used buffers - 23443/23448 (recycle/alloc) - 77/46886 (fetch/transfer)
+11-28 15:28:36.424   666  6397 D BufferPoolAccessor2.0: Destruction - bufferpool2 0x792175206758 cached: 0/0M, 0/0% in use; allocs: 23448, 100% recycled; transfers: 46886, 100% unfetched
+11-28 15:28:36.424   666  9242 I CCodecBufferChannel: [c2.android.avc.encoder#485] Created output block pool with allocatorID 16 => poolID 38 - OK
+11-28 15:28:36.424   666  9242 D CCodecBufferChannel: [c2.android.avc.encoder#485] Configured output block pool ids 38 => OK
+11-28 15:28:36.424   666  9241 W ResourceManagerServiceUtils: Ignoring request to add new resource entry with value <= 0
+11-28 15:28:36.429   608   608 D NativePermissionController: checkPermission: missing 8 for 10227
+11-28 15:28:36.429   608   608 D NativePermissionController: checkPermission: missing 14 for 10227
+11-28 15:28:36.443   608   608 W libbinder.IPCThreadState: Sending oneway calls to frozen process.
+11-28 15:28:36.444   608  9247 I AudioFlinger: AudioFlinger's thread 0x757b683a7a38 tid=9247 ready to run
+11-28 15:28:36.445   608   695 W libbinder.IPCThreadState: Sending oneway calls to frozen process.
+11-28 15:28:36.449   666  1035 W AudioRecord: createRecord_l(19): Server adjusted notificationFrames from 1024 to 128 for frameCount 2048
+11-28 15:28:36.450   608  6339 W AudioFlinger: acquireAudioSessionId() unknown client 9147 for session 121
+11-28 15:28:36.452   666  1035 D MediaCodecList: codecHandlesFormat: no format, so no extra checks
+11-28 15:28:36.452   666  9248 D CCodec  : allocate(c2.android.aac.encoder)
+11-28 15:28:36.454   666  9248 I CCodec  : setting up 'default' as default (vendor) store
+11-28 15:28:36.457   666  9248 I CCodec  : Created component [c2.android.aac.encoder] for [c2.android.aac.encoder]
+11-28 15:28:36.457   666  9248 D CCodecConfig: read media type: audio/mp4a-latm
+11-28 15:28:36.462   666  9248 D ReflectedParamUpdater: extent() != 1 for single value type: algo.buffers.max-count.values
+11-28 15:28:36.463   666  9248 D ReflectedParamUpdater: extent() != 1 for single value type: output.subscribed-indices.values
+11-28 15:28:36.464   666  9248 D ReflectedParamUpdater: extent() != 1 for single value type: input.buffers.allocator-ids.values
+11-28 15:28:36.464   666  9248 D ReflectedParamUpdater: extent() != 1 for single value type: output.buffers.allocator-ids.values
+11-28 15:28:36.464   666  9248 D ReflectedParamUpdater: extent() != 1 for single value type: algo.buffers.allocator-ids.values
+11-28 15:28:36.464   666  9248 D ReflectedParamUpdater: extent() != 1 for single value type: output.buffers.pool-ids.values
+11-28 15:28:36.465   666  9248 D ReflectedParamUpdater: extent() != 1 for single value type: algo.buffers.pool-ids.values
+11-28 15:28:36.468   666  9248 I CCodecConfig: query failed after returning 10 values (BAD_INDEX)
+11-28 15:28:36.468   666  9248 D CCodecConfig: c2 config diff is Dict {
+11-28 15:28:36.468   666  9248 D CCodecConfig:   c2::u32 coded.bitrate.value = 64000
+11-28 15:28:36.468   666  9248 D CCodecConfig:   c2::u32 coded.pl.level = 0
+11-28 15:28:36.468   666  9248 D CCodecConfig:   c2::u32 coded.pl.profile = 8192
+11-28 15:28:36.468   666  9248 D CCodecConfig:   c2::u32 coding.aac-sbr-mode.value = 3
+11-28 15:28:36.468   666  9248 D CCodecConfig:   c2::u32 input.buffers.max-size.value = 2048
+11-28 15:28:36.468   666  9248 D CCodecConfig:   c2::u32 input.delay.value = 0
+11-28 15:28:36.468   666  9248 D CCodecConfig:   string input.media-type.value = "audio/raw"
+11-28 15:28:36.468   666  9248 D CCodecConfig:   c2::u32 output.large-frame.max-size = 0
+11-28 15:28:36.468   666  9248 D CCodecConfig:   c2::u32 output.large-frame.threshold-size = 0
+11-28 15:28:36.468   666  9248 D CCodecConfig:   string output.media-type.value = "audio/mp4a-latm"
+11-28 15:28:36.468   666  9248 D CCodecConfig:   c2::u32 raw.channel-count.value = 1
+11-28 15:28:36.468   666  9248 D CCodecConfig:   c2::u32 raw.sample-rate.value = 44100
+11-28 15:28:36.468   666  9248 D CCodecConfig: }
+11-28 15:28:36.469   666  9248 I MediaCodec: MediaCodec will operate in async mode
+11-28 15:28:36.470   666  1035 I MediaCodec: media_quality service unavailable, skipping updatePictureProfile
+11-28 15:28:36.470   666  1035 D MediaCodec: shapeMediaFormat: deltas(0): AMessage(what = 0x00000000) = {
+11-28 15:28:36.470   666  1035 D MediaCodec:   }
+11-28 15:28:36.474   666  9248 D CCodec  : [c2.android.aac.encoder] buffers are bound to CCodec for this session
+11-28 15:28:36.474   666  9248 D CCodecConfig: no c2 equivalents for flags
+11-28 15:28:36.474   666  9248 D CCodecConfig: no c2 equivalents for encoder
+11-28 15:28:36.477   666  9248 D CCodecConfig: c2 config diff is   c2::u32 coded.bitrate.value = 12200
+11-28 15:28:36.477   666  9248 D CCodecConfig:   c2::u32 raw.sample-rate.value = 8000
+11-28 15:28:36.478   666  9248 W Codec2Client: query -- param skipped: index = 1107298332.
+11-28 15:28:36.478   666  9248 D CCodec  : encoding statistics level = 0
+11-28 15:28:36.478   666  9248 D CCodec  : setup formats input: AMessage(what = 0x00000000) = {
+11-28 15:28:36.478   666  9248 D CCodec  :   int32_t sample-rate = 8000
+11-28 15:28:36.478   666  9248 D CCodec  :   int32_t channel-count = 1
+11-28 15:28:36.478   666  9248 D CCodec  :   int32_t max-input-size = 2048
+11-28 15:28:36.478   666  9248 D CCodec  :   string mime = "audio/raw"
+11-28 15:28:36.478   666  9248 D CCodec  :   int32_t android._config-pcm-encoding = 2
+11-28 15:28:36.478   666  9248 D CCodec  : }
+11-28 15:28:36.478   666  9248 D CCodec  : setup formats output: AMessage(what = 0x00000000) = {
+11-28 15:28:36.478   666  9248 D CCodec  :   int32_t sample-rate = 8000
+11-28 15:28:36.478   666  9248 D CCodec  :   int32_t bitrate = 12200
+11-28 15:28:36.478   666  9248 D CCodec  :   int32_t buffer-batch-max-output-size = 0
+11-28 15:28:36.478   666  9248 D CCodec  :   int32_t buffer-batch-threshold-output-size = 0
+11-28 15:28:36.478   666  9248 D CCodec  :   int32_t channel-count = 1
+11-28 15:28:36.478   666  9248 D CCodec  :   int32_t level = 0
+11-28 15:28:36.478   666  9248 D CCodec  :   int32_t max-bitrate = 12200
+11-28 15:28:36.478   666  9248 D CCodec  :   string mime = "audio/mp4a-latm"
+11-28 15:28:36.478   666  9248 D CCodec  :   int32_t profile = 2
+11-28 15:28:36.478   666  9248 D CCodec  : }
+11-28 15:28:36.478   666  9248 I CCodecConfig: query failed after returning 10 values (BAD_INDEX)
+11-28 15:28:36.478   666  9248 E mediaserver: Failed to query component interface for required system resources: 6
+11-28 15:28:36.479   666  1035 D MediaCodec: keep callback message for reclaim
+11-28 15:28:36.480   666  9248 W Codec2Client: query -- param skipped: index = 1342179345.
+11-28 15:28:36.480   666  9248 W Codec2Client: query -- param skipped: index = 2415921170.
+11-28 15:28:36.481   666  9248 W Codec2Client: query -- param skipped: index = 3254792206.
+11-28 15:28:36.481   666  9248 W Codec2Client: query -- param skipped: index = 3254792194.
+11-28 15:28:36.483   676  1090 D BufferPoolAccessor2.0: bufferpool2 0x715139c0c7b8 : 0(0 size) total buffers - 0(0 size) used buffers - 23441/23443 (recycle/alloc) - 1/2930 (fetch/transfer)
+11-28 15:28:36.483   676  1090 D BufferPoolAccessor2.0: Destruction - bufferpool2 0x715139c0c7b8 cached: 0/0M, 0/0% in use; allocs: 23443, 100% recycled; transfers: 2930, 100% unfetched
+11-28 15:28:36.485   666  9248 D CCodecBufferChannel: [c2.android.aac.encoder#349] Created input block pool with allocatorID 16 => poolID 18 - OK (0)
+11-28 15:28:36.486   676  1090 D BufferPoolAccessor2.0: bufferpool2 0x715139c0c0c8 : 0(0 size) total buffers - 0(0 size) used buffers - 10789/10792 (recycle/alloc) - 19/10792 (fetch/transfer)
+11-28 15:28:36.486   676  1090 D BufferPoolAccessor2.0: Destruction - bufferpool2 0x715139c0c0c8 cached: 0/0M, 0/0% in use; allocs: 10792, 100% recycled; transfers: 10792, 100% unfetched
+11-28 15:28:36.487   666  9248 I CCodecBufferChannel: [c2.android.aac.encoder#349] Created output block pool with allocatorID 16 => poolID 40 - OK
+11-28 15:28:36.487   666  9248 D CCodecBufferChannel: [c2.android.aac.encoder#349] Configured output block pool ids 40 => OK
+11-28 15:28:36.487   676   730 E Codec2-ComponentInterface: We have a failed config
+11-28 15:28:36.490   676  9249 D SimpleC2Component: Using output block pool with poolID 40 => got 40 - 0
+11-28 15:28:36.490  9147  9147 I VideoRecorder: MediaRecorder prepared successfully for LENSORA_VIDEO_1795859916378.mp4.tmp
+11-28 15:28:37.009   660  9197 I CameraService: Stop camera streaming for com.lensora.ai (PID 9147, UID 10227)
+11-28 15:28:37.017   612   612 I SurfaceFlinger: Display 4619827259835644672 policy changed
+11-28 15:28:37.017   612   612 I SurfaceFlinger: Previous: {defaultModeId=0, allowGroupSwitching=false, primaryRanges={physical=[60.00 Hz, inf Hz], render=[60.00 Hz, 60.00 Hz]}, appRequestRanges={physical=[60.00 Hz, inf Hz], render=[60.00 Hz, 60.00 Hz]} idleScreenConfig=nullptr}
+11-28 15:28:37.017   612   612 I SurfaceFlinger: Current:  DisplayManagerPolicy{defaultModeId=0, allowGroupSwitching=false, primaryRanges={physical=[0.00 Hz, inf Hz], render=[0.00 Hz, 60.00 Hz]}, appRequestRanges={physical=[0.00 Hz, inf Hz], render=[0.00 Hz, inf Hz]} idleScreenConfig=nullptr}
+11-28 15:28:37.017   612   612 I SurfaceFlinger: 0 mode changes were performed under the previous policy
+11-28 15:28:37.018   612   612 D SurfaceFlinger: setDesiredMode 4619827259835644672 {mode={fps=60.00 Hz, modePtr={id=0, vsyncRate=60.00 Hz, peakRefreshRate=60.00 Hz}}, emitEvent=true, force=false}
+11-28 15:28:37.024   551   591 W GCH_AidlProfiler: MakeScopedProfiler: Could not find an operation for incoming event: ConfigureStream
+11-28 15:28:37.130   551   591 I GCH_HalUtils: ======== App stream configuration ========
+11-28 15:28:37.130   551   591 I GCH_HalUtils: == stream num: 2, operation_mode:0
+11-28 15:28:37.130   551   591 I GCH_HalUtils: ==== [0]stream_id 0, type 0, format 34, res 1920x1080, usage 256, is_phy 0, phy_cam_id 0, group_id -1
+11-28 15:28:37.130   551   591 I GCH_HalUtils: ==== [1]stream_id 2, type 0, format 34, res 1920x1080, usage 65539, is_phy 0, phy_cam_id 0, group_id -1
+11-28 15:28:37.130   551   591 I GCH_HalUtils: ======== App stream configuration ========
+11-28 15:28:37.130   551   591 I GCH_ZslSnapshotCaptureSession: IsStreamConfigurationSupported: Software denoised not enabled
+11-28 15:28:37.130   551   591 D GCH_BasicCaptureSession: IsStreamConfigurationSupported: BasicCaptureSession supports the stream config
+11-28 15:28:37.130   551   591 D GCH_BasicCaptureSession: IsStreamConfigurationSupported: BasicCaptureSession supports the stream config
+11-28 15:28:37.130   551   591 I GCH_ResultDispatcher: [Cam1_ResultDispatcher] ResultDispatcher: SetRealtimeThread OK
+11-28 15:28:37.123   551   551 W binder:551_3: type=1400 audit(0.0:35): avc:  denied  { sys_nice } for  capability=23  scontext=u:r:hal_camera_default:s0 tcontext=u:r:hal_camera_default:s0 tclass=capability permissive=0
+11-28 15:28:37.135   551   591 W EmulatedCameraDeviceInfo: InitializeControlDefaults: No available post RAW boost! Setting default!
+11-28 15:28:37.135   551  4498 E EmulatedRequestProcessor: onEvent: unexpected event received type: 33
+11-28 15:28:37.135   551  4498 E EmulatedRequestProcessor: onEvent: unexpected event received type: 33
+11-28 15:28:37.135   551  4498 E EmulatedRequestProcessor: onEvent: unexpected event received type: 33
+11-28 15:28:37.135   551   591 W EmulatedCameraDeviceInfo: InitializeControlDefaults: No available post RAW boost! Setting default!
+11-28 15:28:37.136   551   591 W EmulatedCameraDeviceInfo: InitializeControlDefaults: No available post RAW boost! Setting default!
+11-28 15:28:37.136   551   591 I StreamBufferCacheManager: Create: Created StreamBufferCacheManager.
+11-28 15:28:37.136   551   591 I StreamBufferCacheManager: ~StreamBufferCacheManager: Destroying stream buffer cache manager.
+11-28 15:28:37.136   551  9203 I StreamBufferCacheManager: WorkloadThreadLoop: Exiting stream buffer cache manager workload thread.
+11-28 15:28:37.142  9147  9147 I Choreographer: Skipped 48 frames!  The application may be doing too much work on its main thread.
+11-28 15:28:37.200   660  9197 I CameraService: Start camera streaming for com.lensora.ai (PID 9147, UID 10227)
+11-28 15:28:37.201   666  1035 D MPEG4Writer: fpathconf _PC_FILESIZEBITS:64
+11-28 15:28:37.201   666  1035 D MPEG4Writer: File size limit set to 4503599627370495 bytes implicitly
+11-28 15:28:37.201   666  1035 D MPEG4Writer: MP4WtrCtrlHlpLooper Started
+11-28 15:28:37.202   666  1035 I MPEG4Writer: limits: 4503599627370495/0 bytes/us, bit rate: 10012200 bps and the estimated moov size 3192 bytes
+11-28 15:28:37.203   666  1035 I MPEG4Writer: Start time offset: 100000 us
+11-28 15:28:37.206   551   591 W GCH_AidlProfiler: FirstFrameStart: Error: no profiler accepted First Frame Start
+11-28 15:28:37.206   666  9240 I MediaCodecSource: MediaCodecSource (video) starting
+11-28 15:28:37.206   666  9241 D CCodec  : ISConfig start at 2004999121us resume at -1us
+11-28 15:28:37.206   666  9241 D CCodecConfig: no c2 equivalents for drop-input-frames
+11-28 15:28:37.206   666  9241 D CCodecConfig: no c2 equivalents for skip-frames-before
+11-28 15:28:37.207   666  9241 D CCodecConfig: no recognized params in: Dict {
+11-28 15:28:37.207   666  9241 D CCodecConfig: }
+11-28 15:28:37.207   666  9240 I MediaCodecSource: MediaCodecSource (video) started
+11-28 15:28:37.207   666  1035 I MPEG4Writer: Start time offset: 100000 us
+11-28 15:28:37.208   666  9240 I MediaCodecSource: MediaCodecSource (audio) starting
+11-28 15:28:37.211  9147  9205 D SceneClassifier: AI Director Analysis: box=null, hint=null, label=Γ£¿ AI: Landscape, source=HEURISTIC_ENGINE in 15ms
+11-28 15:28:37.214   608  1169 W AudioPowerManager: startTrack: Cannot find uid: 10227
+11-28 15:28:37.218  9147  9159 I HWUI    : Davey! duration=866ms; Flags=0, FrameTimelineVsyncId=343153, IntendedVsync=2004024328506, Vsync=2004824328474, InputEventId=-49792586, HandleInputStart=2004840697800, AnimationStart=2004840744200, PerformTraversalsStart=2004852007400, DrawStart=2004852372800, FrameDeadline=2004040995172, FrameStartTime=2004839987800, FrameInterval=16666666, WorkloadTarget=16666666, SyncQueued=2004857842100, SyncStart=2004858728800, IssueDrawCommandsStart=2004858933000, SwapBuffers=2004881051200, FrameCompleted=2004892120300, DequeueBufferDuration=60900, QueueBufferDuration=394700, GpuCompleted=2004892120300, SwapBuffersCompleted=2004885555500, DisplayPresentTime=0, CommandSubmissionCompleted=2004881051200, 
+11-28 15:28:37.221   608  9247 W libbinder.IPCThreadState: Sending oneway calls to frozen process.
+11-28 15:28:37.222   550  6336 E android.hardware.audio@7.1-impl.ranchu: updateSinkMetadata:387 failure: Result::NOT_SUPPORTED
+11-28 15:28:37.231   608   695 W libbinder.IPCThreadState: Sending oneway calls to frozen process.
+11-28 15:28:37.242   612   612 I SurfaceFlinger: Display 4619827259835644672 policy changed
+11-28 15:28:37.242   612   612 I SurfaceFlinger: Previous: {defaultModeId=0, allowGroupSwitching=false, primaryRanges={physical=[0.00 Hz, inf Hz], render=[0.00 Hz, 60.00 Hz]}, appRequestRanges={physical=[0.00 Hz, inf Hz], render=[0.00 Hz, inf Hz]} idleScreenConfig=nullptr}
+11-28 15:28:37.242   612   612 I SurfaceFlinger: Current:  DisplayManagerPolicy{defaultModeId=0, allowGroupSwitching=false, primaryRanges={physical=[60.00 Hz, inf Hz], render=[60.00 Hz, 60.00 Hz]}, appRequestRanges={physical=[60.00 Hz, inf Hz], render=[60.00 Hz, 60.00 Hz]} idleScreenConfig=nullptr}
+11-28 15:28:37.242   612   612 I SurfaceFlinger: 0 mode changes were performed under the previous policy
+11-28 15:28:37.242   612   612 D SurfaceFlinger: setDesiredMode 4619827259835644672 {mode={fps=60.00 Hz, modePtr={id=0, vsyncRate=60.00 Hz, peakRefreshRate=60.00 Hz}}, emitEvent=true, force=false}
+11-28 15:28:37.245   666  9240 I MediaCodecSource: MediaCodecSource (audio) started
+11-28 15:28:37.246  9147  9147 I VideoRecorder: MediaRecorder video recording started.
+11-28 15:28:37.545   550  9260 D android.hardware.audio@7.1-impl.ranchu: TinyalsaSource::read:148 pcm_readi was late delivering frames, inserting 16000 us of silence
+11-28 15:28:37.546   666  9246 W AudioSource: Failed to get audio timestamp, fallback to use systemclock
+11-28 15:28:37.551   550  9260 D android.hardware.audio@7.1-impl.ranchu: TinyalsaSource::read:148 pcm_readi was late delivering frames, inserting 16000 us of silence
+11-28 15:28:37.560   550  9260 D android.hardware.audio@7.1-impl.ranchu: TinyalsaSource::read:148 pcm_readi was late delivering frames, inserting 16000 us of silence
+11-28 15:28:37.605   551  9250 I GCH_AidlCameraDeviceSession: ProcessBatchCaptureResult: First frame done
+11-28 15:28:37.605   551  9250 W GCH_AidlProfiler: FirstFrameEnd: Error: no profiler accepted First Frame End
+11-28 15:28:37.607   666  1035 D GraphicBufferSource: got buffer with new dataSpace 0x10c10000
+11-28 15:28:37.607   666  1035 D C2NodeImpl: dataspace changed to 0x10c10000 pixel format: 0x23
+11-28 15:28:37.607   666  1035 E mapper.ranchu: getStandardMetadataImpl:886 failure: UNSUPPORTED: id=451: unexpected standardMetadataType=21
+11-28 15:28:37.610   550  9260 D android.hardware.audio@7.1-impl.ranchu: TinyalsaSource::read:148 pcm_readi was late delivering frames, inserting 16000 us of silence
+11-28 15:28:37.613   676  9243 D SimpleC2Component: Using output block pool with poolID 38 => got 38 - 0
+11-28 15:28:37.616   676  9243 D SimpleC2Component: applied 2 configUpdates => BAD_INDEX (6)
+11-28 15:28:37.616   676  9243 D C2SoftAvcEnc: Params width 1920 height 1080 level 41 colorFormat 0 bframes 0
+11-28 15:28:37.617   550  9260 D android.hardware.audio@7.1-impl.ranchu: TinyalsaSource::read:148 pcm_readi was late delivering frames, inserting 16000 us of silence
+11-28 15:28:37.618   666   666 E mapper.ranchu: getStandardMetadataImpl:886 failure: UNSUPPORTED: id=452: unexpected standardMetadataType=21
+11-28 15:28:37.625   550  9260 D android.hardware.audio@7.1-impl.ranchu: TinyalsaSource::read:148 pcm_readi was late delivering frames, inserting 16000 us of silence
+11-28 15:28:37.626  9147  9147 D SwipeDbg: Down: local=(Offset(500.0, 937.0)), root=(Offset(500.0, 1000.0)), screenSize=(1080.0 x 2274.0), 15%Threshold=162.0
+11-28 15:28:37.626  9147  9147 D SwipeDbg: Rects - TopBar: Rect.fromLTRB(0.0, 126.0, 1080.0, 294.0), AiBadge: Rect.fromLTRB(366.0, 294.0, 715.0, 393.0), ZoomPills: Rect.fromLTRB(330.0, 1747.0, 751.0, 1858.0), Carousel: Rect.fromLTRB(0.0, 1890.0, 1080.0, 1995.0), Shutter: Rect.fromLTRB(84.0, 2027.0, 996.0, 2242.0)
+11-28 15:28:37.626  9147  9147 D SwipeDbg: InTopBar: false, InAiBadge: false, InPills: false, InCarousel: false, InShutter: false
+11-28 15:28:37.630   550  9260 D android.hardware.audio@7.1-impl.ranchu: TinyalsaSource::read:148 pcm_readi was late delivering frames, inserting 16000 us of silence
+11-28 15:28:37.635   550  9260 D android.hardware.audio@7.1-impl.ranchu: TinyalsaSource::read:148 pcm_readi was late delivering frames, inserting 16000 us of silence
+11-28 15:28:37.643   550  9260 D android.hardware.audio@7.1-impl.ranchu: TinyalsaSource::read:148 pcm_readi was late delivering frames, inserting 16000 us of silence
+11-28 15:28:37.656   550  9260 D android.hardware.audio@7.1-impl.ranchu: TinyalsaSource::read:148 pcm_readi was late delivering frames, inserting 16000 us of silence
+11-28 15:28:37.660   666  1035 E mapper.ranchu: getStandardMetadataImpl:886 failure: UNSUPPORTED: id=453: unexpected standardMetadataType=21
+11-28 15:28:37.661   550  9260 D android.hardware.audio@7.1-impl.ranchu: TinyalsaSource::read:148 pcm_readi was late delivering frames, inserting 16000 us of silence
+11-28 15:28:37.663  9147  9147 D SwipeDbg: End: totalDx=0.0, totalDy=0.0, maxPointers=1, decision=NONE
+11-28 15:28:37.666   550  9260 D android.hardware.audio@7.1-impl.ranchu: TinyalsaSource::read:148 pcm_readi was late delivering frames, inserting 16000 us of silence
+11-28 15:28:37.673   550  9260 D android.hardware.audio@7.1-impl.ranchu: TinyalsaSource::read:148 pcm_readi was late delivering frames, inserting 16000 us of silence
+11-28 15:28:37.687   550  9260 D android.hardware.audio@7.1-impl.ranchu: TinyalsaSource::read:148 pcm_readi was late delivering frames, inserting 16000 us of silence
+11-28 15:28:37.688   666  1035 E mapper.ranchu: getStandardMetadataImpl:886 failure: UNSUPPORTED: id=454: unexpected standardMetadataType=21
+11-28 15:28:37.695   550  9260 D android.hardware.audio@7.1-impl.ranchu: TinyalsaSource::read:148 pcm_readi was late delivering frames, inserting 16000 us of silence
+11-28 15:28:37.696   666  9242 D CCodecConfig: c2 config diff is   Buffer coded.init-data.value = {
+11-28 15:28:37.696   666  9242 D CCodecConfig:     00000000:  00 00 00 01 67 42 c0 29  8d 68 07 80 22 7e 59 08  ....gB.).h.."~Y.
+11-28 15:28:37.696   666  9242 D CCodecConfig:     00000010:  08 08 08 3c 22 11 a8 00  00 00 01 68 ce 01 a8 35  ...<"......h...5
+11-28 15:28:37.696   666  9242 D CCodecConfig:     00000020:  c8                                                .
+11-28 15:28:37.696   666  9242 D CCodecConfig:   }
+11-28 15:28:37.704   550  9260 D android.hardware.audio@7.1-impl.ranchu: TinyalsaSource::read:148 pcm_readi was late delivering frames, inserting 16000 us of silence
+11-28 15:28:37.708   550  9260 D android.hardware.audio@7.1-impl.ranchu: TinyalsaSource::read:148 pcm_readi was late delivering frames, inserting 16000 us of silence
+11-28 15:28:37.713   550  9260 D android.hardware.audio@7.1-impl.ranchu: TinyalsaSource::read:148 pcm_readi was late delivering frames, inserting 16000 us of silence
+11-28 15:28:37.724   666  1035 E mapper.ranchu: getStandardMetadataImpl:886 failure: UNSUPPORTED: id=455: unexpected standardMetadataType=21
+11-28 15:28:37.730   666  9261 I MPEG4Writer: setStartTimestampUs: 979
+11-28 15:28:37.730   666  9261 I MPEG4Writer: Earliest track starting time: 979
+11-28 15:28:37.736   666  9258 I MPEG4Writer: setStartTimestampUs: 267790
+11-28 15:28:37.739   550  9260 D android.hardware.audio@7.1-impl.ranchu: TinyalsaSource::read:148 pcm_readi was late delivering frames, inserting 16000 us of silence
+11-28 15:28:37.762   666  1035 E mapper.ranchu: getStandardMetadataImpl:886 failure: UNSUPPORTED: id=456: unexpected standardMetadataType=21
+11-28 15:28:37.793   666  1035 E mapper.ranchu: getStandardMetadataImpl:886 failure: UNSUPPORTED: id=457: unexpected standardMetadataType=21
+11-28 15:28:37.840   666  1035 E mapper.ranchu: getStandardMetadataImpl:886 failure: UNSUPPORTED: id=458: unexpected standardMetadataType=21
+11-28 15:28:37.866   666  1035 E mapper.ranchu: getStandardMetadataImpl:886 failure: UNSUPPORTED: id=459: unexpected standardMetadataType=21
+11-28 15:28:37.896  9147  9205 D SceneClassifier: AI Director Analysis: box=null, hint=null, label=Γ£¿ AI: Landscape, source=HEURISTIC_ENGINE in 41ms
+11-28 15:28:38.025   550  9260 D android.hardware.audio@7.1-impl.ranchu: TinyalsaSource::read:148 pcm_readi was late delivering frames, inserting 16000 us of silence
+11-28 15:28:38.029   550  9260 D android.hardware.audio@7.1-impl.ranchu: TinyalsaSource::read:148 pcm_readi was late delivering frames, inserting 16000 us of silence
+11-28 15:28:38.042   550  9260 D android.hardware.audio@7.1-impl.ranchu: TinyalsaSource::read:148 pcm_readi was late delivering frames, inserting 16000 us of silence
+11-28 15:28:38.057   550  9260 D android.hardware.audio@7.1-impl.ranchu: TinyalsaSource::read:148 pcm_readi was late delivering frames, inserting 16000 us of silence
+11-28 15:28:38.075   550  9260 D android.hardware.audio@7.1-impl.ranchu: TinyalsaSource::read:148 pcm_readi was late delivering frames, inserting 16000 us of silence
+11-28 15:28:38.105   550  9260 D android.hardware.audio@7.1-impl.ranchu: TinyalsaSource::read:148 pcm_readi was late delivering frames, inserting 16000 us of silence
+11-28 15:28:38.122   550  9260 D android.hardware.audio@7.1-impl.ranchu: TinyalsaSource::read:148 pcm_readi was late delivering frames, inserting 16000 us of silence
+11-28 15:28:38.138   550  9260 D android.hardware.audio@7.1-impl.ranchu: TinyalsaSource::read:148 pcm_readi was late delivering frames, inserting 16000 us of silence
+11-28 15:28:38.153   550  9260 D android.hardware.audio@7.1-impl.ranchu: TinyalsaSource::read:148 pcm_readi was late delivering frames, inserting 16000 us of silence
+11-28 15:28:38.169   550  9260 D android.hardware.audio@7.1-impl.ranchu: TinyalsaSource::read:148 pcm_readi was late delivering frames, inserting 16000 us of silence
+11-28 15:28:38.186   550  9262 W android.hardware.audio@7.1-impl.ranchu: pcmRead:221 pcm_readi failed with 'cannot read/write stream data: I/O error' (-1)
+11-28 15:28:38.187   550  9262 E android.hardware.audio@7.1-impl.ranchu: pcmRead:222 failure: -1
+11-28 15:28:38.187   550  9260 D android.hardware.audio@7.1-impl.ranchu: TinyalsaSource::read:148 pcm_readi was late delivering frames, inserting 16000 us of silence
+11-28 15:28:38.201   550  9260 D android.hardware.audio@7.1-impl.ranchu: TinyalsaSource::read:148 pcm_readi was late delivering frames, inserting 16000 us of silence
+11-28 15:28:38.218   550  9260 D android.hardware.audio@7.1-impl.ranchu: TinyalsaSource::read:148 pcm_readi was late delivering frames, inserting 16000 us of silence
+11-28 15:28:38.235   550  9260 D android.hardware.audio@7.1-impl.ranchu: TinyalsaSource::read:148 pcm_readi was late delivering frames, inserting 16000 us of silence
+11-28 15:28:38.250   550  9260 D android.hardware.audio@7.1-impl.ranchu: TinyalsaSource::read:148 pcm_readi was late delivering frames, inserting 16000 us of silence
+11-28 15:28:38.265   550  9260 D android.hardware.audio@7.1-impl.ranchu: TinyalsaSource::read:148 pcm_readi was late delivering frames, inserting 16000 us of silence
+11-28 15:28:38.282   550  9260 D android.hardware.audio@7.1-impl.ranchu: TinyalsaSource::read:148 pcm_readi was late delivering frames, inserting 16000 us of silence
+11-28 15:28:38.291   550  9262 W android.hardware.audio@7.1-impl.ranchu: pcmRead:221 pcm_readi failed with 'cannot read/write stream data: I/O error' (-1)
+11-28 15:28:38.291   550  9262 E android.hardware.audio@7.1-impl.ranchu: pcmRead:222 failure: -1
+11-28 15:28:38.298   550  9260 D android.hardware.audio@7.1-impl.ranchu: TinyalsaSource::read:148 pcm_readi was late delivering frames, inserting 16000 us of silence
+11-28 15:28:38.313   550  9260 D android.hardware.audio@7.1-impl.ranchu: TinyalsaSource::read:148 pcm_readi was late delivering frames, inserting 16000 us of silence
+11-28 15:28:38.331   550  9260 D android.hardware.audio@7.1-impl.ranchu: TinyalsaSource::read:148 pcm_readi was late delivering frames, inserting 16000 us of silence
+11-28 15:28:38.345   550  9260 D android.hardware.audio@7.1-impl.ranchu: TinyalsaSource::read:148 pcm_readi was late delivering frames, inserting 16000 us of silence
+11-28 15:28:38.362   550  9260 D android.hardware.audio@7.1-impl.ranchu: TinyalsaSource::read:148 pcm_readi was late delivering frames, inserting 16000 us of silence
+11-28 15:28:38.377   550  9260 D android.hardware.audio@7.1-impl.ranchu: TinyalsaSource::read:148 pcm_readi was late delivering frames, inserting 16000 us of silence
+11-28 15:28:38.393   550  9260 D android.hardware.audio@7.1-impl.ranchu: TinyalsaSource::read:148 pcm_readi was late delivering frames, inserting 16000 us of silence
+11-28 15:28:38.394   550  9262 W android.hardware.audio@7.1-impl.ranchu: pcmRead:221 pcm_readi failed with 'cannot read/write stream data: I/O error' (-1)
+11-28 15:28:38.394   550  9262 E android.hardware.audio@7.1-impl.ranchu: pcmRead:222 failure: -1
+11-28 15:28:38.411   550  9260 D android.hardware.audio@7.1-impl.ranchu: TinyalsaSource::read:148 pcm_readi was late delivering frames, inserting 16000 us of silence
+11-28 15:28:38.426   550  9260 D android.hardware.audio@7.1-impl.ranchu: TinyalsaSource::read:148 pcm_readi was late delivering frames, inserting 16000 us of silence
+11-28 15:28:38.442   550  9260 D android.hardware.audio@7.1-impl.ranchu: TinyalsaSource::read:148 pcm_readi was late delivering frames, inserting 16000 us of silence
+11-28 15:28:38.458   550  9260 D android.hardware.audio@7.1-impl.ranchu: TinyalsaSource::read:148 pcm_readi was late delivering frames, inserting 16000 us of silence
+11-28 15:28:38.474   550  9260 D android.hardware.audio@7.1-impl.ranchu: TinyalsaSource::read:148 pcm_readi was late delivering frames, inserting 16000 us of silence
+11-28 15:28:38.487   551  9250 W GCH_ResultDispatcher: [Cam1_ResultDispatcher] PrintTimeoutMessages: pending shutter for frame 665 ready 0
+11-28 15:28:38.487   551  9250 W GCH_ResultDispatcher: [Cam1_ResultDispatcher] PrintTimeoutMessages: pending shutter for frame 666 ready 0
+11-28 15:28:38.487   551  9250 W GCH_ResultDispatcher: [Cam1_ResultDispatcher] PrintTimeoutMessages: pending shutter for frame 667 ready 0
+11-28 15:28:38.487   551  9250 W GCH_ResultDispatcher: [Cam1_ResultDispatcher] PrintTimeoutMessages: pending shutter for frame 668 ready 0
+11-28 15:28:38.487   551  9250 W GCH_ResultDispatcher: [Cam1_ResultDispatcher] PrintTimeoutMessages: pending shutter for frame 669 ready 0
+11-28 15:28:38.487   551  9250 W GCH_ResultDispatcher: [Cam1_ResultDispatcher] PrintTimeoutMessages: pending early result metadata for frame 664 ready 0
+11-28 15:28:38.487   551  9250 W GCH_ResultDispatcher: [Cam1_ResultDispatcher] PrintTimeoutMessages: pending early result metadata for frame 665 ready 0
+11-28 15:28:38.487   551  9250 W GCH_ResultDispatcher: [Cam1_ResultDispatcher] PrintTimeoutMessages: pending early result metadata for frame 666 ready 0
+11-28 15:28:38.487   551  9250 W GCH_ResultDispatcher: [Cam1_ResultDispatcher] PrintTimeoutMessages: pending early result metadata for frame 667 ready 0
+11-28 15:28:38.487   551  9250 W GCH_ResultDispatcher: [Cam1_ResultDispatcher] PrintTimeoutMessages: pending early result metadata for frame 668 ready 0
+11-28 15:28:38.487   551  9250 W GCH_ResultDispatcher: [Cam1_ResultDispatcher] PrintTimeoutMessages: pending early result metadata for frame 669 ready 0
+11-28 15:28:38.487   551  9250 W GCH_ResultDispatcher: [Cam1_ResultDispatcher] PrintTimeoutMessages: pending final result metadata for frame 664 ready 0
+11-28 15:28:38.487   551  9250 W GCH_ResultDispatcher: [Cam1_ResultDispatcher] PrintTimeoutMessages: pending final result metadata for frame 665 ready 0
+11-28 15:28:38.487   551  9250 W GCH_ResultDispatcher: [Cam1_ResultDispatcher] PrintTimeoutMessages: pending final result metadata for frame 666 ready 0
+11-28 15:28:38.487   551  9250 W GCH_ResultDispatcher: [Cam1_ResultDispatcher] PrintTimeoutMessages: pending final result metadata for frame 667 ready 0
+11-28 15:28:38.487   551  9250 W GCH_ResultDispatcher: [Cam1_ResultDispatcher] PrintTimeoutMessages: pending final result metadata for frame 668 ready 0
+11-28 15:28:38.487   551  9250 W GCH_ResultDispatcher: [Cam1_ResultDispatcher] PrintTimeoutMessages: pending final result metadata for frame 669 ready 0
+11-28 15:28:38.487   551  9250 W GCH_ResultDispatcher: [Cam1_ResultDispatcher] PrintTimeoutMessages: pending buffer of stream 0 for frame 664 ready 0
+11-28 15:28:38.487   551  9250 W GCH_ResultDispatcher: [Cam1_ResultDispatcher] PrintTimeoutMessages: pending buffer of stream 0 for frame 665 ready 0
+11-28 15:28:38.487   551  9250 W GCH_ResultDispatcher: [Cam1_ResultDispatcher] PrintTimeoutMessages: pending buffer of stream 0 for frame 666 ready 0
+11-28 15:28:38.487   551  9250 W GCH_ResultDispatcher: [Cam1_ResultDispatcher] PrintTimeoutMessages: pending buffer of stream 0 for frame 667 ready 0
+11-28 15:28:38.487   551  9250 W GCH_ResultDispatcher: [Cam1_ResultDispatcher] PrintTimeoutMessages: pending buffer of stream 0 for frame 668 ready 0
+11-28 15:28:38.488   551  9250 W GCH_ResultDispatcher: [Cam1_ResultDispatcher] PrintTimeoutMessages: pending buffer of stream 0 for frame 669 ready 0
+11-28 15:28:38.490   550  9260 D android.hardware.audio@7.1-impl.ranchu: TinyalsaSource::read:148 pcm_readi was late delivering frames, inserting 16000 us of silence
+11-28 15:28:38.503   550  9262 W android.hardware.audio@7.1-impl.ranchu: pcmRead:221 pcm_readi failed with 'cannot read/write stream data: I/O error' (-1)
+11-28 15:28:38.503   550  9262 E android.hardware.audio@7.1-impl.ranchu: pcmRead:222 failure: -1
+11-28 15:28:38.505   550  9260 D android.hardware.audio@7.1-impl.ranchu: TinyalsaSource::read:148 pcm_readi was late delivering frames, inserting 16000 us of silence
+11-28 15:28:38.522   550  9260 D android.hardware.audio@7.1-impl.ranchu: TinyalsaSource::read:148 pcm_readi was late delivering frames, inserting 16000 us of silence
+11-28 15:28:38.539   550  9260 D android.hardware.audio@7.1-impl.ranchu: TinyalsaSource::read:148 pcm_readi was late delivering frames, inserting 16000 us of silence
+11-28 15:28:38.553   550  9260 D android.hardware.audio@7.1-impl.ranchu: TinyalsaSource::read:148 pcm_readi was late delivering frames, inserting 16000 us of silence
+11-28 15:28:38.571   550  9260 D android.hardware.audio@7.1-impl.ranchu: TinyalsaSource::read:148 pcm_readi was late delivering frames, inserting 16000 us of silence
+11-28 15:28:38.586   550  9260 D android.hardware.audio@7.1-impl.ranchu: TinyalsaSource::read:148 pcm_readi was late delivering frames, inserting 16000 us of silence
+11-28 15:28:38.602   550  9260 D android.hardware.audio@7.1-impl.ranchu: TinyalsaSource::read:148 pcm_readi was late delivering frames, inserting 16000 us of silence
+11-28 15:28:38.612   550  9262 W android.hardware.audio@7.1-impl.ranchu: pcmRead:221 pcm_readi failed with 'cannot read/write stream data: I/O error' (-1)
+11-28 15:28:38.612   550  9262 E android.hardware.audio@7.1-impl.ranchu: pcmRead:222 failure: -1
+11-28 15:28:38.619   550  9260 D android.hardware.audio@7.1-impl.ranchu: TinyalsaSource::read:148 pcm_readi was late delivering frames, inserting 16000 us of silence
+11-28 15:28:38.633   550  9260 D android.hardware.audio@7.1-impl.ranchu: TinyalsaSource::read:148 pcm_readi was late delivering frames, inserting 16000 us of silence
+11-28 15:28:38.650   550  9260 D android.hardware.audio@7.1-impl.ranchu: TinyalsaSource::read:148 pcm_readi was late delivering frames, inserting 16000 us of silence
+11-28 15:28:38.666   550  9260 D android.hardware.audio@7.1-impl.ranchu: TinyalsaSource::read:148 pcm_readi was late delivering frames, inserting 16000 us of silence
+11-28 15:28:38.681   550  9260 D android.hardware.audio@7.1-impl.ranchu: TinyalsaSource::read:148 pcm_readi was late delivering frames, inserting 16000 us of silence
+11-28 15:28:38.698   550  9260 D android.hardware.audio@7.1-impl.ranchu: TinyalsaSource::read:148 pcm_readi was late delivering frames, inserting 16000 us of silence
+11-28 15:28:38.713   550  9260 D android.hardware.audio@7.1-impl.ranchu: TinyalsaSource::read:148 pcm_readi was late delivering frames, inserting 16000 us of silence
+11-28 15:28:38.715   550  9262 W android.hardware.audio@7.1-impl.ranchu: pcmRead:221 pcm_readi failed with 'cannot read/write stream data: I/O error' (-1)
+11-28 15:28:38.715   550  9262 E android.hardware.audio@7.1-impl.ranchu: pcmRead:222 failure: -1
+11-28 15:28:38.730   550  9260 D android.hardware.audio@7.1-impl.ranchu: TinyalsaSource::read:148 pcm_readi was late delivering frames, inserting 16000 us of silence
+11-28 15:28:38.746   550  9260 D android.hardware.audio@7.1-impl.ranchu: TinyalsaSource::read:148 pcm_readi was late delivering frames, inserting 16000 us of silence
+11-28 15:28:38.762   550  9260 D android.hardware.audio@7.1-impl.ranchu: TinyalsaSource::read:148 pcm_readi was late delivering frames, inserting 16000 us of silence

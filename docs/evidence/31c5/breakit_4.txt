@@ -1,0 +1,835 @@
+﻿--------- beginning of main
+11-28 15:20:06.588   551  4491 E EmulatedRequestState: InitializeSensorSettings: Unsupported rotate and crop mode: 1
+11-28 15:20:06.588   551  4491 E EmulatedLogicalState: InitializeLogicalSettings: Initialization of physical sensor settings for device id: 4  failed!
+11-28 15:20:06.622   551  4491 E EmulatedRequestState: InitializeSensorSettings: Unsupported rotate and crop mode: 1
+11-28 15:20:06.622   551  4491 E EmulatedLogicalState: InitializeLogicalSettings: Initialization of physical sensor settings for device id: 4  failed!
+11-28 15:20:06.658   551  4491 E EmulatedRequestState: InitializeSensorSettings: Unsupported rotate and crop mode: 1
+11-28 15:20:06.658   551  4491 E EmulatedLogicalState: InitializeLogicalSettings: Initialization of physical sensor settings for device id: 4  failed!
+11-28 15:20:06.693   551  4491 E EmulatedRequestState: InitializeSensorSettings: Unsupported rotate and crop mode: 1
+11-28 15:20:06.694   551  4491 E EmulatedLogicalState: InitializeLogicalSettings: Initialization of physical sensor settings for device id: 4  failed!
+11-28 15:20:06.728   551  4491 E EmulatedRequestState: InitializeSensorSettings: Unsupported rotate and crop mode: 1
+11-28 15:20:06.728   551  4491 E EmulatedLogicalState: InitializeLogicalSettings: Initialization of physical sensor settings for device id: 4  failed!
+--------- beginning of system
+11-28 15:20:06.744   773   796 V SettingsShellCmd: putForUser(userId=0, table=system, key=font_scale, value=1.3, tag=null, makeDefault=false, overrideableByRestore=false)
+11-28 15:20:06.751   773   803 I ActivityTaskManager: Config changes=40000000 {1.3 310mcc260mnc [en_US] ldltr sw411dp w411dp h914dp 420dpi nrml long compactNeeded port finger qwerty/v/v dpad/v winConfig={ mBounds=Rect(0, 0 - 1080, 2400) mAppBounds=Rect(0, 0 - 1080, 2400) mMaxBounds=Rect(0, 0 - 1080, 2400) mDisplayRotation=ROTATION_0 mWindowingMode=fullscreen mActivityType=undefined mAlwaysOnTop=undefined mRotation=ROTATION_0} s.24 fontWeightAdjustment=0}
+11-28 15:20:06.752   773   988 D BackgroundInstallControlService: Package event received: 0
+11-28 15:20:06.753   773   803 D CompatChangeReporter: Compat change id reported: 151861875; UID 10162; state: ENABLED
+11-28 15:20:06.753   773   803 D CompatChangeReporter: Compat change id reported: 151861875; UID 10157; state: ENABLED
+11-28 15:20:06.753   612   647 I libbinder.BpBinder: onLastStrongRef automatically unlinking death recipients for descriptor: '(not cached)'
+11-28 15:20:06.753   773   803 D CompatChangeReporter: Compat change id reported: 151861875; UID 10170; state: ENABLED
+11-28 15:20:06.753   773   803 D CompatChangeReporter: Compat change id reported: 151861875; UID 10180; state: ENABLED
+11-28 15:20:06.754   773   803 D CompatChangeReporter: Compat change id reported: 151861875; UID 10173; state: ENABLED
+11-28 15:20:06.754   773   803 D CompatChangeReporter: Compat change id reported: 151861875; UID 10156; state: ENABLED
+11-28 15:20:06.755   773   803 D CompatChangeReporter: Compat change id reported: 151861875; UID 10139; state: ENABLED
+11-28 15:20:06.757   773   803 D CompatChangeReporter: Compat change id reported: 151861875; UID 10166; state: ENABLED
+11-28 15:20:06.758  1039  1100 V WindowManagerShell: Transition requested (#12): android.os.BinderProxy@a9e4e36 TransitionRequestInfo { type = CHANGE, triggerTask = null, pipChange = null, remoteTransition = null, displayChange = null, requestedLocation = null, userChange = null, windowingLayerChange = null, flags = 0, debugId = 12 }
+11-28 15:20:06.760   773   803 I WindowManager: Override config changes=40000000 {1.3 310mcc260mnc [en_US] ldltr sw411dp w411dp h914dp 420dpi nrml long compactNeeded port finger qwerty/v/v dpad/v winConfig={ mBounds=Rect(0, 0 - 1080, 2400) mAppBounds=Rect(0, 0 - 1080, 2400) mMaxBounds=Rect(0, 0 - 1080, 2400) mDisplayRotation=ROTATION_0 mWindowingMode=fullscreen mActivityType=undefined mAlwaysOnTop=undefined mRotation=ROTATION_0} s.24 fontWeightAdjustment=0} for displayId=0
+11-28 15:20:06.760   773   803 W TransitionChain: Combining dispOverCfg into #12(CHANGE|R|0x0) from updateGlobalConfig
+11-28 15:20:06.763   551  4491 E EmulatedRequestState: InitializeSensorSettings: Unsupported rotate and crop mode: 1
+11-28 15:20:06.763   551  4491 E EmulatedLogicalState: InitializeLogicalSettings: Initialization of physical sensor settings for device id: 4  failed!
+11-28 15:20:06.781  1039  1100 V ShellDesktopMode: DesktopTasksController: handleRequest request=TransitionRequestInfo { type = CHANGE, triggerTask = null, pipChange = null, remoteTransition = null, displayChange = null, requestedLocation = null, userChange = null, windowingLayerChange = null, flags = 0, debugId = 12 }
+11-28 15:20:06.781  1039  1100 V ShellDesktopMode: DesktopTasksController: skipping handleRequest reason=triggerTask is null
+11-28 15:20:06.797   551  4491 E EmulatedRequestState: InitializeSensorSettings: Unsupported rotate and crop mode: 1
+11-28 15:20:06.797   551  4491 E EmulatedLogicalState: InitializeLogicalSettings: Initialization of physical sensor settings for device id: 4  failed!
+11-28 15:20:06.832   551  4491 E EmulatedRequestState: InitializeSensorSettings: Unsupported rotate and crop mode: 1
+11-28 15:20:06.832   551  4491 E EmulatedLogicalState: InitializeLogicalSettings: Initialization of physical sensor settings for device id: 4  failed!
+11-28 15:20:06.867   551  4491 E EmulatedRequestState: InitializeSensorSettings: Unsupported rotate and crop mode: 1
+11-28 15:20:06.867   551  4491 E EmulatedLogicalState: InitializeLogicalSettings: Initialization of physical sensor settings for device id: 4  failed!
+11-28 15:20:06.876   773   803 W libbinder.IPCThreadState: Sending oneway calls to frozen process.
+11-28 15:20:06.876   773   803 W libbinder.IPCThreadState: Sending oneway calls to frozen process.
+11-28 15:20:06.876   773   803 W libbinder.IPCThreadState: Sending oneway calls to frozen process.
+11-28 15:20:06.898  1194  1194 D TaskbarManager: onConfigurationChanged: {1.3 310mcc260mnc [en_US] ldltr sw411dp w411dp h914dp 420dpi nrml long compactNeeded port finger qwerty/v/v dpad/v winConfig={ mBounds=Rect(0, 0 - 1080, 2400) mAppBounds=Rect(0, 0 - 1080, 2400) mMaxBounds=Rect(0, 0 - 1080, 2400) mDisplayRotation=ROTATION_0 mWindowingMode=fullscreen mActivityType=undefined mAlwaysOnTop=undefined mRotation=ROTATION_0} s.24 fontWeightAdjustment=0} displayId=0 isDefaultDisplay=true
+11-28 15:20:06.898  1538  1538 I AppBase : AppBase.onConfigurationChanged():406 onConfigurationChanged() : NewConfig = {1.3 310mcc260mnc [en_US] ldltr sw411dp w411dp h914dp 420dpi nrml long compactNeeded port finger qwerty/v/v dpad/v winConfig={ mBounds=Rect(0, 0 - 1080, 2400) mAppBounds=Rect(0, 0 - 1080, 2400) mMaxBounds=Rect(0, 0 - 1080, 2400) mDisplayRotation=ROTATION_0 mWindowingMode=fullscreen mActivityType=undefined mAlwaysOnTop=undefined mRotation=ROTATION_0} s.82 fontWeightAdjustment=0}
+11-28 15:20:06.900  1039  1100 V ShellDesktopMode: DesktopDisplayEventHandler: displayAreaChanged in displayId=0, keyguardLocked=false
+11-28 15:20:06.901  1039  1100 V ShellDesktopMode: DesktopDisplayEventHandler: handlePotentialReconnect: No preserved display found for uniqueDisplayId=local:4619827259835644672; aborting.
+11-28 15:20:06.901   551  4491 E EmulatedRequestState: InitializeSensorSettings: Unsupported rotate and crop mode: 1
+11-28 15:20:06.901  1039  1100 V ShellDesktopMode: DesktopDisplayEventHandler: createDefaultDesksIfNeeded displays=[0] userId=null
+11-28 15:20:06.901   551  4491 E EmulatedLogicalState: InitializeLogicalSettings: Initialization of physical sensor settings for device id: 4  failed!
+11-28 15:20:06.903  1194  1194 D TaskbarManager: onConfigurationChanged: | configDiff={CONFIG_FONT_SCALE} displayId=0 isDefaultDisplay=true
+11-28 15:20:06.903  1194  1194 D TaskbarManager: onConfigurationChanged: call recreateTaskbars displayId=0 isDefaultDisplay=true
+11-28 15:20:06.903  1194  1194 D TaskbarManager: recreateTaskbarForDisplay:  displayId=0 isDefaultDisplay=true
+11-28 15:20:06.903  1194  1194 D TaskbarManager: recreateTaskbarForDisplay: getting device profile displayId=0 isDefaultDisplay=true
+11-28 15:20:06.903  1194  1194 D TaskbarManager: recreateTaskbarForDisplay: destroying taskbar displayId=0 isDefaultDisplay=true
+11-28 15:20:06.903  1194  1194 D TaskbarManager: destroyTaskbarForDisplay displayId=0 isDefaultDisplay=true
+11-28 15:20:06.904  1039  1100 V ShellDragAndDrop: Display changed: 0
+11-28 15:20:06.911  1039  1100 V ShellDesktopMode: DesktopDisplayEventHandler: shouldCreateOrWarmUpDesk skipping displayId=0 reason: desktop ineligible
+11-28 15:20:06.919  1039  1039 I NoBackGesture: Config changed: newConfig={1.3 310mcc260mnc [en_US] ldltr sw411dp w411dp h914dp 420dpi nrml long compactNeeded port finger qwerty/v/v dpad/v winConfig={ mBounds=Rect(0, 0 - 1080, 2400) mAppBounds=Rect(0, 0 - 1080, 2400) mMaxBounds=Rect(0, 0 - 1080, 2400) mDisplayRotation=ROTATION_0 mWindowingMode=fullscreen mActivityType=undefined mAlwaysOnTop=undefined mRotation=ROTATION_0} s.89 fontWeightAdjustment=0} lastReportedConfig={1.0 310mcc260mnc [en_US] ldltr sw411dp w411dp h914dp 420dpi nrml long compactNeeded port finger qwerty/v/v dpad/v winConfig={ mBounds=Rect(0, 0 - 1080, 2400) mAppBounds=Rect(0, 0 - 1080, 2400) mMaxBounds=Rect(0, 0 - 1080, 2400) mDisplayRotation=ROTATION_0 mWindowingMode=fullscreen mActivityType=undefined mAlwaysOnTop=undefined mRotation=ROTATION_0} s.21 fontWeightAdjustment=0}
+11-28 15:20:06.920  1194  1194 V HandoffSuggestionMetadataLoader: cancelPendingLoads
+11-28 15:20:06.920  1194  1194 V HandoffSuggestionList: Clearing Handoff suggestions.
+11-28 15:20:06.920  1039  1039 D NavigationModeController: getCurrentUserContext: contextUser=0 currentUser=0
+11-28 15:20:06.920  1194  1194 D TaskbarManager: recreateTaskbarForDisplay: isTaskbarEnabled=true [dp != null (i.e. mUserUnlocked)]=true dp.isTaskbarPresent=false isTaskbarEnabled=true displayExists=true displayId=0 isDefaultDisplay=true
+11-28 15:20:06.922  1194  1194 D TaskbarManager: recreateTaskbarForDisplay: creating taskbar displayId=0 isDefaultDisplay=true
+11-28 15:20:06.935   551  4491 E EmulatedRequestState: InitializeSensorSettings: Unsupported rotate and crop mode: 1
+11-28 15:20:06.935   551  4491 E EmulatedLogicalState: InitializeLogicalSettings: Initialization of physical sensor settings for device id: 4  failed!
+11-28 15:20:06.941  1538  1538 I GoogleInputMethodService: GoogleInputMethodService.onConfigurationChanged():1031 onConfigurationChanged() : NewConfig = {1.3 310mcc260mnc [en_US] ldltr sw411dp w411dp h914dp 420dpi nrml long compactNeeded port finger qwerty/v/v dpad/v winConfig={ mBounds=Rect(0, 0 - 1080, 2400) mAppBounds=Rect(0, 0 - 1080, 2400) mMaxBounds=Rect(0, 0 - 1080, 2400) mDisplayRotation=ROTATION_0 mWindowingMode=fullscreen mActivityType=undefined mAlwaysOnTop=undefined mRotation=ROTATION_0} s.24 fontWeightAdjustment=0}
+11-28 15:20:06.942  1538  1538 I GoogleInputMethodService: GoogleInputMethodService.onConfigurationChanged():1032 device real metrics: DisplayMetrics{density=2.625, width=1080, height=2400, scaledDensity=2.625, xdpi=420.0, ydpi=420.0}
+11-28 15:20:06.944  1538  1538 I GoogleInputMethodService: GoogleInputMethodService.onConfigurationChanged():1040 Maybe update OEM display config because of configuration change
+11-28 15:20:06.945  1039  1039 I NoBackGesture: NavbarController: newConfig={1.3 310mcc260mnc [en_US] ldltr sw411dp w411dp h914dp 420dpi nrml long compactNeeded port finger qwerty/v/v dpad/v winConfig={ mBounds=Rect(0, 0 - 1080, 2400) mAppBounds=Rect(0, 0 - 1080, 2400) mMaxBounds=Rect(0, 0 - 1080, 2400) mDisplayRotation=ROTATION_0 mWindowingMode=fullscreen mActivityType=undefined mAlwaysOnTop=undefined mRotation=ROTATION_0} s.89 fontWeightAdjustment=0} mTaskbarDelegate initialized=true willApplyConfigToNavbars=true navBarCount=0
+11-28 15:20:06.946  1538  1538 I InputMethodEntryManager: InputMethodEntryManager.notifyCurrentInputMethodEntryOnContextChanged():550 notifyCurrentInputMethodEntryOnContextChanged()
+11-28 15:20:06.947  1538  1538 I InputMethodEntryManager: InputMethodEntryManager.notifyCurrentInputMethodEntryOnContextChanged():571 Notify current input method entry changed on context change
+11-28 15:20:06.952  1538  1538 I SystemSubtypesReportModule: SystemSubtypesReportModule$2.onCurrentInputMethodEntryChanged():141 entry: en-US, source: UNSPECIFIED
+11-28 15:20:06.959  1538  1538 I KeyboardContextProvider: KeyboardContextProvider$KeyboardContextCache.createKeyboardContext():173 createKeyboardContext(): en-US, kpz@afc2ddf(com.android.inputmethod.latin.LatinIME@54cd1a9), {1.3 310mcc260mnc [en_US] ldltr sw411dp w411dp h914dp 420dpi nrml long compactNeeded port finger qwerty/v/v dpad/v winConfig={ mBounds=Rect(0, 0 - 1080, 2400) mAppBounds=Rect(0, 0 - 1080, 2400) mMaxBounds=Rect(0, 0 - 1080, 2400) mDisplayRotation=ROTATION_0 mWindowingMode=fullscreen mActivityType=undefined mAlwaysOnTop=undefined mRotation=ROTATION_0} s.24 fontWeightAdjustment=0}
+11-28 15:20:06.959  1538  1538 I GoogleInputMethodService: GoogleInputMethodService.onCurrentInputMethodEntryChanged():2305 onCurrentInputMethodEntryChanged(): imeDefsChanged=false, entryLanguageVariantChanged=false, keyboardContextChanged=true
+11-28 15:20:06.961  1538  1538 I KeyboardContextProvider: KeyboardContextProvider.setBaseContextAndInvalidKeyboardContextCache():88 setBaseContextAndInvalidKeyboardContextCache(): com.android.inputmethod.latin.LatinIME@54cd1a9
+11-28 15:20:06.963  1538  1538 I DeviceModeModule: DeviceModeModule.calculateAndNotify():225 Device mode 'phone' from display metrics 'DisplayMetrics{density=0.0, width=1080, height=2400, scaledDensity=0.0, xdpi=420.0, ydpi=420.0}' or smallestScreenWidthDp: 411
+11-28 15:20:06.964  1538  1538 I GoogleInputMethodService: GoogleInputMethodService.onConfigurationChanged():1062 changedMask : 40000000
+11-28 15:20:06.964  1538  1538 I GoogleInputMethodService: GoogleInputMethodService.clearInputMethodServiceData():1017 clearInputMethodServiceData for configurationChange
+11-28 15:20:06.970   551  4491 E EmulatedRequestState: InitializeSensorSettings: Unsupported rotate and crop mode: 1
+11-28 15:20:06.971   551  4491 E EmulatedLogicalState: InitializeLogicalSettings: Initialization of physical sensor settings for device id: 4  failed!
+11-28 15:20:06.971  1538  1538 I GoogleInputMethodService: GoogleInputMethodService.discardAllKeyboardViewAndInputView():1232 discardAllKeyboardViewAndInputView()
+11-28 15:20:06.971  1039  1100 D Bubbles : update positioner: insets=Insets{left=0, top=63, right=0, bottom=63} largeScreen=false smallTablet=false isBubbleBar=false bounds=Rect(0, 0 - 1080, 2400)
+11-28 15:20:06.978   660  4227 D Camera2ClientBase: Camera 1: Shutting down
+11-28 15:20:06.979  1538  1538 I AbstractOpenableExtension: AbstractOpenableExtension.maybeDestroyExistingKeyboardGroupManager():534 Destroy existing keyboard group manager in emp
+11-28 15:20:06.980  1538  1538 I AbstractOpenableExtension: AbstractOpenableExtension.createKeyboardGroupManagerListenableFuture():121 Create keyboard group manager listenable future in emp
+11-28 15:20:06.985  1538  1538 I AbstractOpenableExtension: AbstractOpenableExtension.maybeDestroyExistingKeyboardGroupManager():534 Destroy existing keyboard group manager in gvt
+11-28 15:20:06.986  1538  1538 I AbstractOpenableExtension: AbstractOpenableExtension.createKeyboardGroupManagerListenableFuture():121 Create keyboard group manager listenable future in gvt
+11-28 15:20:06.987  1538  2125 I SP      : Registering emoticon_content_description.2022081613, url: https://www.gstatic.com/android/keyboard/emoticon_content_desc/202208161305/superpacks_manifest.json, constraints: W:*:*:*, flags: bg, requested: 2022081613, current: -1
+11-28 15:20:06.987  1538  1538 I AbstractOpenableExtension: AbstractOpenableExtension.maybeDestroyExistingKeyboardGroupManager():534 Destroy existing keyboard group manager in gyp
+11-28 15:20:06.987  1538  1538 I AbstractOpenableExtension: AbstractOpenableExtension.createKeyboardGroupManagerListenableFuture():121 Create keyboard group manager listenable future in gyp
+11-28 15:20:06.996  1538  1538 I WindowMetricsNotification: WindowMetricsNotification.notify():159 pdp[bounds=Rect(0, 63 - 1080, 2400), insets=Rect(0, 0 - 0, 0), densityDpi=420, smallestScreenWidthDp=411, displayWidth=1080, displayHeight=2400, xdpi=420.0, ydpi=420.0, isTrustable=true, displayId=0]; DisplayMetrics{density=2.625, width=1080, height=2400, scaledDensity=2.625, xdpi=420.0, ydpi=420.0}
+11-28 15:20:06.996  1538  1538 I WindowMetricsHelper: WindowMetricsHelper.predictAndNotify():145 Window metrics predicted.
+11-28 15:20:06.996  1538  1538 I GoogleInputMethodService: GoogleInputMethodService.initializeInputMethodServiceData():842 initializeInputMethodServiceData for lpl{languageTag=en-US, variant=qwerty, hasLocalizedResources=true, conditionCacheKey=_app_first_start_timestamp=1795603836416_bottom_period_popup_slash=false_cache_additional_ime_defs_for_condition_change=false_cache_ime_defs_for_condition_change=false_deprecate_long_press_space_for_ime_picker=false_device=phone_device_size=default_enable_access_points_in_password_number=true_enable_correction_settings_updates=true_enable_flick_symbols=true_enable_more_candidates_view_for_multilingual=false_enable_number_row=false_enable_number_row_in_password=true_enable_pk_simulator=false_enable_pk_simulator_setting=false_enable_preemptive_decode=true_enable_secondary_digits=true_enable_secondary_symbols=false_expressions=normal_four_or_more_letter_rows=false_keyboard_mode=normal_language=en-US_layout_9key_split=false_orientation=portrait_physical_keyboard=qwerty_pref_enable_flick_symbols=false_rtl_layout=false_show_comma_key=true_show_period_key=true_show_secondary_digits=true_show_suggestion_strip=true_show_suggestions=true_split_with_duplicate_keys=true_true=true_variant=qwerty_writing_helper_enable_by_word_revert=false, imeDef.stringId=ime_english_united_states, imeDef.className=com.google.android.apps.inputmethod.libs.latin5.LatinIme, imeDef.languageTag=en-US}
+11-28 15:20:06.999  1538  6227 I KeyboardGroupDefParser: KeyboardGroupDefParser.parseKeyboardGroupDef():86 parseKeyboardGroupDef() 2132213993 -> 0_resource_name_obfuscated : WaitTime = 2 ms : RunTime = 10 ms
+11-28 15:20:07.004  1538  6227 I KeyboardGroupDefParser: KeyboardGroupDefParser.parseKeyboardGroupDef():86 parseKeyboardGroupDef() 2132213997 -> 0_resource_name_obfuscated : WaitTime = 12 ms : RunTime = 4 ms
+11-28 15:20:07.004  1538  6228 I KeyboardGroupDefParser: KeyboardGroupDefParser.parseKeyboardGroupDef():86 parseKeyboardGroupDef() 2132213996 -> 0_resource_name_obfuscated : WaitTime = 1 ms : RunTime = 15 ms
+11-28 15:20:07.004   551  4491 E EmulatedRequestState: InitializeSensorSettings: Unsupported rotate and crop mode: 1
+11-28 15:20:07.004   551  4491 E EmulatedLogicalState: InitializeLogicalSettings: Initialization of physical sensor settings for device id: 4  failed!
+11-28 15:20:07.020   773  1932 D FileUtils: Rounded bytes from 2061946880 to 4000000000
+11-28 15:20:07.023  1538  1538 I KeyboardThemeProvider: KeyboardThemeProvider.applyKeyboardTheme():27 Apply keyboard theme: theme,!gsf,!pgsans,!pgsf,!use_system_font,BORDER,FLAVOR_DPI=XXHDPI,GOOGLE_ICONS,IS_LIGHT,KEYBOARD_WIDTH_CATEGORY=NORMAL,KEY_BORDER_SHAPE=1,LIGHT_THEME=true,PHYSICAL_DIAGONAL=6.1297245,POPUP,SCREEN_SHORTEST_WIDTH=411,SCREEN_SHORTEST_WIDTH_NO_SCALE=411,SW400DP,XXHDPI,bottom4dp,enable_emoji_kitchen_browse_color_v2=true,enable_google_fonts_icons=true,enable_popup_on_keypress=true,keyboard_redesign_google_sans=true,non_linear_scale,noshadow,overlay_builtin_dynamic_color_light_base.binarypb:gm3-light-fffaf8fe-ff4e5e8b-4fee5571778e92b08ff4c2d3d15b9d3f,roundedchip,silkpopup
+11-28 15:20:07.028  1144  1208 E SystemServiceRegistry: No service published for: ethernet
+11-28 15:20:07.028  1144  1208 E SystemServiceRegistry: android.os.ServiceManager$ServiceNotFoundException: No service published for: ethernet
+11-28 15:20:07.028  1144  1208 E SystemServiceRegistry: 	at android.os.ServiceManager.getServiceOrThrow(ServiceManager.java:203)
+11-28 15:20:07.028  1144  1208 E SystemServiceRegistry: 	at android.app.SystemServiceRegistry$156.createService(SystemServiceRegistry.java:2418)
+11-28 15:20:07.028  1144  1208 E SystemServiceRegistry: 	at android.app.SystemServiceRegistry$CachedServiceFetcher.getService(SystemServiceRegistry.java:2531)
+11-28 15:20:07.028  1144  1208 E SystemServiceRegistry: 	at android.app.SystemServiceRegistry.getSystemService(SystemServiceRegistry.java:2063)
+11-28 15:20:07.028  1144  1208 E SystemServiceRegistry: 	at android.app.ContextImpl.getSystemService(ContextImpl.java:2434)
+11-28 15:20:07.028  1144  1208 E SystemServiceRegistry: 	at android.content.ContextWrapper.getSystemService(ContextWrapper.java:991)
+11-28 15:20:07.028  1144  1208 E SystemServiceRegistry: 	at com.android.networkstack.tethering.Tethering.isEthernetSupported(Tethering.java:1853)
+11-28 15:20:07.028  1144  1208 E SystemServiceRegistry: 	at com.android.networkstack.tethering.Tethering.makeSupportedDownstreams(Tethering.java:2834)
+11-28 15:20:07.028  1144  1208 E SystemServiceRegistry: 	at com.android.networkstack.tethering.Tethering.updateSupportedDownstreams(Tethering.java:2808)
+11-28 15:20:07.028  1144  1208 E SystemServiceRegistry: 	at com.android.networkstack.tethering.Tethering.updateConfiguration(Tethering.java:561)
+11-28 15:20:07.028  1144  1208 E SystemServiceRegistry: 	at com.android.networkstack.tethering.Tethering.-$$Nest$mupdateConfiguration(Tethering.java:0)
+11-28 15:20:07.028  1144  1208 E SystemServiceRegistry: 	at com.android.networkstack.tethering.Tethering$StateReceiver.onReceive(Tethering.java:1376)
+11-28 15:20:07.028  1144  1208 E SystemServiceRegistry: 	at android.app.LoadedApk$ReceiverDispatcher$Args.lambda$getRunnable$0(LoadedApk.java:1931)
+11-28 15:20:07.028  1144  1208 E SystemServiceRegistry: 	at android.app.LoadedApk$ReceiverDispatcher$Args.$r8$lambda$mcNAAl1SQ4MyJPyDg8TJ2x2h0Rk(Unknown Source:0)
+11-28 15:20:07.028  1144  1208 E SystemServiceRegistry: 	at android.app.LoadedApk$ReceiverDispatcher$Args$$ExternalSyntheticLambda0.run(D8$$SyntheticClass:0)
+11-28 15:20:07.028  1144  1208 E SystemServiceRegistry: 	at android.os.Handler.handleCallback(Handler.java:1070)
+11-28 15:20:07.028  1144  1208 E SystemServiceRegistry: 	at android.os.Handler.dispatchMessage(Handler.java:125)
+11-28 15:20:07.028  1144  1208 E SystemServiceRegistry: 	at android.os.Looper.dispatchMessage(Looper.java:333)
+11-28 15:20:07.028  1144  1208 E SystemServiceRegistry: 	at android.os.Looper.loopOnce(Looper.java:263)
+11-28 15:20:07.028  1144  1208 E SystemServiceRegistry: 	at android.os.Looper.loop(Looper.java:367)
+11-28 15:20:07.028  1144  1208 E SystemServiceRegistry: 	at android.os.HandlerThread.run(HandlerThread.java:139)
+11-28 15:20:07.038  1194  1194 I ContextualSearchInvoker: Contextual Search invocation failed: no ContextualSearchManager
+11-28 15:20:07.038  1194  1194 D StatsLog: LAUNCHER_LAUNCH_ASSISTANT_FAILED_SERVICE_ERROR
+11-28 15:20:07.041  1039  1039 D ShadeStateTraceLogger: New configuration change from Shade window. smallestScreenWidthDp: 411, densityDpi: 420
+11-28 15:20:07.042  1538  2125 I SP      : Scheduling job with delay of 0s for {W:b:u:l, bg}, 1 candidates
+11-28 15:20:07.049   773  1314 D ActivityManager: sync unfroze 4713 android.process.acore for 7
+11-28 15:20:07.051   773   988 D BackgroundInstallControlService: Package event received: 0
+11-28 15:20:07.052  1194  1194 D AlphabeticIndexCompat: computeSectionName: cs: Settings sectionName: S
+11-28 15:20:07.052  1194  1194 D AlphabeticIndexCompat: computeSectionName: cs: Photos sectionName: P
+11-28 15:20:07.053  1194  1194 D AlphabeticIndexCompat: computeSectionName: cs: Battery sectionName: B
+11-28 15:20:07.053  1194  1194 D AlphabeticIndexCompat: computeSectionName: cs: Chrome sectionName: C
+11-28 15:20:07.053   773   988 D BackgroundInstallControlService: Package event received: 0
+11-28 15:20:07.053  1194  1194 D AlphabeticIndexCompat: computeSectionName: cs: Gmail sectionName: G
+11-28 15:20:07.053   773   988 D BackgroundInstallControlService: Package event received: 0
+11-28 15:20:07.053  1194  1194 D AlphabeticIndexCompat: computeSectionName: cs: Drive sectionName: D
+11-28 15:20:07.053   773   988 D BackgroundInstallControlService: Package event received: 0
+11-28 15:20:07.054  1194  1194 D AlphabeticIndexCompat: computeSectionName: cs: Clock sectionName: C
+11-28 15:20:07.055  1194  1194 D AlphabeticIndexCompat: computeSectionName: cs: Contacts sectionName: C
+11-28 15:20:07.055  1194  1194 D AlphabeticIndexCompat: computeSectionName: cs: Calendar sectionName: C
+11-28 15:20:07.055  1194  1194 D AlphabeticIndexCompat: computeSectionName: cs: Maps sectionName: M
+11-28 15:20:07.056  1194  1194 D AlphabeticIndexCompat: computeSectionName: cs: YouTube Music sectionName: Y
+11-28 15:20:07.056   773  1312 E JobScheduler.JobStatus: App com.google.android.inputmethod.latin became active but still in NEVER bucket
+11-28 15:20:07.056  1194  1194 D AlphabeticIndexCompat: computeSectionName: cs: YouTube sectionName: Y
+11-28 15:20:07.056  1194  1194 D AlphabeticIndexCompat: computeSectionName: cs: Google sectionName: G
+11-28 15:20:07.057  1194  1194 D AlphabeticIndexCompat: computeSectionName: cs: Android System Intelligence sectionName: A
+11-28 15:20:07.057  1194  1194 D AlphabeticIndexCompat: computeSectionName: cs: Digital Wellbeing sectionName: D
+11-28 15:20:07.057  1194  1194 D AlphabeticIndexCompat: computeSectionName: cs: Conversations sectionName: C
+11-28 15:20:07.059  1538  1538 I AndroidIME: InputBundleManager.loadActiveInputBundleId():528 loadActiveInputBundleId: und-Latn-x-password, password
+11-28 15:20:07.060  1194  1194 D TaskbarManager: createTaskbarUIControllerForRecentsViewContainer displayId=0 isDefaultDisplay=true
+11-28 15:20:07.060  1194  1194 D TaskbarManager: recreateTaskbarForDisplay: adding rootView displayId=0 isDefaultDisplay=true
+11-28 15:20:07.060  1194  1194 D TaskbarManager: addTaskbarRootViewToWindow: displayId=0 isDefaultDisplay=true
+11-28 15:20:07.061  1194  1194 D TaskbarManager: addTaskbarRootViewToWindow: rootLayout already added! displayId=0 isDefaultDisplay=true
+11-28 15:20:07.061  1194  1194 D TaskbarManager: getTaskbarRootLayoutForDisplay: displayId=0 isDefaultDisplay=true
+11-28 15:20:07.061  1194  1194 D TaskbarManager: recreateTaskbarForDisplay: adding root layout displayId=0 isDefaultDisplay=true
+11-28 15:20:07.062  1194  1194 D b/254119092: DisplayController#onConfigurationChanged: {1.3 310mcc260mnc [en_US] ldltr sw411dp w411dp h914dp 420dpi nrml long compactNeeded port finger qwerty/v/v dpad/v winConfig={ mBounds=Rect(0, 0 - 1080, 2400) mAppBounds=Rect(0, 0 - 1080, 2400) mMaxBounds=Rect(0, 0 - 1080, 2400) mDisplayRotation=ROTATION_0 mWindowingMode=fullscreen mActivityType=undefined mAlwaysOnTop=undefined mRotation=ROTATION_0} s.24 fontWeightAdjustment=0}
+11-28 15:20:07.065  1538  1538 I GoogleInputMethodService: GoogleInputMethodService.onStartInput():1318 onStartInput(EditorInfo{EditorInfo{packageName=com.lensora.ai, inputType=0, inputTypeString=NULL, enableLearning=false, autoCorrection=false, autoComplete=false, imeOptions=0, privateImeOptions=null, actionName=UNSPECIFIED, actionLabel=null, initialSelStart=-1, initialSelEnd=-1, initialCapsMode=0, label=null, fieldId=0, fieldName=null, extras=null, hintText=null, hintLocales=[]}}, true)
+11-28 15:20:07.065  1538  1538 W SessionManager: SessionManager.beginSession():53 Try to begin an already begun session [INPUT_SESSION], end it first
+11-28 15:20:07.066   773  1314 D DisplayManagerService: supportedStates=[0]
+11-28 15:20:07.066   773  1314 D DisplayManagerService: possibleInfos={DisplayInfo{"Built-in Screen", displayId 0, displayGroupId 0, FLAG_SECURE, FLAG_SUPPORTS_PROTECTED_BUFFERS, FLAG_TRUSTED, real 1080 x 2400, largest app 2400 x 2400, smallest app 1080 x 1080, appVsyncOff 1000000, presDeadline 16666666, mode 1, renderFrameRate 60.000004, hasArrSupport false, frameRateCategoryRate FrameRateCategoryRate {normal=60.0, high=90.0}, supportedRefreshRates [60.000004], defaultMode 1, userPreferredModeId -1, supportedModes [{id=1, parentModeId=-1, flags=, width=1080, height=2400, fps=60.000004, vsync=60.000004, alternativeRefreshRates=[], supportedHdrTypes=[]}], appsSupportedModes [{id=1, parentModeId=-1, flags=, width=1080, height=2400, fps=60.000004, vsync=60.000004, alternativeRefreshRates=[], supportedHdrTypes=[]}], hdrCapabilities HdrCapabilities{mSupportedHdrTypes=[], mMaxLuminance=500.0, mMaxAverageLuminance=500.0, mMinLuminance=0.0}, isForceSdr false, userDisabledHdrTypes [], minimalPostProcessingSupported false, rotation 0, state ON, committedState ON, type INTERNAL, uniqueId "local:4619827259835644672", app 1080 x 2400, density 420 (420.0 x 420.0) dpi, layerStack 0, colorMode 0, supportedColorModes [0], address {port=0, model=0x401cec6a7a2b7b}, deviceProductInfo DeviceProductInfo{name=EMU_display_0, manufacturerPnpId=GGL, productId=1, modelYear=null, manufactureDate=ManufactureDate{week=27, year=2006}, connectionToSinkType=1, edidStructureMetadata=EdidStructureMetadata{version=0, revision=0}, videoInputType=0}, removeMode 0, refreshRateOverride 0.0, brightnessMinimum 0.035433073, brightnessMaximum 1.0, brightnessDefault 0.39763778, brightnessDim 0.05, installOrientation ROTATION_0, layoutLimitedRefreshRate null, hdrSdrRatio not_available, thermalRefreshRateThrottling {}, thermalBrightnessThrottlingDataId default, canHostTasks true}}
+11-28 15:20:07.068   773  1932 W PackageConfigPersister: App-specific configuration not found for packageName: com.lensora.ai and userId: 0
+11-28 15:20:07.069  1538  1538 I Module  : DeviceLockedStatusModuleProvider$Module.updateDeviceLockedStatus():100 repeatCheckTimes = 1, locked = false
+11-28 15:20:07.071  1538  1538 I AbstractOpenableExtension: AbstractOpenableExtension$3.onSuccess():552 KeyboardGroupManager destroyed in emp.
+11-28 15:20:07.071  1538  1538 I AbstractOpenableExtension: AbstractOpenableExtension$3.onSuccess():552 KeyboardGroupManager destroyed in gvt.
+11-28 15:20:07.072  1538  1538 I AbstractOpenableExtension: AbstractOpenableExtension$3.onSuccess():552 KeyboardGroupManager destroyed in gyp.
+11-28 15:20:07.083  4713  4728 W Looper  : Slow delivery took 921597ms android.bg app=android.process.acore main=false group=FOREGROUND h=android.database.sqlite.SQLiteConnectionPool$IdleConnectionHandler c=null m=1
+11-28 15:20:07.085  1039  1039 W ConstraintSet: Unknown attribute 0x39   0
+11-28 15:20:07.085   773  1312 E JobScheduler.JobStatus: App com.google.android.inputmethod.latin became active but still in NEVER bucket
+11-28 15:20:07.087  1039  1039 W ConstraintSet: Unknown attribute 0x39   0
+11-28 15:20:07.088  1039  1039 W ConstraintSet: Unknown attribute 0x39   0
+11-28 15:20:07.088   660  4227 I CameraLatencyHistogram: ProcessCaptureRequest latency histogram (19225) samples:
+11-28 15:20:07.088   660  4227 I CameraLatencyHistogram:        40     80    120    160    200    240    280    320    360    inf (max ms)
+11-28 15:20:07.088   660  4227 I CameraLatencyHistogram:      99.16   0.48   0.07   0.00   0.01   0.01   0.01   0.00   0.00   0.27 (%)
+11-28 15:20:07.089   660  4502 I CameraService: Stop camera streaming for com.lensora.ai (PID 4361, UID 10227)
+11-28 15:20:07.113  1194  1206 W s.nexuslauncher: Reducing the number of considered missed Gc histogram windows from 103 to 100
+11-28 15:20:07.130  1538  2125 I SP      : Scheduling: download registered, 0 started, 0 paused, 1 scheduled, 1 pending: manifests:emoticon_content_description-2022081613 * {W:b:u:l, bg}
+11-28 15:20:07.131  1538  2125 I SuperpacksManagerImpl: SuperpacksManagerImpl$3$1.onFailure():574 emoticon_content_description.registerManifest() cancelled
+11-28 15:20:07.157   660  4227 I CameraProviderManager: Camera device device@1.1/internal/1 torch status is now AVAILABLE_OFF
+11-28 15:20:07.157   660  4227 I CameraService: onTorchStatusChangedLocked: Torch status changed for cameraId=1, newStatus=1
+11-28 15:20:07.157   660  4227 W libbinder.IPCThreadState: Sending oneway calls to frozen process.
+11-28 15:20:07.159   551   551 I StreamBufferCacheManager: ~StreamBufferCacheManager: Destroying stream buffer cache manager.
+11-28 15:20:07.159   551  4510 I StreamBufferCacheManager: WorkloadThreadLoop: Exiting stream buffer cache manager workload thread.
+11-28 15:20:07.163   660  4227 I CameraLatencyHistogram: Stream 0 dequeueBuffer latency histogram (19174) samples:
+11-28 15:20:07.163   660  4227 I CameraLatencyHistogram:         5     10     15     20     25     30     35     40     45    inf (max ms)
+11-28 15:20:07.163   660  4227 I CameraLatencyHistogram:      99.42   0.47   0.07   0.02   0.01   0.01   0.01   0.00   0.00   0.01 (%)
+11-28 15:20:07.166   660  4227 I CameraLatencyHistogram: Stream 1 dequeueBuffer latency histogram (53) samples:
+11-28 15:20:07.166   660  4227 I CameraLatencyHistogram:         5     10     15     20     25     30     35     40     45    inf (max ms)
+11-28 15:20:07.166   660  4227 I CameraLatencyHistogram:      94.34   5.66   0.00   0.00   0.00   0.00   0.00   0.00   0.00   0.00 (%)
+11-28 15:20:07.168   660  4227 W libbinder.IPCThreadState: Sending oneway calls to frozen process.
+11-28 15:20:07.169   660  4227 I CameraService: disconnect: Disconnected client for camera 1 for PID 4361
+11-28 15:20:07.177  4361  4506 W MessageQueue: Handler (android.os.Handler) {5c81ceb} sending message to a Handler on a dead thread
+11-28 15:20:07.177  4361  4506 W MessageQueue: java.lang.IllegalStateException: Handler (android.os.Handler) {5c81ceb} sending message to a Handler on a dead thread
+11-28 15:20:07.177  4361  4506 W MessageQueue: 	at android.os.MessageQueue.logDeadThread(MessageQueue.java:1452)
+11-28 15:20:07.177  4361  4506 W MessageQueue: 	at android.os.MessageQueue.enqueueMessageLegacy(MessageQueue.java:1465)
+11-28 15:20:07.177  4361  4506 W MessageQueue: 	at android.os.MessageQueue.enqueueMessage(MessageQueue.java:1539)
+11-28 15:20:07.177  4361  4506 W MessageQueue: 	at android.os.Handler.enqueueMessage(Handler.java:829)
+11-28 15:20:07.177  4361  4506 W MessageQueue: 	at android.os.Handler.sendMessageAtTime(Handler.java:771)
+11-28 15:20:07.177  4361  4506 W MessageQueue: 	at android.os.Handler.sendMessageDelayed(Handler.java:741)
+11-28 15:20:07.177  4361  4506 W MessageQueue: 	at android.os.Handler.post(Handler.java:461)
+11-28 15:20:07.177  4361  4506 W MessageQueue: 	at android.hardware.camera2.impl.CameraDeviceImpl$CameraHandlerExecutor.execute(CameraDeviceImpl.java:2853)
+11-28 15:20:07.177  4361  4506 W MessageQueue: 	at android.hardware.camera2.impl.CameraDeviceImpl$ClientStateCallback.onClosed(CameraDeviceImpl.java:348)
+11-28 15:20:07.177  4361  4506 W MessageQueue: 	at android.hardware.camera2.impl.CameraDeviceImpl$7.run(CameraDeviceImpl.java:301)
+11-28 15:20:07.177  4361  4506 W MessageQueue: 	at java.util.concurrent.ThreadPoolExecutor.runWorker(ThreadPoolExecutor.java:1154)
+11-28 15:20:07.177  4361  4506 W MessageQueue: 	at java.util.concurrent.ThreadPoolExecutor$Worker.run(ThreadPoolExecutor.java:652)
+11-28 15:20:07.177  4361  4506 W MessageQueue: 	at java.lang.Thread.run(Thread.java:1563)
+11-28 15:20:07.194  1194  1194 D IDP     : After initGrid:gridName:medium, dbFile:launcher_4_by_6.db, LauncherPrefs GRID_NAME:medium, LauncherPrefs DB_FILE:launcher_4_by_6.db
+11-28 15:20:07.194  1194  1194 D TaskbarManager: mActivity onDeviceProfileChanged displayId=0 isDefaultDisplay=true
+11-28 15:20:07.194  1194  1194 D TaskbarManager: mActivity and mWindowContext agree taskbarIsPresent=false
+11-28 15:20:07.194  1194  1194 D TaskbarManager: mActivity onDeviceProfileChanged displayId=0 isDefaultDisplay=true
+11-28 15:20:07.194  1194  1194 D TaskbarManager: mActivity and mWindowContext agree taskbarIsPresent=false
+11-28 15:20:07.200  4361  4361 I SceneClassifier: SceneClassifier closed
+11-28 15:20:07.203  4361  4361 D WindowOnBackDispatcher: setTopOnBackInvokedCallback (unwrapped): null
+11-28 15:20:07.207   773  1314 D CoreBackPreview: Window{b0bd82e u0 com.lensora.ai/com.lensora.ai.MainActivity}: Setting back callback null
+11-28 15:20:07.211  1194  1194 D TaskbarManager: QuickstepLauncher#onDeviceProfileChanged displayId=0 isDefaultDisplay=true
+11-28 15:20:07.211  1194  1194 D TaskbarManager: mActivity and mWindowContext agree taskbarIsPresent=false
+11-28 15:20:07.211  1194  1194 D TaskbarManager: QuickstepLauncher#onDeviceProfileChanged displayId=0 isDefaultDisplay=true
+11-28 15:20:07.211  1194  1194 D TaskbarManager: mActivity and mWindowContext agree taskbarIsPresent=false
+11-28 15:20:07.211  1194  1194 D OverviewActionsView: updateActionButtonsVisibility() called: showSingleTaskActions = [true], showGroupActions = [false]
+11-28 15:20:07.212  4361  4361 D ViewRootImpl: Skipping stats log for color mode
+11-28 15:20:07.212  1194  1194 D LauncherStateManager: StateManager.cancelAnimation: animation ongoing: false, partial trace:
+11-28 15:20:07.212  1194  1194 D LauncherStateManager: 	at com.android.launcher3.statemanager.StateManager.reapplyState(go/retraceme f3a19d912c87c27267cfbc05ba0bc7b202ab72a6648bd76225f5f7e128d94583:40)
+11-28 15:20:07.212  1194  1194 D LauncherStateManager: 	at com.android.launcher3.statemanager.StatefulActivity.reapplyUi(go/retraceme f3a19d912c87c27267cfbc05ba0bc7b202ab72a6648bd76225f5f7e128d94583:13)
+11-28 15:20:07.212  1194  1194 D LauncherStateManager: 	at com.android.launcher3.Launcher.onHandleConfigurationChanged(go/retraceme f3a19d912c87c27267cfbc05ba0bc7b202ab72a6648bd76225f5f7e128d94583:23)
+11-28 15:20:07.212  1194  1194 D AllAppsTransitionController: shouldProtectHeader: false skipScrim: false state: Normal stateManager.getState(): Normal
+11-28 15:20:07.222  1194  1194 D KeyboardInsetsHandler: setState, toState:Normal StateManager(mLastStableState:Normal, mCurrentStableState:Normal, mState:Normal, mRestState:null, isInTransition:false)
+11-28 15:20:07.222  1194  1194 D KeyboardInsetsHandler: removePendingImeController: pendingImeController=null
+11-28 15:20:07.222  1194  1194 D ActivityContext: hideKeyboard
+11-28 15:20:07.222  1194  1194 D ActivityContext: isImeShown: false
+11-28 15:20:07.223  1194  1194 D StatsLog: LAUNCHER_GOOGLE_SEARCH_RESTORE_LIST_SIZE_AFTER_ACTIVITY_RESTART
+11-28 15:20:07.225  1194  1194 D CellLayout: Adding view to ShortcutsAndWidgetsContainer: com.google.android.apps.nexuslauncher.qsb.SmartspaceViewContainer{3830346 V.E...... ......I. 0,0-0,0 #7f0a0346 app:id/search_container_workspace}
+11-28 15:20:07.225  1194  1194 D ModelCallbacks: startBinding: hotseat layout was vertical: false and is setting to false
+11-28 15:20:07.226  1194  1194 D Launcher.Workspace: addInScreenFromBind: hotseat inflation with x = 0 and y = 0
+11-28 15:20:07.226  1194  1194 D CellLayout: Adding view to ShortcutsAndWidgetsContainer: com.android.launcher3.views.DoubleShadowBubbleTextView{86941a2 VFED..C.. ......ID 0,0-0,0 #1}
+11-28 15:20:07.226  1194  1194 D Launcher.Workspace: addInScreenFromBind: hotseat inflation with x = 1 and y = 0
+11-28 15:20:07.226  1194  1194 D CellLayout: Adding view to ShortcutsAndWidgetsContainer: com.android.launcher3.views.DoubleShadowBubbleTextView{c1c7e33 VFED..C.. ......ID 0,0-0,0 #2}
+11-28 15:20:07.226  1194  1194 D Launcher.Workspace: addInScreenFromBind: hotseat inflation with x = 2 and y = 0
+11-28 15:20:07.226  1194  1194 D CellLayout: Adding view to ShortcutsAndWidgetsContainer: com.android.launcher3.views.DoubleShadowBubbleTextView{50775f0 VFED..C.. ......ID 0,0-0,0 #3}
+11-28 15:20:07.226  1194  1194 D CellLayout: Adding view to ShortcutsAndWidgetsContainer: com.android.launcher3.views.DoubleShadowBubbleTextView{1bc8769 VFED..C.. ......ID 0,0-0,0 #4}
+11-28 15:20:07.226  1194  1194 D CellLayout: Adding view to ShortcutsAndWidgetsContainer: com.android.launcher3.views.DoubleShadowBubbleTextView{2bdd5ee VFED..C.. ......ID 0,0-0,0 #5}
+11-28 15:20:07.226  1194  1194 D CellLayout: Adding view to ShortcutsAndWidgetsContainer: com.android.launcher3.views.DoubleShadowBubbleTextView{616ca8f VFED..C.. ......ID 0,0-0,0 #6}
+11-28 15:20:07.226  1194  1194 D CellLayout: Adding view to ShortcutsAndWidgetsContainer: com.android.launcher3.views.DoubleShadowBubbleTextView{306011c VFED..C.. ......ID 0,0-0,0 #7}
+11-28 15:20:07.229  1194  1194 D b/387844520: getOutlineOffsetX: measured width = 0, mNormalizedIconSize = 159, last updated width = 0
+11-28 15:20:07.229  1194  1194 D Launcher.Workspace: addInScreenFromBind: hotseat inflation with x = 3 and y = 0
+11-28 15:20:07.229  1194  1194 D CellLayout: Adding view to ShortcutsAndWidgetsContainer: com.android.launcher3.views.PredictedAppIcon{dbf80ab VFED..C.. ......ID 0,0-0,0}
+11-28 15:20:07.230  1194  1194 D ModelCallbacks: Starting async inflation
+11-28 15:20:07.232  1194  1194 D SearchTargetUtil: queryLength=0 size=15
+11-28 15:20:07.233  1194  1194 D SearchTargetUtil: layoutType=short_icon_row resultType=131072 packageName=com.google.android.googlequicksearchbox
+11-28 15:20:07.233  1194  1194 D SearchTargetUtil: layoutType=short_icon_row resultType=131072 packageName=com.google.android.googlequicksearchbox
+11-28 15:20:07.233  1194  1194 D SearchTargetUtil: layoutType=extra_tall_icon_row resultType=131072 packageName=com.google.android.googlequicksearchbox
+11-28 15:20:07.233  1194  1194 D SearchTargetUtil: layoutType=short_icon_row resultType=131072 packageName=com.google.android.googlequicksearchbox
+11-28 15:20:07.233  1194  1194 D SearchTargetUtil: layoutType=short_icon_row resultType=131072 packageName=com.google.android.googlequicksearchbox
+11-28 15:20:07.233  1194  1194 D SearchTargetUtil: layoutType=short_icon_row resultType=131072 packageName=com.google.android.googlequicksearchbox
+11-28 15:20:07.233  1194  1194 D SearchTargetUtil: layoutType=short_icon_row resultType=131072 packageName=com.google.android.googlequicksearchbox
+11-28 15:20:07.233  1194  1194 D SearchTargetUtil: layoutType=extra_tall_icon_row resultType=131072 packageName=com.google.android.googlequicksearchbox
+11-28 15:20:07.233  1194  1194 D SearchTargetUtil: layoutType=short_icon_row resultType=131072 packageName=com.google.android.googlequicksearchbox
+11-28 15:20:07.233  1194  1194 D SearchTargetUtil: layoutType=short_icon_row resultType=131072 packageName=com.google.android.googlequicksearchbox
+11-28 15:20:07.233  1194  1194 D SearchTargetUtil: layoutType=short_icon_row resultType=131072 packageName=com.google.android.googlequicksearchbox
+11-28 15:20:07.233  1194  1194 D SearchTargetUtil: layoutType=short_icon_row resultType=131072 packageName=com.google.android.googlequicksearchbox
+11-28 15:20:07.233  1194  1194 D SearchTargetUtil: layoutType=short_icon_row resultType=131072 packageName=com.google.android.googlequicksearchbox
+11-28 15:20:07.233  1194  1194 D SearchTargetUtil: layoutType=short_icon_row resultType=131072 packageName=com.google.android.googlequicksearchbox
+11-28 15:20:07.233  1194  1194 D SearchTargetUtil: layoutType=extra_tall_icon_row resultType=131072 packageName=com.google.android.googlequicksearchbox
+11-28 15:20:07.233  1194  1194 D AllAppsStore: setApps: apps.length=20
+11-28 15:20:07.233  1194  1194 D AllAppsStore: notifyUpdate: notifying listeners
+11-28 15:20:07.233  1194  1194 D ActivityAllAppsContainerView: onAppsUpdated; number of apps: 20
+11-28 15:20:07.233  1194  1194 D ActivityAllAppsContainerView: rebindAdapters: force: false
+11-28 15:20:07.233  1194  1194 D ActivityAllAppsContainerView: rebindAdapters: Not needed.
+11-28 15:20:07.233  1194  1194 D StatsLog: LAUNCHER_ALLAPPS_COUNT
+11-28 15:20:07.234  1194  1194 D AlphabeticalAppsList: Clearing FastScrollerSections.
+11-28 15:20:07.234  1194  1194 D AlphabeticalAppsList: Adding apps with sections. HasPrivateApps: false
+11-28 15:20:07.234  1194  1194 D AlphabeticalAppsList: addAppsWithSections: adding sectionName: C with appInfoTitle: Calendar
+11-28 15:20:07.234  1194  1194 D AlphabeticalAppsList: addAppsWithSections: adding sectionName: D with appInfoTitle: Drive
+11-28 15:20:07.234  1194  1194 D AlphabeticalAppsList: addAppsWithSections: adding sectionName: F with appInfoTitle: Files
+11-28 15:20:07.234  1194  1194 D AlphabeticalAppsList: addAppsWithSections: adding sectionName: G with appInfoTitle: Gmail
+11-28 15:20:07.234  1194  1194 D AlphabeticalAppsList: addAppsWithSections: adding sectionName: L with appInfoTitle: Lensora_Ai
+11-28 15:20:07.234  1194  1194 D AlphabeticalAppsList: addAppsWithSections: adding sectionName: M with appInfoTitle: Maps
+11-28 15:20:07.234  1194  1194 D AlphabeticalAppsList: addAppsWithSections: adding sectionName: P with appInfoTitle: Phone
+11-28 15:20:07.234  1194  1194 D AlphabeticalAppsList: addAppsWithSections: adding sectionName: S with appInfoTitle: Safety
+11-28 15:20:07.234  1194  1194 D AlphabeticalAppsList: addAppsWithSections: adding sectionName: T with appInfoTitle: TMoble
+11-28 15:20:07.234  1194  1194 D AlphabeticalAppsList: addAppsWithSections: adding sectionName: Y with appInfoTitle: YouTube
+11-28 15:20:07.234  1194  1194 D AlphabeticalAppsList: Adding FastScrollSection duplicate to scroll to the bottom.
+11-28 15:20:07.234  1194  1194 D AlphabeticalAppsList: Clearing FastScrollerSections.
+11-28 15:20:07.234  1194  1194 D AlphabeticalAppsList: Adding apps with sections. HasPrivateApps: false
+11-28 15:20:07.234  1194  1194 D AlphabeticalAppsList: addAppsWithSections: adding sectionName: C with appInfoTitle: Calendar
+11-28 15:20:07.234  1194  1194 D AlphabeticalAppsList: addAppsWithSections: adding sectionName: D with appInfoTitle: Drive
+11-28 15:20:07.234  1194  1194 D AlphabeticalAppsList: addAppsWithSections: adding sectionName: F with appInfoTitle: Files
+11-28 15:20:07.234  1194  1194 D AlphabeticalAppsList: addAppsWithSections: adding sectionName: G with appInfoTitle: Gmail
+11-28 15:20:07.234  1194  1194 D AlphabeticalAppsList: addAppsWithSections: adding sectionName: L with appInfoTitle: Lensora_Ai
+11-28 15:20:07.235  1194  1194 D AlphabeticalAppsList: addAppsWithSections: adding sectionName: M with appInfoTitle: Maps
+11-28 15:20:07.235  1194  1194 D AlphabeticalAppsList: addAppsWithSections: adding sectionName: P with appInfoTitle: Phone
+11-28 15:20:07.235  1194  1194 D AlphabeticalAppsList: addAppsWithSections: adding sectionName: S with appInfoTitle: Safety
+11-28 15:20:07.235  1194  1194 D AlphabeticalAppsList: addAppsWithSections: adding sectionName: T with appInfoTitle: TMoble
+11-28 15:20:07.235  1194  1194 D AlphabeticalAppsList: addAppsWithSections: adding sectionName: Y with appInfoTitle: YouTube
+11-28 15:20:07.235  1194  1194 D AlphabeticalAppsList: Adding FastScrollSection duplicate to scroll to the bottom.
+11-28 15:20:07.238  1194  1194 D AlphabeticIndexCompat: computeSectionName: cs: Settings sectionName: S
+11-28 15:20:07.239  1194  1194 D AlphabeticIndexCompat: computeSectionName: cs: Photos sectionName: P
+11-28 15:20:07.239  1194  1194 D AlphabeticIndexCompat: computeSectionName: cs: Battery sectionName: B
+11-28 15:20:07.240  1194  1194 D AlphabeticIndexCompat: computeSectionName: cs: Chrome sectionName: C
+11-28 15:20:07.240  1194  1194 D AlphabeticIndexCompat: computeSectionName: cs: Gmail sectionName: G
+11-28 15:20:07.241  1194  1194 D AlphabeticIndexCompat: computeSectionName: cs: Drive sectionName: D
+11-28 15:20:07.241  1194  1194 D AlphabeticIndexCompat: computeSectionName: cs: Clock sectionName: C
+11-28 15:20:07.242  1194  1194 D AlphabeticIndexCompat: computeSectionName: cs: Contacts sectionName: C
+11-28 15:20:07.242  1194  1194 D AlphabeticIndexCompat: computeSectionName: cs: Calendar sectionName: C
+11-28 15:20:07.242  1194  1194 D AlphabeticIndexCompat: computeSectionName: cs: Maps sectionName: M
+11-28 15:20:07.243  1194  1194 D AlphabeticIndexCompat: computeSectionName: cs: YouTube Music sectionName: Y
+11-28 15:20:07.243  1194  1194 D AlphabeticIndexCompat: computeSectionName: cs: YouTube sectionName: Y
+11-28 15:20:07.243  1194  1194 D AlphabeticIndexCompat: computeSectionName: cs: Google sectionName: G
+11-28 15:20:07.244  1194  1194 D AlphabeticIndexCompat: computeSectionName: cs: Android System Intelligence sectionName: A
+11-28 15:20:07.244  1194  1194 D AlphabeticIndexCompat: computeSectionName: cs: Digital Wellbeing sectionName: D
+11-28 15:20:07.245  1194  1194 D AlphabeticIndexCompat: computeSectionName: cs: Conversations sectionName: C
+11-28 15:20:07.246  1194  1194 D TaskbarManager: onDisplayInfoChanged: Display density changed displayId=0 isDefaultDisplay=true
+11-28 15:20:07.247  1194  1194 D TaskbarManager: recreateTaskbarForDisplay:  displayId=0 isDefaultDisplay=true
+11-28 15:20:07.247  1194  1194 D TaskbarManager: recreateTaskbarForDisplay: getting device profile displayId=0 isDefaultDisplay=true
+11-28 15:20:07.247  1194  1194 D TaskbarManager: recreateTaskbarForDisplay: destroying taskbar displayId=0 isDefaultDisplay=true
+11-28 15:20:07.247  1194  1194 D TaskbarManager: destroyTaskbarForDisplay displayId=0 isDefaultDisplay=true
+11-28 15:20:07.247  1194  1194 V HandoffSuggestionMetadataLoader: cancelPendingLoads
+11-28 15:20:07.248  1194  1194 V HandoffSuggestionList: Clearing Handoff suggestions.
+11-28 15:20:07.248  1194  1194 D TaskbarManager: recreateTaskbarForDisplay: isTaskbarEnabled=true [dp != null (i.e. mUserUnlocked)]=true dp.isTaskbarPresent=false isTaskbarEnabled=true displayExists=true displayId=0 isDefaultDisplay=true
+11-28 15:20:07.248  1194  1194 D TaskbarManager: recreateTaskbarForDisplay: creating taskbar displayId=0 isDefaultDisplay=true
+11-28 15:20:07.249   773   803 V WindowManager: Unknown focus tokens, dropping reportFocusChanged
+11-28 15:20:07.260  1194  1252 I PluginActionManager[com.android.systemui.action.PLUGIN_BC_SMARTSPACE_DATA]: Found 0 plugins
+11-28 15:20:07.280  4361  4523 E CameraScreen: Error during live AI director preview sampling
+11-28 15:20:07.280  4361  4523 E CameraScreen: androidx.compose.runtime.LeftCompositionCancellationException: The coroutine scope left the composition
+11-28 15:20:07.306  1194  1194 I ContextualSearchInvoker: Contextual Search invocation failed: no ContextualSearchManager
+11-28 15:20:07.306  1194  1194 D StatsLog: LAUNCHER_LAUNCH_ASSISTANT_FAILED_SERVICE_ERROR
+11-28 15:20:07.312  4361  4361 D VRI[MainActivity]: WindowInsets changed: 1080x2400 statusBars:[0,63,0,0] navigationBars:[0,0,0,63] mandatorySystemGestures:[0,63,0,84] 
+11-28 15:20:07.313  4361  4361 D WindowOnBackDispatcher: setTopOnBackInvokedCallback (unwrapped): android.view.ViewRootImpl$$ExternalSyntheticLambda12@79b0177
+11-28 15:20:07.315  1194  1194 D AlphabeticIndexCompat: computeSectionName: cs: Settings sectionName: S
+11-28 15:20:07.315  1194  1194 D AlphabeticIndexCompat: computeSectionName: cs: Photos sectionName: P
+11-28 15:20:07.316  1194  1194 D AlphabeticIndexCompat: computeSectionName: cs: Battery sectionName: B
+11-28 15:20:07.316  1194  1194 D AlphabeticIndexCompat: computeSectionName: cs: Chrome sectionName: C
+11-28 15:20:07.316  1194  1194 D AlphabeticIndexCompat: computeSectionName: cs: Gmail sectionName: G
+11-28 15:20:07.316  1194  1194 D AlphabeticIndexCompat: computeSectionName: cs: Drive sectionName: D
+11-28 15:20:07.317  1194  1194 D AlphabeticIndexCompat: computeSectionName: cs: Clock sectionName: C
+11-28 15:20:07.317  1194  1194 D AlphabeticIndexCompat: computeSectionName: cs: Contacts sectionName: C
+11-28 15:20:07.317  1194  1194 D AlphabeticIndexCompat: computeSectionName: cs: Calendar sectionName: C
+11-28 15:20:07.318  1194  1194 D AlphabeticIndexCompat: computeSectionName: cs: Maps sectionName: M
+11-28 15:20:07.318   773  1990 D CoreBackPreview: Window{8801cd9 u0 com.lensora.ai/com.lensora.ai.MainActivity}: Setting back callback OnBackInvokedCallbackInfo{mCallback=android.window.IOnBackInvokedCallback$Stub$Proxy@414e65a, mPriority=0, mIsAnimationCallback=false, mOverrideBehavior=0}
+11-28 15:20:07.320  1194  1194 D AlphabeticIndexCompat: computeSectionName: cs: YouTube Music sectionName: Y
+11-28 15:20:07.320  1194  1194 D AlphabeticIndexCompat: computeSectionName: cs: YouTube sectionName: Y
+11-28 15:20:07.320  1194  1194 D AlphabeticIndexCompat: computeSectionName: cs: Google sectionName: G
+11-28 15:20:07.321  1194  1194 D AlphabeticIndexCompat: computeSectionName: cs: Android System Intelligence sectionName: A
+11-28 15:20:07.321  1194  1194 D AlphabeticIndexCompat: computeSectionName: cs: Digital Wellbeing sectionName: D
+11-28 15:20:07.321  1194  1194 D AlphabeticIndexCompat: computeSectionName: cs: Conversations sectionName: C
+11-28 15:20:07.322  1194  1194 D TaskbarManager: createTaskbarUIControllerForRecentsViewContainer displayId=0 isDefaultDisplay=true
+11-28 15:20:07.322  1194  1194 D TaskbarManager: recreateTaskbarForDisplay: adding rootView displayId=0 isDefaultDisplay=true
+11-28 15:20:07.322  1194  1194 D TaskbarManager: addTaskbarRootViewToWindow: displayId=0 isDefaultDisplay=true
+11-28 15:20:07.322  1194  1194 D TaskbarManager: addTaskbarRootViewToWindow: rootLayout already added! displayId=0 isDefaultDisplay=true
+11-28 15:20:07.323  1194  1194 D TaskbarManager: getTaskbarRootLayoutForDisplay: displayId=0 isDefaultDisplay=true
+11-28 15:20:07.323  1194  1194 D TaskbarManager: recreateTaskbarForDisplay: adding root layout displayId=0 isDefaultDisplay=true
+11-28 15:20:07.326  1194  1194 D BubbleBarView: BubbleBar RTL properties changed, new layoutDirection=0 previous layoutDirection=-1
+11-28 15:20:07.331   773   988 D BackgroundInstallControlService: Package event received: 0
+11-28 15:20:07.344  4361  4361 I CameraController: Thermal Guard initialized. Current status code: 0
+11-28 15:20:07.370  1194  1194 D ModelCallbacks: Calling onCompleteSignal
+11-28 15:20:07.370  1194  1194 D ViewOnDrawExecutor: markCompleted: executing tasks
+11-28 15:20:07.383  1194  1194 D CannedAnimCoordinator: Wrong controller access from k6.t@5b81600, actual provider null
+11-28 15:20:07.391  1194  1194 D RecentsView: destroy
+11-28 15:20:07.392  1194  1194 D RecentsDependencies: destroyed 251505279
+11-28 15:20:07.392  1194  1194 D RecentsDependencies: also destroyed default scope
+11-28 15:20:07.392  1194  1194 D TaskbarManager: onActivityDestroyed: displayId=0 isDefaultDisplay=true
+11-28 15:20:07.392  1194  1194 D TaskbarManager: onActivityDestroyed: unregistering callbacks displayId=0 isDefaultDisplay=true
+11-28 15:20:07.392  1194  1194 D TaskbarManager: onActivityDestroyed: setting taskbarUIController displayId=0 isDefaultDisplay=true
+11-28 15:20:07.394  1194  1194 D TaskFragmentComponent: destroy task fragment
+11-28 15:20:07.394  1194  1194 D TaskFragmentComponent: java.lang.Exception
+11-28 15:20:07.394  1194  1194 D TaskFragmentComponent: 	at com.google.android.apps.nexuslauncher.overlay.TaskFragmentOverlayManager.onActivityDestroyed(go/retraceme f3a19d912c87c27267cfbc05ba0bc7b202ab72a6648bd76225f5f7e128d94583:59)
+11-28 15:20:07.394  1194  1194 D TaskFragmentComponent: 	at com.android.launcher3.Launcher.onDestroy(go/retraceme f3a19d912c87c27267cfbc05ba0bc7b202ab72a6648bd76225f5f7e128d94583:186)
+11-28 15:20:07.394  1194  1194 D TaskFragmentComponent: 	at com.android.launcher3.uioverrides.QuickstepLauncher.onDestroy(go/retraceme f3a19d912c87c27267cfbc05ba0bc7b202ab72a6648bd76225f5f7e128d94583:143)
+11-28 15:20:07.394  1194  1194 D TaskFragmentComponent: 	at com.google.android.apps.nexuslauncher.NexusLauncherActivity.onDestroy(go/retraceme f3a19d912c87c27267cfbc05ba0bc7b202ab72a6648bd76225f5f7e128d94583:68)
+11-28 15:20:07.394  1194  1194 D TaskFragmentComponent: 	at android.app.Activity.performDestroy(Activity.java:9628)
+11-28 15:20:07.394  1194  1194 D TaskFragmentComponent: 	at android.app.Instrumentation.callActivityOnDestroy(Instrumentation.java:1576)
+11-28 15:20:07.394  1194  1194 D TaskFragmentComponent: 	at android.app.ActivityThread.performDestroyActivity(ActivityThread.java:6523)
+11-28 15:20:07.394  1194  1194 D TaskFragmentComponent: 	at android.app.ActivityThread.handleDestroyActivity(ActivityThread.java:6568)
+11-28 15:20:07.394  1194  1194 D TaskFragmentComponent: 	at android.app.ActivityThread.handleRelaunchActivityInner(ActivityThread.java:6853)
+11-28 15:20:07.394  1194  1194 D TaskFragmentComponent: 	at android.app.ActivityThread.handleRelaunchActivity(ActivityThread.java:6768)
+11-28 15:20:07.394  1194  1194 D TaskFragmentComponent: 	at android.app.servertransaction.ActivityRelaunchItem.execute(ActivityRelaunchItem.java:108)
+11-28 15:20:07.394  1194  1194 D TaskFragmentComponent: 	at android.app.servertransaction.ActivityTransactionItem.execute(ActivityTransactionItem.java:63)
+11-28 15:20:07.394  1194  1194 D TaskFragmentComponent: 	at android.app.servertransaction.TransactionExecutor.executeNonLifecycleItem(TransactionExecutor.java:133)
+11-28 15:20:07.394  1194  1194 D TaskFragmentComponent: 	at android.app.servertransaction.TransactionExecutor.executeTransactionItems(TransactionExecutor.java:103)
+11-28 15:20:07.394  1194  1194 D TaskFragmentComponent: 	at android.app.servertransaction.TransactionExecutor.execute(TransactionExecutor.java:80)
+11-28 15:20:07.394  1194  1194 D TaskFragmentComponent: 	at android.app.ActivityThread$H.handleMessage(ActivityThread.java:2961)
+11-28 15:20:07.394  1194  1194 D TaskFragmentComponent: 	at android.os.Handler.dispatchMessage(Handler.java:132)
+11-28 15:20:07.394  1194  1194 D TaskFragmentComponent: 	at android.os.Looper.dispatchMessage(Looper.java:333)
+11-28 15:20:07.394  1194  1194 D TaskFragmentComponent: 	at android.os.Looper.loopOnce(Looper.java:263)
+11-28 15:20:07.394  1194  1194 D TaskFragmentComponent: 	at android.os.Looper.loop(Looper.java:367)
+11-28 15:20:07.394  1194  1194 D TaskFragmentComponent: 	at android.app.ActivityThread.main(ActivityThread.java:9287)
+11-28 15:20:07.394  1194  1194 D TaskFragmentComponent: 	at java.lang.reflect.Method.invoke(Native Method)
+11-28 15:20:07.394  1194  1194 D TaskFragmentComponent: 	at com.android.internal.os.RuntimeInit$MethodAndArgsCaller.run(RuntimeInit.java:566)
+11-28 15:20:07.394  1194  1194 D TaskFragmentComponent: 	at com.android.internal.os.ZygoteInit.main(ZygoteInit.java:929)
+11-28 15:20:07.400   773  1990 V WindowManager: Queueing transition: TransitionRecord{bf4b568 id=-1 type=CLOSE flags=0x0 parallelCollectType=NONE recentsDisplayId=-1}
+11-28 15:20:07.400   773  1314 W TransitionChain: Combining tfTransact into #12(CHANGE|R|0x0) from updateGlobalConfig
+11-28 15:20:07.400   773  1314 V WindowManager: deferTransitionReady deferReadyDepth=1 stack=com.android.server.wm.WindowOrganizerController.applyTransaction:658 com.android.server.wm.WindowOrganizerController.applyTaskFragmentTransactionLocked:585 com.android.server.wm.TaskFragmentOrganizerController.applyTransaction:764 android.window.ITaskFragmentOrganizerController$Stub.onTransact:240 android.os.Binder.execTransactInternal:1473 
+11-28 15:20:07.401   773  1314 V WindowManager: continueTransitionReady deferReadyDepth=0 stack=com.android.server.wm.WindowOrganizerController.applyTransaction:799 com.android.server.wm.WindowOrganizerController.applyTaskFragmentTransactionLocked:585 com.android.server.wm.TaskFragmentOrganizerController.applyTransaction:764 android.window.ITaskFragmentOrganizerController$Stub.onTransact:240 android.os.Binder.execTransactInternal:1473 
+11-28 15:20:07.409  1194  1194 D WindowOnBackDispatcher: setTopOnBackInvokedCallback (unwrapped): null
+11-28 15:20:07.410   773  1424 D CoreBackPreview: Window{cb6bad2 u0 com.google.android.apps.nexuslauncher/com.google.android.apps.nexuslauncher.NexusLauncherActivity}: Setting back callback null
+11-28 15:20:07.413   773   893 W InputDispatcher: Not sending touch gesture to 10cfd1f ActivityRecordInputSink com.lensora.ai/.MainActivity because it has config NO_INPUT_CHANNEL
+11-28 15:20:07.413   773   893 W InputDispatcher: Untrusted touch due to occlusion by /1000
+11-28 15:20:07.413   773   893 D InputDispatcher: Stack of obscuring windows during untrusted touch (923.0, 1940.0):
+11-28 15:20:07.413   773   893 D InputDispatcher:     * package=/1000, id=446, mode=BLOCK_UNTRUSTED, alpha=1.00, frame=[0,0][1080,2400], touchableRegion=<empty>, window={transition snapshot: Display{#0 state=ON size=1080x2400 ROTATION_0}#446}, inputConfig={NO_INPUT_CHANNEL}, hasToken=false, applicationInfo.name=, applicationInfo.token=<null>
+11-28 15:20:07.413   773   893 D InputDispatcher:     * [TOUCHED] package=<null>/10191, id=84, mode=BLOCK_UNTRUSTED, alpha=1.00, frame=[0,0][0,0], touchableRegion=[-10800,-24000][10800,24000], window={[Gesture Monitor] swipe-up}, inputConfig={NOT_FOCUSABLE | TRUSTED_OVERLAY | SPY}, hasToken=true, applicationInfo.name=[Gesture Monitor] swipe-up, applicationInfo.token=<null>
+11-28 15:20:07.413   773   893 W InputDispatcher: Dropping untrusted touch event due to /1000
+11-28 15:20:07.413   773   893 W InputDispatcher: Untrusted touch due to occlusion by /1000
+11-28 15:20:07.413   773   893 D InputDispatcher: Stack of obscuring windows during untrusted touch (923.0, 1940.0):
+11-28 15:20:07.413   773   893 D InputDispatcher:     * package=/1000, id=446, mode=BLOCK_UNTRUSTED, alpha=1.00, frame=[0,0][1080,2400], touchableRegion=<empty>, window={transition snapshot: Display{#0 state=ON size=1080x2400 ROTATION_0}#446}, inputConfig={NO_INPUT_CHANNEL}, hasToken=false, applicationInfo.name=, applicationInfo.token=<null>
+11-28 15:20:07.413   773   893 D InputDispatcher:     * [TOUCHED] package=<null>/10194, id=77, mode=BLOCK_UNTRUSTED, alpha=1.00, frame=[0,0][0,0], touchableRegion=[-10800,-24000][10800,24000], window={[Gesture Monitor] edge-swipe}, inputConfig={NOT_FOCUSABLE | TRUSTED_OVERLAY | SPY}, hasToken=true, applicationInfo.name=[Gesture Monitor] edge-swipe, applicationInfo.token=<null>
+11-28 15:20:07.413   773   893 W InputDispatcher: Dropping untrusted touch event due to /1000
+11-28 15:20:07.414  1194  1194 D RecentsView: reset - mEnableDrawingLiveTile: false, mRecentsAnimationController: null
+11-28 15:20:07.424  1194  1194 D RecentsView: cleanupRemoteTargets - mRemoteTargetHandles: null
+11-28 15:20:07.447   773   939 D ConnectivityService: NetReassign [no changes] [c 0] [a 0] [i 1]
+11-28 15:20:07.493  1194  1194 D UnlockComponentFactory: instantiateActivity() com.google.android.apps.nexuslauncher.NexusLauncherActivity isUserLocked: false
+11-28 15:20:07.514   660  4227 I CameraService: CameraService::connect call (PID 4361 "com.lensora.ai", camera ID 1) and Camera API version 2
+11-28 15:20:07.517   660  4227 I CameraService: onTorchStatusChangedLocked: Torch status changed for cameraId=1, newStatus=0
+11-28 15:20:07.517   660  4227 W libbinder.IPCThreadState: Sending oneway calls to frozen process.
+11-28 15:20:07.517   660  4227 W libbinder.IPCThreadState: Sending oneway calls to frozen process.
+11-28 15:20:07.520   551   551 W EmulatedCameraDeviceInfo: InitializeControlDefaults: No available post RAW boost! Setting default!
+11-28 15:20:07.528  1194  1206 I s.nexuslauncher: Background concurrent mark compact GC freed 2132KB AllocSpace bytes, 0(0B) LOS objects, 49% free, 7723KB/15MB, paused 6.726ms,3.795ms total 222.662ms
+11-28 15:20:07.538  1194  1194 D RecentsDependencies: initializing
+11-28 15:20:07.538  1194  1194 D RecentsDependencies: startDefaultScope
+11-28 15:20:07.539  1194  1194 D RecentsDependencies: createRecentsViewScope 48851163
+11-28 15:20:07.555  1194  1194 E RecyclerView: Cannot scroll to position a LayoutManager set. Call setLayoutManager with a non-null argument.
+11-28 15:20:07.555  1194  1194 D ActivityAllAppsContainerView: rebindAdapters: force: true
+11-28 15:20:07.555  1194  1194 D ActivityAllAppsContainerView: replaceAppsRVContainer: showTabs: false
+11-28 15:20:07.555  1194  1194 D AlphabeticalAppsList: Clearing FastScrollerSections.
+11-28 15:20:07.555  1194  1194 D AlphabeticalAppsList: Adding apps with sections. HasPrivateApps: true
+11-28 15:20:07.555  1194  1194 E RecyclerView: Cannot scroll to position a LayoutManager set. Call setLayoutManager with a non-null argument.
+11-28 15:20:07.556  1194  1194 D DeviceSearchAlg: search timeout = %d200
+11-28 15:20:07.557  1194  1194 D SsCardRecyclerViewAdapter: Updating Smartspace targets to targets for Lockscreen
+11-28 15:20:07.559  1194  1194 D SsCardRecyclerViewAdapter: Updating Smartspace targets to targets for Lockscreen
+11-28 15:20:07.559  1194  1194 W SsPagerDots: Total number of pages invalid: 0. Assuming 1 page.
+11-28 15:20:07.559  1194  1194 W BcSmartspaceView: Current card is not present in the Adapter; cannot log.
+11-28 15:20:07.560  1194  1194 D CellLayout: Adding view to ShortcutsAndWidgetsContainer: com.google.android.apps.nexuslauncher.qsb.SmartspaceViewContainer{d74f405 V.E...... ......I. 0,0-0,0 #7f0a0346 app:id/search_container_workspace}
+11-28 15:20:07.560  1194  1194 D OverviewActionsView: updateActionButtonsVisibility() called: showSingleTaskActions = [true], showGroupActions = [false]
+11-28 15:20:07.568  1194  1194 D AllAppsTransitionController: shouldProtectHeader: false skipScrim: false state: Normal stateManager.getState(): Normal
+11-28 15:20:07.568  1194  1194 D KeyboardInsetsHandler: setState, toState:Normal StateManager(mLastStableState:Normal, mCurrentStableState:Normal, mState:Normal, mRestState:null, isInTransition:false)
+11-28 15:20:07.568  1194  1194 D KeyboardInsetsHandler: removePendingImeController: pendingImeController=null
+11-28 15:20:07.568  1194  1194 D ActivityContext: hideKeyboard
+11-28 15:20:07.568  1194  1194 D ActivityContext: isImeShown: false
+11-28 15:20:07.568  1194  1194 D ActivityContext: hideKeyboard: WIC IS NULL
+11-28 15:20:07.568  1194  1194 D ActivityContext: InputMethodManager: android.view.inputmethod.InputMethodManager@529f7f0 token: null
+11-28 15:20:07.569  1194  1194 D CellLayout: Adding view to ShortcutsAndWidgetsContainer: com.google.android.apps.nexuslauncher.qsb.SmartspaceViewContainer{d74f405 V.E...... ......I. 0,0-0,0 #7f0a0346 app:id/search_container_workspace}
+11-28 15:20:07.569  1194  1194 D ModelCallbacks: startBinding: hotseat layout was vertical: false and is setting to false
+11-28 15:20:07.573  1194  1194 D Launcher.Workspace: addInScreenFromBind: hotseat inflation with x = 0 and y = 0
+11-28 15:20:07.573  1194  1194 D CellLayout: Adding view to ShortcutsAndWidgetsContainer: com.android.launcher3.views.DoubleShadowBubbleTextView{6e7f957 VFED..C.. ......ID 0,0-0,0 #1}
+11-28 15:20:07.573  1194  1194 D Launcher.Workspace: addInScreenFromBind: hotseat inflation with x = 1 and y = 0
+11-28 15:20:07.573  1194  1194 D CellLayout: Adding view to ShortcutsAndWidgetsContainer: com.android.launcher3.views.DoubleShadowBubbleTextView{f07dc44 VFED..C.. ......ID 0,0-0,0 #2}
+11-28 15:20:07.573  1194  1194 D Launcher.Workspace: addInScreenFromBind: hotseat inflation with x = 2 and y = 0
+11-28 15:20:07.573  1194  1194 D CellLayout: Adding view to ShortcutsAndWidgetsContainer: com.android.launcher3.views.DoubleShadowBubbleTextView{c0db12d VFED..C.. ......ID 0,0-0,0 #3}
+11-28 15:20:07.573  1194  1194 D CellLayout: Adding view to ShortcutsAndWidgetsContainer: com.android.launcher3.views.DoubleShadowBubbleTextView{39e5662 VFED..C.. ......ID 0,0-0,0 #4}
+11-28 15:20:07.573  1194  1194 D CellLayout: Adding view to ShortcutsAndWidgetsContainer: com.android.launcher3.views.DoubleShadowBubbleTextView{a88d3f3 VFED..C.. ......ID 0,0-0,0 #5}
+11-28 15:20:07.573  1194  1194 D CellLayout: Adding view to ShortcutsAndWidgetsContainer: com.android.launcher3.views.DoubleShadowBubbleTextView{dc878b0 VFED..C.. ......ID 0,0-0,0 #6}
+11-28 15:20:07.573  1194  1194 D CellLayout: Adding view to ShortcutsAndWidgetsContainer: com.android.launcher3.views.DoubleShadowBubbleTextView{b413329 VFED..C.. ......ID 0,0-0,0 #7}
+11-28 15:20:07.575  1194  1194 D b/387844520: getOutlineOffsetX: measured width = 0, mNormalizedIconSize = 159, last updated width = 0
+11-28 15:20:07.575  1194  1194 D Launcher.Workspace: addInScreenFromBind: hotseat inflation with x = 3 and y = 0
+11-28 15:20:07.575  1194  1194 D CellLayout: Adding view to ShortcutsAndWidgetsContainer: com.android.launcher3.views.PredictedAppIcon{8b46fdc VFED..C.. ......ID 0,0-0,0}
+11-28 15:20:07.579  1194  1194 D ModelCallbacks: Starting async inflation
+11-28 15:20:07.582   551   551 W EmulatedCameraDeviceInfo: InitializeControlDefaults: No available post RAW boost! Setting default!
+11-28 15:20:07.582  1194  1194 D SearchTargetUtil: queryLength=0 size=15
+11-28 15:20:07.582   551  4498 E EmulatedRequestProcessor: onEvent: unexpected event received type: 33
+11-28 15:20:07.582   551  4498 E EmulatedRequestProcessor: onEvent: unexpected event received type: 33
+11-28 15:20:07.582   551   551 W EmulatedCameraDeviceInfo: InitializeControlDefaults: No available post RAW boost! Setting default!
+11-28 15:20:07.582   551  4498 E EmulatedRequestProcessor: onEvent: unexpected event received type: 33
+11-28 15:20:07.582   551   551 W EmulatedCameraDeviceInfo: InitializeControlDefaults: No available post RAW boost! Setting default!
+11-28 15:20:07.583   660  4227 I CameraProviderManager: Camera device device@1.1/internal/1 torch status is now NOT_AVAILABLE
+11-28 15:20:07.583   660  4227 I CameraService: onTorchStatusChangedLocked: Torch status changed for cameraId=1, newStatus=0
+11-28 15:20:07.585  1194  1194 D SearchTargetUtil: layoutType=short_icon_row resultType=131072 packageName=com.google.android.googlequicksearchbox
+11-28 15:20:07.585  1194  1194 D SearchTargetUtil: layoutType=short_icon_row resultType=131072 packageName=com.google.android.googlequicksearchbox
+11-28 15:20:07.585  1194  1194 D SearchTargetUtil: layoutType=extra_tall_icon_row resultType=131072 packageName=com.google.android.googlequicksearchbox
+11-28 15:20:07.585  1194  1194 D SearchTargetUtil: layoutType=short_icon_row resultType=131072 packageName=com.google.android.googlequicksearchbox
+11-28 15:20:07.585  1194  1194 D SearchTargetUtil: layoutType=short_icon_row resultType=131072 packageName=com.google.android.googlequicksearchbox
+11-28 15:20:07.585  1194  1194 D SearchTargetUtil: layoutType=short_icon_row resultType=131072 packageName=com.google.android.googlequicksearchbox
+11-28 15:20:07.585   551   551 I GCH_CameraDeviceSession: Initialize: measure buffer allocation time: 0 
+11-28 15:20:07.585  1194  1194 D SearchTargetUtil: layoutType=short_icon_row resultType=131072 packageName=com.google.android.googlequicksearchbox
+11-28 15:20:07.585  1194  1194 D SearchTargetUtil: layoutType=extra_tall_icon_row resultType=131072 packageName=com.google.android.googlequicksearchbox
+11-28 15:20:07.585  1194  1194 D SearchTargetUtil: layoutType=short_icon_row resultType=131072 packageName=com.google.android.googlequicksearchbox
+11-28 15:20:07.585  1194  1194 D SearchTargetUtil: layoutType=short_icon_row resultType=131072 packageName=com.google.android.googlequicksearchbox
+11-28 15:20:07.585  1194  1194 D SearchTargetUtil: layoutType=short_icon_row resultType=131072 packageName=com.google.android.googlequicksearchbox
+11-28 15:20:07.585  1194  1194 D SearchTargetUtil: layoutType=short_icon_row resultType=131072 packageName=com.google.android.googlequicksearchbox
+11-28 15:20:07.588  1194  1194 D SearchTargetUtil: layoutType=short_icon_row resultType=131072 packageName=com.google.android.googlequicksearchbox
+11-28 15:20:07.588  1194  1194 D SearchTargetUtil: layoutType=short_icon_row resultType=131072 packageName=com.google.android.googlequicksearchbox
+11-28 15:20:07.588  1194  1194 D SearchTargetUtil: layoutType=extra_tall_icon_row resultType=131072 packageName=com.google.android.googlequicksearchbox
+11-28 15:20:07.591  1194  1194 D AllAppsStore: setApps: apps.length=20
+11-28 15:20:07.591  1194  1194 D AllAppsStore: notifyUpdate: notifying listeners
+11-28 15:20:07.591  1194  1194 D ActivityAllAppsContainerView: onAppsUpdated; number of apps: 20
+11-28 15:20:07.591  1194  1194 D ActivityAllAppsContainerView: rebindAdapters: force: false
+11-28 15:20:07.591  1194  1194 D ActivityAllAppsContainerView: rebindAdapters: Not needed.
+11-28 15:20:07.591  1194  1194 D StatsLog: LAUNCHER_ALLAPPS_COUNT
+11-28 15:20:07.592   551   551 I GCH_CameraDeviceSession: Create: Created a device session for camera 1 with 2 physical cameras: 4 5 
+11-28 15:20:07.593  1194  1194 D AlphabeticalAppsList: Clearing FastScrollerSections.
+11-28 15:20:07.593  1194  1194 D AlphabeticalAppsList: Adding apps with sections. HasPrivateApps: false
+11-28 15:20:07.593  1194  1194 D AlphabeticalAppsList: addAppsWithSections: adding sectionName: C with appInfoTitle: Calendar
+11-28 15:20:07.593  1194  1194 D AlphabeticalAppsList: addAppsWithSections: adding sectionName: D with appInfoTitle: Drive
+11-28 15:20:07.593  1194  1194 D AlphabeticalAppsList: addAppsWithSections: adding sectionName: F with appInfoTitle: Files
+11-28 15:20:07.594  1194  1194 D AlphabeticalAppsList: addAppsWithSections: adding sectionName: G with appInfoTitle: Gmail
+11-28 15:20:07.594  1194  1194 D AlphabeticalAppsList: addAppsWithSections: adding sectionName: L with appInfoTitle: Lensora_Ai
+11-28 15:20:07.594  1194  1194 D AlphabeticalAppsList: addAppsWithSections: adding sectionName: M with appInfoTitle: Maps
+11-28 15:20:07.594  1194  1194 D AlphabeticalAppsList: addAppsWithSections: adding sectionName: P with appInfoTitle: Phone
+11-28 15:20:07.594  1194  1194 D AlphabeticalAppsList: addAppsWithSections: adding sectionName: S with appInfoTitle: Safety
+11-28 15:20:07.594  1194  1194 D AlphabeticalAppsList: addAppsWithSections: adding sectionName: T with appInfoTitle: TMoble
+11-28 15:20:07.594  1194  1194 D AlphabeticalAppsList: addAppsWithSections: adding sectionName: Y with appInfoTitle: YouTube
+11-28 15:20:07.594  1194  1194 D AlphabeticalAppsList: Adding FastScrollSection duplicate to scroll to the bottom.
+11-28 15:20:07.594  1194  1194 D AlphabeticalAppsList: Clearing FastScrollerSections.
+11-28 15:20:07.594  1194  1194 D AlphabeticalAppsList: Adding apps with sections. HasPrivateApps: false
+11-28 15:20:07.594  1194  1194 D AlphabeticalAppsList: addAppsWithSections: adding sectionName: C with appInfoTitle: Calendar
+11-28 15:20:07.594  1194  1194 D AlphabeticalAppsList: addAppsWithSections: adding sectionName: D with appInfoTitle: Drive
+11-28 15:20:07.594  1194  1194 D AlphabeticalAppsList: addAppsWithSections: adding sectionName: F with appInfoTitle: Files
+11-28 15:20:07.594  1194  1194 D AlphabeticalAppsList: addAppsWithSections: adding sectionName: G with appInfoTitle: Gmail
+11-28 15:20:07.594  1194  1194 D AlphabeticalAppsList: addAppsWithSections: adding sectionName: L with appInfoTitle: Lensora_Ai
+11-28 15:20:07.594  1194  1194 D AlphabeticalAppsList: addAppsWithSections: adding sectionName: M with appInfoTitle: Maps
+11-28 15:20:07.594  1194  1194 D AlphabeticalAppsList: addAppsWithSections: adding sectionName: P with appInfoTitle: Phone
+11-28 15:20:07.594  1194  1194 D AlphabeticalAppsList: addAppsWithSections: adding sectionName: S with appInfoTitle: Safety
+11-28 15:20:07.594  1194  1194 D AlphabeticalAppsList: addAppsWithSections: adding sectionName: T with appInfoTitle: TMoble
+11-28 15:20:07.594  1194  1194 D AlphabeticalAppsList: addAppsWithSections: adding sectionName: Y with appInfoTitle: YouTube
+11-28 15:20:07.595  1194  1194 D AlphabeticalAppsList: Adding FastScrollSection duplicate to scroll to the bottom.
+11-28 15:20:07.596  1194  1194 D AlphabeticIndexCompat: computeSectionName: cs: Settings sectionName: S
+11-28 15:20:07.597  1194  1194 D AlphabeticIndexCompat: computeSectionName: cs: Photos sectionName: P
+11-28 15:20:07.597  1194  1194 D AlphabeticIndexCompat: computeSectionName: cs: Battery sectionName: B
+11-28 15:20:07.597  1194  1194 D AlphabeticIndexCompat: computeSectionName: cs: Chrome sectionName: C
+11-28 15:20:07.598  1194  1194 D AlphabeticIndexCompat: computeSectionName: cs: Gmail sectionName: G
+11-28 15:20:07.598  1194  1194 D AlphabeticIndexCompat: computeSectionName: cs: Drive sectionName: D
+11-28 15:20:07.599  1194  1194 D AlphabeticIndexCompat: computeSectionName: cs: Clock sectionName: C
+11-28 15:20:07.599  1194  1194 D AlphabeticIndexCompat: computeSectionName: cs: Contacts sectionName: C
+11-28 15:20:07.600  1194  1194 D AlphabeticIndexCompat: computeSectionName: cs: Calendar sectionName: C
+11-28 15:20:07.600  1194  1194 D AlphabeticIndexCompat: computeSectionName: cs: Maps sectionName: M
+11-28 15:20:07.601  1194  1194 D AlphabeticIndexCompat: computeSectionName: cs: YouTube Music sectionName: Y
+11-28 15:20:07.602  1194  1194 D AlphabeticIndexCompat: computeSectionName: cs: YouTube sectionName: Y
+11-28 15:20:07.602  1194  1194 D AlphabeticIndexCompat: computeSectionName: cs: Google sectionName: G
+11-28 15:20:07.603   551   551 W libbinder.ServiceManagerCppClient: Failed to get isDeclared for android.hardware.thermal.IThermal/default: Status(-1, EX_SECURITY): 'SELinux denied for service.'
+11-28 15:20:07.603  1194  1194 D AlphabeticIndexCompat: computeSectionName: cs: Android System Intelligence sectionName: A
+11-28 15:20:07.603   551  6249 I GCH_CameraDevice: Pinning memory config is set to 0 shared libraries.
+11-28 15:20:07.603   551   551 W GCH_AidlCameraDeviceSession: Thermal AIDL service is not declared
+11-28 15:20:07.603  1194  1194 D AlphabeticIndexCompat: computeSectionName: cs: Digital Wellbeing sectionName: D
+11-28 15:20:07.603   551   551 E GCH_AidlCameraDeviceSession: RegisterThermalChangedCallback: thermal was not initialized.
+11-28 15:20:07.603   551   551 W GCH_CameraDeviceSession: SetSessionCallback: Registering thermal callback failed: No such device(-19)
+11-28 15:20:07.603  1194  1194 D AlphabeticIndexCompat: computeSectionName: cs: Conversations sectionName: C
+11-28 15:20:07.604  1194  1194 D OverviewActionsView: updateActionButtonsVisibility() called: showSingleTaskActions = [true], showGroupActions = [false]
+11-28 15:20:07.605  1194  1194 D b/380940677: [mStateHandlerRequest=0, mCurrentStateRequest=0, mLastActivityFlags=5, mIgnoreAutoRotateSettings=false, mHomeRotationEnabled=false, mForceAllowRotationForTesting=false, mDestroyed=false, mIsFixedLandscape=false]
+11-28 15:20:07.607  1194  1252 I PluginActionManager[com.android.systemui.action.PLUGIN_LAUNCHER_OVERLAY]: Found 0 plugins
+11-28 15:20:07.608  1194  1194 D BaseActivity: Launcher flags updated: [state_started] +[state_started]
+11-28 15:20:07.608  1194  1194 D ActivityAllAppsContainerView: rebindAdapters: force: false
+11-28 15:20:07.608  1194  1194 D ActivityAllAppsContainerView: rebindAdapters: Not needed.
+11-28 15:20:07.608  1194  1194 D BaseActivity: Launcher flags updated: [state_started|state_resumed|state_user_active] +[state_resumed|state_user_active]
+11-28 15:20:07.612   773  1314 V WindowManager: Queueing transition: TransitionRecord{fd3d27b id=-1 type=CHANGE flags=0x0 parallelCollectType=NONE recentsDisplayId=-1}
+11-28 15:20:07.612  1194  1211 W System  : A resource failed to call release. 
+11-28 15:20:07.613  1660  1660 I AiAiEcho: SearchContextManagerImpl::setSearchContext resultTypes=[139867] extras=[Bundle[{launcher.maxInlineIcons=3, dynamic_ranking_m3_enabled=true, qs_tiles_asi_enabled=true, allowlist_enabled=false, one_search_enabled=true, system_clock=true, version_code=12, gms_play_query_lower_bound=2, gms_play_query_upper_bound=20, recent_search_block_enabled=true, gms_play_feature_supported=true, launcher.gridSize=4, showhiddentargets_enabled=false, ose_info=1}]] sessionId=[com.google.android.apps.nexuslauncher:74140474-5336-4e5b-aeaa-4e0e3fa91776,0]
+11-28 15:20:07.625  4361  6237 D LensoraDebug: Configuring universal CaptureRequest.Builder for mode: PHOTO
+11-28 15:20:07.642  1194  1250 D InputMonitorCompat: Input monitor (minus-one-disp0) created
+11-28 15:20:07.646  1194  1250 D InputMonitorCompat: Input event receiver for monitor (minus-one-disp0) created
+11-28 15:20:07.647  1194  1194 D BaseActivity: Launcher flags updated: [state_started|state_user_active] -[state_resumed]
+11-28 15:20:07.647  1194  1194 W SplitSelectStateCtor: Missing session instanceIds
+11-28 15:20:07.647  1194  1194 D StatsLog: LAUNCHER_SPLIT_SELECTION_EXIT_INTERRUPTED
+11-28 15:20:07.651   660  4227 W cameraserver: createConfiguredSurface: Camera 1: Overriding format 0x1 to IMPLEMENTATION_DEFINED
+11-28 15:20:07.673  1194  1250 D SearchTargetUtil: queryLength=0 size=1
+11-28 15:20:07.674  1194  1250 D SearchTargetUtil: layoutType=icon_row resultType=4096 packageName=
+11-28 15:20:07.674   773  1006 I WindowManager: finishDrawing of relaunch: Window{8801cd9 u0 com.lensora.ai/com.lensora.ai.MainActivity} 785ms
+11-28 15:20:07.676  1039  1100 D WindowManagerShell: setLauncherKeepClearAreaHeight: visible=true, height=495
+11-28 15:20:07.676   551   590 I GCH_HalUtils: ======== App stream configuration ========
+11-28 15:20:07.676   551   590 I GCH_HalUtils: == stream num: 2, operation_mode:0
+11-28 15:20:07.677   551   590 I GCH_HalUtils: ==== [0]stream_id 0, type 0, format 34, res 1920x1080, usage 256, is_phy 0, phy_cam_id 0, group_id -1
+11-28 15:20:07.677   551   590 I GCH_HalUtils: ==== [1]stream_id 1, type 0, format 33, res 1920x1440, usage 3, is_phy 0, phy_cam_id 0, group_id -1
+11-28 15:20:07.677   551   590 I GCH_HalUtils: ======== App stream configuration ========
+11-28 15:20:07.677   551   590 I GCH_ZslSnapshotCaptureSession: IsStreamConfigurationSupported: Software denoised not enabled
+11-28 15:20:07.677   551   590 D GCH_BasicCaptureSession: IsStreamConfigurationSupported: BasicCaptureSession supports the stream config
+11-28 15:20:07.677   551   590 D GCH_BasicCaptureSession: IsStreamConfigurationSupported: BasicCaptureSession supports the stream config
+11-28 15:20:07.677   551   590 I GCH_ResultDispatcher: [Cam1_ResultDispatcher] ResultDispatcher: SetRealtimeThread OK
+11-28 15:20:07.678   551   590 I StreamBufferCacheManager: Create: Created StreamBufferCacheManager.
+11-28 15:20:07.678   551   590 I GCH_CameraDeviceSession: RegisterStreamsIntoCacheManagerLocked: [sbc] Registered stream 1 into SBC manager.
+11-28 15:20:07.671   551   551 W binder:551_1: type=1400 audit(0.0:31): avc:  denied  { sys_nice } for  capability=23  scontext=u:r:hal_camera_default:s0 tcontext=u:r:hal_camera_default:s0 tclass=capability permissive=0
+11-28 15:20:07.682  4361  5465 W ModelManager: TFLite model scene_classifier.tflite unavailable (missing locally and in assets): scene_classifier.tflite. Falling back to heuristic AI engine.
+11-28 15:20:07.682  4361  5465 I SceneClassifier: SceneClassifier TFLite model unavailable. Falling back to color-brightness heuristic engine.
+11-28 15:20:07.683  4361  5017 I HWUI    : Davey! duration=701ms; Flags=1, FrameTimelineVsyncId=202125, IntendedVsync=1494674348880, Vsync=1494974348868, InputEventId=0, HandleInputStart=1494978339900, AnimationStart=1494978370300, PerformTraversalsStart=1494984731000, DrawStart=1495198590800, FrameDeadline=1494691015546, FrameStartTime=1494977627500, FrameInterval=16666666, WorkloadTarget=16666666, SyncQueued=1495348838600, SyncStart=1495349694000, IssueDrawCommandsStart=1495350351900, SwapBuffers=1495367149600, FrameCompleted=1495376237100, DequeueBufferDuration=27200, QueueBufferDuration=1411500, GpuCompleted=1495376237100, SwapBuffersCompleted=1495369754500, DisplayPresentTime=0, CommandSubmissionCompleted=1495367149600, 
+11-28 15:20:07.693   773   800 V WindowManager: Sent Transition (#12) createdAt=11-28 15:20:06.750 via request=TransitionRequestInfo { type = CHANGE, triggerTask = null, pipChange = null, remoteTransition = null, displayChange = null, requestedLocation = null, userChange = null, windowingLayerChange = null, flags = 0, debugId = 12 }
+11-28 15:20:07.694  4361  4361 I CameraController: Thermal Guard Status: NONE
+11-28 15:20:07.696   773   800 V WindowManager:     startWCT=WindowContainerTransaction { changes= {} hops= [] errorCallbackToken=null taskFragmentOrganizer=null }
+11-28 15:20:07.697   773   800 V WindowManager:     info={id=12 t=CHANGE f=0x0 trk=0 r=[0@Point(0, 0)] c=[
+11-28 15:20:07.697   773   800 V WindowManager:         {WCT{RemoteToken{4f415f3 Display{#0 state=ON size=1080x2400 ROTATION_0}}} m=CHANGE f=IS_DISPLAY leash=Surface(name=WindowedMagnification:0:31#3)/@0x6f92995 sb=Rect(0, 0 - 1080, 2400) eb=Rect(0, 0 - 1080, 2400) epz=Point(1080, 2400) d=0}
+11-28 15:20:07.697   773   800 V WindowManager:     ]}
+11-28 15:20:07.697  1039  1678 V WindowManagerShell: onTransitionReady(transaction=3320009723196)
+11-28 15:20:07.698  1039  1100 V WindowManagerShell: onTransitionReady (#12) android.os.BinderProxy@a9e4e36: {id=12 t=CHANGE f=0x0 trk=0 r=[0@Point(0, 0)] c=[
+11-28 15:20:07.698  1039  1100 V WindowManagerShell:         {m=CHANGE f=IS_DISPLAY leash=Surface(name=WindowedMagnification:0:31#3)/@0x58a99ec sb=Rect(0, 0 - 1080, 2400) eb=Rect(0, 0 - 1080, 2400) epz=Point(1080, 2400) d=0 snapshot=Surface(name=transition snapshot: Display{#0 state=ON size=1080x2400 ROTATION_0}#446)/@0xf71a1b5}
+11-28 15:20:07.698  1039  1100 V WindowManagerShell:     ]}
+11-28 15:20:07.701  1039  1100 V WindowManagerShell: Playing animation for (#12) android.os.BinderProxy@a9e4e36@0
+11-28 15:20:07.701  1039  1100 V WindowManagerShell: PipTransitionState: Set mIsDisplayChangeScheduled=false
+11-28 15:20:07.701  1039  1100 V ShellRecents: RecentsTransitionHandler.startAnimation: no controller found
+11-28 15:20:07.701  1039  1100 V ShellDesktopMode: DesktopMixedTransitionHandler: No pending desktop transition
+11-28 15:20:07.701  1039  1100 V WindowManagerShell: start default transition animation, info = {id=12 t=CHANGE f=0x0 trk=0 r=[0@Point(0, 0)] c=[{m=CHANGE f=IS_DISPLAY leash=Surface(name=WindowedMagnification:0:31#3)/@0x58a99ec sb=Rect(0, 0 - 1080, 2400) eb=Rect(0, 0 - 1080, 2400) epz=Point(1080, 2400) d=0 snapshot=Surface(name=transition snapshot: Display{#0 state=ON size=1080x2400 ROTATION_0}#446)/@0xf71a1b5}]}
+11-28 15:20:07.701  1039  1100 V WindowManagerShell: Display is changing, resolve the animation hint.
+11-28 15:20:07.704  1194  1194 D WindowOnBackDispatcher: setTopOnBackInvokedCallback (unwrapped): android.app.Activity$$ExternalSyntheticLambda0@ddadeb
+11-28 15:20:07.705  1194  1194 D WindowOnBackDispatcher: setTopOnBackInvokedCallback (unwrapped): com.android.launcher3.uioverrides.QuickstepLauncher$3@822d748
+11-28 15:20:07.709  1039  1100 V WindowManagerShell:  animated by com.android.wm.shell.transition.DefaultTransitionHandler@ceb6635
+11-28 15:20:07.709  1194  1252 I PluginActionManager[com.android.systemui.action.PLUGIN_BC_SMARTSPACE_DATA]: Found 0 plugins
+11-28 15:20:07.717   660  6250 I CameraService: Start camera streaming for com.lensora.ai (PID 4361, UID 10227)
+11-28 15:20:07.723   773  1006 D CoreBackPreview: Window{c694cd6 u0 com.google.android.apps.nexuslauncher/com.google.android.apps.nexuslauncher.NexusLauncherActivity}: Setting back callback OnBackInvokedCallbackInfo{mCallback=android.window.IOnBackInvokedCallback$Stub$Proxy@f7a506b, mPriority=-1, mIsAnimationCallback=false, mOverrideBehavior=0}
+11-28 15:20:07.725  4361  5465 W ModelManager: TFLite model scene_classifier.tflite unavailable (missing locally and in assets): scene_classifier.tflite. Falling back to heuristic AI engine.
+11-28 15:20:07.725  4361  5465 I SceneClassifier: SceneClassifier TFLite model unavailable. Falling back to color-brightness heuristic engine.
+11-28 15:20:07.735  4361  4361 D LensoraDebug: Switching to mode VIDEO (Reset activeAdvancedModeName to AUTO)
+11-28 15:20:07.735  4361  4361 D LensoraDebug: Configuring universal CaptureRequest.Builder for mode: VIDEO
+11-28 15:20:07.736  4361  4361 D LensoraDebug: Applied safe FPS range: [7, 30]
+11-28 15:20:07.738   773   988 D BackgroundInstallControlService: Package event received: 0
+11-28 15:20:07.742   773   803 W ProcessStats: Tracking association SourceState{fcc9786 com.android.systemui/10194 BFgs #2995} whose proc state 4 is better than process ProcessState{7eb8847 android.process.acore/10104 pkg=com.android.providers.contacts (sub)} proc state 14 (15 skipped)
+11-28 15:20:07.742  4361  4361 D LensoraDebug: Successfully applied mode VIDEO
+11-28 15:20:07.742  4361  4361 I CameraController: RAW DNG Capture Enabled: false
+11-28 15:20:07.749   773  1006 D CoreBackPreview: Window{c694cd6 u0 com.google.android.apps.nexuslauncher/com.google.android.apps.nexuslauncher.NexusLauncherActivity}: Setting back callback OnBackInvokedCallbackInfo{mCallback=android.window.IOnBackInvokedCallback$Stub$Proxy@b8d874, mPriority=0, mIsAnimationCallback=true, mOverrideBehavior=0}
+11-28 15:20:07.750   773   803 V WindowManager: deferTransitionReady deferReadyDepth=1 stack=com.android.server.wm.WindowOrganizerController.applyTransaction:658 com.android.server.wm.WindowOrganizerController.applyTransaction:626 com.android.server.wm.WindowOrganizerController.lambda$applyTaskFragmentTransactionLocked$5:602 com.android.server.wm.WindowOrganizerController.$r8$lambda$b9SZ7IAloD3MuUhvAJTdz5zHJ5k:0 com.android.server.wm.WindowOrganizerController$$ExternalSyntheticLambda4.onCollectStarted:0 
+11-28 15:20:07.750   773   803 D ActivityTaskManager: Remove task fragment: deleteTaskFragment
+11-28 15:20:07.754   773   803 V WindowManager: continueTransitionReady deferReadyDepth=0 stack=com.android.server.wm.WindowOrganizerController.applyTransaction:799 com.android.server.wm.WindowOrganizerController.applyTransaction:626 com.android.server.wm.WindowOrganizerController.lambda$applyTaskFragmentTransactionLocked$5:602 com.android.server.wm.WindowOrganizerController.$r8$lambda$b9SZ7IAloD3MuUhvAJTdz5zHJ5k:0 com.android.server.wm.WindowOrganizerController$$ExternalSyntheticLambda4.onCollectStarted:0 
+11-28 15:20:07.759   773   804 V WindowManager: Defer transition id=13 for TaskFragmentTransaction=android.os.Binder@34aa612
+11-28 15:20:07.760   773   804 V WindowManager: deferTransitionReady deferReadyDepth=1 stack=com.android.server.wm.TransitionController.deferTransitionReady:1061 com.android.server.wm.TaskFragmentOrganizerController$TaskFragmentOrganizerState.dispatchTransaction:517 com.android.server.wm.TaskFragmentOrganizerController.dispatchPendingEvents:1259 com.android.server.wm.TaskFragmentOrganizerController.dispatchPendingEvents:1228 com.android.server.wm.RootWindowContainer.performSurfacePlacement:777 
+11-28 15:20:07.761  1039  1100 V WindowManagerShell: Transition requested (#13): android.os.BinderProxy@a80c5c5 TransitionRequestInfo { type = CLOSE, triggerTask = null, pipChange = null, remoteTransition = RemoteTransition { remoteTransition = android.window.IRemoteTransition$Stub$Proxy@746b1a, appThread = null, debugName = TaskFragmentComponent }, displayChange = null, requestedLocation = null, userChange = null, windowingLayerChange = null, flags = 0, debugId = 13 }
+11-28 15:20:07.762  1039  1100 V ShellDesktopMode: DesktopTasksController: handleRequest request=TransitionRequestInfo { type = CLOSE, triggerTask = null, pipChange = null, remoteTransition = RemoteTransition { remoteTransition = android.window.IRemoteTransition$Stub$Proxy@746b1a, appThread = null, debugName = TaskFragmentComponent }, displayChange = null, requestedLocation = null, userChange = null, windowingLayerChange = null, flags = 0, debugId = 13 }
+11-28 15:20:07.762  1039  1100 V ShellDesktopMode: DesktopTasksController: skipping handleRequest reason=triggerTask is null
+11-28 15:20:07.762  1039  1100 V WindowManagerShell: RemoteTransition directly requested for (#13) android.os.BinderProxy@a80c5c5: RemoteTransition { remoteTransition = android.window.IRemoteTransition$Stub$Proxy@746b1a, appThread = null, debugName = TaskFragmentComponent }
+11-28 15:20:07.762  1039  1100 V WindowManagerShell: Transition (#13): request handled by RemoteTransitionHandler
+11-28 15:20:07.766   773   988 D BackgroundInstallControlService: Package event received: 0
+11-28 15:20:07.769   773   988 D BackgroundInstallControlService: Package event received: 0
+11-28 15:20:07.770   773   988 D BackgroundInstallControlService: Package event received: 0
+11-28 15:20:07.770   773   988 D BackgroundInstallControlService: Package event received: 0
+11-28 15:20:07.771   773   988 D BackgroundInstallControlService: Package event received: 0
+11-28 15:20:07.773   773   988 D BackgroundInstallControlService: Package event received: 0
+11-28 15:20:07.773   773   988 D BackgroundInstallControlService: Package event received: 0
+11-28 15:20:07.776   773   988 D BackgroundInstallControlService: Package event received: 0
+11-28 15:20:07.776   773   988 D BackgroundInstallControlService: Package event received: 0
+11-28 15:20:07.776   773   988 D BackgroundInstallControlService: Package event received: 0
+11-28 15:20:07.778   551  6256 I GCH_AidlCameraDeviceSession: ProcessBatchCaptureResult: First frame done
+11-28 15:20:07.802   773   902 I ImeTracker: com.lensora.ai:99fbb254: onRequestHide at ORIGIN_SERVER reason HIDE_UNSPECIFIED_WINDOW fromUser false
+11-28 15:20:07.807  1538  1538 I GoogleInputMethodService: GoogleInputMethodService.onFinishInput():2057 
+11-28 15:20:07.808  4361  4361 D InsetsController: hide(ime())
+11-28 15:20:07.809  4361  4361 I ImeTracker: com.lensora.ai:99fbb254: onCancelled at PHASE_CLIENT_ALREADY_HIDDEN
+11-28 15:20:07.819  1039  1039 D SsCardRecyclerViewAdapter: Updating Smartspace targets to targets for Lockscreen
+11-28 15:20:07.825  1039  1039 D SsCardRecyclerViewAdapter: Updating Smartspace targets to targets for Lockscreen
+11-28 15:20:07.826  1039  1039 W SsPagerDots: Total number of pages invalid: 0. Assuming 1 page.
+11-28 15:20:07.828  1039  1039 W SsPagerDots: Total number of pages invalid: 0. Assuming 1 page.
+11-28 15:20:07.828  1039  1039 W SsPagerDots: Total number of pages invalid: 0. Assuming 1 page.
+11-28 15:20:07.830  1039  1039 W SsPagerDots: Total number of pages invalid: 0. Assuming 1 page.
+11-28 15:20:07.831  1039  1039 W BcSmartspaceView: Current card is not present in the Adapter; cannot log.
+11-28 15:20:07.832  1039  1039 W AlarmManager: Unrecognized alarm listener com.google.android.systemui.smartspace.KeyguardZenAlarmViewController$showNextAlarm$1@8a9782f
+11-28 15:20:07.832  1039  1039 W AlarmManager: Unrecognized alarm listener com.google.android.systemui.smartspace.KeyguardZenAlarmViewController$showNextAlarm$1@8a9782f
+11-28 15:20:07.832  1039  1039 W SsPagerDots: Total number of pages invalid: 0. Assuming 1 page.
+11-28 15:20:07.833  1039  1039 W BcSmartspaceView: Current card is not present in the Adapter; cannot log.
+11-28 15:20:07.833  1039  1039 W SsPagerDots: Total number of pages invalid: 0. Assuming 1 page.
+11-28 15:20:07.833  1039  1039 W BcSmartspaceView: Current card is not present in the Adapter; cannot log.
+11-28 15:20:07.834  1039  1039 W AlarmManager: Unrecognized alarm listener com.google.android.systemui.smartspace.KeyguardZenAlarmViewController$showNextAlarm$1@8a9782f
+11-28 15:20:07.835  1039  1039 W SsPagerDots: Total number of pages invalid: 0. Assuming 1 page.
+11-28 15:20:07.835  1039  1039 W BcSmartspaceView: Current card is not present in the Adapter; cannot log.
+11-28 15:20:07.835  1039  1039 W SsPagerDots: Total number of pages invalid: 0. Assuming 1 page.
+11-28 15:20:07.835  1039  1039 W BcSmartspaceView: Current card is not present in the Adapter; cannot log.
+11-28 15:20:07.840  1538  1538 I Module  : DeviceLockedStatusModuleProvider$Module.updateDeviceLockedStatus():100 repeatCheckTimes = 0, locked = false
+11-28 15:20:07.841  1538  1538 W NotificationCenter: NotificationCenter$NotificationQueue.notifyPendingNotificationsOnExecutor():877 Heavy notify work detected on UI thread: [ltj->guu, ltj->jtc, ltj->lsn, ltj->jtc, ltj->jtc, ltj->lse, ltj->fwu, ltj->ngp, ltj->jqp, ltj->jup, ltj->jtc, ltj->jtc, ltj->jtc, ltj->jtc, ltj->jtc, ltj->jtc, ltj->jtc, ltj->jtc, ltj->jtc, ltj->kya, ltj->nuz, ltj->fum, ltj->jtc, ltj->jtc] takes 26ms
+11-28 15:20:07.843   773  1006 I ImeTracker: system_server:7af4e5a7: onRequestHide at ORIGIN_SERVER reason IME_REQUESTED_CHANGED_LISTENER fromUser false
+11-28 15:20:07.846   773   803 I ImeTracker: system_server:7af4e5a7: onCancelled at PHASE_SERVER_SHOULD_HIDE
+11-28 15:20:07.850  1538  1538 I GoogleInputMethodService: GoogleInputMethodService.onStartInput():1318 onStartInput(EditorInfo{EditorInfo{packageName=com.lensora.ai, inputType=0, inputTypeString=NULL, enableLearning=false, autoCorrection=false, autoComplete=false, imeOptions=0, privateImeOptions=null, actionName=UNSPECIFIED, actionLabel=null, initialSelStart=-1, initialSelEnd=-1, initialCapsMode=0, label=null, fieldId=0, fieldName=null, extras=null, hintText=null, hintLocales=[]}}, false)
+11-28 15:20:07.852   773  1006 W PackageConfigPersister: App-specific configuration not found for packageName: com.lensora.ai and userId: 0
+11-28 15:20:07.853  1194  1252 I PluginActionManager[com.android.systemui.action.PLUGIN_ALL_APPS_ACTIONS]: Found 0 plugins
+11-28 15:20:07.855  1538  1538 I Module  : DeviceLockedStatusModuleProvider$Module.updateDeviceLockedStatus():100 repeatCheckTimes = 1, locked = false
+11-28 15:20:07.855  1660  1856 I AiAiEcho: Predicting[0]:  [CONTEXT sampling_count=5 ]
+11-28 15:20:07.855  1660  1856 I AiAiEcho: EchoTargets: 
+11-28 15:20:07.855  1660  1856 I AiAiEcho: Filtered by AiAi flag check: 
+11-28 15:20:07.855  1660  1856 I AiAiEcho: [CONTEXT ratelimit_period="10 SECONDS" ]
+11-28 15:20:07.856  1660  1856 I AiAiEcho: #remoteViewsTwiddler: feature disabled.
+11-28 15:20:07.856  1660  1856 I AiAiEcho: Predicting[0]:  [CONTEXT sampling_count=5 ]
+11-28 15:20:07.856  1660  1856 I AiAiEcho: EchoTargets: 
+11-28 15:20:07.856  1660  1856 I AiAiEcho: Filtered by AiAi flag check: 
+11-28 15:20:07.856  1660  1856 I AiAiEcho: [CONTEXT ratelimit_period="10 SECONDS" ]
+11-28 15:20:07.857  1660  1856 I AiAiEcho: #remoteViewsTwiddler: feature disabled.
+11-28 15:20:07.859  1660  1856 I AiAiEcho: #postPredictionTargets: Sending updates to UISurface lockscreen with targets# 0 (types=[])
+11-28 15:20:07.860  1660  1856 I AiAiEcho: #postPredictionTargets: Sending updates to UISurface home with targets# 0 (types=[])
+11-28 15:20:07.863  1194  1194 D VRI[NexusLauncherActivity]: WindowInsets changed: 1080x2400 statusBars:[0,63,0,0] navigationBars:[0,0,0,63] mandatorySystemGestures:[0,63,0,84] 
+11-28 15:20:07.864   660  4227 W libbinder.IPCThreadState: Sending oneway calls to frozen process.
+11-28 15:20:07.864  1194  1194 D OverviewActionsView: updateActionButtonsVisibility() called: showSingleTaskActions = [true], showGroupActions = [false]
+11-28 15:20:07.869  1039  1100 V WindowManagerShell: Transition animation finished (aborted=false), notifying core (#12) android.os.BinderProxy@a9e4e36@0
+11-28 15:20:07.873   773   881 D ActivityManager: freezing 3059 com.google.android.rkpdapp
+11-28 15:20:07.874  1194  1194 D LauncherStateManager: StateManager.cancelAnimation: animation ongoing: false, partial trace:
+11-28 15:20:07.874  1194  1194 D LauncherStateManager: 	at com.android.launcher3.statemanager.StateManager.reapplyState(go/retraceme f3a19d912c87c27267cfbc05ba0bc7b202ab72a6648bd76225f5f7e128d94583:40)
+11-28 15:20:07.874  1194  1194 D LauncherStateManager: 	at com.android.launcher3.LauncherRootView.updateInsets(go/retraceme f3a19d912c87c27267cfbc05ba0bc7b202ab72a6648bd76225f5f7e128d94583:54)
+11-28 15:20:07.874  1194  1194 D LauncherStateManager: 	at com.android.launcher3.LauncherRootView.onApplyWindowInsets(go/retraceme f3a19d912c87c27267cfbc05ba0bc7b202ab72a6648bd76225f5f7e128d94583:18)
+11-28 15:20:07.875  1194  1194 D AllAppsTransitionController: shouldProtectHeader: false skipScrim: false state: Normal stateManager.getState(): Normal
+11-28 15:20:07.875  1194  1194 D KeyboardInsetsHandler: setState, toState:Normal StateManager(mLastStableState:Normal, mCurrentStableState:Normal, mState:Normal, mRestState:null, isInTransition:false)
+11-28 15:20:07.875  1194  1194 D KeyboardInsetsHandler: removePendingImeController: pendingImeController=null
+11-28 15:20:07.875  1194  1194 D ActivityContext: hideKeyboard
+11-28 15:20:07.875  1194  1194 D ActivityContext: isImeShown: false
+11-28 15:20:07.887  1194  1194 D b/387844520: calling updateRingPath from onSizeChanged
+11-28 15:20:07.887  1194  1194 D b/387844520: getOutlineOffsetX: measured width = 173, mNormalizedIconSize = 159, last updated width = 173
+11-28 15:20:07.890   773   801 W Looper  : Slow dispatch took 114ms android.ui app=system_server main=false group=TOP_APP h=com.android.server.am.ActivityManagerService$UiHandler c=com.android.server.am.UidObserverController$$ExternalSyntheticLambda0@1a74931 m=0
+11-28 15:20:07.891   773   939 D InetDiagMessage: Destroyed 0 sockets, proto=IPPROTO_TCP, family=AF_INET, states=14
+11-28 15:20:07.891   773   800 V WindowManager: Finish Transition (#12): created at 11-28 15:20:06.750 collect-started=0.113ms request-sent=0.168ms started=142.913ms ready=651.152ms sent=934.452ms commit=37.527ms finished=1139.467ms
+11-28 15:20:07.892   773   939 D InetDiagMessage: Destroyed 0 sockets, proto=IPPROTO_TCP, family=AF_INET6, states=14
+11-28 15:20:07.892   773   939 D InetDiagMessage: Destroyed live tcp sockets for uids={10200} in 3ms
+11-28 15:20:07.893  1039  1100 V WindowManagerShell: Track 0 became idle
+11-28 15:20:07.900  1194  1194 D InputMonitorCompat: Input event receiver for monitor (minus-one-disp0) disposed
+11-28 15:20:07.900  1194  1194 D InputMonitorCompat: Input monitor (minus-one-disp0) disposed
+11-28 15:20:07.900  1194  1194 D TISBindHelper: TIS service connected
+11-28 15:20:07.900  1194  1194 D TaskbarManager: setActivity: mActivity=null displayId=0 isDefaultDisplay=true
+11-28 15:20:07.900  1194  1194 D TaskbarManager: setActivity: registering activity lifecycle callbacks. displayId=0 isDefaultDisplay=true
+11-28 15:20:07.900  1194  1194 D TaskbarManager: getUnfoldTransitionProgressProviderForActivity displayId=0 isDefaultDisplay=true
+11-28 15:20:07.900  1194  1194 D TaskbarManager: setRecentsViewContainer displayId=0 isDefaultDisplay=true
+11-28 15:20:07.900  1194  1194 D TaskbarManager: createTaskbarUIControllerForRecentsViewContainer displayId=0 isDefaultDisplay=true
+11-28 15:20:07.901  1194  1194 D ModelCallbacks: Calling onCompleteSignal
+11-28 15:20:07.901  1194  1194 D ViewOnDrawExecutor: markCompleted: executing tasks
+11-28 15:20:07.901  1194  1194 D ActivityAllAppsContainerView: rebindAdapters: force: false
+11-28 15:20:07.901  1194  1194 D ActivityAllAppsContainerView: rebindAdapters: Not needed.
+11-28 15:20:07.907  1194  1194 D NexusLauncherModelDelegate: notifySmartspaceEvent: SmartspaceTargetEvent{mSmartspaceTarget=SmartspaceTarget{mSmartspaceTargetId='date_card_794317_92634', mHeaderAction=null, mBaseAction=null, mCreationTimeMillis=0, mExpiryTimeMillis=0, mScore=0.0, mActionChips=[], mIconGrid=[], mFeatureType=1, mSensitive=false, mShouldShowExpanded=false, mSourceNotificationKey='null', mComponentName=ComponentInfo{com.google.android.apps.nexuslauncher/w7.d0}, mUserHandle=UserHandle{0}, mAssociatedSmartspaceTargetId='null', mSliceUri=null, mWidget=null, mTemplateData=BaseTemplateData{mTemplateType=1, mPrimaryItem=null, mSubtitleItem=null, mSubtitleSupplementalItem=null, mSupplementalLineItem=null, mSupplementalAlarmItem=null, mLayoutWeight=0}, mRemoteViews=null}, mSmartspaceActionId='null', mEventType=8}
+11-28 15:20:07.914  1039  1044 W ndroid.systemui: Suspending all threads took: 16.733ms
+11-28 15:20:07.918   773  1932 V WindowManager: Continue transition id=13 for TaskFragmentTransaction=android.os.Binder@34aa612
+11-28 15:20:07.918   773  1932 V WindowManager: continueTransitionReady deferReadyDepth=0 stack=com.android.server.wm.TransitionController.continueTransitionReady:1071 com.android.server.wm.TaskFragmentOrganizerController$TaskFragmentOrganizerState.onTransactionFinished:546 com.android.server.wm.TaskFragmentOrganizerController.onTransactionHandled:740 android.window.ITaskFragmentOrganizerController$Stub.onTransact:225 android.os.Binder.execTransactInternal:1473 
+11-28 15:20:07.921   773   800 V WindowManager: Sent Transition (#13) createdAt=11-28 15:20:07.400 via request=TransitionRequestInfo { type = CLOSE, triggerTask = null, pipChange = null, remoteTransition = RemoteTransition { remoteTransition = android.window.IRemoteTransition$Stub$Proxy@ab47755, appThread = null, debugName = TaskFragmentComponent }, displayChange = null, requestedLocation = null, userChange = null, windowingLayerChange = null, flags = 0, debugId = 13 }
+11-28 15:20:07.921   773   800 V WindowManager:     startWCT=WindowContainerTransaction { changes= {} hops= [] errorCallbackToken=null taskFragmentOrganizer=null }
+11-28 15:20:07.921   773   800 V WindowManager:     info={id=13 t=CLOSE f=0x0 trk=1 r=[] c=[]}
+11-28 15:20:07.922   773   803 V WindowManager: deferTransitionReady deferReadyDepth=1 stack=com.android.server.wm.WindowOrganizerController.applyTransaction:658 com.android.server.wm.WindowOrganizerController.applyTransaction:626 com.android.server.wm.WindowOrganizerController.lambda$applyTaskFragmentTransactionLocked$5:602 com.android.server.wm.WindowOrganizerController.$r8$lambda$b9SZ7IAloD3MuUhvAJTdz5zHJ5k:0 com.android.server.wm.WindowOrganizerController$$ExternalSyntheticLambda4.onCollectStarted:0 
+11-28 15:20:07.923   773   803 V WindowManager: continueTransitionReady deferReadyDepth=0 stack=com.android.server.wm.WindowOrganizerController.applyTransaction:799 com.android.server.wm.WindowOrganizerController.applyTransaction:626 com.android.server.wm.WindowOrganizerController.lambda$applyTaskFragmentTransactionLocked$5:602 com.android.server.wm.WindowOrganizerController.$r8$lambda$b9SZ7IAloD3MuUhvAJTdz5zHJ5k:0 com.android.server.wm.WindowOrganizerController$$ExternalSyntheticLambda4.onCollectStarted:0 
+11-28 15:20:07.925  1039  1039 I SceneTransitionLayoutState: snapTo(scene=SceneKey(debugName=QuickQuickSettingsScene), overlays=[])
+11-28 15:20:07.930   773   803 V WindowManager: Defer transition id=14 for TaskFragmentTransaction=android.os.Binder@5742a5b
+11-28 15:20:07.931   773   803 V WindowManager: deferTransitionReady deferReadyDepth=1 stack=com.android.server.wm.TransitionController.deferTransitionReady:1061 com.android.server.wm.TaskFragmentOrganizerController$TaskFragmentOrganizerState.dispatchTransaction:517 com.android.server.wm.TaskFragmentOrganizerController.dispatchPendingEvents:1259 com.android.server.wm.TaskFragmentOrganizerController.dispatchPendingEvents:1228 com.android.server.wm.RootWindowContainer.performSurfacePlacement:777 
+11-28 15:20:07.940  1039  1677 V WindowManagerShell: onTransitionReady(transaction=3320009723356)
+11-28 15:20:07.948  1039  1100 V WindowManagerShell: onTransitionReady (#13) android.os.BinderProxy@a80c5c5: {id=13 t=CLOSE f=0x0 trk=1 r=[] c=[]}
+11-28 15:20:07.948  1194  1194 D SsBaseTemplateCard: Date view text is empty
+11-28 15:20:07.948  1194  1194 D SsBaseTemplateCard: Passed-in item info is null
+11-28 15:20:07.948  1194  1194 D SsBaseTemplateCard: Passed-in item info is null
+11-28 15:20:07.948  1194  1194 D SsBaseTemplateCard: Passed-in item info is null
+11-28 15:20:07.948  1039  1100 V WindowManagerShell: No transition roots in (#13) android.os.BinderProxy@a80c5c5@1 so abort
+11-28 15:20:07.948  1194  1194 D SsBaseTemplateCard: Passed-in item info is null
+11-28 15:20:07.948  1194  1194 I SsBaseTemplateCard: Secondary card pane is null
+11-28 15:20:07.950  1039  1100 V WindowManagerShell: Transition animation finished (aborted=true), notifying core (#13) android.os.BinderProxy@a80c5c5@1
+11-28 15:20:07.952  1039  1100 V WindowManagerShell: Track 1 became idle
+11-28 15:20:07.952  1039  1100 V WindowManagerShell: All active transition animations finished
+11-28 15:20:07.952   773   800 V WindowManager: Finish Transition (#13): created at 11-28 15:20:07.400 collect-started=291.021ms request-sent=358.688ms started=365.942ms ready=518.752ms sent=520.005ms finished=551.749ms
+11-28 15:20:07.952  1039  1100 V WindowManagerShell: Transition requested (#14): android.os.BinderProxy@da6eaf9 TransitionRequestInfo { type = CHANGE, triggerTask = null, pipChange = null, remoteTransition = RemoteTransition { remoteTransition = android.window.IRemoteTransition$Stub$Proxy@1401a3e, appThread = null, debugName = TaskFragmentComponent }, displayChange = null, requestedLocation = null, userChange = null, windowingLayerChange = null, flags = 0, debugId = 14 }
+11-28 15:20:07.953  1039  1100 V ShellDesktopMode: DesktopTasksController: handleRequest request=TransitionRequestInfo { type = CHANGE, triggerTask = null, pipChange = null, remoteTransition = RemoteTransition { remoteTransition = android.window.IRemoteTransition$Stub$Proxy@1401a3e, appThread = null, debugName = TaskFragmentComponent }, displayChange = null, requestedLocation = null, userChange = null, windowingLayerChange = null, flags = 0, debugId = 14 }
+11-28 15:20:07.953  1039  1100 V ShellDesktopMode: DesktopTasksController: skipping handleRequest reason=triggerTask is null
+11-28 15:20:07.953  1039  1100 V WindowManagerShell: RemoteTransition directly requested for (#14) android.os.BinderProxy@da6eaf9: RemoteTransition { remoteTransition = android.window.IRemoteTransition$Stub$Proxy@1401a3e, appThread = null, debugName = TaskFragmentComponent }
+11-28 15:20:07.953  1039  1100 V WindowManagerShell: Transition (#14): request handled by RemoteTransitionHandler
+11-28 15:20:07.955  1039  1229 W ImageLoader: Failed to load source Resource{name=com.android.systemui:drawable/ic_brightness_full}
+11-28 15:20:07.955  1039  1229 W ImageLoader: android.graphics.ImageDecoder$DecodeException: Failed to create image decoder with message 'unimplemented'Input contained an error.
+11-28 15:20:07.955  1039  1229 W ImageLoader: 	at android.graphics.ImageDecoder.nCreate(Native Method)
+11-28 15:20:07.955  1039  1229 W ImageLoader: 	at android.graphics.ImageDecoder.createFromAsset(ImageDecoder.java:548)
+11-28 15:20:07.955  1039  1229 W ImageLoader: 	at android.graphics.ImageDecoder.-$$Nest$smcreateFromAsset(Unknown Source:0)
+11-28 15:20:07.955  1039  1229 W ImageLoader: 	at android.graphics.ImageDecoder$ResourceSource.createImageDecoder(ImageDecoder.java:525)
+11-28 15:20:07.955  1039  1229 W ImageLoader: 	at android.graphics.ImageDecoder.decodeDrawableImpl(ImageDecoder.java:1750)
+11-28 15:20:07.955  1039  1229 W ImageLoader: 	at android.graphics.ImageDecoder.decodeDrawable(ImageDecoder.java:1742)
+11-28 15:20:07.955  1039  1229 W ImageLoader: 	at com.android.systemui.graphics.ImageLoader.loadDrawableSync(go/retraceme d7434036f30927423ce8aca1e3c453e1261a0e8c346035197b57fdd4a4917e53:31)
+11-28 15:20:07.955  1039  1229 W ImageLoader: 	at com.android.systemui.graphics.ImageLoader$loadDrawable$4.invokeSuspend(go/retraceme d7434036f30927423ce8aca1e3c453e1261a0e8c346035197b57fdd4a4917e53:150)
+11-28 15:20:07.955  1039  1229 W ImageLoader: 	at kotlin.coroutines.jvm.internal.BaseContinuationImpl.resumeWith(go/retraceme d7434036f30927423ce8aca1e3c453e1261a0e8c346035197b57fdd4a4917e53:8)
+11-28 15:20:07.955  1039  1229 W ImageLoader: 	at kotlinx.coroutines.DispatchedTask.run(go/retraceme d7434036f30927423ce8aca1e3c453e1261a0e8c346035197b57fdd4a4917e53:110)
+11-28 15:20:07.955  1039  1229 W ImageLoader: 	at java.util.concurrent.Executors$RunnableAdapter.call(Executors.java:520)
+11-28 15:20:07.955  1039  1229 W ImageLoader: 	at java.util.concurrent.FutureTask.run(FutureTask.java:317)
+11-28 15:20:07.955  1039  1229 W ImageLoader: 	at java.util.concurrent.ScheduledThreadPoolExecutor$ScheduledFutureTask.run(ScheduledThreadPoolExecutor.java:348)
+11-28 15:20:07.955  1039  1229 W ImageLoader: 	at java.util.concurrent.ThreadPoolExecutor.runWorker(ThreadPoolExecutor.java:1154)
+11-28 15:20:07.955  1039  1229 W ImageLoader: 	at java.util.concurrent.ThreadPoolExecutor$Worker.run(ThreadPoolExecutor.java:652)
+11-28 15:20:07.955  1039  1229 W ImageLoader: 	at java.lang.Thread.run(Thread.java:1563)
+11-28 15:20:07.961  1194  1194 D NexusLauncherModelDelegate: notifySmartspaceEvent: SmartspaceTargetEvent{mSmartspaceTarget=SmartspaceTarget{mSmartspaceTargetId='date_card_794317_92634', mHeaderAction=null, mBaseAction=null, mCreationTimeMillis=0, mExpiryTimeMillis=0, mScore=0.0, mActionChips=[], mIconGrid=[], mFeatureType=1, mSensitive=false, mShouldShowExpanded=false, mSourceNotificationKey='null', mComponentName=ComponentInfo{com.google.android.apps.nexuslauncher/w7.d0}, mUserHandle=UserHandle{0}, mAssociatedSmartspaceTargetId='null', mSliceUri=null, mWidget=null, mTemplateData=BaseTemplateData{mTemplateType=1, mPrimaryItem=null, mSubtitleItem=null, mSubtitleSupplementalItem=null, mSupplementalLineItem=null, mSupplementalAlarmItem=null, mLayoutWeight=0}, mRemoteViews=null}, mSmartspaceActionId='null', mEventType=3}
+11-28 15:20:07.962  1194  1194 D NexusLauncherModelDelegate: notifySmartspaceEvent: SmartspaceTargetEvent{mSmartspaceTarget=SmartspaceTarget{mSmartspaceTargetId='date_card_794317_92634', mHeaderAction=null, mBaseAction=null, mCreationTimeMillis=0, mExpiryTimeMillis=0, mScore=0.0, mActionChips=[], mIconGrid=[], mFeatureType=1, mSensitive=false, mShouldShowExpanded=false, mSourceNotificationKey='null', mComponentName=ComponentInfo{com.google.android.apps.nexuslauncher/w7.d0}, mUserHandle=UserHandle{0}, mAssociatedSmartspaceTargetId='null', mSliceUri=null, mWidget=null, mTemplateData=BaseTemplateData{mTemplateType=1, mPrimaryItem=null, mSubtitleItem=null, mSubtitleSupplementalItem=null, mSupplementalLineItem=null, mSupplementalAlarmItem=null, mLayoutWeight=0}, mRemoteViews=null}, mSmartspaceActionId='null', mEventType=2}
+11-28 15:20:07.966  1194  1194 D BaseActivity: Launcher flags updated: [] -[state_started|state_user_active]
+11-28 15:20:07.970  1194  1194 D LauncherStateManager: StateManager.goToState: fromState: Normal, toState: Normal, partial trace:
+11-28 15:20:07.970  1194  1194 D LauncherStateManager: 	at com.android.launcher3.statemanager.StateManager.moveToRestState(go/retraceme f3a19d912c87c27267cfbc05ba0bc7b202ab72a6648bd76225f5f7e128d94583:6)
+11-28 15:20:07.970  1194  1194 D LauncherStateManager: 	at com.android.launcher3.statemanager.StateManager.moveToRestState(go/retraceme f3a19d912c87c27267cfbc05ba0bc7b202ab72a6648bd76225f5f7e128d94583:2)
+11-28 15:20:07.970  1194  1194 D LauncherStateManager: 	at com.android.launcher3.statemanager.StatefulActivity.onStop(go/retraceme f3a19d912c87c27267cfbc05ba0bc7b202ab72a6648bd76225f5f7e128d94583:32)
+11-28 15:20:07.970  1039  1100 D WindowManagerShell: setLauncherKeepClearAreaHeight: visible=false, height=495
+11-28 15:20:07.970  1194  1194 D LauncherStateManager: StateManager.onRepeatStateSetAborted: state: Normal
+11-28 15:20:07.970  1194  1194 D ActivityContext: hideKeyboard
+11-28 15:20:07.971  1194  1194 D ActivityContext: isImeShown: false
+11-28 15:20:07.971  1194  1194 D StatsLog: LAUNCHER_ONSTOP
+11-28 15:20:07.972  1194  1194 D StatsLog: LAUNCHER_GOOGLE_SEARCH_RESTORE_LIST_SIZE_AFTER_ACTIVITY_RESTART
+11-28 15:20:07.974  1194  1194 D TaskFragmentComponent: Setting valid task fragment surface control in TYPE_TASK_FRAGMENT_APPEARED
+11-28 15:20:07.983  1194  1194 D TaskFragmentComponent: release and clear taskSurface
+11-28 15:20:07.989   773  1006 V WindowManager: Queueing transition: TransitionRecord{efe9572 id=-1 type=CLOSE flags=0x0 parallelCollectType=NONE recentsDisplayId=-1}
+11-28 15:20:07.992   773  1006 W TransitionChain: Combining tfTransact into #14(CHANGE|R|0x0) from tfTransact
+11-28 15:20:07.993   773  1006 V WindowManager: deferTransitionReady deferReadyDepth=2 stack=com.android.server.wm.WindowOrganizerController.applyTransaction:658 com.android.server.wm.WindowOrganizerController.applyTaskFragmentTransactionLocked:585 com.android.server.wm.TaskFragmentOrganizerController.applyTransaction:764 com.android.server.wm.TaskFragmentOrganizerController.onTransactionHandled:730 android.window.ITaskFragmentOrganizerController$Stub.onTransact:225 
+11-28 15:20:07.993   773  1006 V WindowManager: continueTransitionReady deferReadyDepth=1 stack=com.android.server.wm.WindowOrganizerController.applyTransaction:799 com.android.server.wm.WindowOrganizerController.applyTaskFragmentTransactionLocked:585 com.android.server.wm.TaskFragmentOrganizerController.applyTransaction:764 com.android.server.wm.TaskFragmentOrganizerController.onTransactionHandled:730 android.window.ITaskFragmentOrganizerController$Stub.onTransact:225 
+11-28 15:20:07.998   773   988 D BackgroundInstallControlService: Package event received: 0
+11-28 15:20:08.002   773  1006 V WindowManager: Continue transition id=14 for TaskFragmentTransaction=android.os.Binder@5742a5b
+11-28 15:20:08.002   773  1006 V WindowManager: continueTransitionReady deferReadyDepth=0 stack=com.android.server.wm.TransitionController.continueTransitionReady:1071 com.android.server.wm.TaskFragmentOrganizerController$TaskFragmentOrganizerState.onTransactionFinished:546 com.android.server.wm.TaskFragmentOrganizerController.onTransactionHandled:740 android.window.ITaskFragmentOrganizerController$Stub.onTransact:225 android.os.Binder.execTransactInternal:1473 
+11-28 15:20:08.009   773   803 V WindowManager: deferTransitionReady deferReadyDepth=1 stack=com.android.server.wm.WindowOrganizerController.applyTransaction:658 com.android.server.wm.WindowOrganizerController.applyTransaction:626 com.android.server.wm.WindowOrganizerController.lambda$applyTaskFragmentTransactionLocked$5:602 com.android.server.wm.WindowOrganizerController.$r8$lambda$b9SZ7IAloD3MuUhvAJTdz5zHJ5k:0 com.android.server.wm.WindowOrganizerController$$ExternalSyntheticLambda4.onCollectStarted:0 
+11-28 15:20:08.010   773   803 V WindowManager: continueTransitionReady deferReadyDepth=0 stack=com.android.server.wm.WindowOrganizerController.applyTransaction:799 com.android.server.wm.WindowOrganizerController.applyTransaction:626 com.android.server.wm.WindowOrganizerController.lambda$applyTaskFragmentTransactionLocked$5:602 com.android.server.wm.WindowOrganizerController.$r8$lambda$b9SZ7IAloD3MuUhvAJTdz5zHJ5k:0 com.android.server.wm.WindowOrganizerController$$ExternalSyntheticLambda4.onCollectStarted:0 
+11-28 15:20:08.013   773  1932 V SettingsShellCmd: putForUser(userId=0, table=system, key=font_scale, value=1.0, tag=null, makeDefault=false, overrideableByRestore=false)
+11-28 15:20:08.017  1039  1678 V WindowManagerShell: onTransitionReady(transaction=3320009723376)
+11-28 15:20:08.017   773   800 V WindowManager: Sent Transition (#14) createdAt=11-28 15:20:07.611 via request=TransitionRequestInfo { type = CHANGE, triggerTask = null, pipChange = null, remoteTransition = RemoteTransition { remoteTransition = android.window.IRemoteTransition$Stub$Proxy@971eeb1, appThread = null, debugName = TaskFragmentComponent }, displayChange = null, requestedLocation = null, userChange = null, windowingLayerChange = null, flags = 0, debugId = 14 }
+11-28 15:20:08.017   773   800 V WindowManager:     startWCT=WindowContainerTransaction { changes= {} hops= [] errorCallbackToken=null taskFragmentOrganizer=null }
+11-28 15:20:08.017   773   800 V WindowManager:     info={id=14 t=CHANGE f=0x0 trk=2 r=[] c=[]}
+11-28 15:20:08.020  1039  1100 V WindowManagerShell: onTransitionReady (#14) android.os.BinderProxy@da6eaf9: {id=14 t=CHANGE f=0x0 trk=2 r=[] c=[]}
+11-28 15:20:08.021  1039  1100 V WindowManagerShell: No transition roots in (#14) android.os.BinderProxy@da6eaf9@2 so abort
+11-28 15:20:08.022  1039  1039 D LocalImageResolver: Couldn't use ImageDecoder for drawable, falling back to non-resized load.
+11-28 15:20:08.024  1039  1100 V WindowManagerShell: Transition animation finished (aborted=true), notifying core (#14) android.os.BinderProxy@da6eaf9@2
+11-28 15:20:08.026  1039  1039 D LocalImageResolver: Couldn't use ImageDecoder for drawable, falling back to non-resized load.
+11-28 15:20:08.037   773   803 W TransitionChain: Combining updateGlobalConfig into #15(CLOSE|R|0x0) from tfTransact
+11-28 15:20:08.039   773   803 I ActivityTaskManager: Config changes=40000000 {1.0 310mcc260mnc [en_US] ldltr sw411dp w411dp h914dp 420dpi nrml long compactNeeded port finger qwerty/v/v dpad/v winConfig={ mBounds=Rect(0, 0 - 1080, 2400) mAppBounds=Rect(0, 0 - 1080, 2400) mMaxBounds=Rect(0, 0 - 1080, 2400) mDisplayRotation=ROTATION_0 mWindowingMode=fullscreen mActivityType=undefined mAlwaysOnTop=undefined mRotation=ROTATION_0} s.93 fontWeightAdjustment=0}
+11-28 15:20:08.041   773   988 D BackgroundInstallControlService: Package event received: 0
+11-28 15:20:08.043   773   803 I WindowManager: Override config changes=40000000 {1.0 310mcc260mnc [en_US] ldltr sw411dp w411dp h914dp 420dpi nrml long compactNeeded port finger qwerty/v/v dpad/v winConfig={ mBounds=Rect(0, 0 - 1080, 2400) mAppBounds=Rect(0, 0 - 1080, 2400) mMaxBounds=Rect(0, 0 - 1080, 2400) mDisplayRotation=ROTATION_0 mWindowingMode=fullscreen mActivityType=undefined mAlwaysOnTop=undefined mRotation=ROTATION_0} s.93 fontWeightAdjustment=0} for displayId=0
+11-28 15:20:08.044   773   803 W TransitionChain: Combining dispOverCfg into #15(CLOSE|R|0x0) from tfTransact
+11-28 15:20:08.051  1039  1039 W SsPagerDots: Total number of pages invalid: 0. Assuming 1 page.
+11-28 15:20:08.078   612   646 I libbinder.BpBinder: onLastStrongRef automatically unlinking death recipients for descriptor: '(not cached)'
+11-28 15:20:08.081   773   803 W libbinder.IPCThreadState: Sending oneway calls to frozen process.
+11-28 15:20:08.082   773   803 W libbinder.IPCThreadState: Sending oneway calls to frozen process.
+11-28 15:20:08.082   773   803 W libbinder.IPCThreadState: Sending oneway calls to frozen process.
+11-28 15:20:08.087  1538  1538 I AppBase : AppBase.onConfigurationChanged():406 onConfigurationChanged() : NewConfig = {1.0 310mcc260mnc [en_US] ldltr sw411dp w411dp h914dp 420dpi nrml long compactNeeded port finger qwerty/v/v dpad/v winConfig={ mBounds=Rect(0, 0 - 1080, 2400) mAppBounds=Rect(0, 0 - 1080, 2400) mMaxBounds=Rect(0, 0 - 1080, 2400) mDisplayRotation=ROTATION_0 mWindowingMode=fullscreen mActivityType=undefined mAlwaysOnTop=undefined mRotation=ROTATION_0} s.151 fontWeightAdjustment=0}
+11-28 15:20:08.089   612   646 I libbinder.BpBinder: onLastStrongRef automatically unlinking death recipients for descriptor: '(not cached)'
+11-28 15:20:08.091  1538  1538 I GoogleInputMethodService: GoogleInputMethodService.onConfigurationChanged():1031 onConfigurationChanged() : NewConfig = {1.0 310mcc260mnc [en_US] ldltr sw411dp w411dp h914dp 420dpi nrml long compactNeeded port finger qwerty/v/v dpad/v winConfig={ mBounds=Rect(0, 0 - 1080, 2400) mAppBounds=Rect(0, 0 - 1080, 2400) mMaxBounds=Rect(0, 0 - 1080, 2400) mDisplayRotation=ROTATION_0 mWindowingMode=fullscreen mActivityType=undefined mAlwaysOnTop=undefined mRotation=ROTATION_0} s.93 fontWeightAdjustment=0}
+11-28 15:20:08.092  1538  1538 I GoogleInputMethodService: GoogleInputMethodService.onConfigurationChanged():1032 device real metrics: DisplayMetrics{density=2.625, width=1080, height=2400, scaledDensity=2.625, xdpi=420.0, ydpi=420.0}
+11-28 15:20:08.092  1538  1538 I GoogleInputMethodService: GoogleInputMethodService.onConfigurationChanged():1040 Maybe update OEM display config because of configuration change
+11-28 15:20:08.092  1538  1538 I InputMethodEntryManager: InputMethodEntryManager.notifyCurrentInputMethodEntryOnContextChanged():550 notifyCurrentInputMethodEntryOnContextChanged()
+11-28 15:20:08.092  1538  1538 I InputMethodEntryManager: InputMethodEntryManager.notifyCurrentInputMethodEntryOnContextChanged():571 Notify current input method entry changed on context change
+11-28 15:20:08.093  1538  1538 I SystemSubtypesReportModule: SystemSubtypesReportModule$2.onCurrentInputMethodEntryChanged():141 entry: en-US, source: UNSPECIFIED
+11-28 15:20:08.096  1538  1538 I KeyboardContextProvider: KeyboardContextProvider$KeyboardContextCache.createKeyboardContext():173 createKeyboardContext(): en-US, kpz@5dd941d(com.android.inputmethod.latin.LatinIME@54cd1a9), {1.0 310mcc260mnc [en_US] ldltr sw411dp w411dp h914dp 420dpi nrml long compactNeeded port finger qwerty/v/v dpad/v winConfig={ mBounds=Rect(0, 0 - 1080, 2400) mAppBounds=Rect(0, 0 - 1080, 2400) mMaxBounds=Rect(0, 0 - 1080, 2400) mDisplayRotation=ROTATION_0 mWindowingMode=fullscreen mActivityType=undefined mAlwaysOnTop=undefined mRotation=ROTATION_0} s.11 fontWeightAdjustment=0}
+11-28 15:20:08.096  1538  1538 I GoogleInputMethodService: GoogleInputMethodService.onCurrentInputMethodEntryChanged():2305 onCurrentInputMethodEntryChanged(): imeDefsChanged=false, entryLanguageVariantChanged=false, keyboardContextChanged=true
+11-28 15:20:08.096  1039  1100 V WindowManagerShell: Track 2 became idle
+11-28 15:20:08.096  1039  1100 V WindowManagerShell: All active transition animations finished
+11-28 15:20:08.096  1039  1100 V WindowManagerShell: Transition requested (#15): android.os.BinderProxy@94f93dd TransitionRequestInfo { type = CLOSE, triggerTask = null, pipChange = null, remoteTransition = RemoteTransition { remoteTransition = android.window.IRemoteTransition$Stub$Proxy@fdd7b52, appThread = null, debugName = TaskFragmentComponent }, displayChange = null, requestedLocation = null, userChange = null, windowingLayerChange = null, flags = 0, debugId = 15 }
+11-28 15:20:08.096  1039  1100 V ShellDesktopMode: DesktopTasksController: handleRequest request=TransitionRequestInfo { type = CLOSE, triggerTask = null, pipChange = null, remoteTransition = RemoteTransition { remoteTransition = android.window.IRemoteTransition$Stub$Proxy@fdd7b52, appThread = null, debugName = TaskFragmentComponent }, displayChange = null, requestedLocation = null, userChange = null, windowingLayerChange = null, flags = 0, debugId = 15 }
+11-28 15:20:08.096  1039  1100 V ShellDesktopMode: DesktopTasksController: skipping handleRequest reason=triggerTask is null
+11-28 15:20:08.096  1039  1100 V WindowManagerShell: RemoteTransition directly requested for (#15) android.os.BinderProxy@94f93dd: RemoteTransition { remoteTransition = android.window.IRemoteTransition$Stub$Proxy@fdd7b52, appThread = null, debugName = TaskFragmentComponent }
+11-28 15:20:08.096  1039  1100 V WindowManagerShell: Transition (#15): request handled by RemoteTransitionHandler
+11-28 15:20:08.100  1039  1100 V ShellDragAndDrop: Display changed: 0
+11-28 15:20:08.102  1039  1100 V ShellDesktopMode: DesktopDisplayEventHandler: displayAreaChanged in displayId=0, keyguardLocked=false
+11-28 15:20:08.103  1039  1100 V ShellDesktopMode: DesktopDisplayEventHandler: handlePotentialReconnect: No preserved display found for uniqueDisplayId=local:4619827259835644672; aborting.
+11-28 15:20:08.103  1039  1100 V ShellDesktopMode: DesktopDisplayEventHandler: createDefaultDesksIfNeeded displays=[0] userId=null
+11-28 15:20:08.103  1538  1538 I KeyboardContextProvider: KeyboardContextProvider.setBaseContextAndInvalidKeyboardContextCache():88 setBaseContextAndInvalidKeyboardContextCache(): com.android.inputmethod.latin.LatinIME@54cd1a9
+11-28 15:20:08.103  1039  1100 V ShellDesktopMode: DesktopDisplayEventHandler: shouldCreateOrWarmUpDesk skipping displayId=0 reason: desktop ineligible
+11-28 15:20:08.103  1538  1538 I DeviceModeModule: DeviceModeModule.calculateAndNotify():225 Device mode 'phone' from display metrics 'DisplayMetrics{density=0.0, width=1080, height=2400, scaledDensity=0.0, xdpi=420.0, ydpi=420.0}' or smallestScreenWidthDp: 411
+11-28 15:20:08.106  1538  1538 I GoogleInputMethodService: GoogleInputMethodService.onConfigurationChanged():1062 changedMask : 40000000
+11-28 15:20:08.106  1538  1538 I GoogleInputMethodService: GoogleInputMethodService.clearInputMethodServiceData():1017 clearInputMethodServiceData for configurationChange
+11-28 15:20:08.106  1194  1194 D TaskbarManager: onConfigurationChanged: {1.0 310mcc260mnc [en_US] ldltr sw411dp w411dp h914dp 420dpi nrml long compactNeeded port finger qwerty/v/v dpad/v winConfig={ mBounds=Rect(0, 0 - 1080, 2400) mAppBounds=Rect(0, 0 - 1080, 2400) mMaxBounds=Rect(0, 0 - 1080, 2400) mDisplayRotation=ROTATION_0 mWindowingMode=fullscreen mActivityType=undefined mAlwaysOnTop=undefined mRotation=ROTATION_0} s.93 fontWeightAdjustment=0} displayId=0 isDefaultDisplay=true
+11-28 15:20:08.106   660   750 D Camera2ClientBase: Camera 1: Shutting down
+11-28 15:20:08.107  1538  1538 I GoogleInputMethodService: GoogleInputMethodService.discardAllKeyboardViewAndInputView():1232 discardAllKeyboardViewAndInputView()
+11-28 15:20:08.108   773   800 V WindowManager: Finish Transition (#14): created at 11-28 15:20:07.611 collect-started=309.079ms request-sent=321.208ms started=341.563ms ready=390.403ms sent=396.052ms commit=32.697ms finished=482.661ms
+11-28 15:20:08.109  1538  1538 I AbstractOpenableExtension: AbstractOpenableExtension.maybeDestroyExistingKeyboardGroupManager():534 Destroy existing keyboard group manager in emp
+11-28 15:20:08.109  1538  1538 I AbstractOpenableExtension: AbstractOpenableExtension.createKeyboardGroupManagerListenableFuture():121 Create keyboard group manager listenable future in emp
+11-28 15:20:08.110  1194  1194 D TaskbarManager: onConfigurationChanged: | configDiff={CONFIG_FONT_SCALE} displayId=0 isDefaultDisplay=true
+11-28 15:20:08.110  1194  1194 D TaskbarManager: onConfigurationChanged: call recreateTaskbars displayId=0 isDefaultDisplay=true
+11-28 15:20:08.110  1194  1194 D TaskbarManager: recreateTaskbarForDisplay:  displayId=0 isDefaultDisplay=true
+11-28 15:20:08.110  1194  1194 D TaskbarManager: recreateTaskbarForDisplay: getting device profile displayId=0 isDefaultDisplay=true
+11-28 15:20:08.110  1194  1194 D TaskbarManager: recreateTaskbarForDisplay: destroying taskbar displayId=0 isDefaultDisplay=true
+11-28 15:20:08.110  1194  1194 D TaskbarManager: destroyTaskbarForDisplay displayId=0 isDefaultDisplay=true
+11-28 15:20:08.113  1538  1538 I AbstractOpenableExtension: AbstractOpenableExtension.maybeDestroyExistingKeyboardGroupManager():534 Destroy existing keyboard group manager in gvt
+11-28 15:20:08.113  1538  1538 I AbstractOpenableExtension: AbstractOpenableExtension.createKeyboardGroupManagerListenableFuture():121 Create keyboard group manager listenable future in gvt
+11-28 15:20:08.113  1538  1538 I AbstractOpenableExtension: AbstractOpenableExtension.maybeDestroyExistingKeyboardGroupManager():534 Destroy existing keyboard group manager in gyp
+11-28 15:20:08.113  1538  1538 I AbstractOpenableExtension: AbstractOpenableExtension.createKeyboardGroupManagerListenableFuture():121 Create keyboard group manager listenable future in gyp
+11-28 15:20:08.114  1538  1538 I WindowMetricsNotification: WindowMetricsNotification.notify():159 pdp[bounds=Rect(0, 63 - 1080, 2400), insets=Rect(0, 0 - 0, 0), densityDpi=420, smallestScreenWidthDp=411, displayWidth=1080, displayHeight=2400, xdpi=420.0, ydpi=420.0, isTrustable=true, displayId=0]; DisplayMetrics{density=2.625, width=1080, height=2400, scaledDensity=2.625, xdpi=420.0, ydpi=420.0}
+11-28 15:20:08.114  1538  1538 I WindowMetricsHelper: WindowMetricsHelper.predictAndNotify():145 Window metrics predicted.
+11-28 15:20:08.114  1538  1538 I GoogleInputMethodService: GoogleInputMethodService.initializeInputMethodServiceData():842 initializeInputMethodServiceData for lpl{languageTag=en-US, variant=qwerty, hasLocalizedResources=true, conditionCacheKey=_app_first_start_timestamp=1795603836416_bottom_period_popup_slash=false_cache_additional_ime_defs_for_condition_change=false_cache_ime_defs_for_condition_change=false_deprecate_long_press_space_for_ime_picker=false_device=phone_device_size=default_enable_access_points_in_password_number=true_enable_correction_settings_updates=true_enable_flick_symbols=true_enable_more_candidates_view_for_multilingual=false_enable_number_row=false_enable_number_row_in_password=true_enable_pk_simulator=false_enable_pk_simulator_setting=false_enable_preemptive_decode=true_enable_secondary_digits=true_enable_secondary_symbols=false_expressions=normal_four_or_more_letter_rows=false_keyboard_mode=normal_language=en-US_layout_9key_split=false_orientation=portrait_physical_keyboard=qwerty_pref_enable_flick_symbols=false_rtl_layout=false_show_comma_key=true_show_period_key=true_show_secondary_digits=true_show_suggestion_strip=true_show_suggestions=true_split_with_duplicate_keys=true_true=true_variant=qwerty_writing_helper_enable_by_word_revert=false, imeDef.stringId=ime_english_united_states, imeDef.className=com.google.android.apps.inputmethod.libs.latin5.LatinIme, imeDef.languageTag=en-US}
+11-28 15:20:08.122  1538  6228 I KeyboardGroupDefParser: KeyboardGroupDefParser.parseKeyboardGroupDef():86 parseKeyboardGroupDef() 2132213993 -> 0_resource_name_obfuscated : WaitTime = 8 ms : RunTime = 1 ms
+11-28 15:20:08.123  1538  6228 I KeyboardGroupDefParser: KeyboardGroupDefParser.parseKeyboardGroupDef():86 parseKeyboardGroupDef() 2132213997 -> 0_resource_name_obfuscated : WaitTime = 9 ms : RunTime = 0 ms

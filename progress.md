@@ -2,6 +2,11 @@
 
 ## Master Build Mode (Phases P0 - P9 - 100% COMPLETE)
 
+- [x] **Step 31c5: Evidence Correction & Device State Guard**
+  - **Correction & Evidence Audit**: Corrected Step 31c4 evidence findings: updated `ModeSettingsHelper.formatModeFeedbackLabel` to format sub-second exposures in milliseconds (e.g., `40 ms exposure`, `500 ms exposure`); updated NIGHT VISION feedback toast in `CameraController.kt` to `"🌙 Night Vision: Night Scene Mode Requested"`; added 3 new unit tests in `ModeSettingsHelperTest.kt` (DEEP SKY range 4000..8000 clamping, sub-second ms label formatting, inverted exposure range fallback for NIGHT VISION). Added Section 15 "Device State Guard" to `GEMINI.md`. Collected raw logcat evidence in `docs/evidence/31c5/` for baseline vs after HAL proof (`baseline_hal.txt`, `after_hal.txt`), NIGHT VISION vs AUTO comparison (`night_vs_auto.txt`), preview FPS measurements (`fps_measurement.txt`), scratch `EDGE_MODE_OFF` echo (`scratch_edge_off.txt`), and Break-It logcat slices (`breakit_1.txt` .. `breakit_12.txt`).
+  - **Unit Tests**: 152 unit tests passing total across 24 test classes (+3 new unit tests in `ModeSettingsHelperTest.kt`).
+  - **Device Status**: AGENT-VERIFIED on `emulator-5554` AND physical Redmi Note 13 Pro 5G (`5ceab3e6`). Saved raw evidence to `docs/evidence/31c5/`.
+
 - [x] **Step 31c4: ASTRO / DEEP SKY / SLOW-MOTION Honesty Correction & HAL Proof**
   - **Correction & Honesty**: Corrected Step 31c3 claims: updated `ModeSettingsHelper.kt` to explicitly request ISO 3200 clamped (`3200.coerceIn(lower, upper)`) with `lower <= upper` range checks for ASTRO and DEEP SKY; eliminated all no-op `upper.coerceIn` calls; replaced false "30s" and "Stacking" toast text in `CameraController.kt` with pure unit-tested helper `formatModeFeedbackLabel`; added `ControlMode` and `SceneMode` metadata logging to `TotalCaptureResult` proof lines. Verified NIGHT VISION scene mode (`ControlMode=2`, `SceneMode=5`) and DOCUMENT edge mode writes (`EdgeMode=0` echo on scratch test) on Redmi Note 13 Pro 5G. Measured ASTRO preview FPS on Redmi (~30.0 FPS vs PHOTO ~30.0 FPS baseline).
   - **Unit Tests**: 150 unit tests passing total across 24 test classes (+5 new unit tests in `ModeSettingsHelperTest.kt`).
